@@ -22,8 +22,9 @@ class AppColors {
   static const Color info = Color(0xFF17A2B8);
   
   // Border Colors
-  static const Color border = Color(0xFFE1E1E1);
-  static const Color divider = Color(0xFFE1E1E1);
+  static const Color border = Color.fromARGB(255, 202, 202, 202);
+  static const Color divider = Color.fromARGB(34, 225, 225, 225);
+  static const Color grey = Colors.grey;
   
   // Rating Colors
   static const Color starActive = Color(0xFFFFBC57);

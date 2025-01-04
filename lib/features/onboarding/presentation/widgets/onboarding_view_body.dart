@@ -1,4 +1,6 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
+import 'package:beautilly/features/auth/presentation/view/signup_view.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
@@ -71,6 +73,8 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                       curve: Curves.easeIn,
                     );
                   } else {
+                    Navigator.pushReplacementNamed(
+                        context, SigninView.routeName);
                     // Navigate to login/register screen
                   }
                 },

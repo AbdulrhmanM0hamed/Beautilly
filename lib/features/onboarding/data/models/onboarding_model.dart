@@ -24,7 +24,7 @@ List<OnboardingModel> onboardingData = [
     description: 'احجزي موعدك في أي وقت وأي مكان بضغطة زر واحدة',
   ),
   OnboardingModel(
-    image: AppAssets.onboarding3,
+    image: AppAssets.onboarding4,
     title: 'استمتعي بتجربة مميزة',
     description: 'احصلي على خدمات تجميل احترافية من أمهر المتخصصات',
   ),

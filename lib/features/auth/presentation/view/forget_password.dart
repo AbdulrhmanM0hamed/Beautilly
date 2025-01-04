@@ -12,7 +12,7 @@ class ForgotPasswordView extends StatelessWidget {
       appBar: CustomAppBar(
         title: "نسيت كلمة المرور",
       ),
-      body: const ForgetPasswordViewBody(),
+      body:  ForgetPasswordViewBody(),
     );
   }
 }

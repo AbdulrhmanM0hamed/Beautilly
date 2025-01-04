@@ -1,4 +1,5 @@
 
+import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
@@ -18,7 +19,7 @@ class DontHaveAccount extends StatelessWidget {
       children: [
         Text(
           textAlign: TextAlign.center,
-          "لا تمتلك حساب ؟",
+          AppStrings.dontHaveAccount,
           style: getSemiBoldStyle(fontFamily: FontConstant.cairo, fontSize: FontSize.size16, color: AppColors.textSecondary),
         ),
         GestureDetector(
@@ -27,7 +28,7 @@ class DontHaveAccount extends StatelessWidget {
           },
           child: Text(
             textAlign: TextAlign.center,
-            "سجل الان",
+            AppStrings.signUpNow,
             style: getSemiBoldStyle(fontFamily: FontConstant.cairo, fontSize: FontSize.size17, color: AppColors.primary),
           ),
         ),

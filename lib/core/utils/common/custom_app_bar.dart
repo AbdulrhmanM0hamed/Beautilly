@@ -1,3 +1,5 @@
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart';
 
@@ -31,10 +33,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: title != null
           ? Text(
               title!,
-              style: TextStyle(
-                color: titleColor ?? AppColors.secondary,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+              style: getBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: 20,
               ),
             )
           : null,

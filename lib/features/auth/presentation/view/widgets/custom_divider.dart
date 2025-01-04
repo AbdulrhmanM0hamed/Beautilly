@@ -1,4 +1,5 @@
 
+import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class CustomDivider extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           child: Text(
-            "أو",
+            AppStrings.or,
             style: getSemiBoldStyle(fontFamily: FontConstant.cairo, fontSize: FontSize.size18, color: AppColors.textPrimary),
           ),
         ),

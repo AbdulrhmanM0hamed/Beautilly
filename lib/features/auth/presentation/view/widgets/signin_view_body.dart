@@ -2,6 +2,7 @@ import 'package:beautilly/core/utils/animations/custom_animations.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/core/utils/common/custom_text_field.dart';
 import 'package:beautilly/core/utils/common/password_field.dart';
+import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
@@ -55,7 +56,7 @@ class _SigninViewBodyState extends State<SigninViewBody> {
               CustomAnimations.slideFromTop(
                 duration: const Duration(milliseconds: 800),
                 child: CustomTextField(
-                  hint: "البريد الإلكتروني",
+                  hint: AppStrings.email,
                   keyboardType: TextInputType.emailAddress,
                   prefix: const Icon(Icons.email),
                   validator: FormValidators.validateEmail,
@@ -66,7 +67,7 @@ class _SigninViewBodyState extends State<SigninViewBody> {
               CustomAnimations.slideFromTop(
                 duration: const Duration(milliseconds: 900),
                 child: PasswordField(
-                  hintText: "كلمة المرور",
+                  hintText: AppStrings.password,
                   onSaved: (value) => password = value!,
                 ),
               ),
@@ -81,7 +82,7 @@ class _SigninViewBodyState extends State<SigninViewBody> {
                     );
                   },
                   child: Text(
-                    "نسيت كلمة المرور؟",
+                    AppStrings.forgotPassword,
                     style: getSemiBoldStyle(
                       fontFamily: FontConstant.cairo,
                       fontSize: size.height * 0.016,
@@ -94,7 +95,7 @@ class _SigninViewBodyState extends State<SigninViewBody> {
               CustomAnimations.fadeIn(
                 duration: const Duration(milliseconds: 1100),
                 child: CustomButton(
-                  text: "تسجيل الدخول",
+                  text: AppStrings.login,
                   onPressed: _submitForm,
                 ),
               ),

@@ -5,14 +5,21 @@ class AppStrings {
   
   // Auth Screens
   static const String login = 'تسجيل الدخول';
-  static const String register = 'إنشاء حساب';
-  static const String forgotPassword = 'نسيت كلمة المرور';
+  static const String register = ' إنشاء حساب جديد';
+  static const String forgotPassword = 'نسيت كلمة المرور؟';
   static const String resetPassword = 'إعادة تعيين كلمة المرور';
   static const String email = 'البريد الإلكتروني';
   static const String password = 'كلمة المرور';
   static const String confirmPassword = 'تأكيد كلمة المرور';
   static const String name = 'الاسم';
   static const String phone = 'رقم الجوال';
+  static const String or = 'أو';
+  static const String dontHaveAccount = 'لا تمتلك حساب؟';
+  static const String signUpNow = 'سجل الان';
+  static const String alreadyHaveAccount = 'تمتلك حساب بالفعل؟';
+  static const String signInNow = 'سجل الدخول الان';
+  static const String sendCode = 'ارسال الكود';
+  
   
   // Home Screen
   static const String home = 'الرئيسية';

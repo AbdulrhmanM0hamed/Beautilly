@@ -1,4 +1,11 @@
+
+import 'package:beautilly/core/utils/constant/app_strings.dart';
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:flutter/material.dart';
+
 
 class HavaAnAccount extends StatelessWidget {
   const HavaAnAccount({
@@ -10,22 +17,25 @@ class HavaAnAccount extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text(
-            'تسجيل الدخول',
-            style: TextStyle(
-              color: Colors.blue,
-              fontWeight: FontWeight.bold,
-            ),
+        Text(
+          AppStrings.alreadyHaveAccount,
+          style: getSemiBoldStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size14,
+            color: AppColors.textSecondary,
           ),
         ),
-        Text(
-          'لديك حساب بالفعل؟',
-          style: TextStyle(
-            color: Colors.black,
+        TextButton(
+          onPressed: () {
+            Navigator.pushNamed(context, SigninView.routeName);
+          },
+          child: Text(
+            AppStrings.signInNow,
+            style: getSemiBoldStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size14,
+              color: AppColors.primary,
+            ),
           ),
         ),
       ],

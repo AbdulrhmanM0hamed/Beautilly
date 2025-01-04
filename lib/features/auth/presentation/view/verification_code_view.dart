@@ -3,7 +3,6 @@ import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/verification_code_view_body.dart';
 import 'package:flutter/material.dart';
 
-
 class VerificationCodeView extends StatelessWidget {
   final String email;
   const VerificationCodeView({super.key, required this.email});

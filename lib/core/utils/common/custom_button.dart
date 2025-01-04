@@ -33,7 +33,7 @@ class CustomButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width ?? double.infinity,
-      height: height ?? 60,
+      height: height ?? 55,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.centerRight,
@@ -43,13 +43,13 @@ class CustomButton extends StatelessWidget {
             AppColors.primary,
           ],
         ),
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: BorderRadius.circular(16),
       
       ),
       child: MaterialButton(
         onPressed: isLoading ? null : onPressed,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: _buildButtonChild(),
       ),

@@ -1,5 +1,6 @@
 import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/core/utils/common/custom_text_field.dart';
+import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/validators/form_validators.dart';
@@ -38,7 +39,7 @@ class _ForgetPasswordViewBodyState extends State<ForgetPasswordViewBody> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'أدخل بريدك الإلكتروني المُسجل',
+              AppStrings.resetPassword,
               textAlign: TextAlign.center,
               style: getBoldStyle(
                 fontFamily: FontConstant.cairo,
@@ -47,14 +48,14 @@ class _ForgetPasswordViewBodyState extends State<ForgetPasswordViewBody> {
             ),
             const SizedBox(height: 16),
             CustomTextField(
-              hint: "البريد الإلكتروني",
+              hint: AppStrings.email,
               suffix: const Icon(Icons.email),
               validator: FormValidators.validateEmail,
               onSaved: (value) => email = value!,
             ),
             const SizedBox(height: 16),
             CustomButton(
-              text: "ارسل الكود",
+              text: AppStrings.sendCode,
               onPressed: () {},
             ),
           ],

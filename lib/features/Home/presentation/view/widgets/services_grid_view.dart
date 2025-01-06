@@ -1,4 +1,4 @@
-import 'package:beautilly/core/utils/constant/app_services.dart';
+import 'package:beautilly/core/utils/data_test/app_services.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/models/service_item_model.dart';

@@ -23,16 +23,18 @@ class WelcomeTextWidget extends StatelessWidget {
           text: TextSpan(
             text: 'مرحبا, ',
             style: getBoldStyle(
-              color: AppColors.black,
+              color: Theme.of(context).brightness == Brightness.light
+                  ? AppColors.textPrimary
+                  : AppColors.white,
               fontFamily: FontConstant.cairo,
-              fontSize: FontSize.size24,
+              fontSize: FontSize.size22,
             ),
             children: [
               TextSpan(
                 text: 'عبدو ',
                 style: getBoldStyle(
                   fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size24,
+                  fontSize: FontSize.size22,
                 ),
               ),
             ],

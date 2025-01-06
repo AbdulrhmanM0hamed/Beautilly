@@ -32,8 +32,8 @@ class AppServices {
       title: 'مكياج',
     ),
     ServiceItem(
-      icon: AppAssets.messageIcon,
-      title: 'مساج',
+      icon: AppAssets.dressVector,
+      title: 'تصميم ازياء',
     ),
   ];
 }

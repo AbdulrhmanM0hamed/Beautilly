@@ -1,4 +1,4 @@
-import 'package:beautilly/core/utils/constant/app_salons.dart';
+import 'package:beautilly/core/utils/data_test/app_salons.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/models/salon_model.dart';

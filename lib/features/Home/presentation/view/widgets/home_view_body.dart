@@ -6,6 +6,7 @@ import 'package:beautilly/features/Home/presentation/view/widgets/services_grid_
 import 'package:beautilly/features/Home/presentation/view/widgets/special_view_list_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/welcome_text_widget.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/popular_salons_list_view.dart';
+import 'package:beautilly/features/Home/presentation/view/widgets/fashion_houses_list_view.dart';
 import 'package:flutter/material.dart';
 
 class HomeViewBody extends StatelessWidget {
@@ -63,6 +64,16 @@ class HomeViewBody extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
             const MostSearchInterest(),
+            const SizedBox(height: 24.0),
+            Text(
+              'دور الأزياء والتفصيل',
+              style: getBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size16,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            const FashionHousesListView(),
           ],
         ),
       ),

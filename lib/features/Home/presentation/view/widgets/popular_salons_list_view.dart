@@ -69,7 +69,7 @@ class SalonCard extends StatelessWidget {
                   ),
                   child: const Icon(
                     Icons.favorite_border,
-                    color: AppColors.primary,
+                    color: AppColors.error,
                     size: 20,
                   ),
                 ),

@@ -1,6 +1,7 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/Home/presentation/view/widgets/most_search_interest.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/services_grid_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/special_view_list_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/welcome_text_widget.dart';
@@ -52,6 +53,16 @@ class HomeViewBody extends StatelessWidget {
             ),
             const SizedBox(height: 16.0),
             const PopularSalonsListView(),
+            const SizedBox(height: 16.0),
+            Text(
+              'الأكثر بحثاً',
+              style: getBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size16,
+              ),
+            ),
+            const SizedBox(height: 16.0),
+            const MostSearchInterest(),
           ],
         ),
       ),

@@ -28,7 +28,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(child: const HomeViewBody()),
+      body: const SafeArea(child: HomeViewBody()),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).scaffoldBackgroundColor,
@@ -50,15 +50,19 @@ class _HomeViewState extends State<HomeView> {
               },
               type: BottomNavigationBarType.fixed,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              selectedItemColor: AppColors.secondary,
+              unselectedItemColor: AppColors.grey,
               showSelectedLabels: true,
               showUnselectedLabels: true,
-              selectedLabelStyle: getMediumStyle(
+              selectedLabelStyle: getSemiBoldStyle(
                 fontSize: FontSize.size12,
                 fontFamily: FontConstant.cairo,
+                color: AppColors.secondary,
               ),
               unselectedLabelStyle: getMediumStyle(
                 fontSize: FontSize.size12,
                 fontFamily: FontConstant.cairo,
+                color: AppColors.grey,
               ),
               elevation: 0,
               items: _items
@@ -80,7 +84,7 @@ class _HomeViewState extends State<HomeView> {
           icon,
           height: 24,
           width: 24,
-          color: isSelected ? AppColors.primary : AppColors.textSecondary,
+          color: isSelected ? AppColors.secondary : AppColors.grey,
         ),
       ),
       label: label,

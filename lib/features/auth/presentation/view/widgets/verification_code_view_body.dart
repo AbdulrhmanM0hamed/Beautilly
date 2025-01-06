@@ -1,4 +1,5 @@
 import 'package:beautilly/core/utils/common/custom_button.dart';
+import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
@@ -23,7 +24,7 @@ class VerificationCodeViewBody extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Text(
-            'أدخل كود التحقق',
+            AppStrings.verificationCode,
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -31,7 +32,7 @@ class VerificationCodeViewBody extends StatelessWidget {
           ),
           SizedBox(height: size.height * 0.03),
           Text(
-            'تم إرسال كود التحقق إلى $email',
+            '${AppStrings.checkYourEmail}$email',
             textAlign: TextAlign.center,
             style: getSemiBoldStyle(
                 fontFamily: FontConstant.cairo,

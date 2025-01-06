@@ -1,5 +1,4 @@
 import 'package:beautilly/core/utils/common/custom_text_field.dart';
-import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/validators/form_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

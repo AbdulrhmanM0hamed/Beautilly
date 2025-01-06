@@ -1,3 +1,4 @@
+import 'package:beautilly/features/Home/presentation/view/home_view.dart';
 import 'package:beautilly/features/auth/presentation/view/forget_password.dart';
 import 'package:beautilly/features/auth/presentation/view/new_password_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
@@ -33,6 +34,10 @@ Route<dynamic> onGenratedRoutes(RouteSettings settings) {
         builder: (context) => NewPasswordView(
           email: '',
         ),
+      );
+      case HomeView.routeName:
+      return MaterialPageRoute(
+        builder: (context) =>const HomeView()
       );
     default:
       return MaterialPageRoute(

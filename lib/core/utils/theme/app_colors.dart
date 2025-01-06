@@ -14,6 +14,7 @@ class AppColors {
   static const Color textSecondary = Color(0xFF6C757D);
   static const Color textLight = Colors.white;
   static const Color textLight70 = Colors.white60;
+  static const Color black = Color.fromARGB(255, 0, 0, 0);
   
   // Status Colors
   static const Color success = Color(0xFF28A745);

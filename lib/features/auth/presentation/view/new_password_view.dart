@@ -1,5 +1,6 @@
 import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/core/utils/common/custom_text_field.dart';
+import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/validators/form_validators.dart';
@@ -20,7 +21,7 @@ class NewPasswordView extends StatelessWidget {
       appBar: AppBar(
           centerTitle: true,
           title: Text(
-            'تعيين كلمة المرور الجديدة',
+            AppStrings.assignNewPassword,
             style: getBoldStyle(
                 fontFamily: FontConstant.cairo, fontSize: FontSize.size20),
           )),
@@ -32,19 +33,19 @@ class NewPasswordView extends StatelessWidget {
             children: [
               CustomTextField(
                 validator: FormValidators.validatePassword,
-                hint: 'كلمة المرور الجديدة',
+                hint: AppStrings.newPassword,
                 onSaved: (value) => passwordController.text = value!,
               ),
               const SizedBox(height: 16),
               CustomTextField(
                 validator: (value) => FormValidators.validateConfirmPassword(
                     value, passwordController.text),
-                hint: 'تأكيد كلمة المرور',
+                hint: AppStrings.newPasswordConfirmation,
                 onSaved: (value) => confirmPasswordController.text = value!,
               ),
               const SizedBox(height: 24),
               CustomButton(
-                text: 'تحديث كلمة المرور',
+                text: AppStrings.updatePassword,
                 onPressed: () {},
               ),
             ],

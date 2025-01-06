@@ -1,4 +1,5 @@
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
+import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/forget_password_view_body.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,7 @@ class ForgotPasswordView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       appBar: CustomAppBar(
-        title: "نسيت كلمة المرور",
+        title: AppStrings.forgotPasswordView,
       ),
       body:  ForgetPasswordViewBody(),
     );

@@ -13,6 +13,7 @@ class AppAssets {
   static const String onboarding2 = '$_imagesPath/onboarding2.png';
   static const String onboarding3 = '$_imagesPath/onboarding3.png';
   static const String onboarding4 = '$_imagesPath/onboarding4.png';
+  static const String test = '$_imagesPath/test.png';
   
   // Auth
   static const String loginBg = '$_imagesPath/login_bg.png';

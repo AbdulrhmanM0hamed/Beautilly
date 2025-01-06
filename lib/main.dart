@@ -1,3 +1,4 @@
+import 'package:beautilly/features/Home/presentation/view/home_view.dart';
 import 'package:beautilly/features/splash/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       onGenerateRoute: onGenratedRoutes,
-      initialRoute: SplashView.routeName,
+      initialRoute: HomeView.routeName,
     );
   }
 }

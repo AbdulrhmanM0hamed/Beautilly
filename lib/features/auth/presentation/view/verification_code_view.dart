@@ -1,3 +1,4 @@
+import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/verification_code_view_body.dart';
@@ -19,7 +20,7 @@ class VerificationCodeView extends StatelessWidget {
             },
             icon: Icon(Icons.arrow_back_ios_new_outlined)),
         title: Text(
-          'التحقق من البريد الإلكتروني',
+          AppStrings.verifyYourEmail,
           style: getBoldStyle(
               fontFamily: FontConstant.cairo, fontSize: FontSize.size20),
         ),

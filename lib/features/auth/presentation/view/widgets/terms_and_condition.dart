@@ -1,4 +1,5 @@
 
+import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
@@ -14,7 +15,7 @@ class TermsAndConditons extends StatelessWidget {
     return Expanded(
       child: Text.rich(
         TextSpan(
-          text: "من خلال إنشاء حساب، فإنك توافق على ",
+          text: AppStrings.bySigningUp,
           style: getSemiBoldStyle(
             fontFamily: FontConstant.cairo,
             fontSize: FontSize.size14,
@@ -22,7 +23,7 @@ class TermsAndConditons extends StatelessWidget {
           ),
           children: [
             TextSpan(
-              text: "الشروط والأحكام الخاصة بنا",
+              text: AppStrings.termsOfService,
               style: getSemiBoldStyle(
                 fontFamily: FontConstant.cairo,
                 fontSize: FontSize.size14,

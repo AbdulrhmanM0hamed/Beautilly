@@ -11,8 +11,8 @@ class SpecialtiesView extends StatelessWidget {
         child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.only(left: 8.0),
+              return const Padding(
+                padding: EdgeInsets.only(left: 8.0),
                 child: OfferCard(),
               );
             },

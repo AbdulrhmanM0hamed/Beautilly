@@ -14,6 +14,11 @@ class WelcomeTextWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        Image.asset(
+          AppAssets.logoWithoutName,
+          height: 50,
+          width: 50,
+        ),
         RichText(
           text: TextSpan(
             text: 'مرحبا, ',
@@ -34,7 +39,7 @@ class WelcomeTextWidget extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        CustomSearch(),
+        const CustomSearch(),
       ],
     );
   }
@@ -50,7 +55,7 @@ class CustomSearch extends StatelessWidget {
     return Container(
       height: 48,
       width: 48,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.primary,
       ),

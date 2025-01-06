@@ -16,6 +16,6 @@ class SpecialtiesView extends StatelessWidget {
                 child: OfferCard(),
               );
             },
-            itemCount: 10));
+            itemCount: 5));
   }
 }

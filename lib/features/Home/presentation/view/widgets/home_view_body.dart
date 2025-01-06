@@ -14,67 +14,69 @@ class HomeViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 16.0,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const WelcomeTextWidget(),
-            const SizedBox(height: 4.0),
-            Text(
-              'ابدأ تجربة البحث عن الذى تريده, وسوف نقدم لك ما يناسبك',
-              style: getMediumStyle(
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16.0,
+            vertical: 16.0,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const WelcomeTextWidget(),
+              const SizedBox(height: 4.0),
+              Text(
+                'ابدأ تجربة البحث عن الذى تريده, وسوف نقدم لك ما يناسبك',
+                style: getMediumStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size14,
+                    color: AppColors.textSecondary),
+              ),
+              const SizedBox(height: 16.0),
+              const SpecialtiesView(),
+              const SizedBox(height: 16.0),
+              Text(
+                'ما الذى تريدى ان تفعليه؟',
+                style: getBoldStyle(
                   fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size14,
-                  color: AppColors.textSecondary),
-            ),
-            const SizedBox(height: 16.0),
-            const SpecialtiesView(),
-            const SizedBox(height: 16.0),
-            Text(
-              'ما الذى تريدى ان تفعليه؟',
-              style: getBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size16,
+                  fontSize: FontSize.size16,
+                ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            const ServicesGridView(),
-            const SizedBox(height: 24.0),
-            Text(
-              'أشهر صالونات التجميل',
-              style: getBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size16,
+              const SizedBox(height: 16.0),
+              const ServicesGridView(),
+              const SizedBox(height: 24.0),
+              Text(
+                'أشهر صالونات التجميل',
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size16,
+                ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            const PopularSalonsListView(),
-            const SizedBox(height: 16.0),
-            Text(
-              'الأكثر بحثاً',
-              style: getBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size16,
+              const SizedBox(height: 16.0),
+              const PopularSalonsListView(),
+             
+              Text(
+                'الأكثر بحثاً',
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size16,
+                ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            const MostSearchInterest(),
-            const SizedBox(height: 24.0),
-            Text(
-              'دور الأزياء والتفصيل',
-              style: getBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size16,
+              const SizedBox(height: 16.0),
+              const MostSearchInterest(),
+              const SizedBox(height: 20.0),
+              Text(
+                'دور الأزياء والتفصيل',
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size16,
+                ),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            const FashionHousesListView(),
-          ],
+              const SizedBox(height: 16.0),
+              const FashionHousesListView(),
+            ],
+          ),
         ),
       ),
     );

@@ -49,7 +49,12 @@ class AppAssets {
   static const String nailsIcon = '$_iconsPath/nailssvg.svg';
   static const String spaIcon = '$_iconsPath/spa.svg';
   static const String waxingIcon = '$_iconsPath/waxing.svg';
-   static const String dressVector = '$_iconsPath/Dress Vector.svg';
+  static const String dressVector = '$_iconsPath/Dress Vector.svg';
+  static const String detect_location = '$_iconsPath/detect_location.svg';
+  static const String direction = '$_iconsPath/direction.svg';
+  static const String filter = '$_iconsPath/filter.svg';
+  static const String Location = '$_iconsPath/Location.svg';
+  static const String Star = '$_iconsPath/Star.svg';
 
   // Bottom Navigation Icons
   static const String homeIconBottom = '$_iconsPath/Home.svg';

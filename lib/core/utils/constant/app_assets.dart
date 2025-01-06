@@ -21,7 +21,8 @@ class AppAssets {
   // Auth
   static const String loginBg = '$_imagesPath/login_bg.png';
   static const String registerBg = '$_imagesPath/register_bg.png';
-  
+  static const String googleIcon = '$_iconsPath/google_icon.svg';
+
   // Placeholder Images
   static const String placeholderProfile = '$_imagesPath/placeholder_profile.png';
   static const String placeholderSalon = '$_imagesPath/placeholder_salon.png';
@@ -34,13 +35,27 @@ class AppAssets {
   static const String profileIcon = '$_iconsPath/profile.svg';
   static const String favoriteIcon = '$_iconsPath/favorite.svg';
   static const String locationIcon = '$_iconsPath/location.svg';
-  static const String calendarIcon = '$_iconsPath/calendar.svg';
   static const String clockIcon = '$_iconsPath/clock.svg';
   static const String starIcon = '$_iconsPath/star.svg';
   static const String menuIcon = '$_iconsPath/menu.svg';
   static const String filterIcon = '$_iconsPath/filter.svg';
   static const String sortIcon = '$_iconsPath/sort.svg';
-  
+  static const String messageIcon = '$_iconsPath/message.svg';
+  static const String makeupIcon = '$_iconsPath/Makup.svg';
+  static const String coloringIcon = '$_iconsPath/coloring.svg';
+  static const String facialIcon = '$_iconsPath/facial.svg';
+  static const String hairCutIcon = '$_iconsPath/hair_cut.svg';
+  static const String nailsIcon = '$_iconsPath/nailssvg.svg';
+  static const String spaIcon = '$_iconsPath/spa.svg';
+  static const String waxingIcon = '$_iconsPath/waxing.svg';
+
+  // Bottom Navigation Icons
+  static const String homeIconBottom = '$_iconsPath/Home.svg';
+  static const String discoveryIcon = '$_iconsPath/Discovery.svg';
+  static const String calendarIconBottom = '$_iconsPath/Calendar.svg';
+  static const String profileIconBottom = '$_iconsPath/Profile.svg';
+  static const String subtractIcon = '$_iconsPath/subtract.svg';
+
   // Lottie Animations
   static const String loadingAnimation = '$_lottiePath/loading.json';
   static const String successAnimation = '$_lottiePath/success.json';

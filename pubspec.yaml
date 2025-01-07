@@ -28,9 +28,12 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
     - assets/images/
     - assets/fonts/
     - assets/icons/
+    - assets/map_style_light.json
+    - assets/map_style_dark.json
 
   fonts:
     - family: Cairo

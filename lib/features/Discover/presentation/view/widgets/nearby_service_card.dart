@@ -15,19 +15,67 @@ class NearbyServiceCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(12),
-      
       ),
       child: Row(
         children: [
-          ClipRRect(
-            borderRadius:
-                const BorderRadius.horizontal(right: Radius.circular(12)),
-            child: Image.network(
-              'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?q=80&w=2036&auto=format&fit=crop',
-              width: 120,
-              height: 120,
-              fit: BoxFit.cover,
-            ),
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.horizontal(right: Radius.circular(8)),
+                child: Image.network(
+                  'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?q=80&w=2036&auto=format&fit=crop',
+                  width: 120,
+                  height: 120,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                bottom: 10,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: const BorderRadius.horizontal(
+                      left: Radius.circular(16),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(
+                        AppAssets.Location,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.accent,
+                          BlendMode.srcIn,
+                        ),
+                        width: 12,
+                        height: 12,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '1.2 كم',
+                        style: getBoldStyle(
+                          color: AppColors.accent,
+                          fontSize: FontSize.size12,
+                          fontFamily: FontConstant.cairo,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
           Expanded(
             child: Padding(
@@ -48,41 +96,8 @@ class NearbyServiceCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              AppAssets.Location,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.primary,
-                                BlendMode.srcIn,
-                              ),
-                              width: 12,
-                              height: 12,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '1.2 كم',
-                              style: getMediumStyle(
-                                color: AppColors.primary,
-                                fontSize: FontSize.size10,
-                                fontFamily: FontConstant.cairo,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
                     ],
                   ),
-                  const SizedBox(height: 8),
                   Row(
                     children: [
                       SvgPicture.asset(

@@ -46,6 +46,7 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           ),
           markers: _markers,
           myLocationEnabled: true,
+        
           myLocationButtonEnabled: false,
           zoomControlsEnabled: false,
         ),

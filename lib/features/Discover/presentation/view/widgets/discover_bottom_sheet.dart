@@ -1,6 +1,5 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Discover/presentation/view/widgets/nearby_service_card.dart';
 import 'package:flutter/material.dart';
 
@@ -52,19 +51,6 @@ class DiscoverBottomSheet extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                TextButton(
-                  onPressed: () {
-                    // Show filter options
-                  },
-                  child: Text(
-                    'تصفية',
-                    style: getMediumStyle(
-                      color: AppColors.primary,
-                      fontSize: FontSize.size14,
-                      fontFamily: FontConstant.cairo,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

@@ -20,9 +20,25 @@ class _HomeViewState extends State<HomeView> {
   final List<Widget> _pages = [
     const HomeViewBody(),
     const DiscoverView(),
-    const Scaffold(body: Center(child: Text('الحجوزات'))),
-    const Scaffold(body: Center(child: Text('الرسائل'))),
-    const Scaffold(body: Center(child: Text('حسابي'))),
+    Scaffold(
+      body: Center(
+          child: Text('الحجوزات',
+              style: getMediumStyle(
+                fontFamily: FontConstant.cairo,
+              ))),
+    ),
+    Scaffold(
+        body: Center(
+            child: Text('الرسائل',
+                style: getMediumStyle(
+                  fontFamily: FontConstant.cairo,
+                )))),
+    Scaffold(
+        body: Center(
+            child: Text('حسابي',
+                style: getMediumStyle(
+                  fontFamily: FontConstant.cairo,
+                )))),
   ];
 
   @override

@@ -5,6 +5,7 @@ import 'package:beautilly/features/Discover/presentation/view/widgets/discover_l
 import 'package:beautilly/features/Discover/presentation/view/widgets/discover_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:beautilly/core/utils/animations/dot_spinner.dart';
 
 class DiscoverViewBody extends StatefulWidget {
   const DiscoverViewBody({super.key});
@@ -20,16 +21,22 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
   bool _isMapLoading = true;
 
   void _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      mapController = controller;
-      _markers.add(
-        const Marker(
-          markerId: MarkerId('current_location'),
-          position: LatLng(24.7136, 46.6753),
-          infoWindow: InfoWindow(title: 'موقعك الحالي'),
-        ),
-      );
-      _isMapLoading = false;
+    mapController = controller;
+    _markers.add(
+      const Marker(
+        markerId: MarkerId('current_location'),
+        position: LatLng(24.7136, 46.6753),
+        infoWindow: InfoWindow(title: 'موقعك الحالي'),
+      ),
+    );
+    
+    // Delay hiding the loading indicator for better UX
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() {
+          _isMapLoading = false;
+        });
+      }
     });
   }
 
@@ -56,13 +63,14 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           Container(
             color: Theme.of(context).scaffoldBackgroundColor,
             child: const Center(
-              child: CircularProgressIndicator(
+              child: DotSpinner(
+                size: 50.0,
                 color: AppColors.primary,
-                strokeWidth: 3,
+                speed: Duration(milliseconds: 900),
               ),
             ),
           ),
-
+       
         // Search Bar
         const Positioned(
           top: 50,

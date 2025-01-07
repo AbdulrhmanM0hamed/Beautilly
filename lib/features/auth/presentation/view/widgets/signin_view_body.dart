@@ -7,6 +7,7 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/validators/form_validators.dart';
+import 'package:beautilly/features/Home/presentation/view/home_view.dart';
 import 'package:beautilly/features/auth/presentation/view/forget_password.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/custom_divider.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/dont_have_account.dart';
@@ -33,6 +34,11 @@ class _SigninViewBodyState extends State<SigninViewBody> {
 
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+      Navigator.pushNamed(
+        context,
+        HomeView.routeName,
+      );
+
       // TODO: Implement sign in logic
     }
   }
@@ -96,7 +102,12 @@ class _SigninViewBodyState extends State<SigninViewBody> {
                 duration: const Duration(milliseconds: 1100),
                 child: CustomButton(
                   text: AppStrings.login,
-                  onPressed: _submitForm,
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      HomeView.routeName,
+                    );
+                  },
                 ),
               ),
               SizedBox(height: size.height * 0.02),

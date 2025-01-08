@@ -100,12 +100,14 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           myLocationButtonEnabled: false,
           zoomControlsEnabled: false,
           mapToolbarEnabled: false,
-          compassEnabled: false,
+          compassEnabled: true,
           buildingsEnabled: false,
           mapType: MapType.normal,
-          tiltGesturesEnabled: true,
+          tiltGesturesEnabled: false,
           rotateGesturesEnabled: true,
+          scrollGesturesEnabled: true,
           zoomGesturesEnabled: true,
+          minMaxZoomPreference: const MinMaxZoomPreference(3, 20),
           padding: const EdgeInsets.only(bottom: 100), // Add padding for bottom sheet
         ),
 

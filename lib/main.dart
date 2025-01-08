@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       onGenerateRoute: onGenratedRoutes,
-      initialRoute: SplashView.routeName,
+      initialRoute: HomeView.routeName,
     );
   }
 }

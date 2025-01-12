@@ -20,9 +20,9 @@ class DiscoverSearchBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withOpacity(0.2),
                   blurRadius: 10,
-                  offset: const Offset(0, 5),
+                  offset: const Offset(-2, 5),
                 ),
               ],
             ),
@@ -78,9 +78,9 @@ class DiscoverSearchBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withOpacity(0.2),
                 blurRadius: 10,
-                offset: const Offset(0, 5),
+                offset: const Offset(-2, 5),
               ),
             ],
           ),

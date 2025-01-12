@@ -36,7 +36,7 @@ class CartOfBooking extends StatelessWidget {
               const SizedBox(height: 12),
 
               // Salon Name
-              Text('روز للأزياء الراقية',
+              Text('صالون الاناقة',
                   style: getBoldStyle(
                       fontFamily: FontConstant.cairo,
                       fontSize: FontSize.size20)),

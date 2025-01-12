@@ -46,7 +46,9 @@ class SalonReviewsSection extends StatelessWidget {
               ),
             ],
           ),
-
+          const SizedBox(
+            height: 16,
+          ),
           // Rating Summary
           Container(
             padding: const EdgeInsets.all(16),
@@ -112,8 +114,6 @@ class SalonReviewsSection extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 16),
-
           // Reviews List
           ListView.builder(
             shrinkWrap: true,
@@ -172,9 +172,9 @@ class SalonReviewsSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: AppColors.grey.withOpacity(.1),
             spreadRadius: 1,
-            blurRadius: 5,
+            blurRadius: 1,
           ),
         ],
       ),

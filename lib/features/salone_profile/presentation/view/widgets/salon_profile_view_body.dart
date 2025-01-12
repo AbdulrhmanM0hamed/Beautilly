@@ -1,5 +1,4 @@
 import 'package:beautilly/core/utils/common/arrow_back_widget.dart';
-import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_gallery_grid.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_info_card.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_services_section.dart';
@@ -60,7 +59,6 @@ class SalonProfileViewBody extends StatelessWidget {
             ),
           ],
         ),
-        // شريط الحجز الثابت في الأسفل
         const Positioned(
           left: 0,
           right: 0,

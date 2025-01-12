@@ -11,7 +11,7 @@ class SalonTeamSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Our Team',
+            'فريق العمل ',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -43,7 +43,7 @@ class SalonTeamSection extends StatelessWidget {
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
             spreadRadius: 1,
-            blurRadius: 5,
+            blurRadius: 2,
           ),
         ],
       ),

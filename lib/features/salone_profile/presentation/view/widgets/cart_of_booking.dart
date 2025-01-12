@@ -96,12 +96,12 @@ class CartOfBooking extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.secondary.withOpacity(0.2),
+        color: AppColors.secondary.withOpacity(0.3),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         label,
-        style: getMediumStyle(
+        style: getBoldStyle(
             fontFamily: FontConstant.cairo, color: AppColors.secondary),
       ),
     );

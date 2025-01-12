@@ -11,7 +11,7 @@ class AppColors {
 
   // Text Colors
   static const Color textPrimary = Color(0xFF263643);
-  static const Color textSecondary = Color(0xFF6C757D);
+  static const Color textSecondary = Color.fromARGB(255, 113, 119, 126);
   static const Color textLight = Colors.white;
   static const Color textLight70 = Colors.white60;
   static const Color black = Color.fromARGB(255, 0, 0, 0);

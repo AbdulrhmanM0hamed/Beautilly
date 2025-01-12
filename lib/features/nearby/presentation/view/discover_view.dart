@@ -1,4 +1,4 @@
-import 'package:beautilly/features/Discover/presentation/view/widgets/discover_view_body.dart';
+import 'package:beautilly/features/nearby/presentation/view/widgets/discover_view_body.dart';
 import 'package:flutter/material.dart';
 
 class DiscoverView extends StatelessWidget {

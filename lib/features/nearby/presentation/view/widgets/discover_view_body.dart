@@ -1,9 +1,9 @@
 import 'package:beautilly/core/utils/animations/dot_spinner.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
-import 'package:beautilly/features/Discover/presentation/view/widgets/discover_bottom_sheet.dart';
-import 'package:beautilly/features/Discover/presentation/view/widgets/discover_filter_chips.dart';
-import 'package:beautilly/features/Discover/presentation/view/widgets/discover_location_button.dart';
-import 'package:beautilly/features/Discover/presentation/view/widgets/discover_search_bar.dart';
+import 'package:beautilly/features/nearby/presentation/view/widgets/discover_bottom_sheet.dart';
+import 'package:beautilly/features/nearby/presentation/view/widgets/discover_filter_chips.dart';
+import 'package:beautilly/features/nearby/presentation/view/widgets/discover_location_button.dart';
+import 'package:beautilly/features/nearby/presentation/view/widgets/discover_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -38,9 +38,10 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
   Future<void> _loadMapStyle() async {
     try {
       final isDark = Theme.of(context).brightness == Brightness.dark;
-      final stylePath = isDark ? 'assets/map_style_dark.json' : 'assets/map_style_light.json';
+      final stylePath =
+          isDark ? 'assets/map_style_dark.json' : 'assets/map_style_light.json';
       final style = await rootBundle.loadString(stylePath);
-      
+
       setState(() {
         _mapStyle = style;
       });
@@ -56,7 +57,7 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
 
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
-    
+
     // Apply custom map style
     if (_mapStyle != null) {
       await controller.setMapStyle(_mapStyle);
@@ -69,7 +70,7 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
         infoWindow: InfoWindow(title: 'موقعك الحالي'),
       ),
     );
-    
+
     // Delay hiding the loading indicator for better UX
     Future.delayed(const Duration(seconds: 2), () {
       if (mounted) {
@@ -82,8 +83,6 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
     return Stack(
       children: [
         // Google Map
@@ -108,7 +107,8 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           scrollGesturesEnabled: true,
           zoomGesturesEnabled: true,
           minMaxZoomPreference: const MinMaxZoomPreference(3, 20),
-          padding: const EdgeInsets.only(bottom: 100), // Add padding for bottom sheet
+          padding: const EdgeInsets.only(
+              bottom: 100), // Add padding for bottom sheet
         ),
 
         // Loading Indicator
@@ -123,7 +123,7 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
               ),
             ),
           ),
-       
+
         // Search Bar
         const Positioned(
           top: 50,

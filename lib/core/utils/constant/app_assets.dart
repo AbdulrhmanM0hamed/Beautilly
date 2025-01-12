@@ -55,6 +55,7 @@ class AppAssets {
   static const String filter = '$_iconsPath/filter.svg';
   static const String Location = '$_iconsPath/Location.svg';
   static const String Star = '$_iconsPath/Star.svg';
+  static const String map = '$_iconsPath/map.svg';
 
   // Bottom Navigation Icons
   static const String homeIconBottom = '$_iconsPath/Home.svg';

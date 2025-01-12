@@ -44,7 +44,6 @@ class CustomButton extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-      
       ),
       child: MaterialButton(
         onPressed: isLoading ? null : onPressed,

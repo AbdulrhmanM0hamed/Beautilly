@@ -1,6 +1,6 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/features/Discover/presentation/view/widgets/nearby_service_card.dart';
+import 'package:beautilly/features/nearby/presentation/view/widgets/nearby_service_card.dart';
 import 'package:flutter/material.dart';
 
 class DiscoverBottomSheet extends StatelessWidget {

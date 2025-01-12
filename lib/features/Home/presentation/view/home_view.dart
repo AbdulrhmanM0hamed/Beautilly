@@ -2,8 +2,8 @@ import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
-import 'package:beautilly/features/Discover/presentation/view/discover_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/home_view_body.dart';
+import 'package:beautilly/features/nearby/presentation/view/discover_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

@@ -31,7 +31,7 @@ class WelcomeTextWidget extends StatelessWidget {
             ),
             children: [
               TextSpan(
-                text: 'عبدو ',
+                text: 'ياسمين ',
                 style: getBoldStyle(
                   fontFamily: FontConstant.cairo,
                   fontSize: FontSize.size22,

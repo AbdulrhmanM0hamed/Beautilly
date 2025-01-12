@@ -17,7 +17,7 @@ class SalonGalleryGrid extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Gallery',
+                'معرض الصور',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

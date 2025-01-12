@@ -1,3 +1,6 @@
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SalonInfoCard extends StatelessWidget {
@@ -19,40 +22,33 @@ class SalonInfoCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // About Section
-          const Text(
-            'About',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Plush Beauty Lounge is a premium beauty salon offering a wide range of services including hair styling, facial treatments, nail care, and more.',
-            style: TextStyle(
-              color: Colors.grey,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // قسم "حول"
+        Text(
+          'من نحن',
+          style: getBoldStyle(
+              fontFamily: FontConstant.cairo, fontSize: FontSize.size18),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'بلش بيوتي لاونج هو صالون تجميل فاخر يقدم مجموعة واسعة من الخدمات بما في ذلك تصفيف الشعر، علاجات الوجه، العناية بالأظافر والمزيد.',
+          style: getMediumStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size14,
+              color: AppColors.textSecondary),
+        ),
+        const SizedBox(height: 16),
 
-          // Working Hours
-          const Text(
-            'Working Hours',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          _buildWorkingHourRow('Sunday - Thursday', '10:00 AM - 10:00 PM'),
-          _buildWorkingHourRow('Friday - Saturday', '12:00 PM - 11:00 PM'),
-        ],
-      ),
+        // ساعات العمل
+        Text(
+          'ساعات العمل',
+          style: getBoldStyle(
+              fontFamily: FontConstant.cairo, fontSize: FontSize.size18),
+        ),
+        const SizedBox(height: 8),
+        _buildWorkingHourRow('الأحد - الخميس', '10:00 صباحًا - 10:00 مساءً'),
+        _buildWorkingHourRow('الجمعة - السبت', '12:00 ظهرًا - 11:00 مساءً'),
+      ]),
     );
   }
 
@@ -64,11 +60,17 @@ class SalonInfoCard extends StatelessWidget {
         children: [
           Text(
             days,
-            style: const TextStyle(color: Colors.grey),
+            style: getMediumStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size14,
+                color: AppColors.textSecondary),
           ),
           Text(
             hours,
-            style: const TextStyle(fontWeight: FontWeight.w500),
+            style: getMediumStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size14,
+                color: AppColors.textSecondary),
           ),
         ],
       ),

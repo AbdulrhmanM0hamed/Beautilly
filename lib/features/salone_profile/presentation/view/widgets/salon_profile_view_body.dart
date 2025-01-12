@@ -4,7 +4,9 @@ import 'package:beautilly/features/salone_profile/presentation/view/widgets/salo
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_info_card.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_services_section.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_team_section.dart';
+import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_reviews_section.dart';
 import 'package:flutter/material.dart';
+import 'package:beautilly/features/salone_profile/presentation/view/widgets/booking_bottom_bar.dart';
 
 class SalonProfileViewBody extends StatelessWidget {
   const SalonProfileViewBody({
@@ -13,50 +15,60 @@ class SalonProfileViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        // Salon Image Header
-        SliverAppBar(
-          expandedHeight: 300,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
-            background: Image.asset(
-              'assets/images/salon_image.jpg',
-              fit: BoxFit.cover,
+    return Stack(
+      children: [
+        CustomScrollView(
+          slivers: [
+            // Salon Image Header
+            SliverAppBar(
+              expandedHeight: 300,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                background: Image.asset(
+                  'assets/images/salon_image.jpg',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              leading: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: ArrowBackWidget(),
+              ),
             ),
-          ),
-          leading: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: ArrowBackWidget(),
-          ),
-        ),
 
-        // Salon Details
-        SliverToBoxAdapter(
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: const Column(
-              children: [
-                SizedBox(
-                  height: 16,
+            // Salon Details
+            SliverToBoxAdapter(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(20)),
                 ),
-                SalonInfoCard(),
-                SalonServicesSection(),
-                SalonGalleryGrid(),
-                SalonTeamSection(),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: CustomButton(text: "احجزى الان"),
+                child: const Column(
+                  children: [
+                    SizedBox(
+                      height: 16,
+                    ),
+                    SalonInfoCard(),
+                    SalonServicesSection(),
+                    SalonGalleryGrid(),
+                    SalonTeamSection(),
+                    SalonReviewsSection(),
+                    SizedBox(height: 80),
+                  ],
                 ),
-                SizedBox(
-                  height: 20,
-                )
-              ],
+              ),
             ),
+          ],
+        ),
+        // شريط الحجز الثابت في الأسفل
+        const Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: BookingBottomBar(
+            servicesCount: 1,
+            total: 40,
+            discount: 50,
           ),
         ),
       ],

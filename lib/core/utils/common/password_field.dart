@@ -1,5 +1,4 @@
 import 'package:beautilly/core/utils/common/custom_text_field.dart';
-import 'package:beautilly/core/utils/validators/form_validators.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -8,8 +7,9 @@ class PasswordField extends StatefulWidget {
     super.key,
     this.onSaved,
     required this.hintText,
+    this.validator,
   });
-
+  final String? Function(String?)? validator;
   final void Function(String?)? onSaved;
   final String hintText;
 
@@ -41,9 +41,8 @@ class _PasswordFieldState extends State<PasswordField> {
         ),
       ),
       // تمرير onSaved
-      
 
-      validator: FormValidators.validatePassword,
+      validator: widget.validator,
     );
   }
 }

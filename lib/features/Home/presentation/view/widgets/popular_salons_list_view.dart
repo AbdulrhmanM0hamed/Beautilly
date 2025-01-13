@@ -8,7 +8,7 @@ class PopularSalonsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 260,
+      height: 245,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: AppSalons.popularSalons.length,

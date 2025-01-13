@@ -61,8 +61,8 @@ class BeautyServiceCard extends StatelessWidget {
                   right: 8,
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(

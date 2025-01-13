@@ -3,7 +3,6 @@ import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_quick_view.dart';
 import 'package:flutter/material.dart';
-import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 
 class BeautyServiceCard extends StatelessWidget {
   final String image;

@@ -8,6 +8,7 @@ import 'package:beautilly/features/Home/presentation/view/widgets/welcome_text_w
 import 'package:beautilly/features/Home/presentation/view/widgets/popular_salons_list_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/fashion_houses_list_view.dart';
 import 'package:flutter/material.dart';
+import 'package:beautilly/features/Home/presentation/view/widgets/statistics_section.dart';
 
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key});
@@ -36,6 +37,8 @@ class HomeViewBody extends StatelessWidget {
               const SizedBox(height: 16.0),
               const SpecialtiesView(),
               const SizedBox(height: 16.0),
+              const StatisticsSection(),
+              const SizedBox(height: 16.0),
               Text(
                 'ما الذى تريدى ان تفعليه؟',
                 style: getBoldStyle(
@@ -55,7 +58,6 @@ class HomeViewBody extends StatelessWidget {
               ),
               const SizedBox(height: 16.0),
               const PopularSalonsListView(),
-             
               Text(
                 'الأكثر بحثاً',
                 style: getBoldStyle(

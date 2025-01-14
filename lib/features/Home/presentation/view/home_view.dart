@@ -78,7 +78,7 @@ class _HomeViewState extends State<HomeView> {
               _buildNavItem(AppAssets.homeIconBottom, 'الرئيسية'),
               _buildNavItem(AppAssets.Location, 'الأقرب'),
               _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
-              _buildNavItem(AppAssets.subtractIcon, 'الرسائل'),
+              _buildNavItem(AppAssets.tfsel, 'طلبات'),
               _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
             ],
           ),
@@ -113,7 +113,7 @@ class _HomeViewState extends State<HomeView> {
         return 1;
       case 'الحجوزات':
         return 2;
-      case 'الرسائل':
+      case 'طلبات':
         return 3;
       case 'حسابي':
         return 4;

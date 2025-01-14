@@ -14,6 +14,7 @@ class TailoringRequestsView extends StatelessWidget {
     return Scaffold(
       appBar: const CustomAppBar(
         title: "طلبات التفصيل",
+        automaticallyImplyLeading: false,
       ),
       body: const TailoringRequestsViewBody(),
       floatingActionButton: FloatingActionButton(

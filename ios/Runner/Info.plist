@@ -51,5 +51,9 @@
 	<string>نحتاج إلى موقعك لعرض الخدمات القريبة منك</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>نحتاج إلى موقعك لعرض الخدمات القريبة منك</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>نحتاج الوصول للصور لاختيار صورة التصميم</string>
+	<key>NSCameraUsageDescription</key>
+	<string>نحتاج الوصول للكاميرا لالتقاط صورة التصميم</string>
 </dict>
 </plist>

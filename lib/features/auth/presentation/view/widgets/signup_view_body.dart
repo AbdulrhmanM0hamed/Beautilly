@@ -91,20 +91,20 @@ class _SignupViewBodyState extends State<SignupViewBody> {
             children: [
               CustomTextField(
                 onSaved: (value) => userName = _normalizeSpaces(value!),
-                hint: AppStrings.name,
+                label: AppStrings.name,
                 suffix: const Icon(Icons.person),
                 validator: FormValidators.validateName,
               ),
               SizedBox(height: screenHeight * 0.02),
               CustomTextField(
                 onSaved: (value) => email = value!,
-                hint: AppStrings.email,
+                label: AppStrings.email,
                 suffix: const Icon(Icons.email),
                 validator: FormValidators.validateEmail,
               ),
               SizedBox(height: screenHeight * 0.02),
               CustomTextField(
-                hint: AppStrings.phone,
+                label: AppStrings.phone,
                 suffix: const Icon(Icons.phone),
                 validator: FormValidators.validatePhone,
                 onSaved: (value) => phoneNumber = value!,

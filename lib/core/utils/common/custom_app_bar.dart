@@ -29,15 +29,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: title != null
-          ? Text(
-              title!,
-              style: getBoldStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: 20,
-              ),
-            )
-          : null,
+      title: Text(
+        title!,
+        style: getBoldStyle(
+          fontFamily: FontConstant.cairo,
+          fontSize: 20,
+          color: titleColor ?? Theme.of(context).textTheme.titleLarge?.color,
+        ),
+      ),
       centerTitle: centerTitle,
       actions: actions,
       leading: leading ??

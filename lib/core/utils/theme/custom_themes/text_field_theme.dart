@@ -6,8 +6,8 @@ class TTextFormFieldTheme {
 
   static InputDecorationTheme lightInputDecorationTheme = InputDecorationTheme(
     errorMaxLines: 3,
-    prefixIconColor: AppColors.secondary,
-    suffixIconColor: AppColors.secondary,
+    prefixIconColor: AppColors.grey,
+    suffixIconColor: AppColors.grey,
     labelStyle: const TextStyle(color: AppColors.secondary),
     hintStyle: const TextStyle(color: Colors.grey),
     errorStyle: const TextStyle(color: AppColors.error),

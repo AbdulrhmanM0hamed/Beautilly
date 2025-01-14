@@ -62,7 +62,7 @@ class _SigninViewBodyState extends State<SigninViewBody> {
               CustomAnimations.slideFromTop(
                 duration: const Duration(milliseconds: 800),
                 child: CustomTextField(
-                  hint: AppStrings.email,
+                  label: AppStrings.email,
                   keyboardType: TextInputType.emailAddress,
                   prefix: const Icon(Icons.email),
                   validator: FormValidators.validateEmail,

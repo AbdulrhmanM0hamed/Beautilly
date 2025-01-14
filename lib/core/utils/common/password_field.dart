@@ -27,7 +27,7 @@ class _PasswordFieldState extends State<PasswordField> {
       prefix: const Icon(
         Icons.lock,
       ),
-      hint: widget.hintText,
+      label: widget.hintText,
       suffix: GestureDetector(
         onTap: () {
           setState(() {

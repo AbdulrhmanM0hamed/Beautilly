@@ -7,7 +7,6 @@ import 'package:beautilly/features/auth/presentation/view/widgets/custom_check_b
 import 'package:beautilly/features/auth/presentation/view/widgets/hava_an_account.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/terms_and_condition.dart';
 import 'package:flutter/material.dart';
-import 'package:beautilly/core/utils/common/location_dropdown.dart';
 
 class SignupViewBody extends StatefulWidget {
   const SignupViewBody({super.key});

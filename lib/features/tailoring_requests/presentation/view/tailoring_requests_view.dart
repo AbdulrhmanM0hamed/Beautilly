@@ -1,6 +1,4 @@
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
-import 'package:beautilly/core/utils/constant/font_manger.dart';
-import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/features/tailoring_requests/presentation/view/widgets/tailoring_requests_view_body.dart';

@@ -13,6 +13,7 @@ import 'package:beautilly/features/auth/presentation/cubit/auth_state.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/dont_have_account.dart';
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
+import 'package:beautilly/core/services/service_locator.dart';
 
 class SigninViewBodyBlocConsumer extends StatefulWidget {
   const SigninViewBodyBlocConsumer({super.key});
@@ -39,7 +40,7 @@ class _SigninViewBodyBlocConsumerState
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthCubit(AuthRepositoryImpl()),
+      create: (context) => getIt<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {

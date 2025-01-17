@@ -6,9 +6,9 @@ import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import '../../../../../core/utils/animations/custom_progress_indcator.dart';
 import '../../../../../core/utils/widgets/custom_snackbar.dart';
-import '../../../data/repositories/statistics_repository_impl.dart';
 import '../../cubit/statistics_cubit.dart';
 import '../../cubit/statistics_state.dart';
+import 'package:beautilly/core/services/service_locator.dart';
 
 class StatisticsSection extends StatelessWidget {
   const StatisticsSection({super.key});
@@ -16,8 +16,7 @@ class StatisticsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          StatisticsCubit(StatisticsRepositoryImpl())..getStatistics(),
+      create: (context) => getIt<StatisticsCubit>()..getStatistics(),
       child: BlocConsumer<StatisticsCubit, StatisticsState>(
         listener: (context, state) {
           if (state is StatisticsError) {

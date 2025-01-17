@@ -22,7 +22,7 @@ Future<void> setupServiceLocator() async {
   );
 
   getIt.registerLazySingleton<StatisticsRepository>(
-    () => StatisticsRepositoryImpl(getIt()),
+    () => StatisticsRepositoryImpl(),
   );
 
   // Cubits

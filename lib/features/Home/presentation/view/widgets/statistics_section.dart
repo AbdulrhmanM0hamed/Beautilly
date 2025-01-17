@@ -1,3 +1,4 @@
+import 'package:beautilly/core/utils/shimmer/statistics_shimmer.dart';
 import 'package:beautilly/features/Home/data/models/statistics_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import '../../../../../core/utils/widgets/custom_snackbar.dart';
 import '../../cubit/statistics_cubit.dart';
 import '../../cubit/statistics_state.dart';
 import 'package:beautilly/core/services/service_locator.dart';
+import 'package:shimmer/shimmer.dart';
 
 class StatisticsSection extends StatelessWidget {
   const StatisticsSection({super.key});
@@ -28,11 +30,19 @@ class StatisticsSection extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is StatisticsLoading) {
-            return const Center(
-              child: CustomProgressIndcator(
-                size: 40,
-                color: AppColors.primary,
-              ),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'إحصائيات دلالك',
+                  style: getBoldStyle(
+                    fontSize: FontSize.size20,
+                    fontFamily: FontConstant.cairo,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                StatisticsShimmer(),
+              ],
             );
           }
 
@@ -62,6 +72,8 @@ class StatisticsSection extends StatelessWidget {
     );
   }
 }
+
+
 
 class _StatisticsGrid extends StatelessWidget {
   final StatisticsModel statistics;

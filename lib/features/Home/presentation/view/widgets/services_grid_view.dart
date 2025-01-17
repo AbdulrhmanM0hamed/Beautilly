@@ -40,7 +40,7 @@ class ServiceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.09),
+        color: AppColors.primary.withOpacity(0.12),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(

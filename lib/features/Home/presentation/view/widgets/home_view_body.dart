@@ -36,7 +36,7 @@ class HomeViewBody extends StatelessWidget {
               const SizedBox(height: 16.0),
               const SpecialtiesView(),
               const SizedBox(height: 16.0),
-              const StatisticsSection(),
+               StatisticsSection(),
               const SizedBox(height: 16.0),
               Text(
                 'ما الذى تريدى ان تفعليه؟',

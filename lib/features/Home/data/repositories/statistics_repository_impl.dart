@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:async';
 import 'package:beautilly/core/services/cache/shared_preferences_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
@@ -8,20 +9,16 @@ import '../models/statistics_model.dart';
 import '../../domain/repositories/statistics_repository.dart';
 
 class StatisticsRepositoryImpl implements StatisticsRepository {
-  final SharedPreferencesService _cache;
+  final _statisticsController = StreamController<void>.broadcast();
 
-  StatisticsRepositoryImpl(this._cache);
+  StatisticsRepositoryImpl();
+
+
+  Stream<void> get statisticsStream => _statisticsController.stream;
 
   @override
   Future<Either<Failure, StatisticsModel>> getStatistics() async {
     try {
-      // محاولة جلب البيانات من الكاش أولاً
-      final cachedData = _cache.getStatistics();
-      if (cachedData != null) {
-        return Right(StatisticsModel.fromJson(cachedData));
-      }
-
-      // إذا لم يوجد كاش صالح، نجلب من API
       final response = await http.get(
         Uri.parse(ApiEndpoints.statistics),
         headers: {
@@ -29,22 +26,20 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
         },
       );
 
-      final data = jsonDecode(response.body);
-
-      if (response.statusCode == 200 && data['success'] == true) {
-        // تخزين البيانات الجديدة في الكاش
-        await _cache.cacheStatistics(data['data']);
-        return Right(StatisticsModel.fromJson(data['data']));
-      } else {
-        return const Left(ServerFailure('فشل في تحميل الإحصائيات'));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          return Right(StatisticsModel.fromJson(data['data']));
+        }
       }
+      
+      return const Left(ServerFailure('فشل في تحميل الإحصائيات'));
     } catch (e) {
-      // في حالة الخطأ، نحاول استخدام الكاش إذا وجد
-      final cachedData = _cache.getStatistics();
-      if (cachedData != null) {
-        return Right(StatisticsModel.fromJson(cachedData));
-      }
       return const Left(ServerFailure('حدث خطأ غير متوقع'));
     }
+  }
+
+  void dispose() {
+    _statisticsController.close();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/core/utils/common/custom_text_field.dart';
+import 'package:beautilly/core/utils/common/location_dropdown.dart';
 import 'package:beautilly/core/utils/common/password_field.dart';
 import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/validators/form_validators.dart';
@@ -121,7 +122,7 @@ class _SignupViewBodyState extends State<SignupViewBody> {
                     FormValidators.validateConfirmPassword(value, password),
               ),
               SizedBox(height: screenHeight * 0.02),
-              //     const LocationDropdown(),
+              const LocationDropdown(),
               SizedBox(height: screenHeight * 0.03),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,

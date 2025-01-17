@@ -11,6 +11,7 @@ class TailoringRequest {
   final String description;
   final DateTime createdAt;
   final String status;
+  final bool isMyRequest;
 
   TailoringRequest({
     required this.id,
@@ -25,6 +26,7 @@ class TailoringRequest {
     required this.description,
     required this.createdAt,
     required this.status,
+    this.isMyRequest = false,
   });
 }
 

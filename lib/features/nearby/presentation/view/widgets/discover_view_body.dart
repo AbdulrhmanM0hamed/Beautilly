@@ -1,4 +1,4 @@
-import 'package:beautilly/core/utils/animations/dot_spinner.dart';
+import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/nearby/presentation/view/widgets/location_permission_dialog.dart';
 import 'package:beautilly/features/nearby/presentation/view/widgets/discover_bottom_sheet.dart';
@@ -164,7 +164,7 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           Container(
             color: Theme.of(context).scaffoldBackgroundColor,
             child: const Center(
-              child: DotSpinner(
+              child: CustomProgressIndcator(
                 size: 50.0,
                 color: AppColors.primary,
                 speed: Duration(milliseconds: 900),

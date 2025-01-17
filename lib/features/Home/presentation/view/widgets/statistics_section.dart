@@ -1,34 +1,73 @@
+import 'package:beautilly/features/Home/data/models/statistics_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import '../../../../../core/utils/animations/custom_progress_indcator.dart';
+import '../../../../../core/utils/widgets/custom_snackbar.dart';
+import '../../../data/repositories/statistics_repository_impl.dart';
+import '../../cubit/statistics_cubit.dart';
+import '../../cubit/statistics_state.dart';
 
 class StatisticsSection extends StatelessWidget {
   const StatisticsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'إحصائيات دلالك',
-            style: getBoldStyle(
-              fontSize: FontSize.size20,
-              fontFamily: FontConstant.cairo,
-            ),
-          ),
-          const SizedBox(height: 16),
-          const _StatisticsGrid(),
-        ],
+    return BlocProvider(
+      create: (context) =>
+          StatisticsCubit(StatisticsRepositoryImpl())..getStatistics(),
+      child: BlocConsumer<StatisticsCubit, StatisticsState>(
+        listener: (context, state) {
+          if (state is StatisticsError) {
+            CustomSnackbar.showError(
+              context: context,
+              message: state.message,
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is StatisticsLoading) {
+            return const Center(
+              child: CustomProgressIndcator(
+                size: 40,
+                color: AppColors.primary,
+              ),
+            );
+          }
+
+          if (state is StatisticsLoaded) {
+            final stats = state.statistics;
+            return Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'إحصائيات دلالك',
+                    style: getBoldStyle(
+                      fontSize: FontSize.size20,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _StatisticsGrid(statistics: stats),
+                ],
+              ),
+            );
+          }
+
+          return const SizedBox.shrink();
+        },
       ),
     );
   }
 }
 
 class _StatisticsGrid extends StatelessWidget {
-  const _StatisticsGrid();
+  final StatisticsModel statistics;
+
+  const _StatisticsGrid({required this.statistics});
 
   @override
   Widget build(BuildContext context) {
@@ -39,28 +78,28 @@ class _StatisticsGrid extends StatelessWidget {
       mainAxisSpacing: 12,
       crossAxisSpacing: 12,
       childAspectRatio: 1.5,
-      children: const [
+      children: [
         StatisticCard(
           title: 'عميل سعيد',
-          value: 15000,
+          value: statistics.happyClients,
           icon: Icons.people_outline,
           color: AppColors.primary,
         ),
         StatisticCard(
           title: 'خدمة متنوعة',
-          value: 200,
+          value: statistics.services,
           icon: Icons.spa_outlined,
           color: AppColors.secondary,
         ),
         StatisticCard(
           title: 'دار أزياء',
-          value: 50,
+          value: statistics.fashionHouses,
           icon: Icons.shopping_bag_outlined,
           color: AppColors.accent,
         ),
         StatisticCard(
           title: 'صالون تجميل',
-          value: 120,
+          value: statistics.beautySalons,
           icon: Icons.store_outlined,
           color: Colors.purple,
         ),
@@ -166,9 +205,7 @@ class _StatisticCardState extends State<StatisticCard>
                     fontFamily: FontConstant.cairo,
                   ),
                 ),
-                SizedBox(
-                  height: 4,
-                ),
+                const SizedBox(height: 4),
                 Text(
                   _valueAnimation.value.toInt().toString(),
                   style: getBoldStyle(

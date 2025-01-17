@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class DotSpinner extends StatefulWidget {
+class CustomProgressIndcator extends StatefulWidget {
   final double size;
   final Color color;
   final Duration speed;
 
-  const DotSpinner({
+  const CustomProgressIndcator({
     super.key,
     this.size = 50.0,
     this.color = const Color(0xFF183153),
@@ -14,10 +14,11 @@ class DotSpinner extends StatefulWidget {
   });
 
   @override
-  State<DotSpinner> createState() => _DotSpinnerState();
+  State<CustomProgressIndcator> createState() => _DotSpinnerState();
 }
 
-class _DotSpinnerState extends State<DotSpinner> with SingleTickerProviderStateMixin {
+class _DotSpinnerState extends State<CustomProgressIndcator>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -37,9 +38,15 @@ class _DotSpinnerState extends State<DotSpinner> with SingleTickerProviderStateM
 
   Widget _buildSquare(int index) {
     final positions = [
-      [-1, -1], [0, -1], [1, -1],
-      [-1, 0], [0, 0], [1, 0],
-      [-1, 1], [0, 1], [1, 1],
+      [-1, -1],
+      [0, -1],
+      [1, -1],
+      [-1, 0],
+      [0, 0],
+      [1, 0],
+      [-1, 1],
+      [0, 1],
+      [1, 1],
     ];
 
     // Slower delay for smoother transition

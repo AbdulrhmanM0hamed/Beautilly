@@ -26,6 +26,12 @@ class FormValidators {
     return null;
   }
 
+  static String? validatePasswordLogin(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'كلمة المرور مطلوبة';
+    }
+  }
+
   static String? validatePhone(String? value) {
     if (value == null || value.isEmpty) {
       return 'رقم الهاتف مطلوب';

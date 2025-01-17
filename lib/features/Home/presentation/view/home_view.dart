@@ -4,6 +4,7 @@ import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/home_view_body.dart';
 import 'package:beautilly/features/nearby/presentation/view/discover_view.dart';
+import 'package:beautilly/features/profile/presentation/view/profile_view.dart';
 import 'package:beautilly/features/tailoring_requests/presentation/view/tailoring_requests_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -29,12 +30,7 @@ class _HomeViewState extends State<HomeView> {
               ))),
     ),
     const TailoringRequestsView(),
-    Scaffold(
-        body: Center(
-            child: Text('حسابي',
-                style: getMediumStyle(
-                  fontFamily: FontConstant.cairo,
-                )))),
+    const ProfileView(),
   ];
 
   @override

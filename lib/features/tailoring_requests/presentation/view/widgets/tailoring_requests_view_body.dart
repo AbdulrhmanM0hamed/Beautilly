@@ -3,18 +3,32 @@ import 'package:beautilly/features/tailoring_requests/presentation/view/widgets/
 import 'package:flutter/material.dart';
 
 class TailoringRequestsViewBody extends StatelessWidget {
-  const TailoringRequestsViewBody({super.key});
+  final bool isMyRequests;
+
+  const TailoringRequestsViewBody({
+    super.key,
+    required this.isMyRequests,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: dummyRequests.length,
-      itemBuilder: (context, index) {
-        return TailoringRequestCard(
-          request: dummyRequests[index],
-        );
-      },
+    // يمكنك هنا تصفية الطلبات حسب نوعها
+    final requests = isMyRequests
+        ? dummyRequests.where((request) => request.isMyRequest).toList()
+        : dummyRequests.where((request) => !request.isMyRequest).toList();
+
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      child: ListView.builder(
+        key: ValueKey<bool>(isMyRequests),
+        padding: const EdgeInsets.all(16),
+        itemCount: requests.length,
+        itemBuilder: (context, index) {
+          return TailoringRequestCard(
+            request: requests[index],
+          );
+        },
+      ),
     );
   }
 }

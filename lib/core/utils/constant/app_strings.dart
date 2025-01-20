@@ -6,7 +6,7 @@ class AppStrings {
   // Auth Screens
   static const String login = 'تسجيل الدخول';
   static const String register = ' إنشاء حساب جديد';
-  static const String forgotPassword = 'نسيت كلمة المرور؟';
+  static const String forgotPassword = 'هل نسيت كلمة المرور؟';
   static const String resetPassword = 'إعادة تعيين كلمة المرور';
   static const String email = 'البريد الإلكتروني';
   static const String password = 'كلمة المرور';
@@ -29,6 +29,8 @@ class AppStrings {
   static const String newPasswordConfirmation = 'تاكيد كلمة المرور الجديدة';
   static const String updatePassword = 'تحديث كلمة المرور';
   static const String verifyYourEmail = 'التحقق من البريد الإلكتروني';
+  static const String forgotPasswordDesc = 'أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور';
+  static const String sendResetLink = 'إرسال رابط إعادة التعيين';
 
   // Home Screen
   static const String home = 'الرئيسية';

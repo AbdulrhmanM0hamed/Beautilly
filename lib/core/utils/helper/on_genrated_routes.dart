@@ -28,12 +28,14 @@ Route<dynamic> onGenratedRoutes(RouteSettings settings) {
       );
     case ForgotPasswordView.routeName:
       return MaterialPageRoute(
-        builder: (context) => const ForgotPasswordView(),
+        builder: (_) => const ForgotPasswordView(),
       );
     case NewPasswordView.routeName:
+      final args = settings.arguments as Map<String, String>;
       return MaterialPageRoute(
-        builder: (context) => NewPasswordView(
-          email: '',
+        builder: (_) => NewPasswordView(
+          token: args['token']!,
+          email: args['email']!,
         ),
       );
     case HomeView.routeName:

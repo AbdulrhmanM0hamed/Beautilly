@@ -6,4 +6,11 @@ abstract class AuthRepository {
       String email, String password);
   Future<Either<Failure, Map<String, dynamic>>> register(
       Map<String, dynamic> userData);
+  Future<Either<Failure, String>> forgotPassword(String email);
+  Future<Either<Failure, String>> resetPassword({
+    required String token,
+    required String email,
+    required String password,
+    required String passwordConfirmation,
+  });
 }

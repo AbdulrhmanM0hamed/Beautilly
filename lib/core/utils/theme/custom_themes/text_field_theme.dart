@@ -8,7 +8,7 @@ class TTextFormFieldTheme {
     errorMaxLines: 3,
     prefixIconColor: AppColors.grey,
     suffixIconColor: AppColors.grey,
-    labelStyle: const TextStyle(color: AppColors.secondary),
+   // labelStyle: const TextStyle(color: AppColors.secondary),
     hintStyle: const TextStyle(color: Colors.grey),
     errorStyle: const TextStyle(color: AppColors.error),
     floatingLabelStyle: const TextStyle(color: AppColors.primary),

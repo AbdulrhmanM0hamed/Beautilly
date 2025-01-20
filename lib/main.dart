@@ -1,4 +1,6 @@
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
+import 'package:beautilly/features/auth/presentation/view/signup_view.dart';
+import 'package:beautilly/features/splash/view/splash_view.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

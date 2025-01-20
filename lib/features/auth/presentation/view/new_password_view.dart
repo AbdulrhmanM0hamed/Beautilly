@@ -1,30 +1,33 @@
+import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/core/utils/common/custom_text_field.dart';
 import 'package:beautilly/core/utils/constant/app_strings.dart';
-import 'package:beautilly/core/utils/constant/font_manger.dart';
-import 'package:beautilly/core/utils/constant/styles_manger.dart';
+
 import 'package:beautilly/core/utils/validators/form_validators.dart';
 import 'package:flutter/material.dart';
 
 class NewPasswordView extends StatelessWidget {
-  static const String routeName = "newPassword";
+  static const String routeName = 'NewPasswordView';
+  final String token;
   final String email;
 
-  NewPasswordView({Key? key, required this.email}) : super(key: key);
+  NewPasswordView({
+    super.key,
+    required this.token,
+    required this.email,
+  });
+
   final formKey = GlobalKey<FormState>();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          centerTitle: true,
-          title: Text(
-            AppStrings.assignNewPassword,
-            style: getBoldStyle(
-                fontFamily: FontConstant.cairo, fontSize: FontSize.size20),
-          )),
+      appBar: const CustomAppBar(
+        title: AppStrings.resetPassword,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

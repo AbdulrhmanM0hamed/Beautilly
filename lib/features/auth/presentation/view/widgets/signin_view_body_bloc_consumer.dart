@@ -1,4 +1,7 @@
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/auth/presentation/view/forget_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
@@ -7,7 +10,6 @@ import 'package:beautilly/core/utils/common/password_field.dart';
 import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/validators/form_validators.dart';
 import 'package:beautilly/features/Home/presentation/view/home_view.dart';
-import 'package:beautilly/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:beautilly/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:beautilly/features/auth/presentation/cubit/auth_state.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/dont_have_account.dart';
@@ -79,8 +81,25 @@ class _SigninViewBodyBlocConsumerState
                           controller: _passwordController,
                           hintText: AppStrings.password,
                         ),
-                        const SizedBox(height: 16),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 8),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, ForgotPasswordView.routeName);
+                            },
+                            child: Text(
+                              AppStrings.forgotPassword,
+                              style: getMediumStyle(
+                                color: AppColors.primary,
+                                fontSize: FontSize.size14,
+                                fontFamily: FontConstant.cairo,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        
                         CustomButton(
                           onPressed: state is AuthLoading
                               ? null

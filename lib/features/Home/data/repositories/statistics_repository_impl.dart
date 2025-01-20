@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:async';
-import 'package:beautilly/core/services/cache/shared_preferences_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/error/failures.dart';

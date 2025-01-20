@@ -37,10 +37,10 @@ class FormValidators {
       return 'رقم الهاتف مطلوب';
     }
     // Saudi Arabia phone number format
-    final phoneRegex = RegExp(r'^(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$');
-    if (!phoneRegex.hasMatch(value)) {
-      return 'رقم الهاتف غير صالح';
-    }
+    // final phoneRegex = RegExp(r'^(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$');
+    // if (!phoneRegex.hasMatch(value)) {
+    //   return 'رقم الهاتف غير صالح';
+    // }
     return null;
   }
 

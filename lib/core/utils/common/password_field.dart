@@ -1,47 +1,64 @@
-import 'package:beautilly/core/utils/common/custom_text_field.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class PasswordField extends StatefulWidget {
   const PasswordField({
     super.key,
-    this.onSaved,
     required this.hintText,
     this.validator,
     this.controller,
+    this.onSaved,
   });
+
+  final TextEditingController? controller;
   final String? Function(String?)? validator;
   final void Function(String?)? onSaved;
   final String hintText;
-  final TextEditingController? controller;
 
   @override
   State<PasswordField> createState() => _PasswordFieldState();
 }
 
 class _PasswordFieldState extends State<PasswordField> {
-  bool _obscureText = true;
+  bool _isObscure = true;
 
   @override
   Widget build(BuildContext context) {
-    return CustomTextField(
+    return TextFormField(
       controller: widget.controller,
-      obscureText: _obscureText,
-      prefix: const Icon(
-        Icons.lock,
-      ),
-      label: widget.hintText,
-      suffix: GestureDetector(
-        onTap: () {
-          setState(() {
-            _obscureText = !_obscureText;
-          });
-        },
-        child: Icon(
-          _obscureText ? Icons.remove_red_eye : Icons.visibility_off,
+      obscureText: _isObscure,
+      validator: widget.validator,
+      onSaved: widget.onSaved,
+      decoration: InputDecoration(
+         enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.border),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.primary),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.error),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(color: AppColors.error),
+        ),
+        prefixIcon: const Icon(Icons.lock),
+        labelText: widget.hintText,
+        suffixIcon: IconButton(
+          icon: Icon(
+            _isObscure ? Icons.visibility_off : Icons.visibility,
+          ),
+          onPressed: () {
+            setState(() {
+              _isObscure = !_isObscure;
+            });
+          },
         ),
       ),
-      validator: widget.validator,
     );
   }
 }

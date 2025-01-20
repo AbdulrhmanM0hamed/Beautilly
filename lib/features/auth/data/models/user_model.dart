@@ -2,23 +2,21 @@ class UserModel {
   final int id;
   final String name;
   final String email;
-  final String? avatarUrl;
-  final String? phone;
-  final String? address;
-  final bool isActive;
-  final String? stateId;
-  final String? cityId;
+  final String phone;
+  final int stateId;
+  final int cityId;
+  final String createdAt;
+  final String updatedAt;
 
   UserModel({
     required this.id,
     required this.name,
     required this.email,
-    this.avatarUrl,
-    this.phone,
-    this.address,
-    required this.isActive,
-    this.stateId,
-    this.cityId,
+    required this.phone,
+    required this.stateId,
+    required this.cityId,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -26,12 +24,24 @@ class UserModel {
       id: json['id'],
       name: json['name'],
       email: json['email'],
-      avatarUrl: json['avatar_url'],
       phone: json['phone'],
-      address: json['address'],
-      isActive: json['is_active'] == 1,
       stateId: json['state_id'],
       cityId: json['city_id'],
+      createdAt: json['created_at'],
+      updatedAt: json['updated_at'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'state_id': stateId,
+      'city_id': cityId,
+      'created_at': createdAt,
+      'updated_at': updatedAt,
+    };
   }
 }

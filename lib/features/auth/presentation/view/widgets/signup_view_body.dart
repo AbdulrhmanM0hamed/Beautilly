@@ -4,10 +4,15 @@ import 'package:beautilly/core/utils/common/location_dropdown.dart';
 import 'package:beautilly/core/utils/common/password_field.dart';
 import 'package:beautilly/core/utils/constant/app_strings.dart';
 import 'package:beautilly/core/utils/validators/form_validators.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/custom_check_box.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/hava_an_account.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/terms_and_condition.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../cubit/auth_cubit.dart';
+import 'package:beautilly/features/auth/presentation/cubit/location_cubit.dart';
+import 'package:beautilly/features/auth/presentation/view/widgets/signup_view_body_bloc_consumer.dart';
 
 class SignupViewBody extends StatefulWidget {
   const SignupViewBody({super.key});
@@ -19,138 +24,146 @@ class SignupViewBody extends StatefulWidget {
 class _SignupViewBodyState extends State<SignupViewBody> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
-  late String email, password, userName, phoneNumber;
+
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  late String email, userName, phoneNumber;
+  String password = ''; 
   bool isAgreed = false;
 
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   String _normalizeSpaces(String value) {
-    // Remove leading/trailing spaces and replace multiple spaces with single space
     return value.trim().replaceAll(RegExp(r'\s+'), ' ');
   }
 
-  // String? _validateEmail(String? value) {
-  //   if (value == null || value.isEmpty) {
-  //     return 'البريد الإلكتروني مطلوب';
-  //   }
+  void _handleRegister() {
+    if (!isAgreed) {
+      CustomSnackbar.showError(
+        context: context,
+        message: 'يجب الموافقة على الشروط والأحكام',
+      );
+      return;
+    }
 
-  //   // Check for spaces in email
-  //   if (value.contains(' ')) {
-  //     return 'لا يمكن أن يحتوي البريد الإلكتروني على مسافات';
-  //   }
+    if (formKey.currentState?.validate() ?? false) {
+      formKey.currentState!.save();
+      
+      password = _passwordController.text;
 
-  //   // تعبير منتظم أكثر مرونة للتحقق من صحة البريد الإلكتروني
-  //   final emailRegExp = RegExp(
-  //     r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-  //     caseSensitive: false,
-  //   );
+      final locationState = context.read<LocationCubit>().state;
+      if (locationState.selectedState == null || locationState.selectedCity == null) {
+        CustomSnackbar.showError(
+          context: context,
+          message: 'الرجاء اختيار المنطقة والمدينة',
+        );
+        return;
+      }
 
-  //   if (!emailRegExp.hasMatch(value)) {
-  //     return 'البريد الإلكتروني غير صحيح';
-  //   }
+      final userData = {
+        'name': userName.trim(),
+        'email': email.trim(),
+        'password': password,
+        'password_confirmation': password,
+        'phone': phoneNumber,
+        'state_id': locationState.selectedState!.id,
+        'city_id': locationState.selectedCity!.id,
+      };
 
-  //   return null;
-  // }
-
-  // String? _validateName(String? value) {
-  //   if (value == null || value.isEmpty) {
-  //     return 'الرجاء إدخال اسمك الكامل';
-  //   }
-
-  //   // Check if the value contains only spaces
-  //   if (value.trim().isEmpty) {
-  //     return 'لا يمكن أن يتكون الاسم من مسافات فقط';
-  //   }
-
-  //   // Normalize spaces and check length
-  //   String normalizedValue = _normalizeSpaces(value);
-  //   if (normalizedValue.length < 4) {
-  //     return 'الاسم يجب أن يكون 4 أحرف على الأقل';
-  //   }
-
-  //   // Ensure the name contains actual letters (Arabic or English) and allows spaces between words
-  //   if (!RegExp(r'^[\u0600-\u06FFa-zA-Z\s]+$').hasMatch(normalizedValue)) {
-  //     return 'الاسم يجب أن يحتوي على حروف فقط';
-  //   }
-
-  //   return null;
-  // }
+      context.read<AuthCubit>().register(userData);
+    } else {
+      setState(() {
+        autovalidateMode = AutovalidateMode.always;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: screenHeight * 0.03,
-          horizontal: screenWidth * 0.05,
-        ),
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CustomTextField(
-                onSaved: (value) => userName = _normalizeSpaces(value!),
-                label: AppStrings.name,
-                suffix: const Icon(Icons.person),
-                validator: FormValidators.validateName,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              CustomTextField(
-                onSaved: (value) => email = value!,
-                label: AppStrings.email,
-                suffix: const Icon(Icons.email),
-                validator: FormValidators.validateEmail,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              CustomTextField(
-                label: AppStrings.phone,
-                suffix: const Icon(Icons.phone),
-                validator: FormValidators.validatePhone,
-                onSaved: (value) => phoneNumber = value!,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              const PasswordField(
-                hintText: AppStrings.password,
-                validator: FormValidators.validatePassword,
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              PasswordField(
-                hintText: AppStrings.confirmPassword,
-                validator: (value) =>
-                    FormValidators.validateConfirmPassword(value, password),
-              ),
-              SizedBox(height: screenHeight * 0.02),
-              const LocationDropdown(),
-              SizedBox(height: screenHeight * 0.03),
-              Row(
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: MediaQuery.of(context).size.height * 0.03,
+              horizontal: MediaQuery.of(context).size.width * 0.05,
+            ),
+            child: Form(
+              key: formKey,
+              autovalidateMode: autovalidateMode,
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomCheckBox(
-                    initialValue: isAgreed,
-                    onChanged: (value) {
-                      setState(() {
-                        isAgreed = value;
-                      });
-                    },
+                  CustomTextField(
+                    onSaved: (value) => userName = _normalizeSpaces(value!),
+                    label: AppStrings.name,
+                    suffix: const Icon(Icons.person),
+                    validator: FormValidators.validateName,
                   ),
-                  const TermsAndConditons(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  CustomTextField(
+                    onSaved: (value) => email = value!,
+                    label: AppStrings.email,
+                    suffix: const Icon(Icons.email),
+                    validator: FormValidators.validateEmail,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  CustomTextField(
+                    label: AppStrings.phone,
+                    suffix: const Icon(Icons.phone),
+                    validator: FormValidators.validatePhone,
+                    onSaved: (value) => phoneNumber = value!,
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  PasswordField(
+                    controller: _passwordController,
+                    hintText: AppStrings.password,
+                    validator: FormValidators.validatePassword,
+                    onSaved: (value) => password = value ?? '',
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  PasswordField(
+                    controller: _confirmPasswordController,
+                    hintText: AppStrings.confirmPassword,
+                    validator: (value) =>
+                        FormValidators.validateConfirmPassword(value, _passwordController.text),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  const LocationDropdown(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CustomCheckBox(
+                        initialValue: isAgreed,
+                        onChanged: (value) {
+                          setState(() {
+                            isAgreed = value;
+                          });
+                        },
+                      ),
+                      const TermsAndConditons(),
+                    ],
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  CustomButton(
+                    onPressed: _handleRegister,
+                    text: AppStrings.register,
+                  ),
+                  const SizedBox(height: 11),
+                  const HavaAnAccount(),
                 ],
               ),
-              SizedBox(height: screenHeight * 0.03),
-              CustomButton(
-                onPressed: () {
-                  //    Prefs.setBool(KIsloginSuccess, true);
-                },
-                text: AppStrings.register,
-              ),
-              SizedBox(height: screenHeight * 0.011),
-              const HavaAnAccount(),
-            ],
+            ),
           ),
         ),
-      ),
+        const SignupViewBodyBlocConsumer(),
+      ],
     );
   }
 }

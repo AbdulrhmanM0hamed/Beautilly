@@ -5,12 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
-import '../../../../../core/utils/animations/custom_progress_indcator.dart';
 import '../../../../../core/utils/widgets/custom_snackbar.dart';
 import '../../cubit/statistics_cubit.dart';
 import '../../cubit/statistics_state.dart';
 import 'package:beautilly/core/services/service_locator.dart';
-import 'package:shimmer/shimmer.dart';
 
 class StatisticsSection extends StatelessWidget {
   const StatisticsSection({super.key});

@@ -1,3 +1,4 @@
+import 'package:beautilly/features/Home/presentation/view/home_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signup_view.dart';
 import 'package:beautilly/features/splash/view/splash_view.dart';

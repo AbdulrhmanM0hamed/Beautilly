@@ -70,6 +70,7 @@ class LocationRepositoryImpl implements LocationRepository {
         
         final List<CityModel> citiesList = cities.entries
             .map((e) => CityModel(
+                  stateId: stateId,
                   id: int.parse(e.key), 
                   name: e.value.toString(),
                 ))

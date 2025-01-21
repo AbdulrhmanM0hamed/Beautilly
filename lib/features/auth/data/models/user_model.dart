@@ -1,22 +1,22 @@
-class UserModel {
+import 'package:equatable/equatable.dart';
+
+class UserModel extends Equatable {
   final int id;
   final String name;
   final String email;
-  final String phone;
-  final int stateId;
-  final int cityId;
-  final String createdAt;
-  final String updatedAt;
+  final String? phone;
+  final String? avatar;
+  final int? cityId;
+  final int? stateId;
 
-  UserModel({
+  const UserModel({
     required this.id,
     required this.name,
     required this.email,
-    required this.phone,
-    required this.stateId,
-    required this.cityId,
-    required this.createdAt,
-    required this.updatedAt,
+    this.phone,
+    this.avatar,
+    this.cityId,
+    this.stateId,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -25,10 +25,9 @@ class UserModel {
       name: json['name'],
       email: json['email'],
       phone: json['phone'],
-      stateId: json['state_id'],
+      avatar: json['avatar'],
       cityId: json['city_id'],
-      createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
+      stateId: json['state_id'],
     );
   }
 
@@ -38,10 +37,12 @@ class UserModel {
       'name': name,
       'email': email,
       'phone': phone,
-      'state_id': stateId,
+      'avatar': avatar,
       'city_id': cityId,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
+      'state_id': stateId,
     };
   }
+
+  @override
+  List<Object?> get props => [id, name, email, phone, avatar, cityId, stateId];
 }

@@ -1,8 +1,13 @@
-class StateModel {
+import 'package:equatable/equatable.dart';
+
+class StateModel extends Equatable {
   final int id;
   final String name;
 
-  StateModel({required this.id, required this.name});
+  const StateModel({
+    required this.id,
+    required this.name,
+  });
 
   factory StateModel.fromJson(Map<String, dynamic> json) {
     return StateModel(
@@ -19,11 +24,5 @@ class StateModel {
   }
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is StateModel && other.id == id;
-  }
-
-  @override
-  int get hashCode => id.hashCode;
+  List<Object?> get props => [id, name];
 } 

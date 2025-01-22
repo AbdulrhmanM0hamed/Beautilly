@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/core/services/cache/cache_service.dart';
+import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
+import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
 
 class ProfileMenuSection extends StatelessWidget {
   const ProfileMenuSection({super.key});
@@ -64,7 +68,45 @@ class ProfileMenuSection extends StatelessWidget {
             MenuItem(
               icon: Icons.logout,
               title: "تسجيل الخروج",
-              onTap: () {},
+              onTap: () async {
+                final shouldLogout = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('تسجيل الخروج'),
+                    content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('إلغاء'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text('تأكيد'),
+                      ),
+                    ],
+                  ),
+                );
+
+                if (shouldLogout == true && context.mounted) {
+                  final result = await context.read<AuthRepository>().logout();
+                  
+                  result.fold(
+                    (failure) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(failure.message)),
+                      );
+                    },
+                    (_) {
+                      if (context.mounted) {
+                        Navigator.of(context).pushNamedAndRemoveUntil(
+                          SigninView.routeName,
+                          (route) => false,
+                        );
+                      }
+                    },
+                  );
+                }
+              },
               isDestructive: true,
             ),
           ],

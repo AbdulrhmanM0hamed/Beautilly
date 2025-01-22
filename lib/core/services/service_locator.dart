@@ -28,7 +28,7 @@ Future<void> setupServiceLocator() async {
 
   // Repositories
   getIt.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(),
+    () => AuthRepositoryImpl(getIt<CacheService>()),
   );
 
   getIt.registerLazySingleton<StatisticsRepository>(

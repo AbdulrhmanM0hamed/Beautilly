@@ -6,11 +6,13 @@ class CacheServiceImpl implements CacheService {
   final SharedPreferences _prefs;
   static const String _tokenKey = 'token';
   static const String _userKey = 'user';
+  static const String _sessionCookieKey = 'session_cookie';
 
   CacheServiceImpl(this._prefs);
 
   @override
   Future<void> saveToken(String token) async {
+    print('Debug - Saving Token to SharedPrefs: $token');
     await _prefs.setString(_tokenKey, token);
   }
 
@@ -21,7 +23,9 @@ class CacheServiceImpl implements CacheService {
 
   @override
   Future<String?> getToken() async {
-    return _prefs.getString(_tokenKey);
+    final token = _prefs.getString(_tokenKey);
+    print('Debug - Getting Token from SharedPrefs: $token');
+    return token;
   }
 
   @override
@@ -35,5 +39,15 @@ class CacheServiceImpl implements CacheService {
   Future<void> clearCache() async {
     await _prefs.remove(_tokenKey);
     await _prefs.remove(_userKey);
+  }
+
+  @override
+  Future<String?> getSessionCookie() async {
+    return _prefs.getString(_sessionCookieKey);
+  }
+
+  @override
+  Future<void> saveSessionCookie(String cookie) async {
+    await _prefs.setString(_sessionCookieKey, cookie);
   }
 } 

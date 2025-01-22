@@ -13,4 +13,5 @@ abstract class AuthRepository {
     required String password,
     required String passwordConfirmation,
   });
+  Future<Either<Failure, void>> logout();
 }

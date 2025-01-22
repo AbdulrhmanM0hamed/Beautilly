@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
-import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
 

@@ -7,7 +7,7 @@ import 'package:beautilly/features/Home/presentation/view/widgets/home_view_body
 import 'package:beautilly/features/nearby/presentation/view/discover_view.dart';
 import 'package:beautilly/features/orders/presentation/view/widgets/my_orders_widget.dart';
 import 'package:beautilly/features/profile/presentation/view/profile_view.dart';
-import 'package:beautilly/features/tailoring_requests/presentation/view/tailoring_requests_view.dart';
+import 'package:beautilly/features/tailoring_requests/presentation/view/tailoring_requests_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
@@ -27,11 +27,10 @@ class _HomeViewState extends State<HomeView> {
   final List<Widget> _pages = [
     const HomeViewBody(),
     const DiscoverView(),
-    Provider<AuthRepository>(
-      create: (context) => AuthRepositoryImpl(context.read<CacheService>()),
-      child: const MyOrdersWidget(),
+    Scaffold(
+      body: Center(child: Text("الحجوزات")),
     ),
-    const TailoringRequestsView(),
+    const TailoringRequestsPage(),
     const ProfileView(),
   ];
 

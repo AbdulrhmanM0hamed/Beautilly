@@ -24,7 +24,7 @@ class ProfileView extends StatelessWidget {
           automaticallyImplyLeading: false,
         ),
         body: BlocProvider(
-          create: (context) => getIt<AuthCubit>(),
+          create: (context) => sl<AuthCubit>(),
           child: ProfileViewBody(),
         ),
       ),

@@ -16,7 +16,7 @@ class StatisticsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<StatisticsCubit>()..getStatistics(),
+      create: (context) => sl<StatisticsCubit>()..getStatistics(),
       child: BlocConsumer<StatisticsCubit, StatisticsState>(
         listener: (context, state) {
           if (state is StatisticsError) {

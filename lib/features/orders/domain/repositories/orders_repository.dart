@@ -5,4 +5,5 @@ import '../entities/order.dart';
 abstract class OrdersRepository {
   Future<Either<Failure, List<OrderEntity>>> getMyOrders();
   Future<Either<Failure, List<OrderEntity>>> getMyReservations();
+  Future<Either<Failure, List<OrderEntity>>> getAllOrders();
 } 

@@ -17,10 +17,10 @@ class SignupView extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => getIt<AuthCubit>(),
+          create: (context) => sl<AuthCubit>(),
         ),
         BlocProvider(
-          create: (context) => getIt<LocationCubit>(),
+          create: (context) => sl<LocationCubit>(),
         ),
       ],
       child: const Scaffold(

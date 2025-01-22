@@ -37,4 +37,18 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }
+
+  @override
+  Future<Either<Failure, List<OrderEntity>>> getAllOrders() async {
+    try {
+      final orders = await remoteDataSource.getAllOrders();
+      return Right(orders);
+    } on UnauthorizedException catch (e) {
+      return Left(AuthFailure(e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
 } 

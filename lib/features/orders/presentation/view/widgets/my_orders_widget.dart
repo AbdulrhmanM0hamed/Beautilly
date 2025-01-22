@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart' as http;
 import '../../../domain/entities/order.dart';
 import '../../cubit/orders_cubit.dart';
 import '../../cubit/orders_state.dart';
-import '../../../domain/usecases/get_my_orders.dart';
-import '../../../domain/usecases/get_my_reservations.dart';
-import '../../../data/repositories/orders_repository_impl.dart';
-import '../../../data/datasources/orders_remote_datasource.dart';
-import '../../../../../core/services/cache/cache_service.dart';
+import '../../../../../core/services/service_locator.dart';
 
 class MyOrdersWidget extends StatelessWidget {
   const MyOrdersWidget({super.key});
@@ -16,19 +11,7 @@ class MyOrdersWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) {
-        final cacheService = context.read<CacheService>();
-        final remoteDataSource = OrdersRemoteDataSourceImpl(
-          client: http.Client(),
-          cacheService: cacheService,
-        );
-        final repository = OrdersRepositoryImpl(remoteDataSource);
-        
-        return OrdersCubit(
-          getMyOrders: GetMyOrders(repository),
-          getMyReservations: GetMyReservations(repository),
-        );
-      },
+      create: (context) => sl<OrdersCubit>()..loadMyOrders(),
       child: const MyOrdersContent(),
     );
   }

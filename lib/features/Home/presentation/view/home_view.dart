@@ -1,18 +1,14 @@
-import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/home_view_body.dart';
 import 'package:beautilly/features/nearby/presentation/view/discover_view.dart';
-import 'package:beautilly/features/orders/presentation/view/widgets/my_orders_widget.dart';
 import 'package:beautilly/features/profile/presentation/view/profile_view.dart';
-import 'package:beautilly/features/tailoring_requests/presentation/view/tailoring_requests_page.dart';
+import 'package:beautilly/features/orders/presentation/view/tailoring_requests_page.dart';
+import 'package:beautilly/features/reservations/presentation/view/reservations_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
-import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
-import 'package:beautilly/features/auth/data/repositories/auth_repository_impl.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -27,10 +23,8 @@ class _HomeViewState extends State<HomeView> {
   final List<Widget> _pages = [
     const HomeViewBody(),
     const DiscoverView(),
-    Scaffold(
-      body: Center(child: Text("الحجوزات")),
-    ),
-    const TailoringRequestsPage(),
+    const ReservationsView(),
+    const TailoringRequestsView(),
     const ProfileView(),
   ];
 

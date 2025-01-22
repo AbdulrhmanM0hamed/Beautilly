@@ -22,6 +22,11 @@ import '../../features/auth/presentation/cubit/forgot_password_cubit.dart';
 import 'package:http/http.dart' as http;
 import '../../features/auth/domain/usecases/logout.dart';
 import '../../features/orders/domain/usecases/get_all_orders.dart';
+import '../../features/reservations/data/datasources/reservations_remote_datasource.dart';
+import '../../features/reservations/data/repositories/reservations_repository_impl.dart';
+import '../../features/reservations/domain/repositories/reservations_repository.dart';
+import '../../features/reservations/domain/usecases/get_my_reservations.dart';
+import '../../features/reservations/presentation/cubit/reservations_cubit.dart';
 
 // Tailoring Requests Feature
 
@@ -84,15 +89,34 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton(() => GetMyOrders(sl()));
-  sl.registerLazySingleton(() => GetMyReservations(sl()));
 
   sl.registerLazySingleton(() => GetAllOrders(sl()));
 
   sl.registerFactory(
     () => OrdersCubit(
       getMyOrders: sl(),
-      getMyReservations: sl(),
+      // getMyReservations: sl(),
       getAllOrders: sl(),
+    ),
+  );
+
+  // Reservations Feature
+  sl.registerLazySingleton<ReservationsRemoteDataSource>(
+    () => ReservationsRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<ReservationsRepository>(
+    () => ReservationsRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton(() => GetMyReservations(sl()));
+
+  sl.registerFactory(
+    () => ReservationsCubit(
+      getMyReservations: sl(),
     ),
   );
 }

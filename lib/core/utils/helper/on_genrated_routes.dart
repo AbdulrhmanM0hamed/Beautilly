@@ -1,6 +1,5 @@
 import 'package:beautilly/features/Home/presentation/view/home_view.dart';
 import 'package:beautilly/features/auth/presentation/view/forget_password.dart';
-import 'package:beautilly/features/auth/presentation/view/new_password_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signup_view.dart';
 import 'package:beautilly/features/onboarding/presentation/view/onboarding_view.dart';

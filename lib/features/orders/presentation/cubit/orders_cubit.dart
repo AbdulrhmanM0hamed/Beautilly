@@ -6,42 +6,48 @@ import 'orders_state.dart';
 
 class OrdersCubit extends Cubit<OrdersState> {
   final GetMyOrders getMyOrders;
-  final GetMyReservations getMyReservations;
+  //final GetMyReservations getMyReservations;
   final GetAllOrders getAllOrders;
 
   OrdersCubit({
     required this.getMyOrders,
-    required this.getMyReservations,
+ //   required this.getMyReservations,
     required this.getAllOrders,
   }) : super(OrdersInitial());
 
   Future<void> loadMyOrders() async {
+    if (isClosed) return;
     emit(OrdersLoading());
     
     final result = await getMyOrders();
     
+    if (isClosed) return;
     result.fold(
       (failure) => emit(OrdersError(failure.message)),
       (orders) => emit(OrdersSuccess(orders)),
     );
   }
 
-  Future<void> loadMyReservations() async {
-    emit(OrdersLoading());
+  // Future<void> loadMyReservations() async {
+  //   if (isClosed) return;
+  //   emit(OrdersLoading());
     
-    final result = await getMyReservations();
+  //   final result = await getMyReservations();
     
-    result.fold(
-      (failure) => emit(OrdersError(failure.message)),
-      (orders) => emit(OrdersSuccess(orders)),
-    );
-  }
+  //   if (isClosed) return;
+  //   result.fold(
+  //     (failure) => emit(OrdersError(failure.message)),
+  //     (orders) => emit(OrdersSuccess(orders)),
+  //   );
+  // }
 
   Future<void> loadAllOrders() async {
+    if (isClosed) return;
     emit(OrdersLoading());
     
     final result = await getAllOrders();
     
+    if (isClosed) return;
     result.fold(
       (failure) => emit(OrdersError(failure.message)),
       (orders) => emit(OrdersSuccess(orders)),

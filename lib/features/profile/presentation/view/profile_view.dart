@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
 import 'package:beautilly/features/auth/data/repositories/auth_repository_impl.dart';
-import 'widgets/profile_menu_section.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});

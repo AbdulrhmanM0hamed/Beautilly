@@ -1,6 +1,7 @@
+import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
+import 'package:beautilly/features/orders/presentation/view/widgets/order_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/entities/order.dart';
 import '../../cubit/orders_cubit.dart';
 import '../../cubit/orders_state.dart';
 import '../../../../../core/services/service_locator.dart';
@@ -36,7 +37,7 @@ class _MyOrdersContentState extends State<MyOrdersContent> {
     return BlocBuilder<OrdersCubit, OrdersState>(
       builder: (context, state) {
         if (state is OrdersLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: CustomProgressIndcator());
         }
 
         if (state is OrdersError) {
@@ -67,7 +68,7 @@ class _MyOrdersContentState extends State<MyOrdersContent> {
             padding: const EdgeInsets.all(16),
             itemBuilder: (context, index) {
               final order = state.orders[index];
-              return OrderCard(order: order);
+              return OrderCard(order: order, isMyRequest: true);
             },
           );
         }
@@ -78,70 +79,3 @@ class _MyOrdersContentState extends State<MyOrdersContent> {
   }
 }
 
-class OrderCard extends StatelessWidget {
-  final OrderEntity order;
-
-  const OrderCard({super.key, required this.order});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'طلب #${order.id}',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                Text(
-                  order.statusLabel,
-                  style: TextStyle(
-                    color: order.status == 'completed' 
-                        ? Colors.green 
-                        : Colors.orange,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(order.description),
-            const SizedBox(height: 8),
-            if (order.mainImage.thumb.isNotEmpty)
-              Image.network(
-                order.mainImage.thumb,
-                height: 100,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            const SizedBox(height: 8),
-            Text('المقاسات: ${order.height}سم × ${order.weight}كجم'),
-            Text('القياس: ${order.size}'),
-            if (order.fabrics.isNotEmpty) ...[
-              const SizedBox(height: 8),
-              const Text('الأقمشة:'),
-              Wrap(
-                spacing: 8,
-                children: order.fabrics.map((fabric) => Chip(
-                  label: Text(fabric.type),
-                  backgroundColor: Color(
-                    int.parse(
-                      fabric.color.replaceAll('#', '0xFF'),
-                    ),
-                  ),
-                )).toList(),
-              ),
-            ],
-            const SizedBox(height: 8),
-            Text('تاريخ الطلب: ${order.createdAt}'),
-          ],
-        ),
-      ),
-    );
-  }
-} 

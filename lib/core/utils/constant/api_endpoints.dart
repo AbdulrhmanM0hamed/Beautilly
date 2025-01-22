@@ -3,12 +3,9 @@ class ApiEndpoints {
   static const String api_key = 'uYtG5w92uQfNkl47pT3MxRvA1zqZ8OjY';
 
   // المصادقة والتسجيل
-  static const String login =
-      '$baseUrl/login?api_key=$api_key'; // تسجيل الدخول
-  static const String register =
-      '$baseUrl/register?api_key=$api_key'; // إنشاء حساب جديد
-  static const String logout =
-      '$baseUrl/logout?api_key=$api_key'; // تسجيل الخروج
+  static const String login = '$baseUrl/login';
+  static const String register = '$baseUrl/register';
+  static const String logout = '$baseUrl/logout';
   static const String forgotPassword =
       '$baseUrl/forgot-password?api_key=$api_key';
   static const String resetPassword =
@@ -121,4 +118,8 @@ class ApiEndpoints {
       '$baseUrl/tailoring-offers/accept/?api_key=$api_key'; // قبول عرض تفصيل
   static const String rejectTailoringOffer =
       '$baseUrl/tailoring-offers/reject/?api_key=$api_key'; // رفض عرض تفصيل
+
+  // Orders
+  static const String myOrders = '$baseUrl/my-list-orders';
+  static const String myReservations = '$baseUrl/my-reservations';
 }

@@ -12,7 +12,6 @@ class CacheServiceImpl implements CacheService {
 
   @override
   Future<void> saveToken(String token) async {
-    print('Debug - Saving Token to SharedPrefs: $token');
     await _prefs.setString(_tokenKey, token);
   }
 
@@ -24,7 +23,6 @@ class CacheServiceImpl implements CacheService {
   @override
   Future<String?> getToken() async {
     final token = _prefs.getString(_tokenKey);
-    print('Debug - Getting Token from SharedPrefs: $token');
     return token;
   }
 

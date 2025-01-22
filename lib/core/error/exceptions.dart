@@ -4,6 +4,12 @@ class ServerException implements Exception {
   ServerException(this.message);
 }
 
+class UnauthorizedException implements Exception {
+  final String message;
+
+  UnauthorizedException(this.message);
+}
+
 class CacheException implements Exception {
   final String message;
 

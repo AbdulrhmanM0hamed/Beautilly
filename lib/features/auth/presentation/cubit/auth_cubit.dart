@@ -1,13 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../../../core/services/cache/cache_service.dart';
+import '../../domain/usecases/logout.dart';
 import 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository authRepository;
   final CacheService _cacheService;
+  final Logout _logout;
 
-  AuthCubit(this.authRepository, this._cacheService) : super(AuthInitial());
+  AuthCubit(this.authRepository, this._cacheService)
+      : _logout = Logout(authRepository),
+        super(AuthInitial());
 
   Future<void> login(String email, String password) async {
     emit(AuthLoading());
@@ -67,6 +71,20 @@ class AuthCubit extends Cubit<AuthState> {
           token: data['token'] ?? '',
           message: data['message'] ?? 'تم التسجيل بنجاح',
         ));
+      },
+    );
+  }
+
+  Future<void> logout() async {
+    emit(AuthLoading());
+    
+    final result = await _logout();
+    
+    result.fold(
+      (failure) => emit(AuthError(failure.message)),
+      (_) {
+        _cacheService.clearCache();
+        emit(AuthInitial());
       },
     );
   }

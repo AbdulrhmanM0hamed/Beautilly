@@ -1,139 +1,164 @@
-import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../data/services/orders_service.dart';
-import '../../../data/models/order_model.dart';
+import 'package:http/http.dart' as http;
+import '../../../domain/entities/order.dart';
+import '../../cubit/orders_cubit.dart';
+import '../../cubit/orders_state.dart';
+import '../../../domain/usecases/get_my_orders.dart';
+import '../../../domain/usecases/get_my_reservations.dart';
+import '../../../data/repositories/orders_repository_impl.dart';
+import '../../../data/datasources/orders_remote_datasource.dart';
+import '../../../../../core/services/cache/cache_service.dart';
 
-class MyOrdersWidget extends StatefulWidget {
+class MyOrdersWidget extends StatelessWidget {
   const MyOrdersWidget({super.key});
 
   @override
-  State<MyOrdersWidget> createState() => _MyOrdersWidgetState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) {
+        final cacheService = context.read<CacheService>();
+        final remoteDataSource = OrdersRemoteDataSourceImpl(
+          client: http.Client(),
+          cacheService: cacheService,
+        );
+        final repository = OrdersRepositoryImpl(remoteDataSource);
+        
+        return OrdersCubit(
+          getMyOrders: GetMyOrders(repository),
+          getMyReservations: GetMyReservations(repository),
+        );
+      },
+      child: const MyOrdersContent(),
+    );
+  }
 }
 
-class _MyOrdersWidgetState extends State<MyOrdersWidget> {
-  bool _isLoading = false;
-  String? _error;
-  List<OrderModel>? _orders;
+class MyOrdersContent extends StatefulWidget {
+  const MyOrdersContent({super.key});
 
+  @override
+  State<MyOrdersContent> createState() => _MyOrdersContentState();
+}
+
+class _MyOrdersContentState extends State<MyOrdersContent> {
   @override
   void initState() {
     super.initState();
-    _loadOrders();
-  }
-
-  Future<void> _loadOrders() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final ordersService = OrdersService(context.read<CacheService>());
-      final orders = await ordersService.getMyOrders();
-      
-      setState(() {
-        _orders = orders;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
-    }
+    context.read<OrdersCubit>().loadMyOrders();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    return BlocBuilder<OrdersCubit, OrdersState>(
+      builder: (context, state) {
+        if (state is OrdersLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(_error!),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loadOrders,
-              child: const Text('إعادة المحاولة'),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (_orders == null || _orders!.isEmpty) {
-      return const Center(child: Text('لا توجد طلبات'));
-    }
-
-    return ListView.builder(
-      itemCount: _orders!.length,
-      padding: const EdgeInsets.all(16),
-      itemBuilder: (context, index) {
-        final order = _orders![index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
+        if (state is OrdersError) {
+          return Center(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'طلب #${order.id}',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Text(
-                      order.statusLabel,
-                      style: TextStyle(
-                        color: order.status == 'completed' 
-                            ? Colors.green 
-                            : Colors.orange,
-                      ),
-                    ),
-                  ],
+                Text(state.message),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<OrdersCubit>().loadMyOrders();
+                  },
+                  child: const Text('إعادة المحاولة'),
                 ),
-                const SizedBox(height: 8),
-                Text(order.description),
-                const SizedBox(height: 8),
-                if (order.mainImage.thumb.isNotEmpty)
-                  Image.network(
-                    order.mainImage.thumb,
-                    height: 100,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                const SizedBox(height: 8),
-                Text('المقاسات: ${order.height}سم × ${order.weight}كجم'),
-                Text('القياس: ${order.size}'),
-                if (order.fabrics.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  const Text('الأقمشة:'),
-                  Wrap(
-                    spacing: 8,
-                    children: order.fabrics.map((fabric) => Chip(
-                      label: Text(fabric.type),
-                      backgroundColor: Color(
-                        int.parse(
-                          fabric.color.replaceAll('#', '0xFF'),
-                        ),
-                      ),
-                    )).toList(),
-                  ),
-                ],
-                const SizedBox(height: 8),
-                Text('تاريخ الطلب: ${order.createdAt}'),
               ],
             ),
-          ),
-        );
+          );
+        }
+
+        if (state is OrdersSuccess) {
+          if (state.orders.isEmpty) {
+            return const Center(child: Text('لا توجد طلبات'));
+          }
+
+          return ListView.builder(
+            itemCount: state.orders.length,
+            padding: const EdgeInsets.all(16),
+            itemBuilder: (context, index) {
+              final order = state.orders[index];
+              return OrderCard(order: order);
+            },
+          );
+        }
+
+        return const SizedBox();
       },
+    );
+  }
+}
+
+class OrderCard extends StatelessWidget {
+  final OrderEntity order;
+
+  const OrderCard({super.key, required this.order});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'طلب #${order.id}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                Text(
+                  order.statusLabel,
+                  style: TextStyle(
+                    color: order.status == 'completed' 
+                        ? Colors.green 
+                        : Colors.orange,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(order.description),
+            const SizedBox(height: 8),
+            if (order.mainImage.thumb.isNotEmpty)
+              Image.network(
+                order.mainImage.thumb,
+                height: 100,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            const SizedBox(height: 8),
+            Text('المقاسات: ${order.height}سم × ${order.weight}كجم'),
+            Text('القياس: ${order.size}'),
+            if (order.fabrics.isNotEmpty) ...[
+              const SizedBox(height: 8),
+              const Text('الأقمشة:'),
+              Wrap(
+                spacing: 8,
+                children: order.fabrics.map((fabric) => Chip(
+                  label: Text(fabric.type),
+                  backgroundColor: Color(
+                    int.parse(
+                      fabric.color.replaceAll('#', '0xFF'),
+                    ),
+                  ),
+                )).toList(),
+              ),
+            ],
+            const SizedBox(height: 8),
+            Text('تاريخ الطلب: ${order.createdAt}'),
+          ],
+        ),
+      ),
     );
   }
 } 

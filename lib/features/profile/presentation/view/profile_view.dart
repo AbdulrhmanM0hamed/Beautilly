@@ -5,9 +5,7 @@ import 'package:beautilly/features/profile/presentation/view/widgets/profile_vie
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
-import 'package:beautilly/features/auth/data/repositories/auth_repository_impl.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -15,17 +13,17 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<AuthRepository>(
-      create: (context) => AuthRepositoryImpl(context.read<CacheService>()),
-      child: Scaffold(
-        appBar: const CustomAppBar(
-          title: "حسابي",
-          automaticallyImplyLeading: false,
-        ),
-        body: BlocProvider(
-          create: (context) => sl<AuthCubit>(),
-          child: ProfileViewBody(),
-        ),
+    return Scaffold(
+      appBar: const CustomAppBar(
+        title: "حسابي",
+        automaticallyImplyLeading: false,
+      ),
+      body: MultiProvider(
+        providers: [
+          Provider<AuthRepository>.value(value: sl<AuthRepository>()),
+          BlocProvider(create: (context) => sl<AuthCubit>()),
+        ],
+        child: const ProfileViewBody(),
       ),
     );
   }

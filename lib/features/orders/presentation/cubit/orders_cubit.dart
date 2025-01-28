@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/get_my_orders.dart';
-import '../../domain/usecases/get_my_reservations.dart';
 import '../../domain/usecases/get_all_orders.dart';
 import 'orders_state.dart';
 
@@ -27,19 +26,6 @@ class OrdersCubit extends Cubit<OrdersState> {
       (orders) => emit(OrdersSuccess(orders)),
     );
   }
-
-  // Future<void> loadMyReservations() async {
-  //   if (isClosed) return;
-  //   emit(OrdersLoading());
-    
-  //   final result = await getMyReservations();
-    
-  //   if (isClosed) return;
-  //   result.fold(
-  //     (failure) => emit(OrdersError(failure.message)),
-  //     (orders) => emit(OrdersSuccess(orders)),
-  //   );
-  // }
 
   Future<void> loadAllOrders() async {
     if (isClosed) return;

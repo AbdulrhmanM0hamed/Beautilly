@@ -3,23 +3,23 @@ import 'package:http/http.dart' as http;
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
-import '../models/reservation_model.dart';
+import '../models/profile_model.dart';
 
-abstract class ReservationsRemoteDataSource {
-  Future<List<ReservationModel>> getMyReservations();
+abstract class ProfileRemoteDataSource {
+  Future<ProfileModel> getProfile();
 }
 
-class ReservationsRemoteDataSourceImpl implements ReservationsRemoteDataSource {
+class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   final http.Client client;
   final CacheService cacheService;
 
-  ReservationsRemoteDataSourceImpl({
+  ProfileRemoteDataSourceImpl({
     required this.client,
     required this.cacheService,
   });
 
   @override
-  Future<List<ReservationModel>> getMyReservations() async {
+  Future<ProfileModel> getProfile() async {
     final token = await cacheService.getToken();
     final sessionCookie = await cacheService.getSessionCookie();
 
@@ -29,51 +29,35 @@ class ReservationsRemoteDataSourceImpl implements ReservationsRemoteDataSource {
 
     try {
       final response = await client.get(
-        Uri.parse(ApiEndpoints.myReservations),
+        Uri.parse(ApiEndpoints.profile),
         headers: {
           'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'x-api-key': ApiEndpoints.api_key,
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
       );
 
-      // طباعة الـ response للتحقق من المشكلة
-
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-
-        // التحقق من نجاح الطلب
+        
         if (jsonResponse['success'] == true) {
-          final data = jsonResponse['data'] as List;
-
-          // إذا كانت القائمة فارغة
-          if (data.isEmpty) {
-            return [];
-          }
-
-          return data
-              .map((reservation) => ReservationModel.fromJson(reservation))
-              .toList();
+          return ProfileModel.fromJson(jsonResponse['data']);
         } else {
-          // طباعة رسالة الخطأ من السيرفر إن وجدت
           throw ServerException(
-              jsonResponse['message'] ?? 'حدث خطأ في تحميل الحجوزات');
+            jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
+          );
         }
       } else if (response.statusCode == 401) {
-        throw UnauthorizedException(
-            'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+        throw UnauthorizedException('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
-        // طباعة تفاصيل الخطأ
-
-        throw ServerException('فشل في تحميل الحجوزات');
+        throw ServerException('فشل في تحميل بيانات الملف الشخصي');
       }
     } catch (e) {
-      // طباعة الخطأ للتحقق
       if (e is UnauthorizedException) rethrow;
       if (e is ServerException) rethrow;
       throw ServerException('حدث خطأ غير متوقع');
     }
   }
-}
+} 

@@ -1,3 +1,6 @@
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
@@ -68,42 +71,87 @@ class ProfileMenuSection extends StatelessWidget {
               icon: Icons.logout,
               title: "تسجيل الخروج",
               onTap: () async {
+                // عرض مربع حوار التأكيد
                 final shouldLogout = await showDialog<bool>(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: const Text('تسجيل الخروج'),
-                    content: const Text('هل أنت متأكد من تسجيل الخروج؟'),
+                    title: Text(
+                      'تسجيل الخروج',
+                      style: getMediumStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size18,
+                      ),
+                    ),
+                    content: Text(
+                      'هل أنت متأكد من تسجيل الخروج؟',
+                      style: getRegularStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size16,
+                      ),
+                    ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context, false),
-                        child: const Text('إلغاء'),
+                        child: Text(
+                          'إلغاء',
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ),
-                      TextButton(
+                      FilledButton(
                         onPressed: () => Navigator.pop(context, true),
-                        child: const Text('تأكيد'),
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.error,
+                        ),
+                        child: Text(
+                          'تسجيل الخروج',
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 );
 
+                // إذا تم تأكيد تسجيل الخروج
                 if (shouldLogout == true && context.mounted) {
-                  final result = await context.read<AuthRepository>().logout();
-                  
-                  result.fold(
-                    (failure) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(failure.message)),
-                      );
-                    },
-                    (_) {
-                      if (context.mounted) {
+                  try {
+                    final repository = context.read<AuthRepository>();
+                    final result = await repository.logout();
+
+                    if (!context.mounted) return;
+
+                    result.fold(
+                      (failure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(failure.message)),
+                        );
+                      },
+                      (_) {
+
                         Navigator.of(context).pushNamedAndRemoveUntil(
                           SigninView.routeName,
                           (route) => false,
                         );
-                      }
-                    },
-                  );
+                        CustomSnackbar.showSuccess(
+                          context: context,
+                          message: "تم تسجيل الخروج بنجاح",
+                        );
+                      },
+                    );
+                  } catch (e) {
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('حدث خطأ أثناء تسجيل الخروج')),
+                    );
+                  }
                 }
               },
               isDestructive: true,

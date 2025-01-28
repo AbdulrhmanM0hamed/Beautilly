@@ -1,3 +1,4 @@
+import 'package:beautilly/features/splash/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/utils/helper/on_genrated_routes.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       onGenerateRoute: onGenratedRoutes,
-      initialRoute: SigninView.routeName,
+      initialRoute: SplashView.routeName,
     );
   }
 }

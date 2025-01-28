@@ -1,3 +1,5 @@
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
@@ -15,7 +17,14 @@ class ReservationsView extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('الحجوزات'),
+            title: Text(
+              'الحجوزات',
+              style: getBoldStyle(
+                
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size20,
+                  ),
+            ),
             bottom: const TabBar(
               tabs: [
                 Tab(text: 'الحجوزات النشطة'),
@@ -33,4 +42,4 @@ class ReservationsView extends StatelessWidget {
       ),
     );
   }
-} 
+}

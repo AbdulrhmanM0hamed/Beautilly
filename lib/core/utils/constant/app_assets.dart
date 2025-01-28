@@ -14,6 +14,11 @@ class AppAssets {
   static const String onboarding2 = '$_imagesPath/onboarding2.png';
   static const String onboarding3 = '$_imagesPath/onboarding3.png';
   static const String onboarding4 = '$_imagesPath/onboarding4.png';
+  static const String onboarding5 = '$_imagesPath/onboarding5.jpeg';
+  static const String onboarding6 = '$_imagesPath/onboarding6.jpeg';
+  static const String onboarding7 = '$_imagesPath/onboarding7.jpeg';
+  static const String onboarding8 = '$_imagesPath/onboarding8.jpeg';
+  static const String trioling = '$_imagesPath/trioling.png';
   static const String test = '$_imagesPath/test.png';
   static const String test2 = '$_imagesPath/test2.png';
 

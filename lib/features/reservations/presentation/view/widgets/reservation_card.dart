@@ -17,7 +17,7 @@ class ReservationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<CustomColors>()!;
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
@@ -47,7 +47,8 @@ class ReservationCard extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: colors.cardHeaderBg,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(16)),
                 ),
                 child: Row(
                   children: [
@@ -59,7 +60,7 @@ class ReservationCard extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withOpacity(0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -258,7 +259,12 @@ class ReservationCard extends StatelessWidget {
         statusText = 'قيد الانتظار';
         statusIcon = Icons.schedule_rounded;
         break;
-      case 'cancelled':
+      case 'confirmed':
+        statusColor = AppColors.primary;
+        statusText = 'تم التأكيد';
+        statusIcon = Icons.schedule_rounded;
+        break;
+      case 'canceled':
         statusColor = Colors.red;
         statusText = 'ملغي';
         statusIcon = Icons.cancel_rounded;
@@ -387,4 +393,4 @@ class ReservationCard extends StatelessWidget {
     final time = intl.DateFormat('hh:mm a').format(dateTime);
     return '$date\n$time';
   }
-} 
+}

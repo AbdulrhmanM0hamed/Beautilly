@@ -1,3 +1,5 @@
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/animations/custom_progress_indcator.dart';
@@ -37,13 +39,28 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(state.message),
+                Icon(
+                  Icons.error_outline_rounded,
+                  size: 64,
+                  color: Colors.grey.shade400,
+                ),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                Text(
+                  state.message,
+                  textAlign: TextAlign.center,
+                  style: getMediumStyle(
+                    fontFamily: FontConstant.cairo,
+                    color: Colors.grey.shade600,
+                    fontSize: FontSize.size16,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
                   onPressed: () {
                     context.read<ReservationsCubit>().loadMyReservations();
                   },
-                  child: const Text('إعادة المحاولة'),
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: const Text('إعادة المحاولة'),
                 ),
               ],
             ),
@@ -58,8 +75,37 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
 
           if (reservations.isEmpty) {
             return Center(
-              child: Text(
-                widget.isActive ? 'لا توجد حجوزات نشطة' : 'لا توجد حجوزات سابقة',
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.event_busy_outlined,
+                    size: 64,
+                    color: Colors.grey.shade400,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.isActive 
+                      ? 'لا توجد حجوزات نشطة حالياً'
+                      : 'لا توجد حجوزات سابقة',
+                    style: getMediumStyle(
+                      fontFamily: FontConstant.cairo,
+                      color: Colors.grey.shade600,
+                      fontSize: FontSize.size16,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    widget.isActive 
+                      ? 'يمكنك حجز موعد جديد من صفحة الأقرب'
+                      : 'ستظهر هنا الحجوزات المكتملة',
+                    style: getRegularStyle(
+                      fontFamily: FontConstant.cairo,
+                      color: Colors.grey.shade500,
+                      fontSize: FontSize.size14,
+                    ),
+                  ),
+                ],
               ),
             );
           }

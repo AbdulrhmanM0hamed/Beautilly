@@ -2,6 +2,7 @@ import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/Home/presentation/cubit/profile_cubit.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/home_view_body.dart';
 import 'package:beautilly/features/nearby/presentation/view/discover_view.dart';
 import 'package:beautilly/features/profile/presentation/view/profile_view.dart';
@@ -9,6 +10,8 @@ import 'package:beautilly/features/orders/presentation/view/tailoring_requests_p
 import 'package:beautilly/features/reservations/presentation/view/reservations_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/services/service_locator.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -30,44 +33,47 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-        ),
-        child: Theme(
-          data: Theme.of(context).copyWith(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
+    return BlocProvider(
+      create: (context) => sl<ProfileCubit>()..loadProfile(),
+      child: Scaffold(
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
           ),
-          child: BottomNavigationBar(
-            currentIndex: _selectedIndex,
-            onTap: (index) {
-              setState(() {
-                _selectedIndex = index;
-              });
-            },
-            type: BottomNavigationBarType.fixed,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            selectedItemColor: AppColors.primary,
-            unselectedItemColor: AppColors.grey,
-            selectedLabelStyle: getMediumStyle(
-              fontSize: FontSize.size12,
-              fontFamily: FontConstant.cairo,
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
             ),
-            unselectedLabelStyle: getMediumStyle(
-              fontSize: FontSize.size12,
-              fontFamily: FontConstant.cairo,
+            child: BottomNavigationBar(
+              currentIndex: _selectedIndex,
+              onTap: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              selectedItemColor: AppColors.primary,
+              unselectedItemColor: AppColors.grey,
+              selectedLabelStyle: getMediumStyle(
+                fontSize: FontSize.size12,
+                fontFamily: FontConstant.cairo,
+              ),
+              unselectedLabelStyle: getMediumStyle(
+                fontSize: FontSize.size12,
+                fontFamily: FontConstant.cairo,
+              ),
+              items: [
+                _buildNavItem(AppAssets.homeIconBottom, 'الرئيسية'),
+                _buildNavItem(AppAssets.Location, 'الأقرب'),
+                _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
+                _buildNavItem(AppAssets.tfsel, 'طلبات'),
+                _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
+              ],
             ),
-            items: [
-              _buildNavItem(AppAssets.homeIconBottom, 'الرئيسية'),
-              _buildNavItem(AppAssets.Location, 'الأقرب'),
-              _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
-              _buildNavItem(AppAssets.tfsel, 'طلبات'),
-              _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
-            ],
           ),
         ),
       ),

@@ -71,8 +71,6 @@ class StatisticsSection extends StatelessWidget {
   }
 }
 
-
-
 class _StatisticsGrid extends StatelessWidget {
   final StatisticsModel statistics;
 
@@ -83,10 +81,11 @@ class _StatisticsGrid extends StatelessWidget {
     return GridView.count(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
-      childAspectRatio: 1.5,
+      crossAxisCount: 4,
+      mainAxisSpacing: 8,
+      crossAxisSpacing: 8,
+      childAspectRatio: 1.1,
+
       children: [
         StatisticCard(
           title: 'عميل سعيد',
@@ -182,13 +181,13 @@ class _StatisticCardState extends State<StatisticCard>
         return Transform.scale(
           scale: _scaleAnimation.value,
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: widget.color.withOpacity(0.18),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: widget.color.withOpacity(0.3),
-                width: 2,
+                width: 1.5,
               ),
             ),
             child: Column(
@@ -197,12 +196,16 @@ class _StatisticCardState extends State<StatisticCard>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(widget.icon, color: widget.color, size: 35),
-                    CircularProgressIndicator(
-                      value: _controller.value,
-                      strokeWidth: 2,
-                      backgroundColor: widget.color.withOpacity(0.2),
-                      valueColor: AlwaysStoppedAnimation<Color>(widget.color),
+                    Icon(widget.icon, color: widget.color, size: 24),
+                    SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        value: _controller.value,
+                        strokeWidth: 2,
+                        backgroundColor: widget.color.withOpacity(0.2),
+                        valueColor: AlwaysStoppedAnimation<Color>(widget.color),
+                      ),
                     ),
                   ],
                 ),
@@ -210,15 +213,16 @@ class _StatisticCardState extends State<StatisticCard>
                 Text(
                   widget.title,
                   style: getMediumStyle(
-                    fontSize: FontSize.size14,
+                    fontSize: FontSize.size12,
                     fontFamily: FontConstant.cairo,
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   _valueAnimation.value.toInt().toString(),
                   style: getBoldStyle(
-                    fontSize: FontSize.size18,
+                    fontSize: FontSize.size16,
                     fontFamily: FontConstant.cairo,
                     color: widget.color,
                   ),

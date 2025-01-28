@@ -42,6 +42,7 @@ android {
     }
 
     defaultConfig {
+        ndkVersion = "25.1.8937393"
         applicationId "com.example.beautilly"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion

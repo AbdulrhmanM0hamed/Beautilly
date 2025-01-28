@@ -4,7 +4,7 @@ class ApiEndpoints {
 
   // المصادقة والتسجيل
   static const String login = '$baseUrl/login';
-  static const String register = '$baseUrl/register';
+  static const String register = '$baseUrl/register?api_key=$api_key';
   static const String logout = '$baseUrl/logout';
   static const String forgotPassword =
       '$baseUrl/forgot-password?api_key=$api_key';
@@ -14,7 +14,7 @@ class ApiEndpoints {
       '$baseUrl/auth/verify-email?api_key=$api_key';
 
   // الملف الشخصي
-  static const String profile = '$baseUrl/profile?api_key=$api_key';
+  static const String profile = '$baseUrl/user/profile?api_key=$api_key';
   static const String updateProfile =
       '$baseUrl/profile/update?api_key=$api_key';
   static const String changePassword =
@@ -121,5 +121,5 @@ class ApiEndpoints {
 
   // Orders
   static const String myOrders = '$baseUrl/my-list-orders';
-  static const String myReservations = '$baseUrl/my-reservations';
+  static const String myReservations = '$baseUrl/my-reservations?api_key=$api_key';
 }

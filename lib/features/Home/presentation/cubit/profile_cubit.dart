@@ -17,4 +17,46 @@ class ProfileCubit extends Cubit<ProfileState> {
       (profile) => emit(ProfileLoaded(profile)),
     );
   }
+
+  Future<void> updateProfile({
+    String? name,
+    String? email,
+    String? phone,
+  }) async {
+    try {
+      final result = await repository.updateProfile(
+        name: name,
+        email: email,
+        phone: phone,
+      );
+      
+      result.fold(
+        (failure) => emit(ProfileError(failure.message)),
+        (profile) => emit(ProfileLoaded(profile)),
+      );
+    } catch (e) {
+      emit(ProfileError(e.toString()));
+    }
+  }
+
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String confirmPassword,
+  }) async {
+    try {
+      final result = await repository.changePassword(
+        currentPassword: currentPassword,
+        newPassword: newPassword,
+        confirmPassword: confirmPassword,
+      );
+      
+      result.fold(
+        (failure) => emit(ProfileError(failure.message)),
+        (message) => loadProfile(),
+      );
+    } catch (e) {
+      emit(ProfileError(e.toString()));
+    }
+  }
 } 

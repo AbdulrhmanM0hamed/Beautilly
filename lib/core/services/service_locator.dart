@@ -30,6 +30,7 @@ import '../../features/reservations/presentation/cubit/reservations_cubit.dart';
 import '../../features/profile/data/datasources/profile_remote_datasource.dart';
 import '../../features/profile/data/repositories/profile_repository_impl.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
+import '../../features/profile/presentation/cubit/profile_image_cubit.dart';
 
 // Tailoring Requests Feature
 
@@ -138,4 +139,6 @@ Future<void> init() async {
   sl.registerFactory(
     () => ProfileCubit(sl()),
   );
+
+  sl.registerFactory(() => ProfileImageCubit(sl()));
 }

@@ -6,7 +6,7 @@ import 'package:beautilly/features/Home/presentation/cubit/profile_cubit.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/home_view_body.dart';
 import 'package:beautilly/features/nearby/presentation/view/discover_view.dart';
 import 'package:beautilly/features/profile/presentation/view/profile_view.dart';
-import 'package:beautilly/features/orders/presentation/view/tailoring_requests_page.dart';
+import 'package:beautilly/features/orders/presentation/view/orders_requests_view.dart';
 import 'package:beautilly/features/reservations/presentation/view/reservations_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

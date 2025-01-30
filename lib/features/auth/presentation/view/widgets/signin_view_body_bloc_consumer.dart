@@ -71,9 +71,22 @@ class _SigninViewBodyBlocConsumerState
                         const SizedBox(height: 32),
                         CustomTextField(
                           controller: _emailController,
-                          label: AppStrings.email,
-                          suffix: const Icon(Icons.email),
-                          validator: FormValidators.validateEmail,
+                          label: 'البريد الإلكتروني أو رقم الهاتف',
+                          suffix: const Icon(Icons.person_outline),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'هذا الحقل مطلوب';
+                            }
+                            // التحقق من صحة المدخل (إما بريد إلكتروني أو رقم هاتف)
+                            bool isEmail = value.contains('@');
+                            bool isPhone =
+                                RegExp(r'^[0-9]{10,}$').hasMatch(value);
+
+                            if (!isEmail && !isPhone) {
+                              return 'يرجى إدخال بريد إلكتروني أو رقم هاتف صحيح';
+                            }
+                            return null;
+                          },
                         ),
                         const SizedBox(height: 16),
                         PasswordField(
@@ -86,7 +99,8 @@ class _SigninViewBodyBlocConsumerState
                           alignment: Alignment.centerLeft,
                           child: TextButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, ForgotPasswordView.routeName);
+                              Navigator.pushNamed(
+                                  context, ForgotPasswordView.routeName);
                             },
                             child: Text(
                               AppStrings.forgotPassword,
@@ -99,7 +113,6 @@ class _SigninViewBodyBlocConsumerState
                           ),
                         ),
                         const SizedBox(height: 20),
-                        
                         CustomButton(
                           onPressed: state is AuthLoading
                               ? null

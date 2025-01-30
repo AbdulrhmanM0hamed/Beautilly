@@ -20,7 +20,7 @@ class ReservationsView extends StatelessWidget {
             title: Text(
               'الحجوزات',
               style: getBoldStyle(
-                
+                  color: Theme.of(context).brightness==Brightness.dark?Colors.white:Colors.black,
                   fontFamily: FontConstant.cairo,
                   fontSize: FontSize.size20,
                   ),

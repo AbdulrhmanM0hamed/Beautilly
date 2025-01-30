@@ -26,6 +26,7 @@ class FormValidators {
     return null;
   }
 
+
   static String? validatePasswordLogin(String? value) {
     if (value == null || value.isEmpty) {
       return 'كلمة المرور مطلوبة';

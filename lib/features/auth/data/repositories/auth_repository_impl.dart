@@ -15,11 +15,10 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, Map<String, dynamic>>> login(
-    String email,
+    String emailOrPhone,
     String password,
   ) async {
     try {
-      
       final response = await http.post(
         Uri.parse(ApiEndpoints.login),
         headers: {
@@ -28,11 +27,10 @@ class AuthRepositoryImpl implements AuthRepository {
           'x-api-key': ApiEndpoints.api_key,
         },
         body: jsonEncode({
-          'email': email,
+          emailOrPhone.contains('@') ? 'email' : 'phone': emailOrPhone,
           'password': password,
         }),
       );
-
 
       final data = jsonDecode(response.body);
 

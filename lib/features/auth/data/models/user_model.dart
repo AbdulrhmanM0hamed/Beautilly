@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 class UserModel extends Equatable {
   final int id;
   final String name;
-  final String email;
+  final String? email;
   final String? phone;
   final String? avatar;
   final int? cityId;
@@ -12,7 +12,7 @@ class UserModel extends Equatable {
   const UserModel({
     required this.id,
     required this.name,
-    required this.email,
+    this.email,
     this.phone,
     this.avatar,
     this.cityId,
@@ -35,11 +35,11 @@ class UserModel extends Equatable {
     return {
       'id': id,
       'name': name,
-      'email': email,
-      'phone': phone,
-      'avatar': avatar,
-      'city_id': cityId,
-      'state_id': stateId,
+      if (email != null) 'email': email,
+      if (phone != null) 'phone': phone,
+      if (avatar != null) 'avatar': avatar,
+      if (cityId != null) 'city_id': cityId,
+      if (stateId != null) 'state_id': stateId,
     };
   }
 

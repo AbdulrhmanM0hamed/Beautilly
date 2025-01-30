@@ -1,11 +1,14 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
+import 'package:beautilly/features/Home/presentation/cubit/profile_cubit.dart';
+import 'package:beautilly/features/Home/presentation/cubit/profile_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
+import 'package:beautilly/features/profile/presentation/view/edit_profile_view.dart';
 
 class ProfileMenuSection extends StatelessWidget {
   const ProfileMenuSection({super.key});
@@ -20,18 +23,33 @@ class ProfileMenuSection extends StatelessWidget {
             MenuItem(
               icon: Icons.person_outline,
               title: "المعلومات الشخصية",
-              onTap: () {},
+              onTap: () async {
+                if (context.read<ProfileCubit>().state is ProfileLoaded) {
+                  final profile = (context.read<ProfileCubit>().state as ProfileLoaded).profile;
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider.value(
+                        value: context.read<ProfileCubit>(),
+                        child: EditProfileView(profile: profile),
+                      ),
+                    ),
+                  );
+                  
+                  if (result == true) {
+                    if (context.mounted) {
+                      context.read<ProfileCubit>().loadProfile();
+                    }
+                  }
+                }
+              },
             ),
             MenuItem(
               icon: Icons.location_on_outlined,
               title: "العنوان",
               onTap: () {},
             ),
-            MenuItem(
-              icon: Icons.payment_outlined,
-              title: "طرق الدفع",
-              onTap: () {},
-            ),
+          
           ],
         ),
         _buildMenuGroup(
@@ -43,8 +61,8 @@ class ProfileMenuSection extends StatelessWidget {
               onTap: () {},
             ),
             MenuItem(
-              icon: Icons.language_outlined,
-              title: "اللغة",
+              icon: Icons.favorite_border_outlined,
+              title: "المفضلة",
               onTap: () {},
             ),
             MenuItem(

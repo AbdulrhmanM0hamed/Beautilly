@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
@@ -89,50 +90,40 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   @override
   Future<String> updateAvatar(File image) async {
     try {
-      final uri = Uri.parse(ApiEndpoints.profile);
-      final request = http.MultipartRequest('POST', uri);
-
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('${ApiEndpoints.baseUrl}/user/profile'),
+      );
+      // إضافة الهيدرز بدون Content-Type
       final token = await cacheService.getToken();
       final sessionCookie = await cacheService.getSessionCookie();
-
       request.headers.addAll({
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
         'x-api-key': ApiEndpoints.api_key,
         if (sessionCookie != null) 'Cookie': sessionCookie,
       });
-
+      // إضافة api_key كـ field
+      request.fields['api_key'] = ApiEndpoints.api_key;
+      // إضافة الصورة
       request.files.add(
         await http.MultipartFile.fromPath(
-          'avatar',
+          'avatar_url', // تغيير اسم الحقل ليتطابق مع الباك إند
           image.path,
+          contentType: MediaType('image', '*'), // السماح بأي نوع صورة
         ),
       );
-
-      final streamedResponse = await request.send();
-      final response = await http.Response.fromStream(streamedResponse);
-
+      final response = await http.Response.fromStream(await request.send());
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         if (jsonResponse['success'] == true) {
-          return jsonResponse['data']['image'];
-        } else {
-          throw ServerException(
-            jsonResponse['message'] ?? 'فشل في تحديث الصورة الشخصية',
-          );
+          return jsonResponse['data']['avatar_url'];
         }
-      } else if (response.statusCode == 413) {
-        throw ServerException('حجم الصورة كبير جداً');
-      } else if (response.statusCode == 415) {
-        throw ServerException('نوع الملف غير مدعوم');
-      } else {
-        throw ServerException(
-            'فشل في تحديث الصورة الشخصية (${response.statusCode})');
       }
+
+      throw ServerException('فشل في رفع الصورة: ${response.statusCode}');
     } catch (e) {
-      print('Error: $e');
-      if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ أثناء تحديث الصورة الشخصية');
+      throw ServerException('حدث خطأ أثناء رفع الصورة');
     }
   }
 
@@ -212,7 +203,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }) async {
     try {
       final response = await client.post(
-        Uri.parse(ApiEndpoints.changePassword),
+        Uri.parse('${ApiEndpoints.baseUrl}/user/profile'),
         headers: await _getHeaders(),
         body: jsonEncode({
           'current_password': currentPassword,
@@ -223,21 +214,20 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
+
         if (jsonResponse['success'] == true) {
           return jsonResponse['message'] ?? 'تم تغيير كلمة المرور بنجاح';
-        } else {
-          throw ServerException(
-            jsonResponse['message'] ?? 'فشل في تغيير كلمة المرور',
-          );
         }
-      } else {
-        throw ServerException('فشل في تغيير كلمة المرور');
+        throw ServerException(
+            jsonResponse['message'] ?? 'فشل في تغيير كلمة المرور');
       }
+
+      throw ServerException('فشل في تغيير كلمة المرور');
     } catch (e) {
-      if (e is ServerException) rethrow;
       throw ServerException('حدث خطأ أثناء تغيير كلمة المرور');
     }
   }
+
 
   @override
   Future<bool> updateNotificationSettings({required bool enabled}) async {

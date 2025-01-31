@@ -136,9 +136,14 @@ Future<void> init() async {
     () => ProfileRepositoryImpl(sl()),
   );
 
-  sl.registerFactory(
-    () => ProfileCubit(sl()),
+  sl.registerLazySingleton(
+    () => ProfileCubit(repository: sl()),
   );
 
-  sl.registerFactory(() => ProfileImageCubit(sl()));
+  sl.registerFactory(
+    () => ProfileImageCubit(
+      sl<ProfileRepository>(),
+      sl<ProfileCubit>(),
+    ),
+  );
 }

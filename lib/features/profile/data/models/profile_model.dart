@@ -30,7 +30,7 @@ class ProfileModel extends Equatable {
       emailVerifiedAt: json['email_verified_at'],
       city: CityModel.fromJson(json['city']),
       state: StateModel.fromJson(json['state']),
-      image: json['image'] ?? '',
+      image: json['avatar_url'],
     );
   }
 

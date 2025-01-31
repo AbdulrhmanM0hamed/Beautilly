@@ -16,10 +16,14 @@ import '../../../../Home/presentation/cubit/profile_state.dart';
 
 import 'package:image_picker/image_picker.dart';
 
-
-class ProfileHeader extends StatelessWidget {
+class ProfileHeader extends StatefulWidget {
   const ProfileHeader({super.key});
 
+  @override
+  State<ProfileHeader> createState() => _ProfileHeaderState();
+}
+
+class _ProfileHeaderState extends State<ProfileHeader> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -41,23 +45,54 @@ class ProfileHeader extends StatelessWidget {
           }
         },
         builder: (context, imageState) {
-          return BlocBuilder<ProfileCubit, ProfileState>(
-            builder: (context, profileState) {
-              if (profileState is ProfileLoaded) {
-                final profile = profileState.profile;
-                return _buildProfileInfo(context, profile, imageState);
-              }
+          return MultiBlocListener(
+            listeners: [
+              BlocListener<ProfileCubit, ProfileState>(
+                listener: (context, state) {
+                  if (state is ProfileLoaded) {
+                    // تم تحديث البيانات
+                    setState(() {}); // إعادة بناء الواجهة
+                  }
+                },
+              ),
+            ],
+            child: BlocBuilder<ProfileCubit, ProfileState>(
+              builder: (context, state) {
+                if (state is ProfileLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                
+                if (state is ProfileLoaded) {
+                  final profile = state.profile;
+                  return _buildProfileInfo(context, profile, imageState);
+                }
 
-              // حالة التحميل
-              return _buildLoadingState();
-            },
+                if (state is ProfileError) {
+                  return Center(
+                    child: Text(
+                      state.message,
+                      style: getRegularStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size14,
+                        color: Colors.red,
+                      ),
+                    ),
+                  );
+                }
+
+                return const SizedBox(); // حالة ProfileInitial
+              },
+            ),
           );
         },
       ),
     );
   }
 
-  Widget _buildProfileInfo(BuildContext context, ProfileModel profile, ProfileImageState imageState) {
+  Widget _buildProfileInfo(BuildContext context, ProfileModel profile,
+      ProfileImageState imageState) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -65,7 +100,7 @@ class ProfileHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: const Color.fromARGB(255, 90, 90, 90).withOpacity(0.18),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -82,16 +117,14 @@ class ProfileHeader extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withOpacity(0.3),
                     width: 3,
                   ),
                 ),
                 child: ClipOval(
                   child: profile.image != null && profile.image!.isNotEmpty
                       ? CachedNetworkImage(
-                          imageUrl: profile.image!.startsWith('http')
-                              ? profile.image!
-                              : 'https://dallik.com/storage/${profile.image}',
+                          imageUrl: profile.image!,
                           fit: BoxFit.cover,
                           placeholder: (context, url) => const Center(
                             child: CircularProgressIndicator(
@@ -123,8 +156,8 @@ class ProfileHeader extends StatelessWidget {
                     if (image != null) {
                       if (context.mounted) {
                         context.read<ProfileImageCubit>().updateProfileImage(
-                          File(image.path),
-                        );
+                              File(image.path),
+                            );
                       }
                     }
                   },
@@ -158,7 +191,7 @@ class ProfileHeader extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // الاسم
           Text(
             profile.name,
@@ -168,7 +201,7 @@ class ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          
+
           // البريد الإلكتروني
           Text(
             profile.email,
@@ -179,7 +212,7 @@ class ProfileHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          
+
           // رقم الهاتف
           if (profile.phone != null)
             Text(
@@ -190,9 +223,9 @@ class ProfileHeader extends StatelessWidget {
                 fontFamily: FontConstant.cairo,
               ),
             ),
-          
+
           const SizedBox(height: 4),
-          
+
           // الموقع
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -212,42 +245,6 @@ class ProfileHeader extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoadingState() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          const CircleAvatar(
-            radius: 50,
-            backgroundColor: Colors.grey,
-            child: CircularProgressIndicator(
-              color: AppColors.primary,
-              strokeWidth: 2,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Container(
-            width: 150,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(4),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Container(
-            width: 200,
-            height: 16,
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(4),
-            ),
           ),
         ],
       ),

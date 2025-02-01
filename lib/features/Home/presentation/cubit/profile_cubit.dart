@@ -58,14 +58,14 @@ class ProfileCubit extends Cubit<ProfileState> {
   }
 
   Future<void> changePassword({
-    required String currentPassword,
+  //  required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   }) async {
     try {
       emit(ProfileLoading());
       final result = await repository.changePassword(
-        currentPassword: currentPassword,
+ //       currentPassword: currentPassword,
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       );

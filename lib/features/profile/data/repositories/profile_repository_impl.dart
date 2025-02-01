@@ -83,13 +83,13 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
   @override
   Future<Either<Failure, String>> changePassword({
-    required String currentPassword,
+    //   required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   }) async {
     try {
       final message = await remoteDataSource.changePassword(
-        currentPassword: currentPassword,
+        //     currentPassword: currentPassword,
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       );
@@ -104,9 +104,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> updateNotificationSettings({required bool enabled}) async {
+  Future<Either<Failure, bool>> updateNotificationSettings(
+      {required bool enabled}) async {
     try {
-      final result = await remoteDataSource.updateNotificationSettings(enabled: enabled);
+      final result =
+          await remoteDataSource.updateNotificationSettings(enabled: enabled);
       return Right(result);
     } on UnauthorizedException catch (e) {
       return Left(AuthFailure(e.message));
@@ -146,7 +148,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<Either<Failure, String>> deleteAccount({required String password}) async {
+  Future<Either<Failure, String>> deleteAccount(
+      {required String password}) async {
     try {
       final result = await remoteDataSource.deleteAccount(password: password);
       return Right(result);
@@ -160,4 +163,4 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   // ... باقي التنفيذات للوظائف الأخرى
-} 
+}

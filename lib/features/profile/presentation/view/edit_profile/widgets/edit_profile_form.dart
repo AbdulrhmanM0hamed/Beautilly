@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class EditProfileForm extends StatelessWidget {
   final ProfileModel profile;
-  final GlobalKey<FormState> formKey;
+
   final TextEditingController nameController;
   final TextEditingController emailController;
   final TextEditingController phoneController;
@@ -14,7 +14,6 @@ class EditProfileForm extends StatelessWidget {
   const EditProfileForm({
     super.key,
     required this.profile,
-    required this.formKey,
     required this.nameController,
     required this.emailController,
     required this.phoneController,
@@ -23,7 +22,7 @@ class EditProfileForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
+     
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

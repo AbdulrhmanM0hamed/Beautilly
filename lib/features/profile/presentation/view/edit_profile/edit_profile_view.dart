@@ -83,30 +83,33 @@ class _EditProfileViewState extends State<EditProfileView> {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            EditProfileForm(
-              profile: widget.profile,
-              formKey: _controller.formKey,
-              nameController: _controller.nameController,
-              emailController: _controller.emailController,
-              phoneController: _controller.phoneController,
-            ),
-            const SizedBox(height: 16),
-            ChangePasswordForm(
-              currentPasswordController: _controller.currentPasswordController,
-              newPasswordController: _controller.newPasswordController,
-              confirmPasswordController: _controller.confirmPasswordController,
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: CustomButton(
-                onPressed: () => _controller.updateProfile(context),
-                text: 'حفظ التغييرات',
+        child: Form(
+          key: _controller.formKey,
+          child: Column(
+            children: [
+              EditProfileForm(
+                profile: widget.profile,
+                nameController: _controller.nameController,
+                emailController: _controller.emailController,
+                phoneController: _controller.phoneController,
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              ChangePasswordForm(
+                newPasswordController: _controller.newPasswordController,
+                confirmPasswordController: _controller.confirmPasswordController,
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: CustomButton(
+                  onPressed: _controller.isPasswordsMatch 
+                      ? () => _controller.updateProfile(context)
+                      : null,
+                  text: 'حفظ التغييرات',
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

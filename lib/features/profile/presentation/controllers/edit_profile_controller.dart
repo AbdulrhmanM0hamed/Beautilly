@@ -10,7 +10,7 @@ class EditProfileController {
   late final TextEditingController nameController;
   late final TextEditingController emailController;
   late final TextEditingController phoneController;
-  late final TextEditingController currentPasswordController;
+ // late final TextEditingController currentPasswordController;
   late final TextEditingController newPasswordController;
   late final TextEditingController confirmPasswordController;
 
@@ -22,7 +22,7 @@ class EditProfileController {
     nameController = TextEditingController(text: profile.name);
     emailController = TextEditingController(text: profile.email);
     phoneController = TextEditingController(text: profile.phone);
-    currentPasswordController = TextEditingController();
+   // currentPasswordController = TextEditingController();
     newPasswordController = TextEditingController();
     confirmPasswordController = TextEditingController();
   }
@@ -31,7 +31,7 @@ class EditProfileController {
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
-    currentPasswordController.dispose();
+  //  currentPasswordController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
   }
@@ -55,7 +55,7 @@ class EditProfileController {
       // تغيير كلمة المرور
       if (_isPasswordChangeRequested()) {
         await sl<ProfileCubit>().changePassword(
-          currentPassword: currentPasswordController.text,
+      //    currentPassword: currentPasswordController.text,
           newPassword: newPasswordController.text,
           confirmPassword: confirmPasswordController.text,
         );
@@ -81,13 +81,17 @@ class EditProfileController {
   }
 
   bool _isPasswordChangeRequested() {
-    return currentPasswordController.text.isNotEmpty &&
+    return //currentPasswordController.text.isNotEmpty &&
         newPasswordController.text.isNotEmpty &&
         confirmPasswordController.text.isNotEmpty;
   }
 
+  bool get isPasswordsMatch => 
+      !_isPasswordChangeRequested() || // إذا لم يتم إدخال كلمات مرور أصلاً
+      (newPasswordController.text == confirmPasswordController.text); // أو إذا كانت متطابقة
+
   void _clearPasswordFields() {
-    currentPasswordController.clear();
+  //  currentPasswordController.clear();
     newPasswordController.clear();
     confirmPasswordController.clear();
   }

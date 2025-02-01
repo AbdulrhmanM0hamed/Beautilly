@@ -7,7 +7,6 @@ import '../../../../core/error/failures.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/user_model.dart';
 
-
 class AuthRepositoryImpl implements AuthRepository {
   final CacheService _cacheService;
 
@@ -33,24 +32,17 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       final data = jsonDecode(response.body);
-
       if (response.statusCode == 200) {
         final token = data['token'] as String;
-        
         await _cacheService.saveToken(token);
-        
         final savedToken = await _cacheService.getToken();
-        
-        if (token != savedToken) {
-         
-        }
-
+        if (token != savedToken) {}
         // حفظ الـ cookie
         final sessionCookie = response.headers['set-cookie']?.split(';').first;
         if (sessionCookie != null) {
           await _cacheService.saveSessionCookie(sessionCookie);
         }
-        
+
         final testResponse = await http.get(
           Uri.parse('${ApiEndpoints.baseUrl}/my-list-orders'),
           headers: {
@@ -58,11 +50,11 @@ class AuthRepositoryImpl implements AuthRepository {
             'x-api-key': ApiEndpoints.api_key,
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            if (sessionCookie != null) 'Cookie': sessionCookie,  // نضيف الـ cookie فقط إذا كان موجوداً
+            if (sessionCookie != null)
+              'Cookie': sessionCookie, // نضيف الـ cookie فقط إذا كان موجوداً
           },
         );
-    
-        
+
         return Right({
           'user': UserModel.fromJson(data['user']),
           'token': token,
@@ -113,14 +105,11 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  
-
   @override
   Future<Either<Failure, void>> logout() async {
     try {
       final token = await _cacheService.getToken();
       final sessionCookie = await _cacheService.getSessionCookie();
-      
 
       if (token == null) {
         return const Right(null);
@@ -137,13 +126,12 @@ class AuthRepositoryImpl implements AuthRepository {
         },
       );
 
-
       if (response.statusCode == 200 || response.statusCode == 401) {
         await _cacheService.clearCache();
-        
+
         // تأكيد أن التوكن تم مسحه
         final tokenAfterLogout = await _cacheService.getToken();
-        
+
         return const Right(null);
       } else {
         final data = jsonDecode(response.body);
@@ -158,7 +146,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, String>> forgotPassword(String email) async {
     try {
       final uri = Uri.parse(ApiEndpoints.forgotPassword);
-      
+
       final response = await http.post(
         uri,
         headers: {
@@ -173,7 +161,8 @@ class AuthRepositoryImpl implements AuthRepository {
       if (response.statusCode == 200) {
         return Right(data['status']);
       } else {
-        final message = data['errors']?['email']?.first ?? 'حدث خطأ في إرسال رابط إعادة تعيين كلمة المرور';
+        final message = data['errors']?['email']?.first ??
+            'حدث خطأ في إرسال رابط إعادة تعيين كلمة المرور';
         return Left(ServerFailure(message));
       }
     } catch (e) {
@@ -190,7 +179,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }) async {
     try {
       final uri = Uri.parse(ApiEndpoints.resetPassword);
-      
+
       final response = await http.post(
         uri,
         headers: {

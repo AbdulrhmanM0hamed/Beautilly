@@ -20,7 +20,7 @@ abstract class ProfileRemoteDataSource {
     required int stateId,
   });
   Future<String> changePassword({
-    required String currentPassword,
+    //   required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   });
@@ -197,7 +197,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
   @override
   Future<String> changePassword({
-    required String currentPassword,
+    //   required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   }) async {
@@ -206,7 +206,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         Uri.parse('${ApiEndpoints.baseUrl}/user/profile'),
         headers: await _getHeaders(),
         body: jsonEncode({
-          'current_password': currentPassword,
+          //      'current_password': currentPassword,
           'password': newPassword,
           'password_confirmation': confirmPassword,
         }),
@@ -227,7 +227,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       throw ServerException('حدث خطأ أثناء تغيير كلمة المرور');
     }
   }
-
 
   @override
   Future<bool> updateNotificationSettings({required bool enabled}) async {

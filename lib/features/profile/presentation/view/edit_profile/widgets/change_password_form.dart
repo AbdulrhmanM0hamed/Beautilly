@@ -4,13 +4,13 @@ import 'package:beautilly/features/profile/presentation/view/widgets/custom_prof
 import 'package:flutter/material.dart';
 
 class ChangePasswordForm extends StatelessWidget {
-  final TextEditingController currentPasswordController;
+//  final TextEditingController currentPasswordController;
   final TextEditingController newPasswordController;
   final TextEditingController confirmPasswordController;
 
   const ChangePasswordForm({
     super.key,
-    required this.currentPasswordController,
+  //  required this.currentPasswordController,
     required this.newPasswordController,
     required this.confirmPasswordController,
   });
@@ -25,13 +25,6 @@ class ChangePasswordForm extends StatelessWidget {
           icon: Icons.lock_outline,
         ),
         const SizedBox(height: 24),
-        CustomProfileField(
-          controller: currentPasswordController,
-          label: 'كلمة المرور الحالية',
-          hint: 'أدخل كلمة المرور الحالية',
-          prefixIcon: Icons.lock_outline,
-          isPassword: true,
-        ),
         const SizedBox(height: 2),
         CustomProfileField(
           controller: newPasswordController,
@@ -40,6 +33,9 @@ class ChangePasswordForm extends StatelessWidget {
           prefixIcon: Icons.lock_outline,
           isPassword: true,
           validator: FormValidators.validatePassword,
+          onChanged: (_) {
+            context.findAncestorStateOfType<FormState>()?.validate();
+          },
         ),
         const SizedBox(height: 2),
         CustomProfileField(
@@ -52,6 +48,9 @@ class ChangePasswordForm extends StatelessWidget {
             value,
             newPasswordController.text,
           ),
+          onChanged: (_) {
+            context.findAncestorStateOfType<FormState>()?.validate();
+          },
         ),
       ],
     );

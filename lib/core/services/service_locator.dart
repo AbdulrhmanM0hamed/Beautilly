@@ -1,5 +1,5 @@
 import 'package:beautilly/core/services/cache/cache_service.dart';
-import 'package:beautilly/features/Home/presentation/cubit/profile_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:beautilly/features/orders/data/datasources/orders_remote_datasource.dart';
 import 'package:beautilly/features/orders/data/repositories/orders_repository_impl.dart';
 import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';

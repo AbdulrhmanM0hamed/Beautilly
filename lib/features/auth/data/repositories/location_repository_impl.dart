@@ -11,7 +11,7 @@ class LocationRepositoryImpl implements LocationRepository {
   final http.Client _client = http.Client();
 
   @override
-  Future<Either<Failure, List<StateModel>>> getStates() async {
+  Future<Either<Failure, List<StateModell>>> getStates() async {
     try {
       final response = await _client.post(
         Uri.parse(ApiEndpoints.register),
@@ -30,8 +30,8 @@ class LocationRepositoryImpl implements LocationRepository {
         final jsonResponse = json.decode(response.body);
         final Map<String, dynamic> statesData = jsonResponse['states'];
 
-        final List<StateModel> states = statesData.entries
-            .map((entry) => StateModel(
+        final List<StateModell> states = statesData.entries
+            .map((entry) => StateModell(
                   id: int.parse(entry.key),
                   name: entry.value.toString(),
                 ))
@@ -47,7 +47,7 @@ class LocationRepositoryImpl implements LocationRepository {
   }
 
   @override
-  Future<Either<Failure, List<CityModel>>> getCities(int stateId) async {
+  Future<Either<Failure, List<CityModell>>> getCities(int stateId) async {
     try {
       final response = await _client.post(
         Uri.parse(ApiEndpoints.register),
@@ -66,8 +66,8 @@ class LocationRepositoryImpl implements LocationRepository {
         final jsonResponse = json.decode(response.body);
         final Map<String, dynamic> citiesData = jsonResponse['cities'];
 
-        final List<CityModel> cities = citiesData.entries
-            .map((entry) => CityModel(
+        final List<CityModell> cities = citiesData.entries
+            .map((entry) => CityModell(
                   id: int.parse(entry.key),
                   name: entry.value.toString(),
                   stateId: stateId,
@@ -84,7 +84,7 @@ class LocationRepositoryImpl implements LocationRepository {
   }
 
   @override
-  Future<Either<Failure, List<CityModel>>> getAllCities() async {
+  Future<Either<Failure, List<CityModell>>> getAllCities() async {
     try {
       final response = await _client.post(
         Uri.parse(ApiEndpoints.register),
@@ -102,8 +102,8 @@ class LocationRepositoryImpl implements LocationRepository {
         final jsonResponse = json.decode(response.body);
         final Map<String, dynamic> citiesData = jsonResponse['cities'];
 
-        final List<CityModel> cities = citiesData.entries
-            .map((entry) => CityModel(
+        final List<CityModell> cities = citiesData.entries
+            .map((entry) => CityModell(
                   id: int.parse(entry.key),
                   name: entry.value.toString(),
                   stateId: 0, // لا نعرف state_id في هذه الحالة

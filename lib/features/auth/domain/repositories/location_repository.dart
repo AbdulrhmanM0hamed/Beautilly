@@ -4,6 +4,6 @@ import '../../data/models/state_model.dart';
 import '../../data/models/city_model.dart';
 
 abstract class LocationRepository {
-  Future<Either<Failure, List<StateModel>>> getStates();
-  Future<Either<Failure, List<CityModel>>> getCities(int stateId);
+  Future<Either<Failure, List<StateModell>>> getStates();
+  Future<Either<Failure, List<CityModell>>> getCities(int stateId);
 } 

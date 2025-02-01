@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
 
-class StateModel extends Equatable {
+class StateModell extends Equatable {
   final int id;
   final String name;
 
-  const StateModel({
+  const StateModell({
     required this.id,
     required this.name,
   });
 
-  factory StateModel.fromJson(Map<String, dynamic> json) {
-    return StateModel(
+  factory StateModell.fromJson(Map<String, dynamic> json) {
+    return StateModell(
       id: json['id'],
       name: json['name'],
     );
@@ -24,5 +24,5 @@ class StateModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name];
+  List<Object?> get props => [id];
 } 

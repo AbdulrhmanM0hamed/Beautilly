@@ -5,10 +5,10 @@ import '../../domain/repositories/location_repository.dart';
 
 class LocationState {
   final bool isLoading;
-  final List<StateModel> states;
-  final List<CityModel> cities;
-  final StateModel? selectedState;
-  final CityModel? selectedCity;
+  final List<StateModell> states;
+  final List<CityModell> cities;
+  final StateModell? selectedState;
+  final CityModell? selectedCity;
   final String? error;
 
   LocationState({
@@ -22,10 +22,10 @@ class LocationState {
 
   LocationState copyWith({
     bool? isLoading,
-    List<StateModel>? states,
-    List<CityModel>? cities,
-    StateModel? selectedState,
-    CityModel? selectedCity,
+    List<StateModell>? states,
+    List<CityModell>? cities,
+    StateModell? selectedState,
+    CityModell? selectedCity,
     String? error,
   }) {
     return LocationState(
@@ -81,7 +81,7 @@ class LocationCubit extends Cubit<LocationState> {
     );
   }
 
-  void selectState(StateModel state) {
+  void selectState(StateModell state) {
     emit(this.state.copyWith(
       selectedState: state,
       selectedCity: null,
@@ -89,7 +89,7 @@ class LocationCubit extends Cubit<LocationState> {
     ));
   }
 
-  void selectCity(CityModel city) {
+  void selectCity(CityModell city) {
     emit(state.copyWith(selectedCity: city));
   }
 } 

@@ -94,4 +94,28 @@ class ProfileCubit extends Cubit<ProfileState> {
       loadProfile();
     }
   }
+
+  Future<void> updateAddress({
+    required int cityId,
+    required int stateId,
+  }) async {
+    try {
+      emit(ProfileLoading());
+      final result = await repository.updateAddress(
+        cityId: cityId,
+        stateId: stateId,
+      );
+      
+      result.fold(
+        (failure) => emit(ProfileError(failure.message)),
+        (profile) {
+          _profile = profile;
+          emit(ProfileLoaded(profile));
+        },
+      );
+    } catch (e) {
+      emit(ProfileError(e.toString()));
+      loadProfile();
+    }
+  }
 } 

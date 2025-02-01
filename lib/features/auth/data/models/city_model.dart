@@ -1,18 +1,18 @@
 import 'package:equatable/equatable.dart';
 
-class CityModel extends Equatable {
+class CityModell extends Equatable {
   final int id;
   final String name;
   final int stateId;
 
-  const CityModel({
+  const CityModell({
     required this.id,
     required this.name,
     required this.stateId,
   });
 
-  factory CityModel.fromJson(Map<String, dynamic> json) {
-    return CityModel(
+  factory CityModell.fromJson(Map<String, dynamic> json) {
+    return CityModell(
       id: json['id'],
       name: json['name'],
       stateId: json['state_id'],
@@ -28,5 +28,5 @@ class CityModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [id, name, stateId];
+  List<Object?> get props => [id];
 } 

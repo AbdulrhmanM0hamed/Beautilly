@@ -169,7 +169,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }) async {
     try {
       final response = await client.post(
-        Uri.parse(ApiEndpoints.updateProfile),
+        Uri.parse(ApiEndpoints.profile),
         headers: await _getHeaders(),
         body: jsonEncode({
           'city_id': cityId,
@@ -179,16 +179,18 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
+
         if (jsonResponse['success'] == true) {
+          // تحويل البيانات المستلمة إلى نموذج ProfileModel
           return ProfileModel.fromJson(jsonResponse['data']);
-        } else {
-          throw ServerException(
-            jsonResponse['message'] ?? 'فشل في تحديث العنوان',
-          );
         }
-      } else {
-        throw ServerException('فشل في تحديث العنوان');
+
+        throw ServerException(
+          jsonResponse['message'] ?? 'فشل في تحديث العنوان',
+        );
       }
+
+      throw ServerException('فشل في تحديث العنوان');
     } catch (e) {
       if (e is ServerException) rethrow;
       throw ServerException('حدث خطأ أثناء تحديث العنوان');

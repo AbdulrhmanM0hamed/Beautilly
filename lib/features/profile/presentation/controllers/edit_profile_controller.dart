@@ -1,8 +1,9 @@
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
-import 'package:beautilly/features/Home/presentation/cubit/profile_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:beautilly/features/profile/data/models/profile_model.dart';
 import 'package:flutter/material.dart';
+import 'package:beautilly/core/utils/validators/form_validators.dart';
 
 class EditProfileController {
   final ProfileModel profile;
@@ -37,7 +38,22 @@ class EditProfileController {
   }
 
   Future<void> updateProfile(BuildContext context) async {
-    if (!formKey.currentState!.validate()) return;
+    // نتحقق من صحة الحقول المطلوبة فقط
+    bool isProfileDataValid = true;
+    bool isPasswordValid = true;
+
+    // إذا تم تغيير البيانات الشخصية، نتحقق من صحتها
+    if (_isProfileDataChanged()) {
+      isProfileDataValid = _validateProfileData();
+    }
+
+    // إذا تم طلب تغيير كلمة المرور، نتحقق من صحتها
+    if (_isPasswordChangeRequested()) {
+      isPasswordValid = _validatePasswordData();
+    }
+
+    // إذا كان هناك أي خطأ في البيانات المطلوب تغييرها، نتوقف
+    if (!isProfileDataValid || !isPasswordValid) return;
 
     bool dataChanged = false;
 
@@ -55,7 +71,6 @@ class EditProfileController {
       // تغيير كلمة المرور
       if (_isPasswordChangeRequested()) {
         await sl<ProfileCubit>().changePassword(
-      //    currentPassword: currentPasswordController.text,
           newPassword: newPasswordController.text,
           confirmPassword: confirmPasswordController.text,
         );
@@ -72,6 +87,26 @@ class EditProfileController {
     } catch (e) {
       _showErrorMessage(context, e.toString());
     }
+  }
+
+  // التحقق من صحة البيانات الشخصية فقط
+  bool _validateProfileData() {
+    return nameController.text.isNotEmpty &&
+        emailController.text.isNotEmpty &&
+        FormValidators.validateEmail(emailController.text) == null &&
+        (phoneController.text.isEmpty || 
+         FormValidators.validatePhone(phoneController.text) == null);
+  }
+
+  // التحقق من صحة بيانات كلمة المرور فقط
+  bool _validatePasswordData() {
+    if (!_isPasswordChangeRequested()) return true;
+    
+    return FormValidators.validatePassword(newPasswordController.text) == null &&
+        FormValidators.validateConfirmPassword(
+          confirmPasswordController.text,
+          newPasswordController.text,
+        ) == null;
   }
 
   bool _isProfileDataChanged() {

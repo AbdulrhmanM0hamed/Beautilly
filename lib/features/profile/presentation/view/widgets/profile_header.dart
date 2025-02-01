@@ -11,8 +11,8 @@ import '../../../../../core/utils/constant/font_manger.dart';
 import '../../../../../core/utils/constant/styles_manger.dart';
 import '../../../../../core/utils/theme/app_colors.dart';
 import '../../../data/models/profile_model.dart';
-import '../../../../Home/presentation/cubit/profile_cubit.dart';
-import '../../../../Home/presentation/cubit/profile_state.dart';
+import '../../cubit/profile_cubit.dart';
+import '../../cubit/profile_state.dart';
 
 import 'package:image_picker/image_picker.dart';
 

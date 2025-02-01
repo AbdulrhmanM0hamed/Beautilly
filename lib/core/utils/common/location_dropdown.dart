@@ -39,7 +39,7 @@ class _LocationDropdownState extends State<LocationDropdown> {
           children: [
             // قائمة المناطق
             Expanded(
-              child: CustomDropdown<StateModel>(
+              child: CustomDropdown<StateModell>(
                 label: 'المنطقة',
                 value: state.selectedState,
                 items: state.states,
@@ -61,7 +61,7 @@ class _LocationDropdownState extends State<LocationDropdown> {
             const SizedBox(width: 16),
             // قائمة المدن
             Expanded(
-              child: CustomDropdown<CityModel>(
+              child: CustomDropdown<CityModell>(
                 label: 'المدينة',
                 value: null,
                 items: state.cities,

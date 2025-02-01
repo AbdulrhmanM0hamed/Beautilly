@@ -11,13 +11,12 @@ class EditAddressController extends ChangeNotifier {
   final ProfileModel profile;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final LocationRepository locationRepository = sl<LocationRepository>();
-  
+
   StateModell? selectedState;
   CityModell? selectedCity;
   List<StateModell> states = [];
   List<CityModell> cities = [];
   bool isLoading = false;
-
 
   EditAddressController(this.profile) {
     _initAddress();
@@ -25,25 +24,21 @@ class EditAddressController extends ChangeNotifier {
   }
 
   void _initAddress() {
-    if (profile.state != null) {
-      selectedState = StateModell(
-        id: profile.state!.id,
-        name: profile.state!.name,
-      );
-    }
-    if (profile.city != null) {
-      selectedCity = CityModell(
+    selectedState = StateModell(
+      id: profile.state.id,
+      name: profile.state.name,
+    );
+
+    selectedCity = CityModell(
         id: profile.city.id,
         name: profile.city.name,
-        stateId: profile.state.id 
-      );
-    }
+        stateId: profile.state.id);
   }
 
   Future<void> _loadStates() async {
     final result = await locationRepository.getStates();
     result.fold(
-      (failure) => debugPrint(failure.message),
+      (failure) => (failure.message),
       (statesList) {
         states = statesList;
         if (selectedState != null) {
@@ -114,12 +109,11 @@ class EditAddressController extends ChangeNotifier {
           context: context,
           message: 'تم تحديث العنوان بنجاح',
         );
-       
       }
     } catch (e) {
       isLoading = false;
       notifyListeners();
-      
+
       if (context.mounted) {
         CustomSnackbar.showError(
           context: context,

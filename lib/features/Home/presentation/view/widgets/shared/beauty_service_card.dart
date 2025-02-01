@@ -1,5 +1,6 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_quick_view.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +29,8 @@ class BeautyServiceCard extends StatelessWidget {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const SalonQuickView(),
+          PageRoutes.fade(
+            page: SalonQuickView(),
           ),
         );
       },

@@ -1,6 +1,4 @@
-import 'package:beautilly/features/onboarding/presentation/view/onboarding_view.dart';
-import 'package:beautilly/features/profile/presentation/cubit/profile_cubit.dart';
-import 'package:beautilly/features/splash/view/splash_view.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/utils/helper/on_genrated_routes.dart';

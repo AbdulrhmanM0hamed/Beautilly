@@ -1,5 +1,5 @@
 import 'package:beautilly/core/services/cache/cache_service.dart';
-import 'package:beautilly/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/orders/data/datasources/orders_remote_datasource.dart';
 import 'package:beautilly/features/orders/data/repositories/orders_repository_impl.dart';
 import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';
@@ -30,7 +30,11 @@ import '../../features/reservations/presentation/cubit/reservations_cubit.dart';
 import '../../features/profile/data/datasources/profile_remote_datasource.dart';
 import '../../features/profile/data/repositories/profile_repository_impl.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
-import '../../features/profile/presentation/cubit/profile_image_cubit.dart';
+import '../../features/profile/presentation/cubit/profile_image_cubit/profile_image_cubit.dart';
+import '../../features/profile/presentation/cubit/favorites_cubit/favorites_cubit.dart';
+import '../../features/profile/data/datasources/favorites_remote_datasource.dart';
+import '../../features/profile/data/repositories/favorites_repository_impl.dart';
+import '../../features/profile/domain/repositories/favorites_repository.dart';
 
 // Tailoring Requests Feature
 
@@ -145,5 +149,21 @@ Future<void> init() async {
       sl<ProfileRepository>(),
       sl<ProfileCubit>(),
     ),
+  );
+
+  // Favorites Feature
+  sl.registerLazySingleton<FavoritesRemoteDataSource>(
+    () => FavoritesRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<FavoritesRepository>(
+    () => FavoritesRepositoryImpl(sl()),
+  );
+
+  sl.registerFactory(
+    () => FavoritesCubit(repository: sl()),
   );
 }

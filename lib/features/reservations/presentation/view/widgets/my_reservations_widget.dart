@@ -1,5 +1,6 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/animations/custom_progress_indcator.dart';
@@ -31,7 +32,9 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
     return BlocBuilder<ReservationsCubit, ReservationsState>(
       builder: (context, state) {
         if (state is ReservationsLoading) {
-          return const Center(child: CustomProgressIndcator());
+          return const Center(child: CustomProgressIndcator(
+            color: AppColors.primary,
+          ));
         }
 
         if (state is ReservationsError) {

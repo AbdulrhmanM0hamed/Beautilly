@@ -1,6 +1,6 @@
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
-import 'package:beautilly/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/profile/data/models/profile_model.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/core/utils/validators/form_validators.dart';

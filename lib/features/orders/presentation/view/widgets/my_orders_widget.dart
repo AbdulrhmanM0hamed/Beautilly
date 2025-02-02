@@ -1,4 +1,5 @@
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/orders/presentation/view/widgets/order_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,7 +38,10 @@ class _MyOrdersContentState extends State<MyOrdersContent> {
     return BlocBuilder<OrdersCubit, OrdersState>(
       builder: (context, state) {
         if (state is OrdersLoading) {
-          return const Center(child: CustomProgressIndcator());
+          return const Center(
+              child: CustomProgressIndcator(
+            color: AppColors.primary,
+          ));
         }
 
         if (state is OrdersError) {
@@ -78,4 +82,3 @@ class _MyOrdersContentState extends State<MyOrdersContent> {
     );
   }
 }
-

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
-import 'package:beautilly/features/profile/presentation/cubit/profile_image_cubit.dart';
-import 'package:beautilly/features/profile/presentation/cubit/profile_image_state.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_image_cubit/profile_image_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_image_cubit/profile_image_state.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,8 +11,8 @@ import '../../../../../core/utils/constant/font_manger.dart';
 import '../../../../../core/utils/constant/styles_manger.dart';
 import '../../../../../core/utils/theme/app_colors.dart';
 import '../../../data/models/profile_model.dart';
-import '../../cubit/profile_cubit.dart';
-import '../../cubit/profile_state.dart';
+import '../../cubit/profile_cubit/profile_cubit.dart';
+import '../../cubit/profile_cubit/profile_state.dart';
 
 import 'package:image_picker/image_picker.dart';
 

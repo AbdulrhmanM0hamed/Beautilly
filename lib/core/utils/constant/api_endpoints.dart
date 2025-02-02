@@ -56,7 +56,10 @@ class ApiEndpoints {
   static const String addReview =
       '$baseUrl/reviews/add?api_key=$api_key'; // إضافة تقييم جديد
   static const String updateReview =
-      '$baseUrl/reviews/update/?api_key=$api_key'; // تحديث تقييم موجود
+      '$baseUrl/reviews/update/?api_key=$api_key';
+  // تحديث تقييم موجود
+  static const String myFavoriteShops =
+      '$baseUrl/my-favorite-shops/?api_key=$api_key';
 
   // خدمات الموقع
   static const String updateLocation =
@@ -120,5 +123,6 @@ class ApiEndpoints {
 
   // Orders
   static const String myOrders = '$baseUrl/my-list-orders';
-  static const String myReservations = '$baseUrl/my-reservations?api_key=$api_key';
+  static const String myReservations =
+      '$baseUrl/my-reservations?api_key=$api_key';
 }

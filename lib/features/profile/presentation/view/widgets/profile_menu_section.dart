@@ -1,8 +1,9 @@
+import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
-import 'package:beautilly/features/profile/presentation/cubit/profile_cubit.dart';
-import 'package:beautilly/features/profile/presentation/cubit/profile_state.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_state.dart';
 import 'package:beautilly/features/profile/presentation/view/edit_profile/edit_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,9 @@ import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
 import '../../../../../core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/features/profile/presentation/view/edit_address/edit_address_view.dart';
+import 'package:beautilly/features/profile/presentation/cubit/favorites_cubit/favorites_cubit.dart';
+import 'package:beautilly/features/profile/presentation/view/favorites/favorites_view.dart';
+import 'package:get_it/get_it.dart';
 
 class ProfileMenuSection extends StatelessWidget {
   const ProfileMenuSection({super.key});
@@ -62,7 +66,18 @@ class ProfileMenuSection extends StatelessWidget {
                   MenuItem(
                     icon: Icons.favorite_border_outlined,
                     title: "المفضلة",
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageRoutes.fadeScale(
+                          page: BlocProvider(
+                            create: (context) =>
+                                sl<FavoritesCubit>()..loadFavorites(),
+                            child: const FavoritesView(),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                   MenuItem(
                     icon: Icons.dark_mode_outlined,

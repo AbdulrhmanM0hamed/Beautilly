@@ -1,4 +1,4 @@
-import '../../data/models/statistics_model.dart';
+import '../../../data/models/statistics_model.dart';
 
 abstract class StatisticsState {}
 

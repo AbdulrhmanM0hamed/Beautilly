@@ -2,6 +2,7 @@ import '../../domain/entities/favorite_shop.dart';
 
 class FavoriteShopModel extends FavoriteShop {
   const FavoriteShopModel({
+    required super.id,
     required super.name,
     required super.type,
     required super.image,
@@ -11,6 +12,7 @@ class FavoriteShopModel extends FavoriteShop {
 
   factory FavoriteShopModel.fromJson(Map<String, dynamic> json) {
     return FavoriteShopModel(
+      id: json['id'],
       name: json['name'],
       type: json['type'],
       image: json['image'],
@@ -21,6 +23,7 @@ class FavoriteShopModel extends FavoriteShop {
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'type': type,
       'image': image,

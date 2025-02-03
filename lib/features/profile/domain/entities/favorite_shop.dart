@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 class FavoriteShop extends Equatable {
+  final int id;
   final String name;
   final String type;
   final String image;
@@ -8,6 +9,7 @@ class FavoriteShop extends Equatable {
   final int lovesCount;
 
   const FavoriteShop({
+    required this.id,
     required this.name,
     required this.type,
     required this.image,
@@ -16,5 +18,5 @@ class FavoriteShop extends Equatable {
   });
 
   @override
-  List<Object?> get props => [name, type, image, rating, lovesCount];
+  List<Object?> get props => [id , name, type, image, rating, lovesCount];
 } 

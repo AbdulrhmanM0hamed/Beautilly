@@ -1,4 +1,9 @@
 import 'package:beautilly/core/services/cache/cache_service.dart';
+import 'package:beautilly/features/Home/data/datasources/services_remote_datasource.dart';
+import 'package:beautilly/features/Home/data/repositories/services_repository_impl.dart';
+import 'package:beautilly/features/Home/domain/repositories/services_repository.dart';
+import 'package:beautilly/features/Home/domain/usecases/get_services.dart';
+import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/orders/data/datasources/orders_remote_datasource.dart';
 import 'package:beautilly/features/orders/data/repositories/orders_repository_impl.dart';
@@ -8,7 +13,7 @@ import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:get_it/get_it.dart';
 import '../../features/Home/data/repositories/statistics_repository_impl.dart';
 import '../../features/Home/domain/repositories/statistics_repository.dart';
-import '../../features/Home/presentation/cubit/statistics_cubit.dart';
+import '../../features/Home/presentation/cubit/statistics_cubit/statistics_cubit.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/presentation/cubit/auth_cubit.dart';
@@ -165,5 +170,25 @@ Future<void> init() async {
 
   sl.registerFactory(
     () => FavoritesCubit(repository: sl()),
+  );
+
+  // services Feature
+  sl.registerLazySingleton<ServicesRemoteDataSource>(
+    () => ServicesRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<ServicesRepository>(
+    () => ServicesRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton(
+    () => GetServices(sl()),
+  );
+
+  sl.registerFactory(
+    () => ServicesCubit(getServices: sl()),
   );
 }

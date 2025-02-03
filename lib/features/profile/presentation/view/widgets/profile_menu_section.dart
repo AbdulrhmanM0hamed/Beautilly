@@ -14,7 +14,6 @@ import '../../../../../core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/features/profile/presentation/view/edit_address/edit_address_view.dart';
 import 'package:beautilly/features/profile/presentation/cubit/favorites_cubit/favorites_cubit.dart';
 import 'package:beautilly/features/profile/presentation/view/favorites/favorites_view.dart';
-import 'package:get_it/get_it.dart';
 
 class ProfileMenuSection extends StatelessWidget {
   const ProfileMenuSection({super.key});

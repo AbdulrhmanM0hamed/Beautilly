@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
-import '../models/favorite_shop_model.dart';
+import '../../domain/entities/favorite_shop.dart';
 
 abstract class FavoritesRemoteDataSource {
-  Future<List<FavoriteShopModel>> getFavoriteShops();
+  Future<List<FavoriteShop>> getFavoriteShops();
   Future<void> addToFavorites(int shopId);
   Future<void> removeFromFavorites(int shopId);
 }
@@ -20,21 +20,24 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
     required this.cacheService,
   });
 
+
   @override
-  Future<List<FavoriteShopModel>> getFavoriteShops() async {
-    final token = await cacheService.getToken();
-    final sessionCookie = await cacheService.getSessionCookie();
-
-    if (token == null) {
-      throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-    }
-
+  Future<List<FavoriteShop>> getFavoriteShops() async {
     try {
+      final token = await cacheService.getToken();
+      final sessionCookie = await cacheService.getSessionCookie();
+
+      if (token == null) {
+        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
+      }
+
       final response = await client.get(
         Uri.parse(ApiEndpoints.myFavoriteShops),
         headers: {
           'Authorization': 'Bearer $token',
+          'x-api-key': ApiEndpoints.api_key,
           'Accept': 'application/json',
+          'Content-Type': 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
       );
@@ -42,16 +45,23 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         if (jsonResponse['success'] == true) {
-          return (jsonResponse['data'] as List)
-              .map((shop) => FavoriteShopModel.fromJson(shop))
-              .toList();
+          final List<dynamic> data = jsonResponse['data'];
+          return data.map((shop) => FavoriteShop(
+            id: shop['id'],
+            name: shop['name'] as String,
+            type: shop['type'] as String,
+            image: shop['image'] as String,
+            rating: shop['rating'].toString(),
+            lovesCount: shop['loves_count'] as int,
+          )).toList();
         } else {
-          throw ServerException(jsonResponse['message'] ?? 'حدث خطأ في تحميل المفضلة');
+          throw ServerException('فشل في تحميل المفضلة');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
-        throw ServerException('فشل في تحميل المفضلة');
+        final error = json.decode(response.body);
+        throw ServerException(error['message'] ?? 'فشل في تحميل المفضلة');
       }
     } catch (e) {
       if (e is UnauthorizedException) rethrow;
@@ -59,6 +69,8 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
       throw ServerException('حدث خطأ غير متوقع');
     }
   }
+
+
 
   @override
   Future<void> addToFavorites(int shopId) async {
@@ -69,4 +81,4 @@ class FavoritesRemoteDataSourceImpl implements FavoritesRemoteDataSource {
   Future<void> removeFromFavorites(int shopId) async {
     // Implementation for removing from favorites
   }
-} 
+}

@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
+import '../cubit/service_cubit/services_cubit.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -34,45 +35,48 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<ProfileCubit>()..loadProfile(),
-      child: Scaffold(
-        body: _pages[_selectedIndex],
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-          ),
-          child: Theme(
-            data: Theme.of(context).copyWith(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
+      create: (context) => sl<ServicesCubit>(),
+      child: BlocProvider(
+        create: (context) => sl<ProfileCubit>()..loadProfile(),
+        child: Scaffold(
+          body: _pages[_selectedIndex],
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).scaffoldBackgroundColor,
             ),
-            child: BottomNavigationBar(
-              currentIndex: _selectedIndex,
-              onTap: (index) {
-                setState(() {
-                  _selectedIndex = index;
-                });
-              },
-              type: BottomNavigationBarType.fixed,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              selectedItemColor: AppColors.primary,
-              unselectedItemColor: AppColors.grey,
-              selectedLabelStyle: getMediumStyle(
-                fontSize: FontSize.size12,
-                fontFamily: FontConstant.cairo,
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
               ),
-              unselectedLabelStyle: getMediumStyle(
-                fontSize: FontSize.size12,
-                fontFamily: FontConstant.cairo,
+              child: BottomNavigationBar(
+                currentIndex: _selectedIndex,
+                onTap: (index) {
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                },
+                type: BottomNavigationBarType.fixed,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                selectedItemColor: AppColors.primary,
+                unselectedItemColor: AppColors.grey,
+                selectedLabelStyle: getMediumStyle(
+                  fontSize: FontSize.size12,
+                  fontFamily: FontConstant.cairo,
+                ),
+                unselectedLabelStyle: getMediumStyle(
+                  fontSize: FontSize.size12,
+                  fontFamily: FontConstant.cairo,
+                ),
+                items: [
+                  _buildNavItem(AppAssets.homeIconBottom, 'الرئيسية'),
+                  _buildNavItem(AppAssets.Location, 'الأقرب'),
+                  _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
+                  _buildNavItem(AppAssets.tfsel, 'طلبات'),
+                  _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
+                ],
               ),
-              items: [
-                _buildNavItem(AppAssets.homeIconBottom, 'الرئيسية'),
-                _buildNavItem(AppAssets.Location, 'الأقرب'),
-                _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
-                _buildNavItem(AppAssets.tfsel, 'طلبات'),
-                _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
-              ],
             ),
           ),
         ),

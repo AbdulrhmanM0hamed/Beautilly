@@ -16,17 +16,22 @@ class AddressForm extends StatefulWidget {
   State<AddressForm> createState() => _AddressFormState();
 }
 
-
 class _AddressFormState extends State<AddressForm> {
   @override
   void initState() {
     super.initState();
-    // الاستماع للتغييرات في البيانات
-    widget.controller.addListener(() {
-      if (mounted) setState(() {});
-    });
+    widget.controller.addListener(_onControllerUpdate);
   }
 
+  @override
+  void dispose() {
+    widget.controller.removeListener(_onControllerUpdate);
+    super.dispose();
+  }
+
+  void _onControllerUpdate() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,12 @@ class _AddressFormState extends State<AddressForm> {
           label: 'المنطقة',
           value: widget.controller.selectedState,
           items: widget.controller.states,
-          onChanged: widget.controller.onStateChanged,
+          onChanged: (state) {
+            widget.controller.onStateChanged(state);
+            // تصفير اختيار المدينة عند تغيير المنطقة
+            widget.controller.onCityChanged(null);
+            setState(() {}); // تحديث الواجهة
+          },
           validator: (value) {
             if (value == null) {
               return 'يرجى اختيار المنطقة';
@@ -48,7 +58,7 @@ class _AddressFormState extends State<AddressForm> {
         ),
         const SizedBox(height: 16),
         CustomDropdown<CityModell>(
-          itemToString: (city) => city.name,
+          itemToString: (city) => city.name ,
           label: 'المدينة',
           value: widget.controller.selectedCity,
           items: widget.controller.cities,

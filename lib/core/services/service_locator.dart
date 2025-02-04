@@ -1,8 +1,13 @@
 import 'package:beautilly/core/services/cache/cache_service.dart';
+import 'package:beautilly/features/Home/data/datasources/premium_shops_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/services_remote_datasource.dart';
+import 'package:beautilly/features/Home/data/repositories/premium_shops_repository_impl.dart';
 import 'package:beautilly/features/Home/data/repositories/services_repository_impl.dart';
+import 'package:beautilly/features/Home/domain/repositories/premium_shops_repository.dart';
 import 'package:beautilly/features/Home/domain/repositories/services_repository.dart';
-import 'package:beautilly/features/Home/domain/usecases/get_services.dart';
+import 'package:beautilly/features/Home/domain/usecases/get_premium_shops_usecase.dart';
+import 'package:beautilly/features/Home/domain/usecases/get_services_usecase.dart';
+import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/orders/data/datasources/orders_remote_datasource.dart';
@@ -190,5 +195,25 @@ Future<void> init() async {
 
   sl.registerFactory(
     () => ServicesCubit(getServices: sl()),
+  );
+
+  // Premium Shops Feature
+  sl.registerLazySingleton<PremiumShopsRemoteDataSource>(
+    () => PremiumShopsRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<PremiumShopsRepository>(
+    () => PremiumShopsRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton(
+    () => GetPremiumShopsUseCase(sl()),
+  );
+
+  sl.registerFactory(
+    () => PremiumShopsCubit(getPremiumShopsUseCase: sl()),
   );
 }

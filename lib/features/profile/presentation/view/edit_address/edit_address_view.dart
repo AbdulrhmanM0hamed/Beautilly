@@ -81,7 +81,7 @@ class _EditAddressViewState extends State<EditAddressView> {
                         ),
                         child: Row(
                           children: [
-                        const    Icon(
+                            const Icon(
                               Icons.info_outline,
                               color: AppColors.primary,
                               size: 24,
@@ -94,7 +94,6 @@ class _EditAddressViewState extends State<EditAddressView> {
                                   fontFamily: FontConstant.cairo,
                                   color: AppColors.primary,
                                   fontSize: 14,
-                                
                                 ),
                               ),
                             ),

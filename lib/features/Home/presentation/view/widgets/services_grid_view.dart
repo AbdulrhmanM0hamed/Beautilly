@@ -228,11 +228,11 @@ class ServiceCard extends StatelessWidget {
               ),
               // اسم الخدمة
               Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   service.name,
                   style: getBoldStyle(
-                    fontSize: FontSize.size12,
+                    fontSize: FontSize.size13,
                     fontFamily: FontConstant.cairo,
                   ),
                   maxLines: 1,

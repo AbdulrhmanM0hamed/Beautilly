@@ -4,6 +4,7 @@ import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_quick_view.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class BeautyServiceCard extends StatelessWidget {
   final String image;
@@ -49,11 +50,24 @@ class BeautyServiceCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius:
                       const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: Image.asset(
-                    image,
+                  child: CachedNetworkImage(
+                    imageUrl: image,
                     height: 140,
                     width: double.infinity,
                     fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey[200],
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[100],
+                      child: const Icon(Icons.store),
+                    ),
                   ),
                 ),
                 // Favorite Button

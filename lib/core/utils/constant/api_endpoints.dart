@@ -79,8 +79,10 @@ class ApiEndpoints {
       '$baseUrl/salons/top-rated?api_key=$api_key'; // أعلى الصالونات تقييماً
   static const String featuredSalons =
       '$baseUrl/salons/featured?api_key=$api_key'; // الصالونات المميزة
-  static const String popularSalons =
-      '$baseUrl/salons/popular?api_key=$api_key'; // الصالونات الأكثر شعبية
+  static const String premiumShops =
+      '$baseUrl/shops/premium?api_key=$api_key'; // الصالونات الأكثر شعبية
+
+
 
   // دور الأزياء - تفاصيل كاملة
   static const String fashionHouseFullDetails =

@@ -13,6 +13,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
 import '../cubit/service_cubit/services_cubit.dart';
+import '../cubit/statistics_cubit/statistics_cubit.dart';
+import '../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -34,8 +36,18 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<ServicesCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<ServicesCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<StatisticsCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<PremiumShopsCubit>(),
+        ),
+      ],
       child: BlocProvider(
         create: (context) => sl<ProfileCubit>()..loadProfile(),
         child: Scaffold(

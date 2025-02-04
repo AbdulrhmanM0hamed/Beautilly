@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../domain/usecases/get_services.dart';
+import '../../../domain/usecases/get_services_usecase.dart';
 import 'services_state.dart';
 
 class ServicesCubit extends Cubit<ServicesState> {

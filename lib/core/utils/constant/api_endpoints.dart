@@ -34,7 +34,7 @@ class ApiEndpoints {
   static const String categories = '$baseUrl/categories?api_key=$api_key';
   static const String filters = '$baseUrl/filters?api_key=$api_key';
   static const String statistics = '$baseUrl/statistics?api_key=$api_key';
-  static const String services = '$baseUrl/service-categories-last?api_key=$api_key';
+  static const String services = '$baseUrl/services?api_key=$api_key';
 
   // المزايا الاجتماعية
   static const String posts = '$baseUrl/posts?api_key=$api_key';

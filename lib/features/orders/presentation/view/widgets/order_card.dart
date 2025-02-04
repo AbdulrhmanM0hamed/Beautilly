@@ -46,7 +46,7 @@ class OrderCard extends StatelessWidget {
                   imageUrl: order.mainImage.medium,
                   height: 140,
                   width: double.infinity,
-                  fit: BoxFit.cover,
+                  fit: BoxFit.contain,
                   placeholder: (context, url) => Shimmer.fromColors(
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,

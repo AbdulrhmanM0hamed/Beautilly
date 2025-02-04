@@ -8,6 +8,8 @@ import 'package:beautilly/features/Home/presentation/view/widgets/popular_salons
 import 'package:beautilly/features/Home/presentation/view/widgets/fashion_houses_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/statistics_section.dart';
+import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
+import 'package:beautilly/features/Home/presentation/view/all_services_view.dart';
 
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key});
@@ -38,15 +40,55 @@ class HomeViewBody extends StatelessWidget {
               const SizedBox(height: 16.0),
               const StatisticsSection(),
               const SizedBox(height: 16.0),
-              Text(
-                'ما الذى تريدى ان تفعليه؟',
-                style: getBoldStyle(
-                  fontFamily: FontConstant.cairo,
-                  fontSize: FontSize.size16,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'ما الذي تريدين أن تفعليه؟',
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size16,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      // التنقل إلى صفحة كل الخدمات
+                      Navigator.of(context).push(
+                        PageRoutes.fadeScale(
+                          page: const AllServicesView(),
+                        ),
+                      );
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'عرض المزيد',
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 14,
+                          color: AppColors.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16.0),
-              const ServicesGridView(),
+              const ServicesGridView(maxItems: 8),
               const SizedBox(height: 16.0),
               Text(
                 'أشهر صالونات التجميل',

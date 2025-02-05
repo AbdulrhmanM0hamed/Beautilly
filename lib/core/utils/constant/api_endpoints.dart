@@ -69,8 +69,8 @@ class ApiEndpoints {
       '$baseUrl/venues/nearby?api_key=$api_key'; // الأماكن القريبة
 
   // الصالونات - تفاصيل كاملة
-  static const String special_offers =
-      '$baseUrl/salons/special_offers?api_key=$api_key';
+  static const String discounts =
+      '$baseUrl/discounts?api_key=$api_key';
   static const String salonFullDetails =
       '$baseUrl/salons/full?api_key=$api_key'; // جلب كل بيانات الصالون مرة واحدة (معلومات + خدمات + طاقم + تقييمات + صور + مواعيد)
   static const String salonsByCategory =
@@ -81,6 +81,8 @@ class ApiEndpoints {
       '$baseUrl/salons/featured?api_key=$api_key'; // الصالونات المميزة
   static const String premiumShops =
       '$baseUrl/shops/premium?api_key=$api_key'; // الصالونات الأكثر شعبية
+
+
 
 
 

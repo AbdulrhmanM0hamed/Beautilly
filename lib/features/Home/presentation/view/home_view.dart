@@ -15,6 +15,7 @@ import '../../../../core/services/service_locator.dart';
 import '../cubit/service_cubit/services_cubit.dart';
 import '../cubit/statistics_cubit/statistics_cubit.dart';
 import '../cubit/premium_shops_cubit/premium_shops_cubit.dart';
+import '../cubit/discounts_cubit/discounts_cubit.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -46,6 +47,9 @@ class _HomeViewState extends State<HomeView> {
         ),
         BlocProvider(
           create: (context) => sl<PremiumShopsCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<DiscountsCubit>(),
         ),
       ],
       child: BlocProvider(

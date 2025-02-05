@@ -1,4 +1,5 @@
 import 'package:beautilly/core/services/cache/cache_service.dart';
+import 'package:beautilly/features/Home/data/datasources/discounts_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/premium_shops_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/services_remote_datasource.dart';
 import 'package:beautilly/features/Home/data/repositories/premium_shops_repository_impl.dart';
@@ -45,6 +46,10 @@ import '../../features/profile/presentation/cubit/favorites_cubit/favorites_cubi
 import '../../features/profile/data/datasources/favorites_remote_datasource.dart';
 import '../../features/profile/data/repositories/favorites_repository_impl.dart';
 import '../../features/profile/domain/repositories/favorites_repository.dart';
+import '../../features/Home/data/repositories/discounts_repository_impl.dart';
+import '../../features/Home/domain/repositories/discounts_repository.dart';
+import '../../features/Home/domain/usecases/get_discounts_usecase.dart';
+import '../../features/Home/presentation/cubit/discounts_cubit/discounts_cubit.dart';
 
 // Tailoring Requests Feature
 
@@ -215,5 +220,25 @@ Future<void> init() async {
 
   sl.registerFactory(
     () => PremiumShopsCubit(getPremiumShopsUseCase: sl()),
+  );
+
+  // Discounts Feature
+  sl.registerLazySingleton<DiscountsRemoteDataSource>(
+    () => DiscountsRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<DiscountsRepository>(
+    () => DiscountsRepositoryImpl(sl()),
+  );
+
+  sl.registerLazySingleton(
+    () => GetDiscountsUseCase(sl()),
+  );
+
+  sl.registerFactory(
+    () => DiscountsCubit(getDiscountsUseCase: sl()),
   );
 }

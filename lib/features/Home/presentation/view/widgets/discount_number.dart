@@ -9,10 +9,10 @@ class DiscountNumber extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final circleSize = size.width * 0.2; // 20% of screen width
+    final circleSize = size.width * 0.2;
     
     return Padding(
-      padding: EdgeInsets.only(left: size.width * 0.06), // 6% of screen width
+      padding: EdgeInsets.only(left: size.width * 0.06),
       child: Transform.rotate(
         angle: -0.6,
         child: Container(
@@ -32,7 +32,7 @@ class DiscountNumber extends StatelessWidget {
                     'حتى',
                     style: getRegularStyle(
                       color: Colors.white,
-                      fontSize: size.width * 0.035, // 3.5% of screen width
+                      fontSize: size.width * 0.035,
                       fontFamily: FontConstant.cairo,
                     ),
                   ),
@@ -40,7 +40,7 @@ class DiscountNumber extends StatelessWidget {
                     '$discount%',
                     style: getBoldStyle(
                       color: Colors.white,
-                      fontSize: size.width * 0.06, // 6% of screen width
+                      fontSize: size.width * 0.06,
                       fontFamily: FontConstant.cairo,
                     ),
                   ),

@@ -36,7 +36,7 @@ class HomeViewBody extends StatelessWidget {
                     color: AppColors.textSecondary),
               ),
               const SizedBox(height: 16.0),
-              const SpecialtiesView(),
+              const SpecialViewListView(),
               const SizedBox(height: 16.0),
               const StatisticsSection(),
               const SizedBox(height: 16.0),

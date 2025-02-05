@@ -46,17 +46,20 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
               itemCount: state.shops.length,
               itemBuilder: (context, index) {
                 final shop = state.shops[index];
-                return Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: BeautyServiceCard(
-                    image: shop.mainImageUrl,
-                    name: shop.name,
-                    location: '${shop.cityName}، ${shop.stateName}',
-                    rating: shop.avgRating ?? 0.0,
-                    ratingCount: shop.loversCount,
-                    tags: shop.services.map((e) => e.name).toList(),
-                  ),
-                );
+                if (shop.type == 'salon') {
+                  return Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: BeautyServiceCard(
+                      image: shop.mainImageUrl,
+                      name: shop.name,
+                      location: '${shop.cityName}، ${shop.stateName}',
+                      rating: shop.avgRating ?? 0.0,
+                      ratingCount: shop.loversCount,
+                      tags: shop.services.map((e) => e.name).toList(),
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
               },
             ),
           );

@@ -10,6 +10,8 @@ import 'package:beautilly/features/Home/domain/usecases/get_premium_shops_usecas
 import 'package:beautilly/features/Home/domain/usecases/get_services_usecase.dart';
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
+import 'package:beautilly/features/orders/domain/usecases/add_order_usecase.dart';
+import 'package:beautilly/features/orders/presentation/cubit/add_order_cubit/add_order_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/orders/data/datasources/orders_remote_datasource.dart';
 import 'package:beautilly/features/orders/data/repositories/orders_repository_impl.dart';
@@ -108,8 +110,11 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<OrdersRepository>(
-    () => OrdersRepositoryImpl(sl()),
+    () => OrdersRepositoryImpl(remoteDataSource: sl()),
   );
+
+  sl.registerLazySingleton(() => AddOrderUseCase(sl()));
+  sl.registerFactory(() => AddOrderCubit(addOrderUseCase: sl()));
 
   sl.registerLazySingleton(() => GetMyOrders(sl()));
 

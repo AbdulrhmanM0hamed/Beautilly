@@ -101,8 +101,8 @@ class ApiEndpoints {
   // طلبات التفصيل
   static const String tailoringRequests =
       '$baseUrl/tailoring-requests?api_key=$api_key'; // عرض كل طلبات التفصيل
-  static const String createTailoringRequest =
-      '$baseUrl/tailoring-requests/create?api_key=$api_key'; // إنشاء طلب تفصيل جديد
+  static const String addMyOrder =
+      '$baseUrl/add-my-orders?api_key=$api_key'; // إنشاء طلب تفصيل جديد
   static const String myTailoringRequests =
       '$baseUrl/tailoring-requests/my-requests?api_key=$api_key'; // طلبات التفصيل الخاصة بي
   static const String tailoringRequestDetails =

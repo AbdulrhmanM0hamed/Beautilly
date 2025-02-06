@@ -4,11 +4,14 @@ import '../../../../core/error/failures.dart';
 import '../../domain/entities/order.dart';
 import '../../domain/repositories/orders_repository.dart';
 import '../datasources/orders_remote_datasource.dart';
+import '../models/order_request_model.dart';
 
 class OrdersRepositoryImpl implements OrdersRepository {
   final OrdersRemoteDataSource remoteDataSource;
 
-  OrdersRepositoryImpl(this.remoteDataSource);
+  OrdersRepositoryImpl({
+    required this.remoteDataSource,
+  });
 
   @override
   Future<Either<Failure, List<OrderEntity>>> getMyOrders() async {
@@ -51,4 +54,15 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }
-} 
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> addOrder(
+      OrderRequestModel order) async {
+    try {
+      final result = await remoteDataSource.addOrder(order);
+      return Right(result);
+    } catch (e) {
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+}

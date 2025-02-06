@@ -1,15 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../models/order_model.dart';
+import '../models/order_request_model.dart';
 
 abstract class OrdersRemoteDataSource {
   Future<List<OrderModel>> getMyOrders();
   Future<List<OrderModel>> getMyReservations();
   Future<List<OrderModel>> getAllOrders();
+  Future<Map<String, dynamic>> addOrder(OrderRequestModel order);
 }
 
 class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
@@ -25,7 +28,7 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
   Future<List<OrderModel>> getMyOrders() async {
     final token = await cacheService.getToken();
     final sessionCookie = await cacheService.getSessionCookie();
-    
+
     if (token == null) {
       throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
     }
@@ -47,7 +50,8 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
           .map((order) => OrderModel.fromJson(order))
           .toList();
     } else if (response.statusCode == 401) {
-      throw UnauthorizedException('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+      throw UnauthorizedException(
+          'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
     } else {
       throw ServerException('فشل في تحميل الطلبات');
     }
@@ -58,7 +62,7 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
     // نفس المنطق مع تغيير الـ endpoint
     final token = await cacheService.getToken();
     final sessionCookie = await cacheService.getSessionCookie();
-    
+
     if (token == null) {
       throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
     }
@@ -80,7 +84,8 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
           .map((order) => OrderModel.fromJson(order))
           .toList();
     } else if (response.statusCode == 401) {
-      throw UnauthorizedException('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+      throw UnauthorizedException(
+          'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
     } else {
       throw ServerException('فشل في تحميل الحجوزات');
     }
@@ -91,7 +96,7 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
     try {
       final token = await cacheService.getToken();
       final sessionCookie = await cacheService.getSessionCookie();
-      
+
       if (token == null) {
         throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
       }
@@ -120,4 +125,63 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
       rethrow;
     }
   }
-} 
+
+  @override
+  Future<Map<String, dynamic>> addOrder(OrderRequestModel order) async {
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(ApiEndpoints.addMyOrder),
+      );
+
+      // إضافة الهيدرز
+      final token = await cacheService.getToken();
+      final sessionCookie = await cacheService.getSessionCookie();
+      request.headers.addAll({
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+        'x-api-key': ApiEndpoints.api_key,
+        if (sessionCookie != null) 'Cookie': sessionCookie,
+      });
+
+      // إضافة البيانات الأساسية
+      request.fields.addAll({
+        'height': order.height.toString(),
+        'weight': order.weight.toString(),
+        'size': order.size,
+        'description': order.description,
+        'execution_time': order.executionTime.toString(),
+        'api_key': ApiEndpoints.api_key,
+      });
+
+      // إضافة مصفوفة الأقمشة بالطريقة الصحيحة
+      for (var i = 0; i < order.fabrics.length; i++) {
+        request.fields['fabrics[$i][type]'] = order.fabrics[i].type;
+        request.fields['fabrics[$i][color]'] = order.fabrics[i].color;
+      }
+
+      // إضافة الصورة
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'image',
+          order.imagePath,
+          contentType: MediaType('image', '*'),
+        ),
+      );
+
+      final response = await http.Response.fromStream(await request.send());
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['success'] == true) {
+          return jsonResponse['data'];
+        }
+        throw ServerException(jsonResponse['message'] ?? 'فشل في إضافة الطلب');
+      }
+
+      throw ServerException('فشل في إضافة الطلب: ${response.statusCode}');
+    } catch (e) {
+      throw ServerException('حدث خطأ أثناء إضافة الطلب');
+    }
+  }
+}

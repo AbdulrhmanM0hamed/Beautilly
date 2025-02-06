@@ -46,7 +46,7 @@ class OrderCard extends StatelessWidget {
                   imageUrl: order.mainImage.medium,
                   height: 140,
                   width: double.infinity,
-                  fit: BoxFit.contain,
+                  fit: BoxFit.cover,
                   placeholder: (context, url) => Shimmer.fromColors(
                     baseColor: Colors.grey[300]!,
                     highlightColor: Colors.grey[100]!,
@@ -183,14 +183,11 @@ class OrderCard extends StatelessWidget {
                       separatorBuilder: (_, __) => const SizedBox(width: 8),
                       itemBuilder: (context, index) {
                         final fabric = order.fabrics[index];
-                        final color = Color(
-                          int.parse(fabric.color.replaceAll('#', '0xFF')),
-                        );
                         return _buildInfoChip(
                           Icons.format_paint_outlined,
                           fabric.type,
-                          color.withOpacity(0.1),
-                          textColor: color,
+                          _getColorFromHex(fabric.color).withOpacity(0.1),
+                          textColor: _getColorFromHex(fabric.color),
                         );
                       },
                     ),
@@ -306,5 +303,17 @@ class OrderCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color _getColorFromHex(String hexColor) {
+    try {
+      hexColor = hexColor.replaceAll('#', '');
+      if (hexColor.length == 6) {
+        hexColor = 'FF' + hexColor;
+      }
+      return Color(int.parse(hexColor, radix: 16));
+    } catch (e) {
+      return Colors.grey;
+    }
   }
 }

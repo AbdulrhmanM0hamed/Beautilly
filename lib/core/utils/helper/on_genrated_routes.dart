@@ -1,11 +1,15 @@
+import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/features/Home/presentation/view/home_view.dart';
 import 'package:beautilly/features/auth/presentation/view/forget_password.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signup_view.dart';
 import 'package:beautilly/features/onboarding/presentation/view/onboarding_view.dart';
+import 'package:beautilly/features/orders/presentation/view/add_order_view.dart';
 import 'package:beautilly/features/splash/view/splash_view.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../features/orders/presentation/cubit/add_order_cubit/add_order_cubit.dart';
 
 Route<dynamic> onGenratedRoutes(RouteSettings settings) {
   switch (settings.name) {
@@ -42,6 +46,13 @@ Route<dynamic> onGenratedRoutes(RouteSettings settings) {
     case SalonProfileView.routeName:
       return MaterialPageRoute(
         builder: (context) => const SalonProfileView(),
+      );
+    case AddOrderView.routeName:
+      return MaterialPageRoute(
+        builder: (_) => BlocProvider(
+          create: (context) => sl<AddOrderCubit>(),
+          child: const AddOrderView(),
+        ),
       );
     default:
       return MaterialPageRoute(

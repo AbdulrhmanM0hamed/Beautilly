@@ -19,206 +19,205 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Header & Image Section
-          Stack(
-            children: [
-              // Image
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                child: CachedNetworkImage(
-                  imageUrl: order.mainImage.medium,
-                  height: 140,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(
-                      height: 140,
-                      color: Colors.white,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    height: 140,
-                    color: Colors.grey[100],
-                    child: const Icon(Icons.error_outline),
-                  ),
-                ),
-              ),
-              // Gradient Overlay
-              Container(
-                height: 140,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.transparent,
-                      Colors.black.withOpacity(0.5),
-                    ],
-                  ),
-                ),
-              ),
-              // Status Badge
-              Positioned(
-                top: 12,
-                right: 12,
-                child: _buildStatusBadge(),
-              ),
-              // User Info
-              Positioned(
-                bottom: 12,
-                left: 12,
-                right: 12,
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Colors.white,
-                      child: Text(
-                        order.user.name[0].toUpperCase(),
-                        style: getBoldStyle(
-                          fontFamily: FontConstant.cairo,
-                          color: AppColors.primary,
-                          fontSize: FontSize.size14,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            order.user.name,
-                            style: getMediumStyle(
-                              fontFamily: FontConstant.cairo,
-                              color: Colors.white,
-                              fontSize: FontSize.size14,
-                            ),
-                          ),
-                          Text(
-                            'طلب #${order.id}',
-                            style: getRegularStyle(
-                              fontFamily: FontConstant.cairo,
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: FontSize.size12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        margin: const EdgeInsets.only(bottom: 12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Theme.of(context).cardColor,
+              Theme.of(context).cardColor.withOpacity(0.9),
             ],
           ),
-
-          // Details Section
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              spreadRadius: 2,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header & Image Section
+            Stack(
               children: [
-                // Description
-                Text(
-                  order.description,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: getRegularStyle(
-                    fontFamily: FontConstant.cairo,
-                    color: Colors.black87,
-                    fontSize: FontSize.size14,
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Measurements & Fabrics
-                Row(
-                  children: [
-                    _buildInfoChip(
-                      Icons.height,
-                      '${order.height} سم',
-                      AppColors.primary.withOpacity(0.1),
-                    ),
-                    const SizedBox(width: 8),
-                    _buildInfoChip(
-                      Icons.monitor_weight_outlined,
-                      '${order.weight} كجم',
-                      AppColors.primary.withOpacity(0.1),
-                    ),
-                    const SizedBox(width: 8),
-                    _buildInfoChip(
-                      Icons.straighten,
-                      order.size,
-                      AppColors.primary.withOpacity(0.1),
-                    ),
-                  ],
-                ),
-                if (order.fabrics.isNotEmpty) ...[
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    height: 28,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: order.fabrics.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
-                      itemBuilder: (context, index) {
-                        final fabric = order.fabrics[index];
-                        return _buildInfoChip(
-                          Icons.format_paint_outlined,
-                          fabric.type,
-                          _getColorFromHex(fabric.color).withOpacity(0.1),
-                          textColor: _getColorFromHex(fabric.color),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-
-                // Actions
-                if (isMyRequest) ...[
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.edit_outlined),
-                        color: AppColors.primary,
-                        tooltip: 'تعديل',
+                // Image
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                  child: CachedNetworkImage(
+                    imageUrl: order.mainImage.medium,
+                    height: 160,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Shimmer.fromColors(
+                      baseColor: Colors.grey[300]!,
+                      highlightColor: Colors.grey[100]!,
+                      child: Container(
+                        height: 160,
+                        color: Colors.white,
                       ),
-                      IconButton(
-                        onPressed: () {},
-                        icon: const Icon(Icons.delete_outline),
-                        color: AppColors.error,
-                        tooltip: 'حذف',
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      height: 160,
+                      color: Colors.grey[100],
+                      child: const Icon(Icons.error_outline, color: Colors.grey),
+                    ),
+                  ),
+                ),
+                // Gradient Overlay
+                Container(
+                  height: 160,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.6),
+                      ],
+                    ),
+                  ),
+                ),
+                // Status Badge
+                Positioned(
+                  top: 12,
+                  right: 12,
+                  child: _buildStatusBadge(),
+                ),
+                // User Info
+                Positioned(
+                  bottom: 12,
+                  left: 12,
+                  right: 12,
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Colors.white,
+                        child: Text(
+                          order.user.name[0].toUpperCase(),
+                          style: getBoldStyle(
+                            fontFamily: FontConstant.cairo,
+                            color: AppColors.primary,
+                            fontSize: FontSize.size16,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              order.user.name,
+                              style: getMediumStyle(
+                                fontFamily: FontConstant.cairo,
+                                color: Colors.white,
+                                fontSize: FontSize.size16,
+                              ),
+                            ),
+                            Text(
+                              'طلب #${order.id}',
+                              style: getRegularStyle(
+                                fontFamily: FontConstant.cairo,
+                                color: Colors.white.withOpacity(0.8),
+                                fontSize: FontSize.size12,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
-                ],
+                ),
               ],
             ),
-          ),
-        ],
+
+            // Details Section
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Description
+                  Text(
+                    order.description,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: getRegularStyle(
+                      fontFamily: FontConstant.cairo,
+                      color: Colors.black87,
+                      fontSize: FontSize.size14,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Measurements & Fabrics
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      _buildInfoChip(
+                        Icons.height,
+                        '${order.height} سم',
+                        AppColors.primary.withOpacity(0.1),
+                      ),
+                      _buildInfoChip(
+                        Icons.monitor_weight_outlined,
+                        '${order.weight} كجم',
+                        AppColors.primary.withOpacity(0.1),
+                      ),
+                      _buildInfoChip(
+                        Icons.straighten,
+                        order.size,
+                        AppColors.primary.withOpacity(0.1),
+                      ),
+                      ...order.fabrics.map((fabric) => _buildInfoChip(
+                            Icons.format_paint_outlined,
+                            fabric.type,
+                            _getColorFromHex(fabric.color).withOpacity(0.1),
+                            textColor: _getColorFromHex(fabric.color),
+                          )),
+                    ],
+                  ),
+
+                  // Actions
+                  if (isMyRequest) ...[
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.edit_outlined),
+                          color: AppColors.primary,
+                          tooltip: 'تعديل',
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.delete_outline),
+                          color: AppColors.error,
+                          tooltip: 'حذف',
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -226,7 +225,7 @@ class OrderCard extends StatelessWidget {
   Widget _buildStatusBadge() {
     Color statusColor;
     IconData statusIcon;
-    
+
     switch (order.status) {
       case 'completed':
         statusColor = Colors.green;
@@ -246,7 +245,7 @@ class OrderCard extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -278,10 +277,13 @@ class OrderCard extends StatelessWidget {
 
   Widget _buildInfoChip(IconData icon, String label, Color backgroundColor, {Color? textColor}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: backgroundColor,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: textColor?.withOpacity(0.2) ?? AppColors.primary.withOpacity(0.2),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

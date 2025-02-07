@@ -183,6 +183,9 @@ class _AddOrderViewState extends State<AddOrderView> {
                       Step(
                         title: const Text('الأقمشة'),
                         content: FabricsStep(
+                          onAddFabric: _addFabric,
+                          onDeleteFabric: (fabric) =>
+                              setState(() => _fabrics.remove(fabric)),
                           fabrics: _fabrics,
                           selectedType: selectedType,
                           pickerColor: pickerColor,

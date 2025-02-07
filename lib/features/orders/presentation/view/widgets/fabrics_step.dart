@@ -1,3 +1,4 @@
+import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/helpers/color_helper.dart';
@@ -15,6 +16,8 @@ class FabricsStep extends StatelessWidget {
   final Function(int) onFabricRemoved;
   final Function(String?) onTypeChanged;
   final Function(Color) onColorChanged;
+  final Function() onAddFabric;
+  final Function(FabricModel) onDeleteFabric;
 
   const FabricsStep({
     super.key,
@@ -24,6 +27,8 @@ class FabricsStep extends StatelessWidget {
     required this.onFabricRemoved,
     required this.onTypeChanged,
     required this.onColorChanged,
+    required this.onAddFabric,
+    required this.onDeleteFabric,
   });
 
   @override
@@ -80,93 +85,33 @@ class FabricsStep extends StatelessWidget {
         ],
         Container(
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.grey[700]!
-                  : Colors.grey[300]!,
-            ),
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'إضافة قماش جديد',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(
-                    child: DropdownButtonFormField<String>(
-                      value: selectedType,
-                      decoration: InputDecoration(
-                        labelText: 'نوع القماش',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Theme.of(context).brightness == Brightness.dark
-                                ? Colors.grey[700]!
-                                : Colors.grey[300]!,
-                          ),
-                        ),
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-                      ),
-                      items: FabricType.types.keys
-                          .map((type) => DropdownMenuItem(
-                                value: type,
-                                child: Text(type),
-                              ))
-                          .toList(),
-                      onChanged: onTypeChanged,
-                    ),
+                  const Text(
+                    'إضافة قماش جديد',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(width: 16),
-                  Container(
-                    width: 210,
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? Colors.grey[700]!
-                            : Colors.grey[300]!,
+                  if (fabrics.length >= 2)
+                    Text(
+                      'الحد الأقصى قماشين',
+                      style: TextStyle(
+                        color: Colors.red[400],
+                        fontSize: 14,
                       ),
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 40,
-                          margin: const EdgeInsets.only(bottom: 12),
-                          decoration: BoxDecoration(
-                            color: pickerColor,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 260,
-                          child: ColorPicker(
-                            pickerColor: pickerColor,
-                            onColorChanged: onColorChanged,
-                            pickerAreaBorderRadius: BorderRadius.circular(8),
-                            portraitOnly: true,
-                            labelTypes: const [],
-                            enableAlpha: false,
-                            displayThumbColor: true,
-                            hexInputBar: true,
-                            pickerAreaHeightPercent: 0.6,
-                            colorPickerWidth: 180,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
+              const SizedBox(height: 16),
+              if (fabrics.length < 2)
+                CustomButton(
+                  onPressed: onAddFabric,
+                  text: 'إضافة قماش',
+                ),
+              const SizedBox(height: 16),
             ],
           ),
         ),

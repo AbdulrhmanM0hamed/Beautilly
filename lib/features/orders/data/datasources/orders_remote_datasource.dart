@@ -13,6 +13,7 @@ abstract class OrdersRemoteDataSource {
   Future<List<OrderModel>> getMyReservations();
   Future<List<OrderModel>> getAllOrders();
   Future<Map<String, dynamic>> addOrder(OrderRequestModel order);
+  Future<void> deleteOrder(int orderId);
 }
 
 class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
@@ -182,6 +183,35 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
       throw ServerException('فشل في إضافة الطلب: ${response.statusCode}');
     } catch (e) {
       throw ServerException('حدث خطأ أثناء إضافة الطلب');
+    }
+  }
+
+  @override
+  Future<void> deleteOrder(int orderId) async {
+    try {
+      final token = await cacheService.getToken();
+      final sessionCookie = await cacheService.getSessionCookie();
+
+      final response = await http.delete(
+        Uri.parse(ApiEndpoints.deleteOrder(orderId)),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+          'x-api-key': ApiEndpoints.api_key,
+          if (sessionCookie != null) 'Cookie': sessionCookie,
+        },
+      );
+
+      if (response.statusCode != 200) {
+        throw ServerException('فشل في حذف الطلب');
+      }
+
+      final jsonResponse = json.decode(response.body);
+      if (jsonResponse['success'] != true) {
+        throw ServerException(jsonResponse['message'] ?? 'فشل في حذف الطلب');
+      }
+    } catch (e) {
+      throw ServerException('حدث خطأ أثناء حذف الطلب');
     }
   }
 }

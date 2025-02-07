@@ -69,7 +69,7 @@ class AuthRepositoryImpl implements AuthRepository {
         return Left(ServerFailure(message));
       }
     } catch (e) {
-      return Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }
 

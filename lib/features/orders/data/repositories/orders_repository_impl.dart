@@ -65,4 +65,16 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> deleteOrder(int orderId) async {
+    try {
+      await remoteDataSource.deleteOrder(orderId);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('حدث خطأ أثناء حذف الطلب'));
+    }
+  }
 }

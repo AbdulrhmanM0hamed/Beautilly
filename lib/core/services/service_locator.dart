@@ -11,7 +11,9 @@ import 'package:beautilly/features/Home/domain/usecases/get_services_usecase.dar
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/orders/domain/usecases/add_order_usecase.dart';
+import 'package:beautilly/features/orders/domain/usecases/delete_order_usecase.dart';
 import 'package:beautilly/features/orders/presentation/cubit/add_order_cubit/add_order_cubit.dart';
+import 'package:beautilly/features/orders/presentation/cubit/delete_order_cubit/delete_order_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/orders/data/datasources/orders_remote_datasource.dart';
 import 'package:beautilly/features/orders/data/repositories/orders_repository_impl.dart';
@@ -246,4 +248,18 @@ Future<void> init() async {
   sl.registerFactory(
     () => DiscountsCubit(getDiscountsUseCase: sl()),
   );
+
+  // Orders Feature
+  sl.registerFactory(
+    () => DeleteOrderCubit(deleteOrderUseCase: sl()),
+  );
+
+  sl.registerLazySingleton(
+    () => DeleteOrderUseCase(sl()),
+  );
+
+  // Repository
+
+  // Data sources
+
 }

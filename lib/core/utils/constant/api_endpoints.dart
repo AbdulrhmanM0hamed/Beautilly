@@ -82,10 +82,6 @@ class ApiEndpoints {
   static const String premiumShops =
       '$baseUrl/shops/premium?api_key=$api_key'; // الصالونات الأكثر شعبية
 
-
-
-
-
   // دور الأزياء - تفاصيل كاملة
   static const String fashionHouseFullDetails =
       '$baseUrl/fashion-houses/full?api_key=$api_key'; // جلب كل بيانات دار الأزياء مرة واحدة (معلومات + تصاميم + قياسات + تقييمات + صور)
@@ -108,9 +104,10 @@ class ApiEndpoints {
   static const String tailoringRequestDetails =
       '$baseUrl/tailoring-requests/?api_key=$api_key'; // تفاصيل طلب تفصيل محدد
   static const String updateTailoringRequest =
-      '$baseUrl/tailoring-requests/update/?api_key=$api_key'; // تحديث طلب تفصيل
-  static const String deleteTailoringRequest =
-      '$baseUrl/tailoring-requests/delete/?api_key=$api_key'; // حذف طلب تفصيل
+      '$baseUrl/tailoring-requests/update/?api_key=$api_key'; 
+      // تحديث طلب تفصيل
+
+  static String deleteOrder(int id) => '$baseUrl/my-list-orders/$id?api_key=$api_key';
 
   // عروض التفصيل
   static const String tailoringOffers =

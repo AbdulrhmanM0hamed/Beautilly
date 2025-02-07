@@ -10,11 +10,13 @@ import 'package:shimmer/shimmer.dart';
 class OrderCard extends StatelessWidget {
   final OrderEntity order;
   final bool isMyRequest;
+  final Function(int)? onDelete;
 
   const OrderCard({
     super.key,
     required this.order,
     required this.isMyRequest,
+    this.onDelete,
   });
 
   @override
@@ -200,12 +202,34 @@ class OrderCard extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () {},
-                          icon: const Icon(Icons.edit_outlined),
+                          icon: const Icon(Icons.remove_red_eye_rounded),
                           color: AppColors.primary,
-                          tooltip: 'تعديل',
+                          tooltip: 'عرض الطلب',
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('تأكيد الحذف'),
+                                content: const Text('هل أنت متأكد من حذف هذا الطلب؟'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('إلغاء'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      onDelete?.call(order.id);
+                                    },
+                                    style: TextButton.styleFrom(foregroundColor: Colors.red),
+                                    child: const Text('حذف'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                           icon: const Icon(Icons.delete_outline),
                           color: AppColors.error,
                           tooltip: 'حذف',

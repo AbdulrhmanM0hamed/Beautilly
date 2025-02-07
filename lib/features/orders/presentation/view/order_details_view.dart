@@ -1,4 +1,5 @@
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
+import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/features/orders/domain/entities/order.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -16,195 +17,236 @@ class OrderDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // صورة الطلب مع الـ Header
-          SliverAppBar(
-            expandedHeight: 300,
-            pinned: true,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Hero(
-                tag: 'order_${order.id}',
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // 1. الصورة أولاً
-                    CachedNetworkImage(
-                      imageUrl: order.images.large,
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => const Center(
-                        child: CustomProgressIndcator(
-                          color: AppColors.primary,
-                        ),
-                      ),
-                    ),
-                    // 2. التدرج فوق الصورة
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.transparent,
-                            Colors.black.withOpacity(0.7),
-                          ],
-                        ),
-                      ),
-                    ),
-                    // 3. GestureDetector في الأعلى
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ImageViewer(
-                              imageUrl: order.images.large,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        color: Colors.transparent,
-                      ),
-                    ),
-                  ],
-                ),
+    return FutureBuilder(
+      // انتظار لمدة ثانية
+      future: Future.delayed(const Duration(seconds: 1)),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CustomProgressIndcator(
+                    color: AppColors.primary,
+                  ),
+                ],
               ),
             ),
-          ),
+          );
+        }
 
-          // تفاصيل الطلب
-          SliverToBoxAdapter(
-            child: Transform.translate(
-              offset: const Offset(0, -30),
-              child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 20,
+        return Scaffold(
+        
+          body: CustomScrollView(
+            slivers: [
+              // صورة الطلب مع الـ Header
+              SliverAppBar(
+                expandedHeight: 300,
+                pinned: true,
+                leading: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: Colors.white,
+                        size: 20,
                       ),
-                      // معلومات العميل
-                      Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 25,
-                            backgroundColor: AppColors.primary.withOpacity(0.1),
-                            child: Text(
-                              order.customer.name[0].toUpperCase(),
-                              style: getBoldStyle(
-                                color: AppColors.primary,
-                                fontSize: FontSize.size20,
-                                fontFamily: FontConstant.cairo,
-                              ),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Hero(
+                    tag: 'order_${order.id}',
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        // 1. الصورة أولاً
+                        CachedNetworkImage(
+                          imageUrl: order.images.large,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => const Center(
+                            child: CustomProgressIndcator(
+                              color: AppColors.primary,
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                order.customer.name,
-                                style: getBoldStyle(
-                                  fontSize: FontSize.size18,
-                                  fontFamily: FontConstant.cairo,
-                                ),
-                              ),
-                              Text(
-                                'طلب #${order.id}',
-                                style: getRegularStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: FontSize.size14,
-                                  fontFamily: FontConstant.cairo,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          _buildStatusChip(order.status, order.statusLabel),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-
-                      // القياسات
-                      Text(
-                        'القياسات',
-                        style: getBoldStyle(
-                          fontSize: FontSize.size18,
-                          fontFamily: FontConstant.cairo,
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildMeasurementsGrid(),
-                      const SizedBox(height: 24),
-
-                      // الأقمشة
-                      Text(
-                        'الأقمشة المختارة',
-                        style: getBoldStyle(
-                          fontSize: FontSize.size18,
-                          fontFamily: FontConstant.cairo,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      _buildFabricsList(),
-                      const SizedBox(height: 24),
-
-                      // الوصف
-                      Text(
-                        'الوصف',
-                        style: getBoldStyle(
-                          fontSize: FontSize.size18,
-                          fontFamily: FontConstant.cairo,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        order.description,
-                        style: getRegularStyle(
-                          fontSize: FontSize.size16,
-                          fontFamily: FontConstant.cairo,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // العروض المقدمة
-                      if (order.offers.isNotEmpty) ...[
-                        Text(
-                          'العروض المقدمة',
-                          style: getBoldStyle(
-                            fontSize: FontSize.size18,
-                            fontFamily: FontConstant.cairo,
+                        // 2. التدرج فوق الصورة
+                        Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.7),
+                              ],
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 16),
-                        ListView.separated(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: order.offers.length,
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(height: 16),
-                          itemBuilder: (context, index) {
-                            final offer = order.offers[index];
-                            return _buildOfferCard(offer);
+                        // 3. GestureDetector في الأعلى
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ImageViewer(
+                                  imageUrl: order.images.large,
+                                ),
+                              ),
+                            );
                           },
+                          child: Container(
+                            color: Colors.transparent,
+                          ),
                         ),
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
+
+              // تفاصيل الطلب
+              SliverToBoxAdapter(
+                child: Transform.translate(
+                  offset: const Offset(0, -30),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(30)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          // معلومات العميل
+                          Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 25,
+                                backgroundColor:
+                                    AppColors.primary.withOpacity(0.1),
+                                child: Text(
+                                  order.customer.name[0].toUpperCase(),
+                                  style: getBoldStyle(
+                                    color: AppColors.primary,
+                                    fontSize: FontSize.size20,
+                                    fontFamily: FontConstant.cairo,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    order.customer.name,
+                                    style: getBoldStyle(
+                                      fontSize: FontSize.size18,
+                                      fontFamily: FontConstant.cairo,
+                                    ),
+                                  ),
+                                  Text(
+                                    'طلب #${order.id}',
+                                    style: getRegularStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: FontSize.size14,
+                                      fontFamily: FontConstant.cairo,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              _buildStatusChip(order.status, order.statusLabel),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+
+                          // القياسات
+                          Text(
+                            'القياسات',
+                            style: getBoldStyle(
+                              fontSize: FontSize.size18,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          _buildMeasurementsGrid(),
+                          const SizedBox(height: 24),
+
+                          // الأقمشة
+                          Text(
+                            'الأقمشة المختارة',
+                            style: getBoldStyle(
+                              fontSize: FontSize.size18,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildFabricsList(),
+                          const SizedBox(height: 24),
+
+                          // الوصف
+                          Text(
+                            'الوصف',
+                            style: getBoldStyle(
+                              fontSize: FontSize.size18,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            order.description,
+                            style: getRegularStyle(
+                              fontSize: FontSize.size16,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // العروض المقدمة
+                          if (order.offers.isNotEmpty) ...[
+                            Text(
+                              'العروض المقدمة',
+                              style: getBoldStyle(
+                                fontSize: FontSize.size18,
+                                fontFamily: FontConstant.cairo,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            ListView.separated(
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: order.offers.length,
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(height: 16),
+                              itemBuilder: (context, index) {
+                                final offer = order.offers[index];
+                                return _buildOfferCard(offer);
+                              },
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 

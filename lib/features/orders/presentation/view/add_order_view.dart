@@ -2,17 +2,13 @@ import 'dart:io';
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
-import 'package:beautilly/core/utils/common/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import '../../../../core/utils/theme/app_colors.dart';
-
 import '../../data/models/order_request_model.dart';
 import '../cubit/add_order_cubit/add_order_cubit.dart';
 import '../cubit/add_order_cubit/add_order_state.dart';
-import '../../data/models/fabric_types.dart';
 import 'widgets/measurements_step.dart';
 import 'widgets/fabrics_step.dart';
 import 'widgets/image_step.dart';

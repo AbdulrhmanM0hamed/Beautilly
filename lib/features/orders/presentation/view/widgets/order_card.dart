@@ -1,14 +1,13 @@
 import 'package:beautilly/core/services/service_locator.dart';
+import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/features/orders/domain/entities/order.dart';
 import 'package:beautilly/features/orders/presentation/view/order_details_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import '../../../../../core/utils/constant/font_manger.dart';
 import '../../../../../core/utils/constant/styles_manger.dart';
 import '../../../../../core/utils/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:get_it/get_it.dart';
 import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';
 
 class OrderCard extends StatelessWidget {
@@ -37,11 +36,10 @@ class OrderCard extends StatelessWidget {
             },
             (orderDetails) {
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OrderDetailsView(order: orderDetails),
-                ),
-              );
+                  context,
+                  PageRoutes.fadeScale(
+                    page: OrderDetailsView(order: orderDetails),
+                  ));
             },
           );
         } catch (e) {

@@ -50,18 +50,16 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-        print('API Response: ${jsonResponse}'); // للتشخيص
         final List<dynamic> orders = jsonResponse['data'] as List;
         return orders.map((order) => OrderModel.fromJson(order)).toList();
       } else if (response.statusCode == 401) {
-        throw UnauthorizedException('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+        throw UnauthorizedException(
+            'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
         final error = json.decode(response.body);
         throw ServerException(error['message'] ?? 'فشل في تحميل الطلبات');
       }
     } catch (e, stackTrace) {
-      print('Error in getMyOrders: $e');
-      print('StackTrace: $stackTrace');
       throw ServerException('حدث خطأ غير متوقع: $e');
     }
   }
@@ -244,31 +242,24 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
         },
       );
 
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-        print('Parsed JSON Response: $jsonResponse');
-        
+
         if (jsonResponse['success'] == true && jsonResponse['data'] != null) {
           final orderData = jsonResponse['data']['order'];
-          print('Order Data: $orderData');
           return OrderDetailsModel.fromJson(orderData);
         } else {
-          throw ServerException(jsonResponse['message'] ?? 'فشل في تحميل تفاصيل الطلب');
+          throw ServerException(
+              jsonResponse['message'] ?? 'فشل في تحميل تفاصيل الطلب');
         }
       } else if (response.statusCode == 401) {
-        throw UnauthorizedException('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+        throw UnauthorizedException(
+            'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
         final error = json.decode(response.body);
         throw ServerException(error['message'] ?? 'فشل في تحميل تفاصيل الطلب');
       }
     } catch (e) {
-      print('Detailed Error in getOrderDetails: $e');
-      if (e is FormatException) {
-        print('JSON Parse Error: ${e.message}');
-      }
       throw ServerException('حدث خطأ غير متوقع: $e');
     }
   }

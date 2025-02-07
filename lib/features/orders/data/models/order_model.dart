@@ -35,7 +35,7 @@ class OrderModel extends OrderEntity {
       updatedAt: DateTime.parse(json['updated_at'] ?? json['created_at']),
       customer: UserModel.fromJson(json['user']),
       images: ImagesModel.fromJson(json['main_image']),
-      offers: const [],
+      offers: (json['offers'] as List?)?.map((offer) => OfferModel.fromJson(offer)).toList() ?? [],
     );
   }
 }

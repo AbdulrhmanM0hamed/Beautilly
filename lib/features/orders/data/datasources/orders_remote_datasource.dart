@@ -7,6 +7,7 @@ import '../../../../core/utils/constant/api_endpoints.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../models/order_model.dart';
 import '../models/order_request_model.dart';
+import '../models/order_details_model.dart';
 
 abstract class OrdersRemoteDataSource {
   Future<List<OrderModel>> getMyOrders();
@@ -14,6 +15,7 @@ abstract class OrdersRemoteDataSource {
   Future<List<OrderModel>> getAllOrders();
   Future<Map<String, dynamic>> addOrder(OrderRequestModel order);
   Future<void> deleteOrder(int orderId);
+  Future<OrderDetailsModel> getOrderDetails(int orderId);
 }
 
 class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
@@ -48,17 +50,18 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-
+        print('API Response: ${jsonResponse}'); // للتشخيص
         final List<dynamic> orders = jsonResponse['data'] as List;
         return orders.map((order) => OrderModel.fromJson(order)).toList();
       } else if (response.statusCode == 401) {
-        throw UnauthorizedException(
-            'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+        throw UnauthorizedException('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
         final error = json.decode(response.body);
         throw ServerException(error['message'] ?? 'فشل في تحميل الطلبات');
       }
     } catch (e, stackTrace) {
+      print('Error in getMyOrders: $e');
+      print('StackTrace: $stackTrace');
       throw ServerException('حدث خطأ غير متوقع: $e');
     }
   }
@@ -217,6 +220,56 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
       }
     } catch (e) {
       throw ServerException('حدث خطأ أثناء حذف الطلب');
+    }
+  }
+
+  @override
+  Future<OrderDetailsModel> getOrderDetails(int orderId) async {
+    try {
+      final token = await cacheService.getToken();
+      final sessionCookie = await cacheService.getSessionCookie();
+
+      if (token == null) {
+        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
+      }
+
+      final response = await client.get(
+        Uri.parse(ApiEndpoints.orderDetails(orderId)),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          'x-api-key': ApiEndpoints.api_key,
+          HttpHeaders.acceptHeader: 'application/json',
+          HttpHeaders.contentTypeHeader: 'application/json',
+          if (sessionCookie != null) 'Cookie': sessionCookie,
+        },
+      );
+
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        print('Parsed JSON Response: $jsonResponse');
+        
+        if (jsonResponse['success'] == true && jsonResponse['data'] != null) {
+          final orderData = jsonResponse['data']['order'];
+          print('Order Data: $orderData');
+          return OrderDetailsModel.fromJson(orderData);
+        } else {
+          throw ServerException(jsonResponse['message'] ?? 'فشل في تحميل تفاصيل الطلب');
+        }
+      } else if (response.statusCode == 401) {
+        throw UnauthorizedException('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+      } else {
+        final error = json.decode(response.body);
+        throw ServerException(error['message'] ?? 'فشل في تحميل تفاصيل الطلب');
+      }
+    } catch (e) {
+      print('Detailed Error in getOrderDetails: $e');
+      if (e is FormatException) {
+        print('JSON Parse Error: ${e.message}');
+      }
+      throw ServerException('حدث خطأ غير متوقع: $e');
     }
   }
 }

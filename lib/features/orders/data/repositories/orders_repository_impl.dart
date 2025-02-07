@@ -1,3 +1,4 @@
+import 'package:beautilly/features/orders/domain/entities/order_details.dart';
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
@@ -75,6 +76,20 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure('حدث خطأ أثناء حذف الطلب'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, OrderDetails>> getOrderDetails(int orderId) async {
+    try {
+      final orderDetails = await remoteDataSource.getOrderDetails(orderId);
+      return Right(orderDetails);
+    } on UnauthorizedException catch (e) {
+      return Left(AuthFailure(e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }
 }

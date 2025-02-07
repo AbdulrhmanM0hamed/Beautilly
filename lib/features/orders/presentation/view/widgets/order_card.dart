@@ -1,4 +1,6 @@
+import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/features/orders/domain/entities/order.dart';
+import 'package:beautilly/features/orders/presentation/view/order_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../../../../core/utils/constant/font_manger.dart';
@@ -6,6 +8,8 @@ import '../../../../../core/utils/constant/styles_manger.dart';
 import '../../../../../core/utils/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:get_it/get_it.dart';
+import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';
 
 class OrderCard extends StatelessWidget {
   final OrderEntity order;
@@ -21,226 +25,257 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: SystemMouseCursors.click,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        margin: const EdgeInsets.only(bottom: 12),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(16),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Theme.of(context).cardColor,
-              Theme.of(context).cardColor.withOpacity(0.9),
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              spreadRadius: 2,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header & Image Section
-            Stack(
-              children: [
-                // Image
-                ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                  child: CachedNetworkImage(
-                    imageUrl: order.images.medium,
-                    height: 160,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Shimmer.fromColors(
-                      baseColor: Colors.grey[300]!,
-                      highlightColor: Colors.grey[100]!,
-                      child: Container(
-                        height: 160,
-                        color: Colors.white,
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Container(
-                      height: 160,
-                      color: Colors.grey[100],
-                      child: const Icon(Icons.error_outline, color: Colors.grey),
-                    ),
-                  ),
+    return GestureDetector(
+      onTap: () async {
+        try {
+          final result = await sl<OrdersRepository>().getOrderDetails(order.id);
+          result.fold(
+            (failure) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(failure.message)),
+              );
+            },
+            (orderDetails) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrderDetailsView(order: orderDetails),
                 ),
-                // Gradient Overlay
-                Container(
-                  height: 160,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.transparent,
-                        Colors.black.withOpacity(0.6),
-                      ],
-                    ),
-                  ),
-                ),
-                // Status Badge
-                Positioned(
-                  top: 12,
-                  right: 12,
-                  child: _buildStatusBadge(),
-                ),
-                // User Info
-                Positioned(
-                  bottom: 12,
-                  left: 12,
-                  right: 12,
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 18,
-                        backgroundColor: Colors.white,
-                        child: Text(
-                          order.customer.name[0].toUpperCase(),
-                          style: getBoldStyle(
-                            fontFamily: FontConstant.cairo,
-                            color: AppColors.primary,
-                            fontSize: FontSize.size16,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              order.customer.name,
-                              style: getMediumStyle(
-                                fontFamily: FontConstant.cairo,
-                                color: Colors.white,
-                                fontSize: FontSize.size16,
-                              ),
-                            ),
-                            Text(
-                              'طلب #${order.id}',
-                              style: getRegularStyle(
-                                fontFamily: FontConstant.cairo,
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: FontSize.size12,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              );
+            },
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('حدث خطأ في تحميل تفاصيل الطلب')),
+          );
+        }
+      },
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.only(bottom: 12),
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(16),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Theme.of(context).cardColor,
+                Theme.of(context).cardColor.withOpacity(0.9),
               ],
             ),
-
-            // Details Section
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 10,
+                spreadRadius: 2,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header & Image Section
+              Stack(
                 children: [
-                  // Description
-                  Text(
-                    order.description,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: getRegularStyle(
-                      fontFamily: FontConstant.cairo,
-                      color: Colors.black87,
-                      fontSize: FontSize.size14,
+                  // Image
+                  ClipRRect(
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(16)),
+                    child: CachedNetworkImage(
+                      imageUrl: order.images.medium,
+                      height: 160,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Shimmer.fromColors(
+                        baseColor: Colors.grey[300]!,
+                        highlightColor: Colors.grey[100]!,
+                        child: Container(
+                          height: 160,
+                          color: Colors.white,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        height: 160,
+                        color: Colors.grey[100],
+                        child:
+                            const Icon(Icons.error_outline, color: Colors.grey),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-
-                  // Measurements & Fabrics
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _buildInfoChip(
-                        Icons.height,
-                        '${order.height} سم',
-                        AppColors.primary.withOpacity(0.1),
+                  // Gradient Overlay
+                  Container(
+                    height: 160,
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          const BorderRadius.vertical(top: Radius.circular(16)),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.6),
+                        ],
                       ),
-                      _buildInfoChip(
-                        Icons.monitor_weight_outlined,
-                        '${order.weight} كجم',
-                        AppColors.primary.withOpacity(0.1),
-                      ),
-                      _buildInfoChip(
-                        Icons.straighten,
-                        order.size,
-                        AppColors.primary.withOpacity(0.1),
-                      ),
-                      ...order.fabrics.map((fabric) => _buildInfoChip(
-                            Icons.format_paint_outlined,
-                            fabric.type,
-                            _getColorFromHex(fabric.color).withOpacity(0.1),
-                            textColor: _getColorFromHex(fabric.color),
-                          )),
-                    ],
+                    ),
                   ),
-
-                  // Actions
-                  if (isMyRequest) ...[
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                  // Status Badge
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: _buildStatusBadge(),
+                  ),
+                  // User Info
+                  Positioned(
+                    bottom: 12,
+                    left: 12,
+                    right: 12,
+                    child: Row(
                       children: [
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.remove_red_eye_rounded),
-                          color: AppColors.primary,
-                          tooltip: 'عرض الطلب',
+                        CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Colors.white,
+                          child: Text(
+                            order.customer.name[0].toUpperCase(),
+                            style: getBoldStyle(
+                              fontFamily: FontConstant.cairo,
+                              color: AppColors.primary,
+                              fontSize: FontSize.size16,
+                            ),
+                          ),
                         ),
-                        IconButton(
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: const Text('تأكيد الحذف'),
-                                content: const Text('هل أنت متأكد من حذف هذا الطلب؟'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text('إلغاء'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      onDelete?.call(order.id);
-                                    },
-                                    style: TextButton.styleFrom(foregroundColor: Colors.red),
-                                    child: const Text('حذف'),
-                                  ),
-                                ],
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                order.customer.name,
+                                style: getMediumStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  color: Colors.white,
+                                  fontSize: FontSize.size16,
+                                ),
                               ),
-                            );
-                          },
-                          icon: const Icon(Icons.delete_outline),
-                          color: AppColors.error,
-                          tooltip: 'حذف',
+                              Text(
+                                'طلب #${order.id}',
+                                style: getRegularStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  color: Colors.white.withOpacity(0.8),
+                                  fontSize: FontSize.size12,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ],
               ),
-            ),
-          ],
+
+              // Details Section
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Description
+                    Text(
+                      order.description,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: getRegularStyle(
+                        fontFamily: FontConstant.cairo,
+                        color: Colors.black87,
+                        fontSize: FontSize.size14,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Measurements & Fabrics
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _buildInfoChip(
+                          Icons.height,
+                          '${order.height} سم',
+                          AppColors.primary.withOpacity(0.1),
+                        ),
+                        _buildInfoChip(
+                          Icons.monitor_weight_outlined,
+                          '${order.weight} كجم',
+                          AppColors.primary.withOpacity(0.1),
+                        ),
+                        _buildInfoChip(
+                          Icons.straighten,
+                          order.size,
+                          AppColors.primary.withOpacity(0.1),
+                        ),
+                        ...order.fabrics.map((fabric) => _buildInfoChip(
+                              Icons.format_paint_outlined,
+                              fabric.type,
+                              _getColorFromHex(fabric.color).withOpacity(0.1),
+                              textColor: _getColorFromHex(fabric.color),
+                            )),
+                      ],
+                    ),
+
+                    // Actions
+                    if (isMyRequest) ...[
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons.remove_red_eye_rounded),
+                            color: AppColors.primary,
+                            tooltip: 'عرض الطلب',
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text('تأكيد الحذف'),
+                                  content: const Text(
+                                      'هل أنت متأكد من حذف هذا الطلب؟'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('إلغاء'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        onDelete?.call(order.id);
+                                      },
+                                      style: TextButton.styleFrom(
+                                          foregroundColor: Colors.red),
+                                      child: const Text('حذف'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.delete_outline),
+                            color: AppColors.error,
+                            tooltip: 'حذف',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -299,14 +334,16 @@ class OrderCard extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoChip(IconData icon, String label, Color backgroundColor, {Color? textColor}) {
+  Widget _buildInfoChip(IconData icon, String label, Color backgroundColor,
+      {Color? textColor}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: textColor?.withOpacity(0.2) ?? AppColors.primary.withOpacity(0.2),
+          color:
+              textColor?.withOpacity(0.2) ?? AppColors.primary.withOpacity(0.2),
         ),
       ),
       child: Row(

@@ -70,10 +70,13 @@ class OrderDetails {
 }
 
 class OfferWithDetails extends Offer {
+  final int? daysCount;
+
   const OfferWithDetails({
     required super.id,
     required super.price,
     super.notes,
+    this.daysCount,
     required super.status,
     required super.createdAt,
     required ShopWithDetails shop,

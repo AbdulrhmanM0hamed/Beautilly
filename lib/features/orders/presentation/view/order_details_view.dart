@@ -454,7 +454,7 @@ class OrderDetailsView extends StatelessWidget {
                           placeholder: (context, url) => Container(
                             color: Colors.grey[200],
                             child: const Center(
-                              child: CustomProgressIndcator(
+                              child: CircularProgressIndicator(
                                 color: AppColors.primary,
                               ),
                             ),
@@ -505,19 +505,71 @@ class OrderDetailsView extends StatelessWidget {
                               fontFamily: FontConstant.cairo,
                             ),
                           ),
-                          if (offer.notes != null)
-                            Text(
-                              offer.notes!,
-                              style: getRegularStyle(
-                                color: Colors.grey[600],
-                                fontSize: FontSize.size12,
-                                fontFamily: FontConstant.cairo,
-                              ),
-                            ),
                         ],
                       ),
                     ],
                   ),
+                  if (offer.notes != null || offer.daysCount != null) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: Colors.grey[200]!,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (offer.daysCount != null) ...[
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.timer_outlined,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'مدة التنفيذ: ${offer.daysCount} أيام',
+                                  style: getRegularStyle(
+                                    color: Colors.grey[700],
+                                    fontSize: FontSize.size14,
+                                    fontFamily: FontConstant.cairo,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                          if (offer.notes != null) ...[
+                            if (offer.daysCount != null) const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.note_outlined,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    offer.notes!,
+                                    style: getRegularStyle(
+                                      color: Colors.grey[700],
+                                      fontSize: FontSize.size14,
+                                      fontFamily: FontConstant.cairo,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 16),
                   if (isMyOrder) ...[
                     Row(

@@ -11,8 +11,8 @@ class AddressModel extends Address {
 
   factory AddressModel.fromJson(Map<String, dynamic> json) {
     return AddressModel(
-      city: json['city'],
-      state: json['state'],
+      city: json['city'] ?? '',
+      state: json['state'] ?? '',
     );
   }
 }
@@ -27,10 +27,10 @@ class UserWithDetailsModel extends UserWithDetails {
 
   factory UserWithDetailsModel.fromJson(Map<String, dynamic> json) {
     return UserWithDetailsModel(
-      id: json['id'],
-      name: json['name'],
-      images: ImagesModel.fromJson(json['images']),
-      address: AddressModel.fromJson(json['address']),
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      images: ImagesModel.fromJson(json['images'] ?? {}),
+      address: AddressModel.fromJson(json['address'] ?? {}),
     );
   }
 }
@@ -45,10 +45,10 @@ class ShopWithDetailsModel extends ShopWithDetails {
 
   factory ShopWithDetailsModel.fromJson(Map<String, dynamic> json) {
     return ShopWithDetailsModel(
-      id: json['id'],
-      name: json['name'],
-      images: ImagesModel.fromJson(json['images']),
-      address: AddressModel.fromJson(json['address']),
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      images: ImagesModel.fromJson(json['images'] ?? {}),
+      address: AddressModel.fromJson(json['address'] ?? {}),
     );
   }
 }
@@ -58,6 +58,7 @@ class OfferWithDetailsModel extends OfferWithDetails {
     required super.id,
     required super.price,
     super.notes,
+    super.daysCount,
     required super.status,
     required super.createdAt,
     required super.shop,
@@ -68,9 +69,10 @@ class OfferWithDetailsModel extends OfferWithDetails {
       id: json['id'],
       price: json['price']?.toDouble() ?? 0.0,
       notes: json['notes'] as String?,
-      status: json['status'],
+      daysCount: json['days_count'],
+      status: json['status'] ?? '',
       createdAt: DateTime.parse(json['created_at']),
-      shop: ShopWithDetailsModel.fromJson(json['shop']),
+      shop: ShopWithDetailsModel.fromJson(json['shop'] ?? {}),
     );
   }
 }
@@ -96,16 +98,16 @@ class OrderDetailsModel extends OrderDetails {
   factory OrderDetailsModel.fromJson(Map<String, dynamic> json) {
     return OrderDetailsModel(
       id: json['id'],
-      description: json['description'],
-      status: json['status'],
-      statusLabel: json['status_label'],
-      height: json['height'],
-      weight: json['weight'],
-      size: json['size'],
-      fabrics: (json['fabrics'] as List)
-          .map((fabric) => FabricModel.fromJson(fabric))
-          .toList(),
-      executionTime: json['execution_time'],
+      description: json['description'] ?? '',
+      status: json['status'] ?? '',
+      statusLabel: json['status_label'] ?? '',
+      height: json['height'] ?? 0,
+      weight: json['weight'] ?? 0,
+      size: json['size'] ?? '',
+      fabrics: (json['fabrics'] as List?)
+          ?.map((fabric) => FabricModel.fromJson(fabric))
+          .toList() ?? [],
+      executionTime: json['execution_time'] ?? 0,
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       customer: UserWithDetailsModel.fromJson(json['customer']),

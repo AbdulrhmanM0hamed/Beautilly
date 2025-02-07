@@ -1,6 +1,5 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/features/orders/presentation/cubit/add_order_cubit/add_order_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:beautilly/features/orders/presentation/view/add_order_view.dart';
 import 'package:beautilly/features/orders/presentation/view/widgets/all_oreder_widget.dart';

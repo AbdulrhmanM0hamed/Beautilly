@@ -1,21 +1,81 @@
-import 'package:equatable/equatable.dart';
 import 'order.dart';
 
-class OrderDetails extends OrderEntity {
-  const OrderDetails({
-    required super.id,
-    required super.description,
-    required super.status,
-    required super.statusLabel,
-    required super.height,
-    required super.weight,
-    required super.size,
-    required super.fabrics,
-    required super.executionTime,
-    required super.createdAt,
-    required super.updatedAt,
-    required super.customer,
-    required super.images,
-    required super.offers,
+class Address {
+  final String city;
+  final String state;
+
+  const Address({
+    required this.city,
+    required this.state,
   });
+}
+
+class UserWithDetails extends User {
+  final MainImage images;
+  final Address address;
+  
+
+  const UserWithDetails({
+    required super.id,
+    required super.name,
+    required this.images,
+    required this.address,
+  });
+}
+
+class ShopWithDetails extends Shop {
+  final MainImage images;
+  final Address address;
+
+  const ShopWithDetails({
+    required super.id,
+    required super.name,
+    required this.images,
+    required this.address,
+  });
+}
+
+class OrderDetails {
+  final int id;
+  final String description;
+  final String status;
+  final String statusLabel;
+  final int height;
+  final int weight;
+  final String size;
+  final List<Fabric> fabrics;
+  final int executionTime;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final UserWithDetails customer;
+  final MainImage images;
+  final List<OfferWithDetails> offers;
+
+  const OrderDetails({
+    required this.id,
+    required this.description,
+    required this.status,
+    required this.statusLabel,
+    required this.height,
+    required this.weight,
+    required this.size,
+    required this.fabrics,
+    required this.executionTime,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.customer,
+    required this.images,
+    required this.offers,
+  });
+}
+
+class OfferWithDetails extends Offer {
+  const OfferWithDetails({
+    required super.id,
+    required super.price,
+    super.notes,
+    required super.status,
+    required super.createdAt,
+    required ShopWithDetails shop,
+  }) : super(shop: shop);
 } 

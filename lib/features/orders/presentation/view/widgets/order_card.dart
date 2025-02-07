@@ -1,5 +1,6 @@
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/orders/domain/entities/order.dart';
 import 'package:beautilly/features/orders/presentation/view/order_details_view.dart';
 import 'package:flutter/material.dart';
@@ -30,22 +31,24 @@ class OrderCard extends StatelessWidget {
           final result = await sl<OrdersRepository>().getOrderDetails(order.id);
           result.fold(
             (failure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(failure.message)),
-              );
+              CustomSnackbar.showError(
+                  context: context, message: failure.message);
             },
             (orderDetails) {
               Navigator.push(
-                  context,
-                  PageRoutes.fadeScale(
-                    page: OrderDetailsView(order: orderDetails),
-                  ));
+                context,
+                PageRoutes.fadeScale(
+                  page: OrderDetailsView(
+                    order: orderDetails,
+                    isMyOrder: isMyRequest,
+                  ),
+                ),
+              );
             },
           );
         } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('حدث خطأ في تحميل تفاصيل الطلب')),
-          );
+          CustomSnackbar.showError(
+              context: context, message: ' حدث خطأ في تحميل تفاصيل الطلب');
         }
       },
       child: MouseRegion(

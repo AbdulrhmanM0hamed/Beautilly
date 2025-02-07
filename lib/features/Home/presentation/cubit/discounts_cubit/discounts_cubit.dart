@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/usecase/usecase.dart';
-import '../../../domain/entities/discount.dart';
 import '../../../domain/usecases/get_discounts_usecase.dart';
 import 'discounts_state.dart';
 

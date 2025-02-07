@@ -1,5 +1,4 @@
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
-import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/features/orders/domain/entities/order.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +11,13 @@ import 'widgets/image_viewer.dart';
 class OrderDetailsView extends StatelessWidget {
   static const String routeName = '/order-details';
   final OrderDetails order;
+  final bool isMyOrder;
 
-  const OrderDetailsView({super.key, required this.order});
+  const OrderDetailsView({
+    super.key, 
+    required this.order,
+    required this.isMyOrder,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,6 @@ class OrderDetailsView extends StatelessWidget {
         }
 
         return Scaffold(
-        
           body: CustomScrollView(
             slivers: [
               // صورة الطلب مع الـ Header
@@ -132,39 +135,59 @@ class OrderDetailsView extends StatelessWidget {
                           // معلومات العميل
                           Row(
                             children: [
-                              CircleAvatar(
-                                radius: 25,
-                                backgroundColor:
-                                    AppColors.primary.withOpacity(0.1),
-                                child: Text(
-                                  order.customer.name[0].toUpperCase(),
-                                  style: getBoldStyle(
-                                    color: AppColors.primary,
-                                    fontSize: FontSize.size20,
-                                    fontFamily: FontConstant.cairo,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(25),
+                                child: CachedNetworkImage(
+                                  imageUrl: order.customer.images.medium,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor: AppColors.primary.withOpacity(0.1),
+                                    child: Text(
+                                      order.customer.name[0].toUpperCase(),
+                                      style: getBoldStyle(
+                                        color: AppColors.primary,
+                                        fontSize: FontSize.size20,
+                                        fontFamily: FontConstant.cairo,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    order.customer.name,
-                                    style: getBoldStyle(
-                                      fontSize: FontSize.size18,
-                                      fontFamily: FontConstant.cairo,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      order.customer.name,
+                                      style: getBoldStyle(
+                                        fontSize: FontSize.size18,
+                                        fontFamily: FontConstant.cairo,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    'طلب #${order.id}',
-                                    style: getRegularStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: FontSize.size14,
-                                      fontFamily: FontConstant.cairo,
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.location_on_outlined,
+                                          size: 16,
+                                          color: Colors.grey,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '${order.customer.address.city}، ${order.customer.address.state}',
+                                          style: getRegularStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: FontSize.size12,
+                                            fontFamily: FontConstant.cairo,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               const Spacer(),
                               _buildStatusChip(order.status, order.statusLabel),
@@ -398,7 +421,7 @@ class OrderDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildOfferCard(Offer offer) {
+  Widget _buildOfferCard(OfferWithDetails offer) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
@@ -421,14 +444,20 @@ class OrderDetailsView extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      CircleAvatar(
-                        backgroundColor: AppColors.primary.withOpacity(0.1),
-                        child: Text(
-                          offer.shop.name[0].toUpperCase(),
-                          style: getBoldStyle(
-                            color: AppColors.primary,
-                            fontSize: FontSize.size16,
-                            fontFamily: FontConstant.cairo,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(25),
+                        child: CachedNetworkImage(
+                          imageUrl: (offer.shop as ShopWithDetails).images.medium,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) => Container(
+                            color: Colors.grey[200],
+                            child: const Center(
+                              child: CustomProgressIndcator(
+                                color: AppColors.primary,
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -444,13 +473,23 @@ class OrderDetailsView extends StatelessWidget {
                                 fontFamily: FontConstant.cairo,
                               ),
                             ),
-                            Text(
-                              _formatDate(offer.createdAt),
-                              style: getRegularStyle(
-                                color: Colors.grey[600],
-                                fontSize: FontSize.size12,
-                                fontFamily: FontConstant.cairo,
-                              ),
+                            Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_on_outlined,
+                                  size: 16,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '${(offer.shop as ShopWithDetails).address.city}، ${(offer.shop as ShopWithDetails).address.state}',
+                                  style: getRegularStyle(
+                                    color: Colors.grey[600],
+                                    fontSize: FontSize.size12,
+                                    fontFamily: FontConstant.cairo,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -480,41 +519,43 @@ class OrderDetailsView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                  if (isMyOrder) ...[
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
+                            icon: const Icon(Icons.check_circle_outline),
+                            label: const Text('قبول العرض'),
                           ),
-                          icon: const Icon(Icons.check_circle_outline),
-                          label: const Text('قبول العرض'),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () {},
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: Colors.red,
-                            side: const BorderSide(color: Colors.red),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton.icon(
+                            onPressed: () {},
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.red,
+                              side: const BorderSide(color: Colors.red),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
                             ),
+                            icon: const Icon(Icons.close),
+                            label: const Text('رفض العرض'),
                           ),
-                          icon: const Icon(Icons.close),
-                          label: const Text('رفض العرض'),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ],
               ),
             ),

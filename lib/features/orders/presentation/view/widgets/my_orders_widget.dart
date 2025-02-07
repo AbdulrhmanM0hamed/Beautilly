@@ -35,7 +35,6 @@ class MyOrdersWidget extends StatelessWidget {
               context: context,
               message: 'تم حذف الطلب بنجاح',
             );
-            
             // تحديث القائمة
             context.read<OrdersCubit>().loadMyOrders();
           } else if (state is DeleteOrderError) {
@@ -113,7 +112,6 @@ class _MyOrdersContentState extends State<MyOrdersContent> {
           if (state.orders.isEmpty) {
             return const Center(child: Text('لا توجد طلبات'));
           }
-
           return ListView.builder(
             itemCount: state.orders.length,
             padding: const EdgeInsets.all(16),
@@ -129,7 +127,6 @@ class _MyOrdersContentState extends State<MyOrdersContent> {
             },
           );
         }
-
         return const SizedBox();
       },
     );

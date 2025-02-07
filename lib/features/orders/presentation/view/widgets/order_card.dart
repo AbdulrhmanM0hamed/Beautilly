@@ -57,7 +57,7 @@ class OrderCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                   child: CachedNetworkImage(
-                    imageUrl: order.mainImage.medium,
+                    imageUrl: order.images.medium,
                     height: 160,
                     width: double.infinity,
                     fit: BoxFit.cover,
@@ -108,7 +108,7 @@ class OrderCard extends StatelessWidget {
                         radius: 18,
                         backgroundColor: Colors.white,
                         child: Text(
-                          order.user.name[0].toUpperCase(),
+                          order.customer.name[0].toUpperCase(),
                           style: getBoldStyle(
                             fontFamily: FontConstant.cairo,
                             color: AppColors.primary,
@@ -122,7 +122,7 @@ class OrderCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              order.user.name,
+                              order.customer.name,
                               style: getMediumStyle(
                                 fontFamily: FontConstant.cairo,
                                 color: Colors.white,

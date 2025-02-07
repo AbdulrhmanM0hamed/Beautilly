@@ -10,7 +10,7 @@ import '../models/order_request_model.dart';
 
 abstract class OrdersRemoteDataSource {
   Future<List<OrderModel>> getMyOrders();
-  Future<List<OrderModel>> getMyReservations();
+  // Future<List<OrderModel>> getMyReservations();
   Future<List<OrderModel>> getAllOrders();
   Future<Map<String, dynamic>> addOrder(OrderRequestModel order);
   Future<void> deleteOrder(int orderId);
@@ -27,70 +27,75 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
 
   @override
   Future<List<OrderModel>> getMyOrders() async {
-    final token = await cacheService.getToken();
-    final sessionCookie = await cacheService.getSessionCookie();
+    try {
+      final token = await cacheService.getToken();
+      final sessionCookie = await cacheService.getSessionCookie();
 
-    if (token == null) {
-      throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-    }
+      if (token == null) {
+        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
+      }
 
-    final response = await client.get(
-      Uri.parse(ApiEndpoints.myOrders),
-      headers: {
-        HttpHeaders.authorizationHeader: 'Bearer $token',
-        'x-api-key': ApiEndpoints.api_key,
-        HttpHeaders.acceptHeader: 'application/json',
-        HttpHeaders.contentTypeHeader: 'application/json',
-        if (sessionCookie != null) 'Cookie': sessionCookie,
-      },
-    );
+      final response = await client.get(
+        Uri.parse(ApiEndpoints.myOrders),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          'x-api-key': ApiEndpoints.api_key,
+          HttpHeaders.acceptHeader: 'application/json',
+          HttpHeaders.contentTypeHeader: 'application/json',
+          if (sessionCookie != null) 'Cookie': sessionCookie,
+        },
+      );
 
-    if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
-      return (jsonResponse['data'] as List)
-          .map((order) => OrderModel.fromJson(order))
-          .toList();
-    } else if (response.statusCode == 401) {
-      throw UnauthorizedException(
-          'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
-    } else {
-      throw ServerException('فشل في تحميل الطلبات');
-    }
-  }
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
 
-  @override
-  Future<List<OrderModel>> getMyReservations() async {
-    // نفس المنطق مع تغيير الـ endpoint
-    final token = await cacheService.getToken();
-    final sessionCookie = await cacheService.getSessionCookie();
-
-    if (token == null) {
-      throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-    }
-
-    final response = await client.get(
-      Uri.parse(ApiEndpoints.myReservations),
-      headers: {
-        HttpHeaders.authorizationHeader: 'Bearer $token',
-        'x-api-key': ApiEndpoints.api_key,
-        HttpHeaders.acceptHeader: 'application/json',
-        HttpHeaders.contentTypeHeader: 'application/json',
-        if (sessionCookie != null) 'Cookie': sessionCookie,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final jsonResponse = json.decode(response.body);
-      return (jsonResponse['data'] as List)
-          .map((order) => OrderModel.fromJson(order))
-          .toList();
-    } else if (response.statusCode == 401) {
-      throw UnauthorizedException(
-          'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
-    } else {
-      throw ServerException('فشل في تحميل الحجوزات');
+        final List<dynamic> orders = jsonResponse['data'] as List;
+        return orders.map((order) => OrderModel.fromJson(order)).toList();
+      } else if (response.statusCode == 401) {
+        throw UnauthorizedException(
+            'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+      } else {
+        final error = json.decode(response.body);
+        throw ServerException(error['message'] ?? 'فشل في تحميل الطلبات');
+      }
+    } catch (e, stackTrace) {
+      throw ServerException('حدث خطأ غير متوقع: $e');
     }
   }
+
+  // @override
+  // Future<List<OrderModel>> getMyReservations() async {
+  //   // نفس المنطق مع تغيير الـ endpoint
+  //   final token = await cacheService.getToken();
+  //   final sessionCookie = await cacheService.getSessionCookie();
+
+  //   if (token == null) {
+  //     throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
+  //   }
+
+  //   final response = await client.get(
+  //     Uri.parse(ApiEndpoints.myReservations),
+  //     headers: {
+  //       HttpHeaders.authorizationHeader: 'Bearer $token',
+  //       'x-api-key': ApiEndpoints.api_key,
+  //       HttpHeaders.acceptHeader: 'application/json',
+  //       HttpHeaders.contentTypeHeader: 'application/json',
+  //       if (sessionCookie != null) 'Cookie': sessionCookie,
+  //     },
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     final jsonResponse = json.decode(response.body);
+  //     return (jsonResponse['data'] as List)
+  //         .map((order) => OrderModel.fromJson(order))
+  //         .toList();
+  //   } else if (response.statusCode == 401) {
+  //     throw UnauthorizedException(
+  //         'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+  //   } else {
+  //     throw ServerException('فشل في تحميل الحجوزات');
+  //   }
+  // }
 
   @override
   Future<List<OrderModel>> getAllOrders() async {

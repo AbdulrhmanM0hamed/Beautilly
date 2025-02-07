@@ -4,9 +4,7 @@ import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/helpers/color_helper.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../../data/models/fabric_types.dart';
 import '../../../data/models/order_request_model.dart';
 
 class FabricsStep extends StatelessWidget {

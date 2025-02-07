@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../../../core/utils/common/custom_text_field.dart';
 
 class MeasurementsStep extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -64,10 +63,12 @@ class MeasurementsStep extends StatelessWidget {
               prefixIcon: Icon(Icons.straighten),
               border: OutlineInputBorder(),
             ),
-            items: sizes.map((size) => DropdownMenuItem(
-              value: size,
-              child: Text(size),
-            )).toList(),
+            items: sizes
+                .map((size) => DropdownMenuItem(
+                      value: size,
+                      child: Text(size),
+                    ))
+                .toList(),
             onChanged: onSizeChanged,
           ),
           const SizedBox(height: 16),
@@ -102,4 +103,4 @@ class MeasurementsStep extends StatelessWidget {
       ),
     );
   }
-} 
+}

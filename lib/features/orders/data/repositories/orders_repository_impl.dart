@@ -27,19 +27,19 @@ class OrdersRepositoryImpl implements OrdersRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, List<OrderEntity>>> getMyReservations() async {
-    try {
-      final reservations = await remoteDataSource.getMyReservations();
-      return Right(reservations);
-    } on UnauthorizedException catch (e) {
-      return Left(AuthFailure(e.message));
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
-    } catch (e) {
-      return Left(ServerFailure('حدث خطأ غير متوقع'));
-    }
-  }
+  // @override
+  // Future<Either<Failure, List<OrderEntity>>> getMyReservations() async {
+  //   try {
+  //     final reservations = await remoteDataSource.getMyReservations();
+  //     return Right(reservations);
+  //   } on UnauthorizedException catch (e) {
+  //     return Left(AuthFailure(e.message));
+  //   } on ServerException catch (e) {
+  //     return Left(ServerFailure(e.message));
+  //   } catch (e) {
+  //     return Left(ServerFailure('حدث خطأ غير متوقع'));
+  //   }
+  // }
 
   @override
   Future<Either<Failure, List<OrderEntity>>> getAllOrders() async {

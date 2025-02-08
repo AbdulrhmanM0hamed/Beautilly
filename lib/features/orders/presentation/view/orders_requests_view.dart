@@ -1,4 +1,6 @@
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
 
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
@@ -104,15 +106,27 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
                 ],
               ),
             ),
-            floatingActionButton: FloatingActionButton(
+            floatingActionButton: FloatingActionButton.extended(
               onPressed: () async {
-                final result =
-                    await Navigator.pushNamed(context, AddOrderView.routeName);
+                final result = await Navigator.pushNamed(
+                  context, 
+                  AddOrderView.routeName
+                );
                 if (result == true && mounted) {
                   _ordersCubit.loadMyOrders();
                 }
               },
-              child: const Icon(Icons.add),
+              backgroundColor: AppColors.primary,
+              icon: const Icon(Icons.add),
+              label: Text(
+                'إضافة طلب تفصيل',
+                style: getMediumStyle(
+                  fontFamily: FontConstant.cairo,
+                  color: Colors.white,
+                  fontSize: FontSize.size14,
+                ),
+              ),
+              elevation: 2,
             ),
           ),
         ),

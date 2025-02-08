@@ -216,15 +216,56 @@ class _OrderCardState extends State<OrderCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Description
-                          Text(
-                            widget.order.description,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: getRegularStyle(
-                              fontFamily: FontConstant.cairo,
-                              fontSize: FontSize.size14,
-                            ),
+                          
+                          Row(
+                            children: [
+                              Text(
+                                widget.order.description,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: getRegularStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  fontSize: FontSize.size14,
+                                ),
+                              ),
+                              Spacer() , 
+                              // إضافة تاريخ الإنشاء هنا
+                                 Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.access_time_rounded,
+                                      size: 14,
+                                      color: AppColors.primary,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      _formatDate(widget.order.createdAt),
+                                      style: getRegularStyle(
+                                        fontFamily: FontConstant.cairo,
+                                        fontSize: FontSize.size12,
+                                        color: AppColors.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+
+                          
+                       
                           const SizedBox(height: 16),
 
                           // Measurements & Fabrics
@@ -258,13 +299,12 @@ class _OrderCardState extends State<OrderCard> {
                                       )),
                             ],
                           ),
-
                           // Actions
                           if (widget.isMyRequest) ...[
-                            const SizedBox(height: 16),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
+                                
                                 IconButton(
                                   onPressed: () {
                                     showDialog(
@@ -476,6 +516,23 @@ class _OrderCardState extends State<OrderCard> {
       return Color(int.parse(hexColor, radix: 16));
     } catch (e) {
       return Colors.grey;
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    // حساب الفرق بين التاريخ الحالي وتاريخ إنشاء الطلب
+    final difference = DateTime.now().difference(date);
+    
+    if (difference.inDays == 0) {
+      if (difference.inHours == 0) {
+        return 'منذ ${difference.inMinutes} دقيقة';
+      }
+      return 'منذ ${difference.inHours} ساعة';
+    } else if (difference.inDays < 7) {
+      return 'منذ ${difference.inDays} يوم';
+    } else {
+      // تنسيق التاريخ بالشكل المطلوب
+      return '${date.day}/${date.month}/${date.year}';
     }
   }
 }

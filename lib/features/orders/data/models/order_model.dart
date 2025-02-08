@@ -41,12 +41,13 @@ class OrderModel extends OrderEntity {
 }
 
 class UserModel extends User {
-  const UserModel({required super.id, required super.name});
+  const UserModel({required super.id, required super.name , required super.avatar});
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],
       name: json['name'],
+      avatar: json['avatar'],
     );
   }
 }

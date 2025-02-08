@@ -45,11 +45,16 @@ class OrderEntity extends Equatable {
 class User extends Equatable {
   final int id;
   final String name;
+  final String? avatar;
 
-  const User({required this.id, required this.name});
+  const User({
+    required this.id,
+    required this.name,
+    this.avatar,
+  });
 
   @override
-  List<Object?> get props => [id, name];
+  List<Object?> get props => [id, name, avatar];
 }
 
 class Fabric extends Equatable {

@@ -170,14 +170,21 @@ class _OrderCardState extends State<OrderCard> {
                               CircleAvatar(
                                 radius: 18,
                                 backgroundColor: Colors.white,
-                                child: Text(
-                                  widget.order.customer.name[0].toUpperCase(),
-                                  style: getBoldStyle(
-                                    fontFamily: FontConstant.cairo,
-                                    color: AppColors.primary,
-                                    fontSize: FontSize.size16,
-                                  ),
-                                ),
+                                child: widget.order.customer.avatar != null
+                                    ? ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl: "https://dallik.com/storage/${widget.order.customer.avatar}",
+                                          width: 36,
+                                          height: 36,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => const CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: AppColors.primary,
+                                          ),
+                                          errorWidget: (context, url, error) => _buildAvatarText(),
+                                        ),
+                                      )
+                                    : _buildAvatarText(),
                               ),
                               const SizedBox(width: 8),
                               Expanded(
@@ -533,5 +540,16 @@ class _OrderCardState extends State<OrderCard> {
       // تنسيق التاريخ بالشكل المطلوب
       return '${date.day}/${date.month}/${date.year}';
     }
+  }
+
+  Widget _buildAvatarText() {
+    return Text(
+      widget.order.customer.name[0].toUpperCase(),
+      style: getBoldStyle(
+        fontFamily: FontConstant.cairo,
+        color: AppColors.primary,
+        fontSize: FontSize.size16,
+      ),
+    );
   }
 }

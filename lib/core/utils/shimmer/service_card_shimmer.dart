@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
-import '../theme/app_colors.dart';
 
 class ServiceCardShimmer extends StatelessWidget {
   const ServiceCardShimmer({super.key});
@@ -94,4 +93,4 @@ class ServicesGridShimmer extends StatelessWidget {
       itemBuilder: (context, index) => const ServiceCardShimmer(),
     );
   }
-} 
+}

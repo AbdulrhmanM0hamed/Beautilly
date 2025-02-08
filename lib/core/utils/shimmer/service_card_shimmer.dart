@@ -86,8 +86,8 @@ class ServicesGridShimmer extends StatelessWidget {
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
         childAspectRatio: 1.05,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 4,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
       ),
       itemCount: itemCount,
       itemBuilder: (context, index) => const ServiceCardShimmer(),

@@ -18,22 +18,30 @@ import '../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../cubit/discounts_cubit/discounts_cubit.dart';
 
 class HomeView extends StatefulWidget {
+  static const String routeName = '/home';
   const HomeView({super.key});
-  static const String routeName = 'home-view';
+
   @override
   State<HomeView> createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
-  int _selectedIndex = 0;
+  int _currentIndex = 0;
+  final _pageController = PageController();
 
   final List<Widget> _pages = [
-    const HomeViewBody(),
-    const DiscoverView(),
-    const ReservationsView(),
-    const TailoringRequestsView(),
-    const ProfileView(),
+    const KeepAlivePage(child: HomeViewBody()),
+    const KeepAlivePage(child: DiscoverView()),
+    const KeepAlivePage(child: ReservationsView()),
+    const KeepAlivePage(child: TailoringRequestsView()),
+    const KeepAlivePage(child: ProfileView()),
   ];
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +63,11 @@ class _HomeViewState extends State<HomeView> {
       child: BlocProvider(
         create: (context) => sl<ProfileCubit>()..loadProfile(),
         child: Scaffold(
-          body: _pages[_selectedIndex],
+          body: PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            children: _pages,
+          ),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
@@ -66,11 +78,10 @@ class _HomeViewState extends State<HomeView> {
                 highlightColor: Colors.transparent,
               ),
               child: BottomNavigationBar(
-                currentIndex: _selectedIndex,
+                currentIndex: _currentIndex,
                 onTap: (index) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
+                  setState(() => _currentIndex = index);
+                  _pageController.jumpToPage(index);
                 },
                 type: BottomNavigationBarType.fixed,
                 backgroundColor: Colors.transparent,
@@ -107,7 +118,7 @@ class _HomeViewState extends State<HomeView> {
         child: SvgPicture.asset(
           iconPath,
           colorFilter: ColorFilter.mode(
-            _selectedIndex == _getIndexForLabel(label)
+            _currentIndex == _getIndexForLabel(label)
                 ? AppColors.primary
                 : AppColors.grey,
             BlendMode.srcIn,
@@ -133,5 +144,28 @@ class _HomeViewState extends State<HomeView> {
       default:
         return 0;
     }
+  }
+}
+
+class KeepAlivePage extends StatefulWidget {
+  final Widget child;
+
+  const KeepAlivePage({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  State<KeepAlivePage> createState() => _KeepAlivePageState();
+}
+
+class _KeepAlivePageState extends State<KeepAlivePage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }

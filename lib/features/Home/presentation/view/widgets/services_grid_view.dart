@@ -1,5 +1,6 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/shimmer/service_card_shimmer.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Home/domain/entities/service.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +11,11 @@ import '../../cubit/service_cubit/services_state.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ServicesGridView extends StatefulWidget {
-  final int? maxItems;
+  final int maxItems;
 
   const ServicesGridView({
     super.key,
-    this.maxItems,
+    this.maxItems = 8,
   });
 
   @override
@@ -25,6 +26,7 @@ class _ServicesGridViewState extends State<ServicesGridView> {
   @override
   void initState() {
     super.initState();
+    // تحميل الخدمات عند بداية عرض الـ widget
     context.read<ServicesCubit>().loadServices();
   }
 
@@ -33,53 +35,24 @@ class _ServicesGridViewState extends State<ServicesGridView> {
     return BlocBuilder<ServicesCubit, ServicesState>(
       builder: (context, state) {
         if (state is ServicesLoading) {
-          return SizedBox(
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: const Center(
-              child: CustomProgressIndcator(
-                color: AppColors.primary,
-              ),
-            ),
-          );
-        }
-
-        if (state is ServicesError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(state.message),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<ServicesCubit>().loadServices();
-                  },
-                  child: const Text('إعادة المحاولة'),
-                ),
-              ],
-            ),
-          );
+          return ServicesGridShimmer();
         }
 
         if (state is ServicesLoaded) {
-          final services = widget.maxItems != null
-              ? state.services.take(widget.maxItems!).toList()
-              : state.services;
-
+          final services = state.services.take(widget.maxItems).toList();
           return GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1.1,
+              childAspectRatio: 1.05,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 4,
             ),
             itemCount: services.length,
-            itemBuilder: (context, index) {
-              final service = services[index];
-              return ServiceCard(service: service);
-            },
+            itemBuilder: (context, index) => ServiceCard(
+              service: services[index],
+            ),
           );
         }
 
@@ -228,7 +201,7 @@ class ServiceCard extends StatelessWidget {
               ),
               // اسم الخدمة
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8 , horizontal: 4),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                 child: Text(
                   service.name,
                   style: getBoldStyle(

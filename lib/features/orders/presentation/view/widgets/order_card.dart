@@ -498,7 +498,6 @@ class _OrderCardState extends State<OrderCard> {
             label,
             style: getRegularStyle(
               fontFamily: FontConstant.cairo,
-              color: textColor ?? Colors.black87,
               fontSize: FontSize.size12,
             ),
           ),

@@ -5,12 +5,14 @@ import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/orders/domain/entities/order.dart';
 import 'package:beautilly/features/orders/presentation/view/order_details_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../../core/utils/constant/font_manger.dart';
 import '../../../../../core/utils/constant/styles_manger.dart';
 import '../../../../../core/utils/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';
+import 'package:beautilly/core/utils/common/custom_dialog_button.dart';
 
 class OrderCard extends StatefulWidget {
   final OrderEntity order;
@@ -264,41 +266,87 @@ class _OrderCardState extends State<OrderCard> {
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 IconButton(
-                                  onPressed: () {},
-                                  icon:
-                                      const Icon(Icons.remove_red_eye_rounded),
-                                  color: AppColors.primary,
-                                  tooltip: 'عرض الطلب',
-                                ),
-                                IconButton(
                                   onPressed: () {
                                     showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
-                                        title: const Text('تأكيد الحذف'),
-                                        content: const Text(
-                                            'هل أنت متأكد من حذف هذا الطلب؟'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pop(context),
-                                            child: const Text('إلغاء'),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        title: Text(
+                                          'تأكيد الحذف',
+                                          style: getBoldStyle(
+                                            fontFamily: FontConstant.cairo,
+                                            fontSize: FontSize.size18,
                                           ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              widget.onDelete
-                                                  ?.call(widget.order.id);
-                                            },
-                                            style: TextButton.styleFrom(
-                                                foregroundColor: Colors.red),
-                                            child: const Text('حذف'),
+                                        ),
+                                        content: Text(
+                                          'هل أنت متأكد من حذف هذا الطلب؟',
+                                          style: getRegularStyle(
+                                            fontFamily: FontConstant.cairo,
+                                            fontSize: FontSize.size14,
+                                          ),
+                                        ),
+                                        actions: [
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 8, left: 8, right: 8),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Expanded(
+                                                  child: CustomDialogButton(
+                                                    text: 'إلغاء',
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                Expanded(
+                                                  child: CustomDialogButton(
+                                                    text: 'حذف',
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                      widget.onDelete?.call(
+                                                          widget.order.id);
+                                                    },
+                                                    isDestructive: true,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
                                     );
                                   },
-                                  icon: const Icon(Icons.delete_outline),
+                                  icon: Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: AppColors.error,
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/icons/trash.svg',
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'حذف الطلب',
+                                          style: getRegularStyle(
+                                            fontFamily: FontConstant.cairo,
+                                            color: AppColors.error,
+                                            fontSize: FontSize.size12,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                   color: AppColors.error,
                                   tooltip: 'حذف',
                                 ),

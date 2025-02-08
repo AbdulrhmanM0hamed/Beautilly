@@ -1,6 +1,5 @@
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
-import 'package:beautilly/core/utils/constant/font_manger.dart';
-import 'package:beautilly/core/utils/constant/styles_manger.dart';
+
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/orders/presentation/cubit/delete_order_cubit/delete_order_cubit.dart';
@@ -62,11 +61,9 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
                 context: context, message: 'تم حذف الطلب بنجاح');
             _ordersCubit.loadMyOrders();
           } else if (state is DeleteOrderError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
+            CustomSnackbar.showError(
+              context: context,
+              message: state.message,
             );
           }
         },
@@ -85,7 +82,7 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
                 },
                 tabs: const [
                   Tab(text: 'طلباتي'),
-                  Tab(text: 'كل الطلبات'),
+                  Tab(text: 'طلبات المستخدمين'),
                 ],
               ),
             ),
@@ -158,11 +155,9 @@ class _RefreshableOrdersListState extends State<RefreshableOrdersList> {
         if (state is OrdersSuccess) {
           // تم تحميل البيانات بنجاح
         } else if (state is OrdersError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
+          CustomSnackbar.showSuccess(
+            context: context,
+            message: state.message,
           );
         }
       },

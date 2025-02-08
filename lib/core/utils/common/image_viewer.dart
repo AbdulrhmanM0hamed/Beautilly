@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import '../../../../../core/utils/animations/custom_progress_indcator.dart';
+import '../animations/custom_progress_indcator.dart';
 
 class ImageViewer extends StatelessWidget {
   final String imageUrl;
@@ -11,7 +11,7 @@ class ImageViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,

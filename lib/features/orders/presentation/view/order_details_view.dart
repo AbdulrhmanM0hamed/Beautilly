@@ -5,7 +5,7 @@ import '../../../../core/utils/constant/font_manger.dart';
 import '../../../../core/utils/constant/styles_manger.dart';
 import '../../../../core/utils/theme/app_colors.dart';
 import '../../domain/entities/order_details.dart';
-import 'widgets/image_viewer.dart';
+import '../../../../core/utils/common/image_viewer.dart';
 
 class OrderDetailsView extends StatelessWidget {
   static const String routeName = '/order-details';

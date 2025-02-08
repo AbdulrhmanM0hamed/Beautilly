@@ -71,4 +71,75 @@ class FormValidators {
     }
     return null;
   }
+
+  static String? validateHeight(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'الرجاء إدخال الطول';
+    }
+    
+    final height = double.tryParse(value);
+    if (height == null) {
+      return 'الرجاء إدخال رقم صحيح';
+    }
+
+    if (height < 100 || height > 220) {
+      return 'الرجاء إدخال طول منطقي (100-220 سم)';
+    }
+
+    return null;
+  }
+
+  static String? validateWeight(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'الرجاء إدخال الوزن';
+    }
+
+    final weight = double.tryParse(value);
+    if (weight == null) {
+      return 'الرجاء إدخال رقم صحيح';
+    }
+
+    if (weight < 30 || weight > 200) {
+      return 'الرجاء إدخال وزن منطقي (30-200 كجم)';
+    }
+
+    return null;
+  }
+
+  static String? validateDescription(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'الرجاء إدخال الوصف';
+    }
+
+    if (value.length < 10) {
+      return 'الوصف قصير جداً (10 أحرف على الأقل)';
+    }
+
+    if (value.length > 500) {
+      return 'الوصف طويل جداً (500 حرف كحد أقصى)';
+    }
+
+    return null;
+  }
+
+  static String? validateExecutionTime(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'الرجاء إدخال وقت التنفيذ';
+    }
+
+    final days = int.tryParse(value);
+    if (days == null) {
+      return 'الرجاء إدخال رقم صحيح';
+    }
+
+    if (days < 1) {
+      return 'وقت التنفيذ لا يمكن أن يكون أقل من يوم';
+    }
+
+    if (days > 90) {
+      return 'وقت التنفيذ لا يمكن أن يتجاوز 90 يوم';
+    }
+
+    return null;
+  }
 }

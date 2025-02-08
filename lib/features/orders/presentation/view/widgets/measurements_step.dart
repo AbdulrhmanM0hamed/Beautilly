@@ -1,4 +1,6 @@
+import 'package:beautilly/core/utils/common/custom_text_field.dart';
 import 'package:flutter/material.dart';
+import '../../../../../core/utils/validators/form_validators.dart';
 
 class MeasurementsStep extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -28,32 +30,20 @@ class MeasurementsStep extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
+          CustomTextField(
             controller: heightController,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'الطول (سم)',
-              prefixIcon: Icon(Icons.height),
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value?.isEmpty ?? true) return 'الرجاء إدخال الطول';
-              return null;
-            },
+            prefix: const Icon(Icons.height),
+            label: 'الطول (سم)',
+            validator: FormValidators.validateHeight,
           ),
           const SizedBox(height: 16),
-          TextFormField(
+          CustomTextField(
             controller: weightController,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'الوزن (كجم)',
-              prefixIcon: Icon(Icons.monitor_weight_outlined),
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value?.isEmpty ?? true) return 'الرجاء إدخال الوزن';
-              return null;
-            },
+            label: 'الوزن (كجم)',
+            prefix: const Icon(Icons.monitor_weight_outlined),
+            validator: FormValidators.validateWeight,
           ),
           const SizedBox(height: 16),
           DropdownButtonFormField<String>(
@@ -72,32 +62,20 @@ class MeasurementsStep extends StatelessWidget {
             onChanged: onSizeChanged,
           ),
           const SizedBox(height: 16),
-          TextFormField(
+          CustomTextField(
             controller: descriptionController,
             maxLines: 3,
-            decoration: const InputDecoration(
-              labelText: 'الوصف',
-              prefixIcon: Icon(Icons.description),
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value?.isEmpty ?? true) return 'الرجاء إدخال الوصف';
-              return null;
-            },
+            label: 'الوصف',
+            prefix: const Icon(Icons.description),
+            validator: FormValidators.validateDescription,
           ),
           const SizedBox(height: 16),
-          TextFormField(
+          CustomTextField(
             controller: executionTimeController,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'وقت التنفيذ (بالأيام)',
-              prefixIcon: Icon(Icons.timer),
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value?.isEmpty ?? true) return 'الرجاء إدخال وقت التنفيذ';
-              return null;
-            },
+            label: 'وقت التنفيذ (بالأيام)',
+            prefix: const Icon(Icons.timer),
+            validator: FormValidators.validateExecutionTime,
           ),
         ],
       ),

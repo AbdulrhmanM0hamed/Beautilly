@@ -1,5 +1,4 @@
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
-import 'package:beautilly/features/orders/domain/entities/order.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../../../core/utils/constant/font_manger.dart';
@@ -23,10 +22,11 @@ class OrderDetailsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return FutureBuilder(
       // انتظار لمدة ثانية
-      future: Future.delayed(const Duration(seconds: 1)),
+      future: Future.delayed(const Duration(milliseconds: 0)),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
+
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

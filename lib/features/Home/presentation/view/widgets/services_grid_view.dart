@@ -5,7 +5,6 @@ import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Home/domain/entities/service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/utils/animations/custom_progress_indcator.dart';
 import '../../cubit/service_cubit/services_cubit.dart';
 import '../../cubit/service_cubit/services_state.dart';
 import 'package:cached_network_image/cached_network_image.dart';

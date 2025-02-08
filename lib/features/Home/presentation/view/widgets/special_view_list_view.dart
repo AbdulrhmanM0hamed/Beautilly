@@ -1,8 +1,6 @@
 import 'package:beautilly/core/utils/shimmer/special_view_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/utils/animations/custom_progress_indcator.dart';
-import '../../../../../core/utils/theme/app_colors.dart';
 import '../../cubit/discounts_cubit/discounts_cubit.dart';
 import '../../cubit/discounts_cubit/discounts_state.dart';
 import 'offer_card.dart';

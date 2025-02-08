@@ -1,11 +1,9 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/core/utils/shimmer/service_card_shimmer.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Home/presentation/cubit/discounts_cubit/discounts_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
-import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_state.dart';
 import 'package:beautilly/features/Home/presentation/cubit/statistics_cubit/statistics_cubit.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/services_grid_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/special_view_list_view.dart';

@@ -33,7 +33,7 @@ class _HomeViewState extends State<HomeView> {
     const KeepAlivePage(child: HomeViewBody()),
     const KeepAlivePage(child: DiscoverView()),
     const KeepAlivePage(child: ReservationsView()),
-    const KeepAlivePage(child: TailoringRequestsView()),
+    const KeepAlivePage(child: OrdersRequestsView()),
     const KeepAlivePage(child: ProfileView()),
   ];
 

@@ -99,10 +99,10 @@ class _AddOrderViewState extends State<AddOrderView> {
               body: BlocListener<AddOrderCubit, AddOrderState>(
                 listener: (context, state) {
                   if (state is AddOrderSuccess) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('تم إضافة الطلب بنجاح')),
-                    );
-                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text('تم إضافة الطلب بنجاح')));
+                    Navigator.pop(context, true);
                   } else if (state is AddOrderError) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.message)),

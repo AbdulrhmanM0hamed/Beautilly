@@ -36,45 +36,49 @@ class _OrderCardState extends State<OrderCard> {
     return Stack(
       children: [
         GestureDetector(
-          onTap: _isLoading ? null : () async {
-            try {
-              setState(() => _isLoading = true);
-              final result = await sl<OrdersRepository>().getOrderDetails(widget.order.id);
-              if (!mounted) return;
-              
-              result.fold(
-                (failure) {
-                  CustomSnackbar.showError(
-                    context: context,
-                    message: failure.message,
-                  );
+          onTap: _isLoading
+              ? null
+              : () async {
+                  try {
+                    setState(() => _isLoading = true);
+                    final result = await sl<OrdersRepository>()
+                        .getOrderDetails(widget.order.id);
+                    if (!mounted) return;
+
+                    result.fold(
+                      (failure) {
+                        CustomSnackbar.showError(
+                          context: context,
+                          message: failure.message,
+                        );
+                      },
+                      (orderDetails) {
+                        Navigator.push(
+                          context,
+                          PageRoutes.fadeScale(
+                            page: OrderDetailsView(
+                              order: orderDetails,
+                              isMyOrder: widget.isMyRequest,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } catch (e) {
+                    if (!mounted) return;
+                    CustomSnackbar.showError(
+                      context: context,
+                      message: 'حدث خطأ في تحميل تفاصيل الطلب',
+                    );
+                  } finally {
+                    if (mounted) {
+                      setState(() => _isLoading = false);
+                    }
+                  }
                 },
-                (orderDetails) {
-                  Navigator.push(
-                    context,
-                    PageRoutes.fadeScale(
-                      page: OrderDetailsView(
-                        order: orderDetails,
-                        isMyOrder: widget.isMyRequest,
-                      ),
-                    ),
-                  );
-                },
-              );
-            } catch (e) {
-              if (!mounted) return;
-              CustomSnackbar.showError(
-                context: context,
-                message: 'حدث خطأ في تحميل تفاصيل الطلب',
-              );
-            } finally {
-              if (mounted) {
-                setState(() => _isLoading = false);
-              }
-            }
-          },
           child: MouseRegion(
-            cursor: _isLoading ? SystemMouseCursors.wait : SystemMouseCursors.click,
+            cursor:
+                _isLoading ? SystemMouseCursors.wait : SystemMouseCursors.click,
             child: Opacity(
               opacity: _isLoading ? 0.7 : 1.0,
               child: AnimatedContainer(
@@ -109,8 +113,8 @@ class _OrderCardState extends State<OrderCard> {
                       children: [
                         // Image
                         ClipRRect(
-                          borderRadius:
-                              const BorderRadius.vertical(top: Radius.circular(16)),
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(16)),
                           child: CachedNetworkImage(
                             imageUrl: widget.order.images.medium,
                             height: 160,
@@ -127,8 +131,8 @@ class _OrderCardState extends State<OrderCard> {
                             errorWidget: (context, url, error) => Container(
                               height: 160,
                               color: Colors.grey[100],
-                              child:
-                                  const Icon(Icons.error_outline, color: Colors.grey),
+                              child: const Icon(Icons.error_outline,
+                                  color: Colors.grey),
                             ),
                           ),
                         ),
@@ -136,8 +140,8 @@ class _OrderCardState extends State<OrderCard> {
                         Container(
                           height: 160,
                           decoration: BoxDecoration(
-                            borderRadius:
-                                const BorderRadius.vertical(top: Radius.circular(16)),
+                            borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(16)),
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
@@ -216,7 +220,6 @@ class _OrderCardState extends State<OrderCard> {
                             overflow: TextOverflow.ellipsis,
                             style: getRegularStyle(
                               fontFamily: FontConstant.cairo,
-                              color: Colors.black87,
                               fontSize: FontSize.size14,
                             ),
                           ),
@@ -242,12 +245,15 @@ class _OrderCardState extends State<OrderCard> {
                                 widget.order.size,
                                 AppColors.primary.withOpacity(0.1),
                               ),
-                              ...widget.order.fabrics.map((fabric) => _buildInfoChip(
-                                    Icons.format_paint_outlined,
-                                    fabric.type,
-                                    _getColorFromHex(fabric.color).withOpacity(0.1),
-                                    textColor: _getColorFromHex(fabric.color),
-                                  )),
+                              ...widget.order.fabrics
+                                  .map((fabric) => _buildInfoChip(
+                                        Icons.format_paint_outlined,
+                                        fabric.type,
+                                        _getColorFromHex(fabric.color)
+                                            .withOpacity(0.1),
+                                        textColor:
+                                            _getColorFromHex(fabric.color),
+                                      )),
                             ],
                           ),
 
@@ -259,7 +265,8 @@ class _OrderCardState extends State<OrderCard> {
                               children: [
                                 IconButton(
                                   onPressed: () {},
-                                  icon: const Icon(Icons.remove_red_eye_rounded),
+                                  icon:
+                                      const Icon(Icons.remove_red_eye_rounded),
                                   color: AppColors.primary,
                                   tooltip: 'عرض الطلب',
                                 ),
@@ -273,13 +280,15 @@ class _OrderCardState extends State<OrderCard> {
                                             'هل أنت متأكد من حذف هذا الطلب؟'),
                                         actions: [
                                           TextButton(
-                                            onPressed: () => Navigator.pop(context),
+                                            onPressed: () =>
+                                                Navigator.pop(context),
                                             child: const Text('إلغاء'),
                                           ),
                                           TextButton(
                                             onPressed: () {
                                               Navigator.pop(context);
-                                              widget.onDelete?.call(widget.order.id);
+                                              widget.onDelete
+                                                  ?.call(widget.order.id);
                                             },
                                             style: TextButton.styleFrom(
                                                 foregroundColor: Colors.red),

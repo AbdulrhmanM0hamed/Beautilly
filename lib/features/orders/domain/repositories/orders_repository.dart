@@ -12,4 +12,6 @@ abstract class OrdersRepository {
   Future<Either<Failure, void>> deleteOrder(int orderId);
   Future<Either<Failure, OrderDetails>> getOrderDetails(int orderId);
   Future<Either<Failure, void>> acceptOffer(int orderId, int offerId);
+    Future<Either<Failure, void>> cancelOffer(int orderId, int offerId);
+
 } 

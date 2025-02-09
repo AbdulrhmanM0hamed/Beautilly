@@ -57,6 +57,8 @@ import '../../features/Home/domain/repositories/discounts_repository.dart';
 import '../../features/Home/domain/usecases/get_discounts_usecase.dart';
 import '../../features/Home/presentation/cubit/discounts_cubit/discounts_cubit.dart';
 import '../../features/orders/presentation/cubit/order_details_cubit/order_details_cubit.dart';
+import 'package:beautilly/features/orders/presentation/cubit/cancel_offer_cubit/cancel_offer_cubit.dart';
+import 'package:beautilly/features/orders/domain/usecases/cancel_offer_usecase.dart';
 
 // Tailoring Requests Feature
 
@@ -271,4 +273,11 @@ Future<void> init() async {
 
   // Cubits
   sl.registerFactory(() => OrderDetailsCubit(sl()));
+
+  // Orders Feature
+  sl.registerLazySingleton(() => CancelOfferUseCase(sl()));
+  sl.registerFactory(() => CancelOfferCubit(
+        cancelOfferUseCase: sl(),
+      ));
+
 }

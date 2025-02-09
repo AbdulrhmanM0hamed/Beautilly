@@ -24,34 +24,30 @@ class OrderDetailsCubit extends Cubit<OrderDetailsState> {
       final currentState = state as OrderDetailsSuccess;
       final updatedOffers = currentState.orderDetails.offers.map((offer) {
         if (offer.id == offerId) {
+          final newStatus = offer.status == 'accepted' ? 'pending' : 'accepted';
           return OfferWithDetails(
             id: offer.id,
             price: offer.price,
-            daysCount: offer.daysCount,
             notes: offer.notes,
-            status: 'accepted',
-            shop: offer.shop as ShopWithDetails,
+            daysCount: offer.daysCount,
+            status: newStatus,
             createdAt: offer.createdAt,
+            shop: offer.shop as ShopWithDetails,
           );
         }
-        return offer;
+        return OfferWithDetails(
+          id: offer.id,
+          price: offer.price,
+          notes: offer.notes,
+          daysCount: offer.daysCount,
+          status: 'pending',
+          createdAt: offer.createdAt,
+          shop: offer.shop as ShopWithDetails,
+        );
       }).toList();
 
       emit(OrderDetailsSuccess(
-        OrderDetails(
-          id: currentState.orderDetails.id,
-          description: currentState.orderDetails.description,
-          status: currentState.orderDetails.status,
-          statusLabel: currentState.orderDetails.statusLabel,
-          height: currentState.orderDetails.height,
-          weight: currentState.orderDetails.weight,
-          size: currentState.orderDetails.size,
-          fabrics: currentState.orderDetails.fabrics,
-          executionTime: currentState.orderDetails.executionTime,
-          createdAt: currentState.orderDetails.createdAt,
-          updatedAt: currentState.orderDetails.updatedAt,
-          customer: currentState.orderDetails.customer,
-          images: currentState.orderDetails.images,
+        currentState.orderDetails.copyWith(
           offers: updatedOffers,
         ),
       ));

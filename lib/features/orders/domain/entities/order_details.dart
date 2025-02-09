@@ -67,6 +67,40 @@ class OrderDetails {
     required this.images,
     required this.offers,
   });
+
+  OrderDetails copyWith({
+    int? id,
+    String? description,
+    String? status,
+    String? statusLabel,
+    int? height,
+    int? weight,
+    String? size,
+    List<Fabric>? fabrics,
+    int? executionTime,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    UserWithDetails? customer,
+    MainImage? images,
+    List<OfferWithDetails>? offers,
+  }) {
+    return OrderDetails(
+      id: id ?? this.id,
+      description: description ?? this.description,
+      status: status ?? this.status,
+      statusLabel: statusLabel ?? this.statusLabel,
+      height: height ?? this.height,
+      weight: weight ?? this.weight,
+      size: size ?? this.size,
+      fabrics: fabrics ?? this.fabrics,
+      executionTime: executionTime ?? this.executionTime,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      customer: customer ?? this.customer,
+      images: images ?? this.images,
+      offers: offers ?? this.offers,
+    );
+  }
 }
 
 class OfferWithDetails extends Offer {
@@ -81,4 +115,21 @@ class OfferWithDetails extends Offer {
     required super.createdAt,
     required ShopWithDetails shop,
   }) : super(shop: shop);
+
+  Offer copyWith({
+    int? id,
+    String? status,
+    // ... باقي الحقول
+  }) {
+    return Offer(
+      price: price ?? this.price,
+      notes: notes ?? this.notes,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      shop: shop ?? this.shop,
+      
+      id: id ?? this.id,
+      // ... باقي الحقول
+    );
+  }
 } 

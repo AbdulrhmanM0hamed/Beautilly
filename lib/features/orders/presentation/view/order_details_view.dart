@@ -1,4 +1,3 @@
-import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
@@ -33,7 +32,8 @@ class OrderDetailsView extends StatelessWidget {
           create: (context) => sl<AcceptOfferCubit>(),
         ),
         BlocProvider(
-          create: (context) => sl<OrderDetailsCubit>()..getOrderDetails(orderDetails.id),
+          create: (context) =>
+              sl<OrderDetailsCubit>()..getOrderDetails(orderDetails.id),
         ),
       ],
       child: BlocConsumer<OrderDetailsCubit, OrderDetailsState>(
@@ -50,7 +50,9 @@ class OrderDetailsView extends StatelessWidget {
                   context: context,
                   message: 'تم قبول العرض بنجاح',
                 );
-                context.read<OrderDetailsCubit>().updateOfferStatus(state.offerId);
+                context
+                    .read<OrderDetailsCubit>()
+                    .updateOfferStatus(state.offerId);
               } else if (state is AcceptOfferError) {
                 CustomSnackbar.showError(
                   context: context,
@@ -92,6 +94,7 @@ class OrderDetailsView extends StatelessWidget {
                             CachedNetworkImage(
                               imageUrl: orderDetails.images.large,
                               fit: BoxFit.cover,
+                            
                             ),
                             Container(
                               decoration: BoxDecoration(
@@ -131,7 +134,8 @@ class OrderDetailsView extends StatelessWidget {
                                     backgroundColor:
                                         AppColors.primary.withOpacity(0.1),
                                     child: Text(
-                                      orderDetails.customer.name[0].toUpperCase(),
+                                      orderDetails.customer.name[0]
+                                          .toUpperCase(),
                                       style: getBoldStyle(
                                         color: AppColors.primary,
                                         fontSize: FontSize.size20,
@@ -175,8 +179,8 @@ class OrderDetailsView extends StatelessWidget {
                                 ),
                               ),
                               const Spacer(),
-                              _buildStatusChip(
-                                  orderDetails.status, orderDetails.statusLabel),
+                              _buildStatusChip(orderDetails.status,
+                                  orderDetails.statusLabel),
                             ],
                           ),
                           const SizedBox(height: 24),
@@ -221,11 +225,11 @@ class OrderDetailsView extends StatelessWidget {
                               fontFamily: FontConstant.cairo,
                             ),
                           ),
-                          const SizedBox(height: 16),
 
                           // العروض المقدمة
                           if (detailsState is OrderDetailsSuccess) ...[
-                            if (detailsState.orderDetails.offers.isNotEmpty) ...[
+                            if (detailsState
+                                .orderDetails.offers.isNotEmpty) ...[
                               const SizedBox(height: 24),
                               Text(
                                 'العروض المقدمة',
@@ -234,9 +238,9 @@ class OrderDetailsView extends StatelessWidget {
                                   fontSize: FontSize.size18,
                                 ),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 22),
                               _buildOffersSection(
-                                context, 
+                                context,
                                 detailsState.orderDetails,
                               ),
                             ],
@@ -404,6 +408,7 @@ class OrderDetailsView extends StatelessWidget {
 
   Widget _buildOffersSection(BuildContext context, OrderDetails orderDetails) {
     return ListView.separated(
+      padding: EdgeInsets.zero,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: orderDetails.offers.length,
@@ -446,7 +451,6 @@ class OrderDetailsView extends StatelessWidget {
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(
                                 color: Colors.grey[200],
-                              
                               ),
                             ),
                           ),
@@ -455,6 +459,7 @@ class OrderDetailsView extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+
                                 Text(
                                   offer.shop.name,
                                   style: getBoldStyle(
@@ -462,9 +467,11 @@ class OrderDetailsView extends StatelessWidget {
                                     fontFamily: FontConstant.cairo,
                                   ),
                                 ),
+                                const SizedBox(height: 4),
                                 Row(
                                   children: [
                                     const Icon(
+
                                       Icons.location_on_outlined,
                                       size: 16,
                                       color: Colors.grey,
@@ -493,6 +500,9 @@ class OrderDetailsView extends StatelessWidget {
                                   fontSize: FontSize.size18,
                                   fontFamily: FontConstant.cairo,
                                 ),
+                              ),
+                              const SizedBox(
+                                height: 10,
                               ),
                               if (isAccepted)
                                 Container(
@@ -533,10 +543,10 @@ class OrderDetailsView extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
-                            color: Colors.grey[50],
+                          
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: Colors.grey[200]!,
+                              color: Colors.grey[400]!,
                             ),
                           ),
                           child: Column(
@@ -548,13 +558,12 @@ class OrderDetailsView extends StatelessWidget {
                                     const Icon(
                                       Icons.timer_outlined,
                                       size: 16,
-                                      color: Colors.grey,
+                                 
                                     ),
                                     const SizedBox(width: 4),
                                     Text(
                                       'مدة التنفيذ: ${offer.daysCount} أيام',
                                       style: getRegularStyle(
-                                        color: Colors.grey[700],
                                         fontSize: FontSize.size14,
                                         fontFamily: FontConstant.cairo,
                                       ),
@@ -570,14 +579,13 @@ class OrderDetailsView extends StatelessWidget {
                                     const Icon(
                                       Icons.note_outlined,
                                       size: 16,
-                                      color: Colors.grey,
                                     ),
                                     const SizedBox(width: 4),
                                     Expanded(
                                       child: Text(
                                         offer.notes!,
                                         style: getRegularStyle(
-                                          color: Colors.grey[700],
+                                   
                                           fontSize: FontSize.size14,
                                           fontFamily: FontConstant.cairo,
                                         ),
@@ -596,6 +604,7 @@ class OrderDetailsView extends StatelessWidget {
                           children: [
                             Expanded(
                               child: CustomButton(
+                                backgroundColor: AppColors.success,
                                 onPressed: () => _showAcceptConfirmation(
                                   context,
                                   orderDetails.id,
@@ -624,22 +633,49 @@ class OrderDetailsView extends StatelessWidget {
       builder: (_) => BlocProvider.value(
         value: BlocProvider.of<AcceptOfferCubit>(context),
         child: AlertDialog(
-          title: const Text('تأكيد قبول العرض'),
-          content: const Text('هل أنت متأكد من قبول هذا العرض؟'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('إلغاء'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text(
+            'تأكيد قبول العرض',
+            style: getBoldStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size18,
             ),
-            Builder(
-              builder: (dialogContext) => TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  dialogContext
-                      .read<AcceptOfferCubit>()
-                      .acceptOffer(orderId, offerId);
-                },
-                child: const Text('قبول'),
+          ),
+          content: Text(
+            'هل أنت متأكد من قبول هذا العرض؟',
+            style: getRegularStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size14,
+            ),
+          ),
+          actions: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: CustomButton(
+                      text: 'إلغاء',
+                      onPressed: () => Navigator.pop(context),
+                      backgroundColor: Colors.grey[200],
+                      textColor: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: CustomButton(
+                      text: 'قبول',
+                      onPressed: () {
+                        Navigator.pop(context);
+                        context.read<AcceptOfferCubit>().acceptOffer(orderId, offerId);
+                      },
+                      backgroundColor: AppColors.success,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

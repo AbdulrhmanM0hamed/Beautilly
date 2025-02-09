@@ -11,4 +11,5 @@ abstract class OrdersRepository {
   Future<Either<Failure, Map<String, dynamic>>> addOrder(OrderRequestModel order);
   Future<Either<Failure, void>> deleteOrder(int orderId);
   Future<Either<Failure, OrderDetails>> getOrderDetails(int orderId);
+  Future<Either<Failure, void>> acceptOffer(int orderId, int offerId);
 } 

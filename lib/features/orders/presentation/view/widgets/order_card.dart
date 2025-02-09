@@ -13,6 +13,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';
 import 'package:beautilly/core/utils/common/custom_dialog_button.dart';
+import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OrderCard extends StatefulWidget {
   final OrderEntity order;
@@ -54,16 +56,20 @@ class _OrderCardState extends State<OrderCard> {
                           message: failure.message,
                         );
                       },
-                      (orderDetails) {
-                        Navigator.push(
+                      (orderDetails) async {
+                        final shouldRefresh = await Navigator.push<bool>(
                           context,
-                          PageRoutes.fadeScale(
-                            page: OrderDetailsView(
-                              order: orderDetails,
+                          MaterialPageRoute(
+                            builder: (context) => OrderDetailsView(
+                              orderDetails: orderDetails,
                               isMyOrder: widget.isMyRequest,
                             ),
                           ),
                         );
+                        
+                        if (shouldRefresh == true && mounted) {
+                          context.read<OrdersCubit>().loadMyOrders();
+                        }
                       },
                     );
                   } catch (e) {
@@ -173,15 +179,18 @@ class _OrderCardState extends State<OrderCard> {
                                 child: widget.order.customer.avatar != null
                                     ? ClipOval(
                                         child: CachedNetworkImage(
-                                          imageUrl: "https://dallik.com/storage/${widget.order.customer.avatar}",
+                                          imageUrl:
+                                              "https://dallik.com/storage/${widget.order.customer.avatar}",
                                           width: 36,
                                           height: 36,
                                           fit: BoxFit.cover,
-                                          placeholder: (context, url) => const CircularProgressIndicator(
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator(
                                             strokeWidth: 2,
                                             color: AppColors.primary,
                                           ),
-                                          errorWidget: (context, url, error) => _buildAvatarText(),
+                                          errorWidget: (context, url, error) =>
+                                              _buildAvatarText(),
                                         ),
                                       )
                                     : _buildAvatarText(),
@@ -223,7 +232,7 @@ class _OrderCardState extends State<OrderCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // Description
-                          
+
                           Row(
                             children: [
                               Text(
@@ -235,44 +244,43 @@ class _OrderCardState extends State<OrderCard> {
                                   fontSize: FontSize.size14,
                                 ),
                               ),
-                              Spacer() , 
+                              Spacer(),
                               // إضافة تاريخ الإنشاء هنا
-                                 Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: AppColors.primary.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Icon(
-                                      Icons.access_time_rounded,
-                                      size: 14,
-                                      color: AppColors.primary,
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(20),
                                     ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      _formatDate(widget.order.createdAt),
-                                      style: getRegularStyle(
-                                        fontFamily: FontConstant.cairo,
-                                        fontSize: FontSize.size12,
-                                        color: AppColors.primary,
-                                      ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(
+                                          Icons.access_time_rounded,
+                                          size: 14,
+                                          color: AppColors.primary,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          _formatDate(widget.order.createdAt),
+                                          style: getRegularStyle(
+                                            fontFamily: FontConstant.cairo,
+                                            fontSize: FontSize.size12,
+                                            color: AppColors.primary,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
                             ],
                           ),
                           const SizedBox(height: 8),
 
-                          
-                       
                           const SizedBox(height: 16),
 
                           // Measurements & Fabrics
@@ -311,7 +319,6 @@ class _OrderCardState extends State<OrderCard> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                
                                 IconButton(
                                   onPressed: () {
                                     showDialog(
@@ -528,7 +535,7 @@ class _OrderCardState extends State<OrderCard> {
   String _formatDate(DateTime date) {
     // حساب الفرق بين التاريخ الحالي وتاريخ إنشاء الطلب
     final difference = DateTime.now().difference(date);
-    
+
     if (difference.inDays == 0) {
       if (difference.inHours == 0) {
         return 'منذ ${difference.inMinutes} دقيقة';

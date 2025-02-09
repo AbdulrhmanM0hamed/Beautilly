@@ -16,6 +16,7 @@ abstract class OrdersRemoteDataSource {
   Future<Map<String, dynamic>> addOrder(OrderRequestModel order);
   Future<void> deleteOrder(int orderId);
   Future<OrderDetailsModel> getOrderDetails(int orderId);
+  Future<void> acceptOffer(int orderId, int offerId);
 }
 
 class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
@@ -261,6 +262,43 @@ class OrdersRemoteDataSourceImpl implements OrdersRemoteDataSource {
       }
     } catch (e) {
       throw ServerException('حدث خطأ غير متوقع: $e');
+    }
+  }
+
+  @override
+  Future<void> acceptOffer(int orderId, int offerId) async {
+    try {
+      final token = await cacheService.getToken();
+      final sessionCookie = await cacheService.getSessionCookie();
+
+      if (token == null) {
+        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
+      }
+
+      final response = await client.post(
+        Uri.parse(ApiEndpoints.acceptOffer(orderId, offerId)),
+        headers: {
+          HttpHeaders.authorizationHeader: 'Bearer $token',
+          'x-api-key': ApiEndpoints.api_key,
+          HttpHeaders.acceptHeader: 'application/json',
+          HttpHeaders.contentTypeHeader: 'application/json',
+          if (sessionCookie != null) 'Cookie': sessionCookie,
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['success'] != true) {
+          throw ServerException(jsonResponse['message'] ?? 'فشل في قبول العرض');
+        }
+      } else if (response.statusCode == 401) {
+        throw UnauthorizedException('انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+      } else {
+        final error = json.decode(response.body);
+        throw ServerException(error['message'] ?? 'فشل في قبول العرض');
+      }
+    } catch (e) {
+      throw ServerException('حدث خطأ أثناء قبول العرض');
     }
   }
 }

@@ -56,78 +56,69 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
           value: _deleteOrderCubit,
         ),
       ],
-      child: BlocListener<DeleteOrderCubit, DeleteOrderState>(
-        listener: (context, state) {
-          if (state is DeleteOrderSuccess) {
-            CustomSnackbar.showSuccess(
-                context: context, message: 'تم حذف الطلب بنجاح');
-            _ordersCubit.loadMyOrders();
-          } else if (state is DeleteOrderError) {
-            CustomSnackbar.showError(
-              context: context,
-              message: state.message,
-            );
-          }
-        },
-        child: Builder(
-          builder: (context) => Scaffold(
-            appBar: CustomAppBar(
-              title: 'طلبات التفصيل',
-              bottom: TabBar(
-                controller: _tabController,
-                onTap: (index) {
-                  if (index == 0) {
-                    _ordersCubit.loadMyOrders();
-                  } else {
-                    _ordersCubit.loadAllOrders();
-                  }
-                },
-                tabs: const [
-                  Tab(text: 'طلباتي'),
-                  Tab(text: 'طلبات المستخدمين'),
-                ],
-              ),
-            ),
-            body: RefreshIndicator(
-              onRefresh: () async {
-                if (_tabController.index == 0) {
+      child: Builder(
+        builder: (context) => Scaffold(
+          appBar: CustomAppBar(
+            title: 'طلبات التفصيل',
+            bottom: TabBar(
+              controller: _tabController,
+              onTap: (index) {
+                if (index == 0) {
                   _ordersCubit.loadMyOrders();
                 } else {
                   _ordersCubit.loadAllOrders();
                 }
               },
-              color: AppColors.primary,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              child: TabBarView(
-                controller: _tabController,
-                children: const [
-                  MyOrdersWidget(),
-                  AllOrdersWidget(),
-                ],
-              ),
+              tabs: const [
+                Tab(text: 'طلباتي'),
+                Tab(text: 'طلبات المستخدمين'),
+              ],
             ),
-            floatingActionButton: FloatingActionButton.extended(
-              onPressed: () async {
-                final result = await Navigator.pushNamed(
-                  context, 
-                  AddOrderView.routeName
+          ),
+          body: BlocListener<DeleteOrderCubit, DeleteOrderState>(
+            listener: (context, state) {
+              if (state is DeleteOrderSuccess) {
+                CustomSnackbar.showSuccess(
+                  context: context,
+                  message: 'تم حذف الطلب بنجاح',
                 );
-                if (result == true && mounted) {
-                  _ordersCubit.loadMyOrders();
-                }
-              },
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.add),
-              label: Text(
-                'إضافة طلب تفصيل',
-                style: getMediumStyle(
-                  fontFamily: FontConstant.cairo,
-                  color: Colors.white,
-                  fontSize: FontSize.size14,
-                ),
-              ),
-              elevation: 2,
+                _ordersCubit.loadMyOrders();
+              } else if (state is DeleteOrderError) {
+                CustomSnackbar.showError(
+                  context: context,
+                  message: state.message,
+                );
+              }
+            },
+            child: TabBarView(
+              controller: _tabController,
+              children: const [
+                MyOrdersWidget(),
+                AllOrdersWidget(),
+              ],
             ),
+          ),
+          floatingActionButton: FloatingActionButton.extended(
+            onPressed: () async {
+              final result = await Navigator.pushNamed(
+                context,
+                AddOrderView.routeName,
+              );
+              if (result == true && mounted) {
+                _ordersCubit.loadMyOrders();
+              }
+            },
+            backgroundColor: AppColors.primary,
+            icon: const Icon(Icons.add),
+            label: Text(
+              'إضافة طلب تفصيل',
+              style: getMediumStyle(
+                fontFamily: FontConstant.cairo,
+                color: Colors.white,
+                fontSize: FontSize.size14,
+              ),
+            ),
+            elevation: 2,
           ),
         ),
       ),

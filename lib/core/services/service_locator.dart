@@ -10,8 +10,10 @@ import 'package:beautilly/features/Home/domain/usecases/get_premium_shops_usecas
 import 'package:beautilly/features/Home/domain/usecases/get_services_usecase.dart';
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
+import 'package:beautilly/features/orders/domain/usecases/accept_offer_usecase.dart';
 import 'package:beautilly/features/orders/domain/usecases/add_order_usecase.dart';
 import 'package:beautilly/features/orders/domain/usecases/delete_order_usecase.dart';
+import 'package:beautilly/features/orders/presentation/cubit/accept_offer_cubit/accept_offer_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/add_order_cubit/add_order_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/delete_order_cubit/delete_order_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
@@ -257,6 +259,10 @@ Future<void> init() async {
   sl.registerLazySingleton(
     () => DeleteOrderUseCase(sl()),
   );
+
+  // Accept Offer Feature
+  sl.registerLazySingleton(() => AcceptOfferUseCase(sl()));
+  sl.registerFactory(() => AcceptOfferCubit(acceptOfferUseCase: sl()));
 
   // Repository
 

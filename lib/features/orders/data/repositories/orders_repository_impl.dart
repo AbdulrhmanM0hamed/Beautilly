@@ -92,4 +92,18 @@ class OrdersRepositoryImpl implements OrdersRepository {
       return Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> acceptOffer(int orderId, int offerId) async {
+    try {
+      await remoteDataSource.acceptOffer(orderId, offerId);
+      return const Right(null);
+    } on UnauthorizedException catch (e) {
+      return Left(AuthFailure(e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('حدث خطأ أثناء قبول العرض'));
+    }
+  }
 }

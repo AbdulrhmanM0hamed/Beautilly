@@ -69,8 +69,7 @@ class ApiEndpoints {
       '$baseUrl/venues/nearby?api_key=$api_key'; // الأماكن القريبة
 
   // الصالونات - تفاصيل كاملة
-  static const String discounts =
-      '$baseUrl/discounts?api_key=$api_key';
+  static const String discounts = '$baseUrl/discounts?api_key=$api_key';
   static const String salonFullDetails =
       '$baseUrl/salons/full?api_key=$api_key'; // جلب كل بيانات الصالون مرة واحدة (معلومات + خدمات + طاقم + تقييمات + صور + مواعيد)
   static const String salonsByCategory =
@@ -81,6 +80,8 @@ class ApiEndpoints {
       '$baseUrl/salons/featured?api_key=$api_key'; // الصالونات المميزة
   static const String premiumShops =
       '$baseUrl/shops/premium?api_key=$api_key'; // الصالونات الأكثر شعبية
+  static String shopProfile(int shopId) =>
+      '$baseUrl/shops/$shopId/?api_key=$api_key'; // الصالونات الأكثر شعبية
 
   // دور الأزياء - تفاصيل كاملة
   static const String fashionHouseFullDetails =
@@ -104,10 +105,11 @@ class ApiEndpoints {
   static const String tailoringRequestDetails =
       '$baseUrl/tailoring-requests/?api_key=$api_key'; // تفاصيل طلب تفصيل محدد
   static const String updateTailoringRequest =
-      '$baseUrl/tailoring-requests/update/?api_key=$api_key'; 
-      // تحديث طلب تفصيل
+      '$baseUrl/tailoring-requests/update/?api_key=$api_key';
+  // تحديث طلب تفصيل
 
-  static String deleteOrder(int id) => '$baseUrl/my-list-orders/$id?api_key=$api_key';
+  static String deleteOrder(int id) =>
+      '$baseUrl/my-list-orders/$id?api_key=$api_key';
 
   // عروض التفصيل
   static const String tailoringOffers =
@@ -125,11 +127,12 @@ class ApiEndpoints {
 
   // Orders
   static const String myOrders = '$baseUrl/my-list-orders';
-  static const String myReservations = '$baseUrl/my-reservations?api_key=$api_key';
+  static const String myReservations =
+      '$baseUrl/my-reservations?api_key=$api_key';
 
   static String orderDetails(int orderId) => '$baseUrl/orders/$orderId/details';
-  static String acceptOffer(int orderId, int offerId) => 
+  static String acceptOffer(int orderId, int offerId) =>
       '$baseUrl/orders/$orderId/accept-offer/$offerId?api_key=$api_key';
-  static String cancelOffer(int orderId, int offerId) => 
+  static String cancelOffer(int orderId, int offerId) =>
       '$baseUrl/orders/$orderId/cancel-offer/$offerId?api_key=$api_key';
 }

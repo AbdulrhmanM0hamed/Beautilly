@@ -42,11 +42,7 @@ class _SalonQuickViewState extends State<SalonQuickView> {
           );
         }
       },
-      onVerticalDragUpdate: (details) {
-        if (details.primaryDelta! < 0) {
-          // يمكن إضافة تأثير بصري هنا مثل تغيير الشفافية
-        }
-      },
+    
       child: Scaffold(
         body: Stack(
           children: [

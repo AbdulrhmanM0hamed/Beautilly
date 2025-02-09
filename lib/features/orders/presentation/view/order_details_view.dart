@@ -1,12 +1,12 @@
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
+import 'package:beautilly/core/utils/common/image_viewer.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/orders/domain/entities/order_details.dart';
 import 'package:beautilly/features/orders/presentation/cubit/cancel_offer_cubit/cancel_offer_state.dart';
-// Ensure this import is present
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -109,29 +109,41 @@ class OrderDetailsView extends StatelessWidget {
                         ),
                       ),
                       pinned: true,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: Hero(
-                          tag: 'order_${orderDetails.id}',
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              CachedNetworkImage(
+                      flexibleSpace: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ImageViewer(
                                 imageUrl: orderDetails.images.large,
-                                fit: BoxFit.cover,
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.7),
-                                    ],
+                            ),
+                          );
+                        },
+                        child: FlexibleSpaceBar(
+                          background: Hero(
+                            tag: 'order_${orderDetails.id}',
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                CachedNetworkImage(
+                                  imageUrl: orderDetails.images.large,
+                                  fit: BoxFit.cover,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.7),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -509,8 +521,7 @@ class OrderDetailsView extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 Row(
                                   children: [
-                                      const Icon(
-
+                                    const Icon(
                                       Icons.location_on_outlined,
                                       size: 16,
                                       color: Colors.grey,
@@ -530,7 +541,6 @@ class OrderDetailsView extends StatelessWidget {
                                       size: 18,
                                       color: Colors.grey[600],
                                     ),
-
                                     const SizedBox(width: 4),
                                     Text(
                                       _formatDate(offer.createdAt),

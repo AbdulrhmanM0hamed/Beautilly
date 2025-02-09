@@ -56,6 +56,7 @@ import '../../features/Home/data/repositories/discounts_repository_impl.dart';
 import '../../features/Home/domain/repositories/discounts_repository.dart';
 import '../../features/Home/domain/usecases/get_discounts_usecase.dart';
 import '../../features/Home/presentation/cubit/discounts_cubit/discounts_cubit.dart';
+import '../../features/orders/presentation/cubit/order_details_cubit/order_details_cubit.dart';
 
 // Tailoring Requests Feature
 
@@ -268,4 +269,6 @@ Future<void> init() async {
 
   // Data sources
 
+  // Cubits
+  sl.registerFactory(() => OrderDetailsCubit(sl()));
 }

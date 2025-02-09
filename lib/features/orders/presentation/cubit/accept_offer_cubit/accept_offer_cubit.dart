@@ -11,8 +11,8 @@ class AcceptOfferCubit extends Cubit<AcceptOfferState> {
     emit(AcceptOfferLoading());
     final result = await acceptOfferUseCase(orderId, offerId);
     result.fold(
-      (failure) => emit(AcceptOfferError(failure.message)),
-      (_) => emit(AcceptOfferSuccess()),
+      (failure) => emit(AcceptOfferError( failure.message)),
+      (_) => emit(AcceptOfferSuccess(offerId: offerId)),
     );
   }
 } 

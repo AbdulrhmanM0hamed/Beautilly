@@ -1,5 +1,4 @@
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
-import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
@@ -12,7 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
 import '../cubit/accept_offer_cubit/accept_offer_cubit.dart';
 import '../cubit/accept_offer_cubit/accept_offer_state.dart';
-import '../../../../core/utils/common/image_viewer.dart';
+import '../cubit/order_details_cubit/order_details_cubit.dart';
+import '../cubit/order_details_cubit/order_details_state.dart';
 
 class OrderDetailsView extends StatelessWidget {
   static const String routeName = '/order-details';
@@ -27,207 +27,229 @@ class OrderDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<AcceptOfferCubit>(),
-      child: BlocListener<AcceptOfferCubit, AcceptOfferState>(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<AcceptOfferCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<OrderDetailsCubit>()..getOrderDetails(orderDetails.id),
+        ),
+      ],
+      child: BlocConsumer<OrderDetailsCubit, OrderDetailsState>(
         listener: (context, state) {
-          if (state is AcceptOfferSuccess) {
-            CustomSnackbar.showSuccess(
-              context: context,
-              message: 'تم قبول العرض بنجاح',
-            );
-            //   Navigator.pop(context, true);
-          } else if (state is AcceptOfferError) {
-            CustomSnackbar.showError(
-              context: context,
-              message: state.message,
-            );
+          if (state is OrderDetailsSuccess) {
+            // يمكن إضافة أي منطق إضافي هنا
           }
         },
-        child: Scaffold(
-          body: CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                expandedHeight: 300,
-                leading: Padding(
-                  
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.5),
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                ),
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Hero(
-                    tag: 'order_${orderDetails.id}',
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        CachedNetworkImage(
-                          imageUrl: orderDetails.images.large,
-                          fit: BoxFit.cover,
+        builder: (context, detailsState) {
+          return BlocListener<AcceptOfferCubit, AcceptOfferState>(
+            listener: (context, state) {
+              if (state is AcceptOfferSuccess) {
+                CustomSnackbar.showSuccess(
+                  context: context,
+                  message: 'تم قبول العرض بنجاح',
+                );
+                context.read<OrderDetailsCubit>().updateOfferStatus(state.offerId);
+              } else if (state is AcceptOfferError) {
+                CustomSnackbar.showError(
+                  context: context,
+                  message: state.message,
+                );
+              }
+            },
+            child: Scaffold(
+              body: CustomScrollView(
+                slivers: [
+                  SliverAppBar(
+                    expandedHeight: 300,
+                    leading: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.5),
+                          shape: BoxShape.circle,
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(0.7),
-                              ],
-                            ),
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_back_ios_new,
+                            color: Colors.white,
+                            size: 20,
                           ),
+                          onPressed: () {
+                            Navigator.pop(context, true);
+                          },
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // معلومات العميل
-                      Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: CachedNetworkImage(
-                              imageUrl: orderDetails.customer.images.medium,
-                              width: 50,
-                              height: 50,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: Hero(
+                        tag: 'order_${orderDetails.id}',
+                        child: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            CachedNetworkImage(
+                              imageUrl: orderDetails.images.large,
                               fit: BoxFit.cover,
-                              placeholder: (context, url) => CircleAvatar(
-                                radius: 25,
-                                backgroundColor:
-                                    AppColors.primary.withOpacity(0.1),
-                                child: Text(
-                                  orderDetails.customer.name[0].toUpperCase(),
-                                  style: getBoldStyle(
-                                    color: AppColors.primary,
-                                    fontSize: FontSize.size20,
-                                    fontFamily: FontConstant.cairo,
-                                  ),
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.black.withOpacity(0.7),
+                                  ],
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  orderDetails.customer.name,
-                                  style: getBoldStyle(
-                                    fontSize: FontSize.size18,
-                                    fontFamily: FontConstant.cairo,
-                                  ),
-                                ),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.location_on_outlined,
-                                      size: 16,
-                                      color: Colors.grey,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${orderDetails.customer.address.city}، ${orderDetails.customer.address.state}',
-                                      style: getRegularStyle(
-                                        color: Colors.grey[600],
-                                        fontSize: FontSize.size12,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // معلومات العميل
+                          Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(25),
+                                child: CachedNetworkImage(
+                                  imageUrl: orderDetails.customer.images.medium,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => CircleAvatar(
+                                    radius: 25,
+                                    backgroundColor:
+                                        AppColors.primary.withOpacity(0.1),
+                                    child: Text(
+                                      orderDetails.customer.name[0].toUpperCase(),
+                                      style: getBoldStyle(
+                                        color: AppColors.primary,
+                                        fontSize: FontSize.size20,
                                         fontFamily: FontConstant.cairo,
                                       ),
                                     ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      orderDetails.customer.name,
+                                      style: getBoldStyle(
+                                        fontSize: FontSize.size18,
+                                        fontFamily: FontConstant.cairo,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.location_on_outlined,
+                                          size: 16,
+                                          color: Colors.grey,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '${orderDetails.customer.address.city}، ${orderDetails.customer.address.state}',
+                                          style: getRegularStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: FontSize.size12,
+                                            fontFamily: FontConstant.cairo,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
+                              ),
+                              const Spacer(),
+                              _buildStatusChip(
+                                  orderDetails.status, orderDetails.statusLabel),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+
+                          // القياسات
+                          Text(
+                            'القياسات',
+                            style: getBoldStyle(
+                              fontSize: FontSize.size18,
+                              fontFamily: FontConstant.cairo,
                             ),
                           ),
-                          const Spacer(),
-                          _buildStatusChip(
-                              orderDetails.status, orderDetails.statusLabel),
+                          const SizedBox(height: 16),
+                          _buildMeasurementsGrid(),
+                          const SizedBox(height: 24),
+
+                          // الأقمشة
+                          Text(
+                            'الأقمشة المختارة',
+                            style: getBoldStyle(
+                              fontSize: FontSize.size18,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          _buildFabricsList(),
+                          const SizedBox(height: 24),
+
+                          // الوصف
+                          Text(
+                            'الوصف',
+                            style: getBoldStyle(
+                              fontSize: FontSize.size18,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            orderDetails.description,
+                            style: getRegularStyle(
+                              fontSize: FontSize.size16,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // العروض المقدمة
+                          if (detailsState is OrderDetailsSuccess) ...[
+                            if (detailsState.orderDetails.offers.isNotEmpty) ...[
+                              const SizedBox(height: 24),
+                              Text(
+                                'العروض المقدمة',
+                                style: getBoldStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  fontSize: FontSize.size18,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              _buildOffersSection(
+                                context, 
+                                detailsState.orderDetails,
+                              ),
+                            ],
+                          ],
                         ],
                       ),
-                      const SizedBox(height: 24),
-
-                      // القياسات
-                      Text(
-                        'القياسات',
-                        style: getBoldStyle(
-                          fontSize: FontSize.size18,
-                          fontFamily: FontConstant.cairo,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildMeasurementsGrid(),
-                      const SizedBox(height: 24),
-
-                      // الأقمشة
-                      Text(
-                        'الأقمشة المختارة',
-                        style: getBoldStyle(
-                          fontSize: FontSize.size18,
-                          fontFamily: FontConstant.cairo,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      _buildFabricsList(),
-                      const SizedBox(height: 24),
-
-                      // الوصف
-                      Text(
-                        'الوصف',
-                        style: getBoldStyle(
-                          fontSize: FontSize.size18,
-                          fontFamily: FontConstant.cairo,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Text(
-                        orderDetails.description,
-                        style: getRegularStyle(
-                          fontSize: FontSize.size16,
-                          fontFamily: FontConstant.cairo,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-
-                      // العروض المقدمة
-                      if (orderDetails.offers.isNotEmpty) ...[
-                        const SizedBox(height: 24),
-                        Text(
-                          'العروض المقدمة',
-                          style: getBoldStyle(
-                            fontFamily: FontConstant.cairo,
-                            fontSize: FontSize.size18,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        _buildOffersSection(context),
-                      ],
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -380,7 +402,7 @@ class OrderDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildOffersSection(BuildContext context) {
+  Widget _buildOffersSection(BuildContext context, OrderDetails orderDetails) {
     return ListView.separated(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -424,11 +446,7 @@ class OrderDetailsView extends StatelessWidget {
                               fit: BoxFit.cover,
                               placeholder: (context, url) => Container(
                                 color: Colors.grey[200],
-                                child: const Center(
-                                  child: CircularProgressIndicator(
-                                    color: AppColors.primary,
-                                  ),
-                                ),
+                              
                               ),
                             ),
                           ),

@@ -20,7 +20,7 @@ class OrderCard extends StatefulWidget {
   final OrderEntity order;
   final bool isMyRequest;
   final Function(int)? onDelete;
-
+ 
   const OrderCard({
     super.key,
     required this.order,
@@ -59,14 +59,14 @@ class _OrderCardState extends State<OrderCard> {
                       (orderDetails) async {
                         final shouldRefresh = await Navigator.push<bool>(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => OrderDetailsView(
+                          PageRoutes.fadeScale(
+                            page: OrderDetailsView(
                               orderDetails: orderDetails,
                               isMyOrder: widget.isMyRequest,
                             ),
                           ),
                         );
-                        
+
                         if (shouldRefresh == true && mounted) {
                           context.read<OrdersCubit>().loadMyOrders();
                         }

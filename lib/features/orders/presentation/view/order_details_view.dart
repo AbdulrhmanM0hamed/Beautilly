@@ -7,6 +7,7 @@ import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/orders/domain/entities/order_details.dart';
 import 'package:beautilly/features/orders/presentation/cubit/cancel_offer_cubit/cancel_offer_state.dart';
+import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,11 +22,13 @@ class OrderDetailsView extends StatelessWidget {
   static const String routeName = '/order-details';
   final OrderDetails orderDetails;
   final bool isMyOrder;
+  final bool fromAllOrders;
 
   const OrderDetailsView({
     super.key,
     required this.orderDetails,
     required this.isMyOrder,
+    this.fromAllOrders = false,
   });
 
   @override
@@ -42,6 +45,9 @@ class OrderDetailsView extends StatelessWidget {
         BlocProvider(
           create: (context) => sl<CancelOfferCubit>(),
         ),
+        BlocProvider(
+          create: (context) => sl<OrdersCubit>(),
+        ),
       ],
       child: BlocConsumer<OrderDetailsCubit, OrderDetailsState>(
         listener: (context, state) {
@@ -53,37 +59,66 @@ class OrderDetailsView extends StatelessWidget {
           return BlocListener<AcceptOfferCubit, AcceptOfferState>(
             listener: (context, state) {
               if (state is AcceptOfferSuccess) {
-                CustomSnackbar.showSuccess(
-                  context: context,
-                  message: 'تم قبول العرض بنجاح',
-                );
                 context
                     .read<OrderDetailsCubit>()
                     .updateOfferStatus(state.offerId);
+                
+                if (fromAllOrders) {
+                  context.read<OrdersCubit>().loadAllOrders();
+                } else {
+                  context.read<OrdersCubit>().loadMyOrders();
+                }
+
+                // تأخير عرض الرسالة والتنقل
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (context.mounted) {
+                   CustomSnackbar.showSuccess(
+                    context: context,
+                    message: 'تم قبول العرض بنجاح',
+                  );
+                  }
+                });
+
               } else if (state is AcceptOfferError) {
-                CustomSnackbar.showError(
-                  context: context,
-                  message: state.message,
-                );
+               CustomSnackbar.showError(
+                context: context,
+                message: state.message,
+               );
               }
             },
+
             child: BlocListener<CancelOfferCubit, CancelOfferState>(
               listener: (context, state) {
                 if (state is CancelOfferSuccess) {
-                  CustomSnackbar.showSuccess(
-                    context: context,
-                    message: 'تم إلغاء قبول العرض بنجاح',
-                  );
                   context
                       .read<OrderDetailsCubit>()
                       .updateOfferStatus(state.offerId);
+                  
+                  if (fromAllOrders) {
+                    context.read<OrdersCubit>().loadAllOrders();
+                  } else {
+                    context.read<OrdersCubit>().loadMyOrders();
+                  }
+
+                  // تأخير عرض الرسالة والتنقل
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    if (context.mounted) {
+                     CustomSnackbar.showSuccess(
+                      context: context,
+                      message: 'تم إلغاء قبول العرض بنجاح',
+                     );
+                
+                    }
+
+                  });
                 } else if (state is CancelOfferError) {
-                  CustomSnackbar.showError(
-                    context: context,
-                    message: state.message,
-                  );
+                 CustomSnackbar.showError(
+                  context: context,
+                  message: state.message,
+                 );
                 }
               },
+
               child: Scaffold(
                 body: CustomScrollView(
                   slivers: [

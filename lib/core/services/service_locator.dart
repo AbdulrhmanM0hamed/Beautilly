@@ -130,7 +130,6 @@ Future<void> init() async {
   sl.registerFactory(
     () => OrdersCubit(
       getMyOrders: sl(),
-      // getMyReservations: sl(),
       getAllOrders: sl(),
     ),
   );

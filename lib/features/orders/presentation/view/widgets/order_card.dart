@@ -63,12 +63,17 @@ class _OrderCardState extends State<OrderCard> {
                             page: OrderDetailsView(
                               orderDetails: orderDetails,
                               isMyOrder: widget.isMyRequest,
+                              fromAllOrders: !widget.isMyRequest,
                             ),
                           ),
                         );
 
                         if (shouldRefresh == true && mounted) {
-                          context.read<OrdersCubit>().loadMyOrders();
+                          if (widget.isMyRequest) {
+                            context.read<OrdersCubit>().loadMyOrders();
+                          } else {
+                            context.read<OrdersCubit>().loadAllOrders();
+                          }
                         }
                       },
                     );

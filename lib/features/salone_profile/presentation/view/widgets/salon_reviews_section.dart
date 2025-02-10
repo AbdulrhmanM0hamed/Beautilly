@@ -1,24 +1,43 @@
-import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
-import 'package:beautilly/features/salone_profile/presentation/view/widgets/add_review_bottom_sheet.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class SalonReviewsSection extends StatelessWidget {
-  const SalonReviewsSection({super.key});
+  final RatingsSummary ratings;
+
+  const SalonReviewsSection({
+    super.key,
+    required this.ratings,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // حساب عدد التقييمات لكل نجمة بشكل صحيح
+    Map<int, int> ratingCounts = {
+      5: 0,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0,
+    };
+
+    // حساب عدد كل تقييم
+    for (final review in ratings.ratings) {
+      if (ratingCounts.containsKey(review.rating)) {
+        ratingCounts[review.rating] = ratingCounts[review.rating]! + 1;
+      }
+    }
+
     return Container(
       margin: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header with rating summary
+          // Header
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 'التقييمات',
@@ -27,69 +46,34 @@ class SalonReviewsSection extends StatelessWidget {
                   fontFamily: FontConstant.cairo,
                 ),
               ),
-              TextButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (context) => const AddReviewBottomSheet(),
-                  );
-                },
-                child: Text(
-                  'إضافة تقييم',
-                  style: getMediumStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size14,
-                    color: AppColors.primary,
-                  ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 4,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          // Rating Summary
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.accent.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Column(
+                child: Row(
                   children: [
+                    const Icon(
+                      Icons.star,
+                      color: AppColors.accent,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 4),
                     Text(
-                      '4.8',
+                      ratings.average.toStringAsFixed(1),
                       style: getBoldStyle(
-                        fontSize: FontSize.size30,
+                        fontSize: FontSize.size14,
                         fontFamily: FontConstant.cairo,
+                        color: AppColors.accent,
                       ),
-                    ),
-                    RatingBar.builder(
-                      initialRating: 4.8,
-                      minRating: 1,
-                      direction: Axis.horizontal,
-                      allowHalfRating: true,
-                      itemCount: 5,
-                      itemSize: 20,
-                      ignoreGestures: true,
-                      itemBuilder: (context, _) => const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                      ),
-                      onRatingUpdate: (rating) {},
                     ),
                     Text(
-                      'من 245 تقييم',
+                      ' (${ratings.count})',
                       style: getMediumStyle(
                         fontSize: FontSize.size14,
                         fontFamily: FontConstant.cairo,
@@ -98,192 +82,183 @@ class SalonReviewsSection extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(width: 24),
-                Expanded(
-                  child: Column(
-                    children: [
-                      _buildRatingBar(5, 0.8),
-                      _buildRatingBar(4, 0.15),
-                      _buildRatingBar(3, 0.03),
-                      _buildRatingBar(2, 0.01),
-                      _buildRatingBar(1, 0.01),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
+          const SizedBox(height: 16),
+
+          // Rating Bars
+          ...List.generate(5, (index) {
+            final stars = 5 - index;
+            final count = ratingCounts[stars]!; // استخدام ! لأننا متأكدين من وجود المفتاح
+            final percentage = ratings.count > 0 
+              ? (count / ratings.count) * 100 
+              : 0.0;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 24,
+                    child: Text(
+                      '$stars',
+                      style: getMediumStyle(
+                        fontSize: FontSize.size14,
+                        fontFamily: FontConstant.cairo,
+                      ),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.star,
+                    color: AppColors.accent,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        // Background Bar
+                        Container(
+                          height: 8,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        // Filled Bar
+                        FractionallySizedBox(
+                          widthFactor: percentage / 100,
+                          child: Container(
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: AppColors.accent,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: 32,
+                    child: Text(
+                      '($count)',
+                      style: getMediumStyle(
+                        fontSize: FontSize.size12,
+                        fontFamily: FontConstant.cairo,
+                        color: AppColors.grey,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).reversed.toList(),
+
+          const SizedBox(height: 16),
 
           // Reviews List
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: reviews.length,
-            itemBuilder: (context, index) => _buildReviewCard(reviews[index]),
-          ),
+          ...ratings.ratings.map((review) => _buildReviewCard(review)),
         ],
       ),
     );
   }
 
-  Widget _buildRatingBar(int stars, double percentage) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        children: [
-          Text(
-            '$stars',
-            style: getMediumStyle(
-              fontSize: FontSize.size12,
-              fontFamily: FontConstant.cairo,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: percentage,
-                backgroundColor: Colors.grey[200],
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.amber),
-                minHeight: 8,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Text(
-            '${(percentage * 100).toInt()}%',
-            style: getMediumStyle(
-              fontSize: FontSize.size12,
-              fontFamily: FontConstant.cairo,
-              color: AppColors.grey,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReviewCard(ReviewModel review) {
+  Widget _buildReviewCard(Rating review) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: AppColors.grey.withOpacity(.1),
+            color: Colors.grey.withOpacity(0.1),
             spreadRadius: 1,
-            blurRadius: 1,
+            blurRadius: 2,
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // User Info & Rating
           Row(
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage(review.userImage),
+              // User Avatar
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: CachedNetworkImage(
+                  imageUrl:
+                      "https://dallik.com/storage/${review.user.avatar}" ?? '', // review.user.avatar ?? '',
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.person),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[300],
+                    child: const Icon(Icons.person),
+                  ),
+                ),
               ),
               const SizedBox(width: 12),
+              
+              // User Name & Date
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      review.userName,
+                      review.user.name,
                       style: getBoldStyle(
-                        fontSize: FontSize.size14,
+                        fontSize: FontSize.size16,
                         fontFamily: FontConstant.cairo,
                       ),
                     ),
-                    Row(
-                      children: [
-                        RatingBar.builder(
-                          initialRating: review.rating,
-                          minRating: 1,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          itemCount: 5,
-                          itemSize: 16,
-                          ignoreGestures: true,
-                          itemBuilder: (context, _) => const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                          onRatingUpdate: (rating) {},
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          review.date,
-                          style: getMediumStyle(
-                            fontSize: FontSize.size12,
-                            fontFamily: FontConstant.cairo,
-                            color: AppColors.grey,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      review.createdAt.toString(),
+                      style: getMediumStyle(
+                        fontSize: FontSize.size12,
+                        fontFamily: FontConstant.cairo,
+                        color: AppColors.grey,
+                      ),
                     ),
                   ],
                 ),
               ),
+              
+              // Rating Stars
+              Row(
+                children: List.generate(5, (index) {
+                  return Icon(
+                    index < review.rating ? Icons.star : Icons.star_border,
+                    color: AppColors.accent,
+                    size: 16,
+                  );
+                }),
+              ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            review.comment,
-            style: getMediumStyle(
-              fontSize: FontSize.size14,
-              fontFamily: FontConstant.cairo,
+          
+          if (review.comment != null && review.comment!.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Text(
+              review.comment!,
+              style: getMediumStyle(
+                fontSize: FontSize.size14,
+                fontFamily: FontConstant.cairo,
+                color: AppColors.textSecondary,
+              ),
             ),
-          ),
+          ],
         ],
       ),
     );
   }
 }
-
-class ReviewModel {
-  final String userName;
-  final String userImage;
-  final double rating;
-  final String date;
-  final String comment;
-
-  ReviewModel({
-    required this.userName,
-    required this.userImage,
-    required this.rating,
-    required this.date,
-    required this.comment,
-  });
-}
-
-final List<ReviewModel> reviews = [
-  ReviewModel(
-    userName: 'سارة أحمد',
-    userImage: AppAssets.test,
-    rating: 5.0,
-    date: 'منذ 3 أيام',
-    comment:
-        'خدمة ممتازة وطاقم عمل محترف جداً. سعيدة جداً بالنتيجة وأنصح الجميع بتجربة خدماتهم.',
-  ),
-  ReviewModel(
-    userName: 'نورا محمد',
-    userImage: AppAssets.test,
-    rating: 4.5,
-    date: 'منذ أسبوع',
-    comment:
-        'تجربة رائعة والنتيجة كانت أفضل من توقعاتي. سأعود مرة أخرى بالتأكيد.',
-  ),
-  ReviewModel(
-    userName: 'ريم خالد',
-    userImage: AppAssets.test,
-    rating: 5.0,
-    date: 'منذ أسبوعين',
-    comment:
-        'الصالون نظيف جداً والموظفات محترفات. أسعار معقولة مقابل جودة الخدمة.',
-  ),
-];

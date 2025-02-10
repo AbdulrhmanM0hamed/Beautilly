@@ -141,27 +141,27 @@ class RatingsSummary {
 class Rating {
   final int id;
   final int rating;
-  final String comment;
-  final RatingUser user;
-  final DateTime createdAt;
+  final String? comment;
+  final User user;
+  final String createdAt;
 
   const Rating({
     required this.id,
     required this.rating,
-    required this.comment,
+    this.comment,
     required this.user,
     required this.createdAt,
   });
 }
 
-class RatingUser {
+class User {
   final int id;
   final String name;
-  final String avatar;
+  final String? avatar;
 
-  const RatingUser({
+  const User({
     required this.id,
     required this.name,
-    required this.avatar,
+    this.avatar,
   });
 } 

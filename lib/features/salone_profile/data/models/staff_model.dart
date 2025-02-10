@@ -12,8 +12,8 @@ class StaffModel extends Staff {
     return StaffModel(
       id: json['id'],
       name: json['name'],
-      role: json['role'],
-      image: json['image'],
+      role: json['role'] ?? '',
+      image: json['image'] ?? '',
     );
   }
 

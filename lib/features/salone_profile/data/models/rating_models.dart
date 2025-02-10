@@ -12,7 +12,7 @@ class RatingsSummaryModel extends RatingsSummary {
       average: (json['average'] as num).toDouble(),
       count: json['count'],
       ratings: (json['ratings'] as List)
-          .map((e) => RatingModel.fromJson(e))
+          .map((rating) => RatingModel.fromJson(rating))
           .toList(),
     );
   }
@@ -32,7 +32,7 @@ class RatingModel extends Rating {
   const RatingModel({
     required super.id,
     required super.rating,
-    required super.comment,
+    super.comment,
     required super.user,
     required super.createdAt,
   });
@@ -42,8 +42,8 @@ class RatingModel extends Rating {
       id: json['id'],
       rating: json['rating'],
       comment: json['comment'],
-      user: RatingUserModel.fromJson(json['user']),
-      createdAt: DateTime.parse(json['created_at']),
+      user: UserModel.fromJson(json['user']),
+      createdAt: json['created_at'],
     );
   }
 
@@ -52,21 +52,21 @@ class RatingModel extends Rating {
       'id': id,
       'rating': rating,
       'comment': comment,
-      'user': (user as RatingUserModel).toJson(),
-      'created_at': createdAt.toIso8601String(),
+      'user': (user as UserModel).toJson(),
+      'created_at': createdAt,
     };
   }
 }
 
-class RatingUserModel extends RatingUser {
-  const RatingUserModel({
+class UserModel extends User {
+  const UserModel({
     required super.id,
     required super.name,
-    required super.avatar,
+    super.avatar,
   });
 
-  factory RatingUserModel.fromJson(Map<String, dynamic> json) {
-    return RatingUserModel(
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
       id: json['id'],
       name: json['name'],
       avatar: json['avatar'],

@@ -14,10 +14,10 @@ class ServiceModel extends Service {
     return ServiceModel(
       id: json['id'],
       name: json['name'],
-      description: json['description'],
+      description: json['description'] ?? '',
       type: json['type'],
-      price: json['price'],
-      image: json['image'],
+      price: json['price'].toString(),
+      image: json['image'] ?? '',
     );
   }
 

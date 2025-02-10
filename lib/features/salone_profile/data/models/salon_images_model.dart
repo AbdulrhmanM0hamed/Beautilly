@@ -10,10 +10,10 @@ class SalonImagesModel extends SalonImages {
 
   factory SalonImagesModel.fromJson(Map<String, dynamic> json) {
     return SalonImagesModel(
-      main: json['main'],
-      mainThumb: json['main_thumb'],
-      mainMedium: json['main_medium'],
-      gallery: List<String>.from(json['gallery']),
+      main: json['main'] ?? '',
+      mainThumb: json['main_thumb'] ?? '',
+      mainMedium: json['main_medium'] ?? '',
+      gallery: (json['gallery'] as List?)?.map((e) => e.toString()).toList() ?? [],
     );
   }
 

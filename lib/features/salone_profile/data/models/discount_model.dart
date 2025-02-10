@@ -14,7 +14,7 @@ class DiscountModel extends Discount {
     return DiscountModel(
       id: json['id'],
       title: json['title'],
-      description: json['description'],
+      description: json['description'] ?? '',
       discountType: json['discount_type'],
       discountValue: json['discount_value'],
       validUntil: DateTime.parse(json['valid_until']),

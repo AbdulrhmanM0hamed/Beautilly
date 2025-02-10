@@ -73,7 +73,9 @@ class SalonProfileViewBody extends StatelessWidget {
                     SalonTeamSection(
                       staff: profile.staff,
                     ),
-                    SalonReviewsSection(),
+                    SalonReviewsSection(
+                      ratings: profile.ratings,
+                    ),
                     SizedBox(height: 80),
                   ],
                 ),

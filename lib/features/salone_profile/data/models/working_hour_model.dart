@@ -10,8 +10,8 @@ class WorkingHourModel extends WorkingHour {
   factory WorkingHourModel.fromJson(Map<String, dynamic> json) {
     return WorkingHourModel(
       day: json['day'],
-      openingTime: json['opening_time'],
-      closingTime: json['closing_time'],
+      openingTime: json['opening_time'] ?? '',
+      closingTime: json['closing_time'] ?? '',
     );
   }
 

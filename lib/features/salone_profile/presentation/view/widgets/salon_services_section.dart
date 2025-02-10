@@ -1,4 +1,3 @@
-import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
@@ -24,12 +23,36 @@ class SalonServicesSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'الخدمات',
-                style: getBoldStyle(
-                  fontSize: FontSize.size20,
-                  fontFamily: FontConstant.cairo,
-                ),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primary.withOpacity(.9),
+                          AppColors.primary.withOpacity(.6),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Icon(
+                      Icons.spa_outlined,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'الخدمات',
+                    style: getBoldStyle(
+                      fontSize: FontSize.size20,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                  ),
+                ],
               ),
               if (services.length > 4)
                 TextButton(

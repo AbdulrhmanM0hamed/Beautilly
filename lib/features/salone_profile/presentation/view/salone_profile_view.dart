@@ -6,7 +6,6 @@ import 'package:beautilly/features/salone_profile/presentation/cubit/salon_profi
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_profile_view_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 
 class SalonProfileView extends StatelessWidget {
   final int salonId;

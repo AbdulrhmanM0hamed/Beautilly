@@ -17,18 +17,42 @@ class SalonTeamSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (staff.isEmpty) return const SizedBox();
-    
+
     return Container(
       margin: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'فريق العمل',
-            style: getBoldStyle(
-              fontSize: FontSize.size20,
-              fontFamily: FontConstant.cairo,
-            ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primary.withOpacity(.9),
+                      AppColors.primary.withOpacity(.6),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.groups_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'فريق العمل',
+                style: getBoldStyle(
+                  fontSize: FontSize.size20,
+                  fontFamily: FontConstant.cairo,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           SizedBox(
@@ -62,13 +86,12 @@ class SalonTeamSection extends StatelessWidget {
         width: 140,
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
-              spreadRadius: 1,
-              blurRadius: 2,
+              color: Colors.grey.withOpacity(0.05),
+             
             ),
           ],
         ),

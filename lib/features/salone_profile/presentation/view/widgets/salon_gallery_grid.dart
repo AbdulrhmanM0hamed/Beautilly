@@ -4,7 +4,6 @@ import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:beautilly/core/utils/common/image_viewer.dart';
 import 'package:beautilly/core/utils/common/image_gallery_dialog.dart';
 
 class SalonGalleryGrid extends StatelessWidget {
@@ -35,8 +34,27 @@ class SalonGalleryGrid extends StatelessWidget {
         children: [
           // Gallery Header with View All
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.primary.withOpacity(.9),
+                      AppColors.primary.withOpacity(.6),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.collections_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
+              ),
+              const SizedBox(width: 8),
               Text(
                 'معرض الصور',
                 style: getBoldStyle(
@@ -44,6 +62,7 @@ class SalonGalleryGrid extends StatelessWidget {
                   fontFamily: FontConstant.cairo,
                 ),
               ),
+              const Spacer(),
               if (images.gallery.length > 6)
                 TextButton(
                   onPressed: () {
@@ -77,11 +96,11 @@ class SalonGalleryGrid extends StatelessWidget {
             itemBuilder: (context, index) {
               final isLastItem = index == 5 && images.gallery.length > 6;
               return GestureDetector(
-                onTap: isLastItem 
-                  ? () {
-                      // TODO: Navigate to full gallery
-                    }
-                  : () => _openImageGallery(context, index),
+                onTap: isLastItem
+                    ? () {
+                        // TODO: Navigate to full gallery
+                      }
+                    : () => _openImageGallery(context, index),
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
@@ -104,7 +123,7 @@ class SalonGalleryGrid extends StatelessWidget {
                           ),
                         ),
                       ),
-                      
+
                       // Overlay for last item showing remaining count
                       if (isLastItem)
                         Container(

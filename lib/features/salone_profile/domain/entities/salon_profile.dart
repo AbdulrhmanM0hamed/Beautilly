@@ -86,7 +86,12 @@ class Discount {
   final String description;
   final String discountType;
   final String discountValue;
+  final DiscountPricing pricing;
+  final DateTime validFrom;
   final DateTime validUntil;
+  final bool isActive;
+  final bool isValid;
+  final List<DiscountService> services;
 
   const Discount({
     required this.id,
@@ -94,8 +99,58 @@ class Discount {
     required this.description,
     required this.discountType,
     required this.discountValue,
+    required this.pricing,
+    required this.validFrom,
     required this.validUntil,
+    required this.isActive,
+    required this.isValid,
+    required this.services,
   });
+}
+
+class DiscountPricing {
+  final String originalPrice;
+  final String discountType;
+  final String discountValue;
+  final String finalPrice;
+  final String discountAmount;
+  final String savingsPercentage;
+
+  const DiscountPricing({
+    required this.originalPrice,
+    required this.discountType,
+    required this.discountValue,
+    required this.finalPrice,
+    required this.discountAmount,
+    required this.savingsPercentage,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'original_price': originalPrice,
+    'discount_type': discountType,
+    'discount_value': discountValue,
+    'final_price': finalPrice,
+    'discount_amount': discountAmount,
+    'savings_percentage': savingsPercentage,
+  };
+}
+
+class DiscountService {
+  final int id;
+  final String name;
+  final String price;
+
+  const DiscountService({
+    required this.id,
+    required this.name,
+    required this.price,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'price': price,
+  };
 }
 
 class Staff {

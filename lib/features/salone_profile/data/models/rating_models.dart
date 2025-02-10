@@ -9,11 +9,15 @@ class RatingsSummaryModel extends RatingsSummary {
 
   factory RatingsSummaryModel.fromJson(Map<String, dynamic> json) {
     return RatingsSummaryModel(
-      average: (json['average'] as num).toDouble(),
-      count: json['count'],
-      ratings: (json['ratings'] as List)
-          .map((rating) => RatingModel.fromJson(rating))
-          .toList(),
+      average: json['average'] is int 
+          ? (json['average'] as int).toDouble()
+          : json['average'] is double 
+              ? json['average'] 
+              : 0.0,
+      count: json['count'] ?? 0,
+      ratings: (json['ratings'] as List?)
+          ?.map((rating) => RatingModel.fromJson(rating))
+          .toList() ?? [],
     );
   }
 
@@ -40,7 +44,11 @@ class RatingModel extends Rating {
   factory RatingModel.fromJson(Map<String, dynamic> json) {
     return RatingModel(
       id: json['id'],
-      rating: json['rating'],
+      rating: json['rating'] is int 
+          ? json['rating'] 
+          : json['rating'] is double 
+              ? json['rating'].toInt()
+              : 0,
       comment: json['comment'],
       user: UserModel.fromJson(json['user']),
       createdAt: json['created_at'],
@@ -68,7 +76,7 @@ class UserModel extends User {
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],
-      name: json['name'],
+      name: json['name'] ?? '',
       avatar: json['avatar'],
     );
   }

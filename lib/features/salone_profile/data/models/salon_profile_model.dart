@@ -39,23 +39,27 @@ class SalonProfileModel extends SalonProfile {
       phone: json['phone'] ?? '',
       email: json['email'] ?? '',
       googleMapsUrl: json['google_maps_url'] ?? '',
-      fakeAverageRating: (json['fake_average_rating'] as num?)?.toDouble() ?? 0.0,
+      fakeAverageRating: (json['fake_average_rating'] ?? 0).toDouble(),
       isActive: json['is_active'] == 1 || json['is_active'] == true,
-      location: LocationModel.fromJson(json['location']),
-      workingHours: (json['working_hours'] as List)
-          .map((e) => WorkingHourModel.fromJson(e))
-          .toList(),
-      services: (json['services'] as List)
-          .map((e) => ServiceModel.fromJson(e))
-          .toList(),
+      location: LocationModel.fromJson(json['location'] ?? {}),
+      workingHours: (json['working_hours'] as List?)
+          ?.map((e) => WorkingHourModel.fromJson(e))
+          .toList() ?? [],
+      services: (json['services'] as List?)
+          ?.map((e) => ServiceModel.fromJson(e))
+          .toList() ?? [],
       discounts: (json['discounts'] as List?)
           ?.map((e) => DiscountModel.fromJson(e))
           .toList() ?? [],
       staff: (json['staff'] as List?)
           ?.map((e) => StaffModel.fromJson(e))
           .toList() ?? [],
-      images: SalonImagesModel.fromJson(json['images']),
-      ratings: RatingsSummaryModel.fromJson(json['ratings']),
+      images: SalonImagesModel.fromJson(json['images'] ?? {}),
+      ratings: RatingsSummaryModel.fromJson(json['ratings'] ?? {
+        'average': 0.0,
+        'count': 0,
+        'ratings': []
+      }),
     );
   }
 

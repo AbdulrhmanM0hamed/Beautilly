@@ -90,10 +90,10 @@ class SalonReviewsSection extends StatelessWidget {
           // Rating Bars
           ...List.generate(5, (index) {
             final stars = 5 - index;
-            final count = ratingCounts[stars]!; // استخدام ! لأننا متأكدين من وجود المفتاح
-            final percentage = ratings.count > 0 
-              ? (count / ratings.count) * 100 
-              : 0.0;
+            final count =
+                ratingCounts[stars]!; // استخدام ! لأننا متأكدين من وجود المفتاح
+            final percentage =
+                ratings.count > 0 ? (count / ratings.count) * 100 : 0.0;
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
@@ -171,13 +171,10 @@ class SalonReviewsSection extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 2,
+            color: Colors.grey.withOpacity(0.05),
           ),
         ],
       ),
@@ -192,11 +189,10 @@ class SalonReviewsSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 child: CachedNetworkImage(
                   imageUrl:
-                      "https://dallik.com/storage/${review.user.avatar}" ?? '', // review.user.avatar ?? '',
+                      "https://dallik.com/storage/${review.user.avatar}" ?? '',
                   width: 40,
                   height: 40,
                   fit: BoxFit.cover,
-
                   placeholder: (context, url) => Container(
                     color: Colors.grey[300],
                     child: const Icon(Icons.person),
@@ -208,18 +204,34 @@ class SalonReviewsSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              
+
               // User Name & Date
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      review.user.name,
-                      style: getBoldStyle(
-                        fontSize: FontSize.size16,
-                        fontFamily: FontConstant.cairo,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          review.user.name,
+                          style: getBoldStyle(
+                            fontSize: FontSize.size16,
+                            fontFamily: FontConstant.cairo,
+                          ),
+                        ),
+                        Spacer(),
+                        Row(
+                          children: List.generate(5, (index) {
+                            return Icon(
+                              index < review.rating
+                                  ? Icons.star
+                                  : Icons.star_border,
+                              color: AppColors.accent,
+                              size: 16,
+                            );
+                          }),
+                        ),
+                      ],
                     ),
                     Text(
                       review.createdAt.toString(),
@@ -229,34 +241,38 @@ class SalonReviewsSection extends StatelessWidget {
                         color: AppColors.grey,
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    Text(
+                      review.comment!,
+                      style: getMediumStyle(
+                        fontSize: FontSize.size14,
+                        fontFamily: FontConstant.cairo,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              
+
               // Rating Stars
-              Row(
-                children: List.generate(5, (index) {
-                  return Icon(
-                    index < review.rating ? Icons.star : Icons.star_border,
-                    color: AppColors.accent,
-                    size: 16,
-                  );
-                }),
-              ),
             ],
           ),
-          
-          if (review.comment != null && review.comment!.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Text(
-              review.comment!,
-              style: getMediumStyle(
-                fontSize: FontSize.size14,
-                fontFamily: FontConstant.cairo,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
+
+          // Comment Section
+          // if (review.comment != null && review.comment!.isNotEmpty) ...[
+          //   const SizedBox(height: 8),
+          //   Container(
+          //     margin: const EdgeInsets.only(
+          //       right: 48,
+          //     ), // نفس عرض الصورة + المسافة
+          //     child: Text(
+          //       review.comment!,
+          //       style: getMediumStyle(
+          //         fontSize: FontSize.size14,
+          //         fontFamily: FontConstant.cairo,
+          //       ),
+          //     ),
+          //   ),
+          // ],
         ],
       ),
     );

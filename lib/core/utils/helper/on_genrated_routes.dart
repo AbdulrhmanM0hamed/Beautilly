@@ -43,10 +43,13 @@ Route<dynamic> onGenratedRoutes(RouteSettings settings) {
     //   );
     case HomeView.routeName:
       return MaterialPageRoute(builder: (context) => const HomeView());
-    case SalonProfileView.routeName:
-      return MaterialPageRoute(
-        builder: (context) => const SalonProfileView(),
-      );
+    // case SalonProfileView.routeName:
+    //   final args = settings.arguments as Map<String, dynamic>;
+    //   return MaterialPageRoute(
+    //     builder: (context) => SalonProfileView(
+    //       salonId: args['salonId'] as int,
+    //     ),
+    //   );
     case AddOrderView.routeName:
       return MaterialPageRoute(
         builder: (_) => BlocProvider(

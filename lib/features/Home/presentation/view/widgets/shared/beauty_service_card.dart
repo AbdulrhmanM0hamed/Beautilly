@@ -26,164 +26,154 @@ class BeautyServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          PageRoutes.fade(
-            page: SalonQuickView(),
-          ),
-        );
-      },
-      child: Container(
-        width: 220,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: Theme.of(context).scaffoldBackgroundColor,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Image Section
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(12)),
-                  child: CachedNetworkImage(
-                    imageUrl: image,
-                    height: 140,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Container(
-                      color: Colors.grey[200],
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: AppColors.primary,
-                        ),
+    return Container(
+      width: 220,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: Theme.of(context).scaffoldBackgroundColor,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Image Section
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
+                child: CachedNetworkImage(
+                  imageUrl: image,
+                  height: 140,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[200],
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.primary,
                       ),
                     ),
-                    errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[100],
-                      child: const Icon(Icons.store),
-                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.grey[100],
+                    child: const Icon(Icons.store),
                   ),
                 ),
-                // Favorite Button
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.favorite_border,
-                      color: AppColors.error,
-                      size: 18,
-                    ),
+              ),
+              // Favorite Button
+              Positioned(
+                top: 8,
+                right: 8,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.favorite_border,
+                    color: AppColors.error,
+                    size: 18,
                   ),
                 ),
-              ],
-            ),
-
-            // Content Section
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Name and Rating
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          name,
+              ),
+            ],
+          ),
+    
+          // Content Section
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Name and Rating
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        name,
+                        style: getBoldStyle(
+                          fontSize: FontSize.size14,
+                          fontFamily: FontConstant.cairo,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          rating.toString(),
                           style: getBoldStyle(
-                            fontSize: FontSize.size14,
+                            fontSize: FontSize.size12,
                             fontFamily: FontConstant.cairo,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 16,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            rating.toString(),
-                            style: getBoldStyle(
-                              fontSize: FontSize.size12,
-                              fontFamily: FontConstant.cairo,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            '($ratingCount)',
-                            style: getMediumStyle(
-                              color: AppColors.grey,
-                              fontSize: FontSize.size12,
-                              fontFamily: FontConstant.cairo,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Location
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.location_on,
-                        color: AppColors.grey,
-                        size: 14,
-                      ),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          location,
+                        const SizedBox(width: 4),
+                        Text(
+                          '($ratingCount)',
                           style: getMediumStyle(
                             color: AppColors.grey,
                             fontSize: FontSize.size12,
                             fontFamily: FontConstant.cairo,
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
-                  ),
-
-                  // Tags
-                  if (tags != null && tags!.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      height: 24,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: tags!.length,
-                        itemBuilder: (context, index) {
-                          return _buildTag(tags![index]);
-                        },
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+    
+                // Location
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      color: AppColors.grey,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        location,
+                        style: getMediumStyle(
+                          color: AppColors.grey,
+                          fontSize: FontSize.size12,
+                          fontFamily: FontConstant.cairo,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
+                ),
+    
+                // Tags
+                if (tags != null && tags!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    height: 24,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: tags!.length,
+                      itemBuilder: (context, index) {
+                        return _buildTag(tags![index]);
+                      },
+                    ),
+                  ),
                 ],
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,10 +1,22 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
 import 'package:flutter/material.dart';
 
 class SalonInfoCard extends StatelessWidget {
-  const SalonInfoCard({super.key});
+  final String name;
+  final String description;
+  final Location location;
+  final List<WorkingHour> workingHours;
+
+  const SalonInfoCard({
+    super.key,
+    required this.name,
+    required this.description,
+    required this.location,
+    required this.workingHours,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,33 +34,65 @@ class SalonInfoCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // قسم "حول"
-        Text(
-          'من نحن',
-          style: getBoldStyle(
-              fontFamily: FontConstant.cairo, fontSize: FontSize.size18),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'بلش بيوتي لاونج هو صالون تجميل فاخر يقدم مجموعة واسعة من الخدمات بما في ذلك تصفيف الشعر، علاجات الوجه، العناية بالأظافر والمزيد.',
-          style: getMediumStyle(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            name,
+            style: getBoldStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size20,
+            ),
+          ),
+          const SizedBox(height: 8),
+          
+          // Location
+          Text(
+            '${location.city}، ${location.state}',
+            style: getMediumStyle(
               fontFamily: FontConstant.cairo,
               fontSize: FontSize.size14,
-              color: AppColors.textSecondary),
-        ),
-        const SizedBox(height: 16),
+              color: AppColors.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 16),
 
-        // ساعات العمل
-        Text(
-          'ساعات العمل',
-          style: getBoldStyle(
-              fontFamily: FontConstant.cairo, fontSize: FontSize.size18),
-        ),
-        const SizedBox(height: 8),
-        _buildWorkingHourRow('الأحد - الخميس', '10:00 صباحًا - 10:00 مساءً'),
-        _buildWorkingHourRow('الجمعة - السبت', '12:00 ظهرًا - 11:00 مساءً'),
-      ]),
+          // Description
+          if (description.isNotEmpty) ...[
+            Text(
+              'من نحن',
+              style: getBoldStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size18,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              description,
+              style: getMediumStyle(
+                fontFamily: FontConstant.cairo,
+                fontSize: FontSize.size14,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+
+          // Working Hours
+          Text(
+            'ساعات العمل',
+            style: getBoldStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size18,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ...workingHours.map((hour) => _buildWorkingHourRow(
+            hour.day,
+            '${hour.openingTime} - ${hour.closingTime}',
+          )),
+        ],
+      ),
     );
   }
 
@@ -61,16 +105,18 @@ class SalonInfoCard extends StatelessWidget {
           Text(
             days,
             style: getMediumStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size14,
-                color: AppColors.textSecondary),
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size14,
+              color: AppColors.textSecondary,
+            ),
           ),
           Text(
             hours,
             style: getMediumStyle(
-                fontFamily: FontConstant.cairo,
-                fontSize: FontSize.size14,
-                color: AppColors.textSecondary),
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size14,
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),

@@ -1,14 +1,44 @@
+import 'package:beautilly/core/services/service_locator.dart';
+import 'package:beautilly/features/salone_profile/presentation/cubit/salon_profile_cubit/salon_profile_cubit.dart';
+import 'package:beautilly/features/salone_profile/presentation/cubit/salon_profile_cubit/salon_profile_state.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_profile_view_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 class SalonProfileView extends StatelessWidget {
-  const SalonProfileView({super.key});
-  static const String routeName = "Salon Profile";
+
+  final int salonId;
+  
+
+  const SalonProfileView({
+    super.key,
+    required this.salonId,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SalonProfileViewBody(),
+    return BlocProvider(
+      create: (context) => sl<SalonProfileCubit>()..getSalonProfile(salonId),
+      child: Scaffold(
+        body: BlocBuilder<SalonProfileCubit, SalonProfileState>(
+          builder: (context, state) {
+            if (state is SalonProfileLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            
+            if (state is SalonProfileError) {
+              return Center(child: Text(state.message));
+            }
+            
+            if (state is SalonProfileLoaded) {
+              return SalonProfileViewBody(profile: state.profile);
+            }
+            
+            return const SizedBox();
+          },
+        ),
+      ),
     );
   }
 }

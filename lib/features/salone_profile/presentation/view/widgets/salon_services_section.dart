@@ -2,41 +2,17 @@ import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/service_card.dart';
 import 'package:flutter/material.dart';
 
 class SalonServicesSection extends StatelessWidget {
-  const SalonServicesSection({super.key});
+  final List<Service> services;
 
-  static final List<ServiceModel> services = [
-    ServiceModel(
-      name: 'قص شعر لوب',
-      duration: '1.5 ساعة',
-      image: AppAssets.test,
-      price: 55,
-      discount: 69,
-    ),
-    ServiceModel(
-      name: 'صبغة شعر',
-      duration: 'ساعتين',
-      image: AppAssets.test,
-      price: 120,
-      discount: 150,
-    ),
-    ServiceModel(
-      name: 'تنظيف بشرة',
-      duration: 'ساعة',
-      image: AppAssets.test,
-      price: 80,
-    ),
-    ServiceModel(
-      name: 'مكياج سهرة',
-      duration: 'ساعة ونصف',
-      image: AppAssets.test,
-      price: 200,
-      discount: 250,
-    ),
-  ];
+  const SalonServicesSection({
+    super.key,
+    required this.services,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -55,17 +31,20 @@ class SalonServicesSection extends StatelessWidget {
                   fontFamily: FontConstant.cairo,
                 ),
               ),
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  'عرض المزيد',
-                  style: getMediumStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size14,
-                    color: AppColors.primary,
+              if (services.length > 4)
+                TextButton(
+                  onPressed: () {
+                    // TODO: Navigate to all services
+                  },
+                  child: Text(
+                    'عرض المزيد',
+                    style: getMediumStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size14,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -75,7 +54,8 @@ class SalonServicesSection extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: services.length > 4 ? 4 : services.length,
             itemBuilder: (context, index) {
-              return ServiceCard(service: services[index]);
+              final service = services[index];
+              return ServiceCard(service: service);
             },
           ),
         ],

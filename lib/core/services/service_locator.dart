@@ -22,6 +22,7 @@ import 'package:beautilly/features/orders/data/repositories/orders_repository_im
 import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';
 import 'package:beautilly/features/orders/domain/usecases/get_my_orders.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
+import 'package:beautilly/features/salone_profile/data/datasources/salon_profile_remote_data_source.dart';
 import 'package:get_it/get_it.dart';
 import '../../features/Home/data/repositories/statistics_repository_impl.dart';
 import '../../features/Home/domain/repositories/statistics_repository.dart';
@@ -59,6 +60,10 @@ import '../../features/Home/presentation/cubit/discounts_cubit/discounts_cubit.d
 import '../../features/orders/presentation/cubit/order_details_cubit/order_details_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/cancel_offer_cubit/cancel_offer_cubit.dart';
 import 'package:beautilly/features/orders/domain/usecases/cancel_offer_usecase.dart';
+import '../../features/salone_profile/presentation/cubit/salon_profile_cubit/salon_profile_cubit.dart';
+import '../../features/salone_profile/domain/usecases/get_salon_profile.dart';
+import '../../features/salone_profile/data/repositories/salon_profile_repository_impl.dart';
+import '../../features/salone_profile/domain/repositories/salon_profile_repository.dart';
 
 // Tailoring Requests Feature
 
@@ -279,4 +284,25 @@ Future<void> init() async {
         cancelOfferUseCase: sl(),
       ));
 
+  // Salon Profile Feature
+  sl.registerFactory(
+    () => SalonProfileCubit(getSalonProfileUseCase: sl()),
+  );
+
+  sl.registerLazySingleton(
+    () => GetSalonProfileUseCase(sl()),
+  );
+
+  sl.registerLazySingleton<SalonProfileRepository>(
+    () => SalonProfileRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<SalonProfileRemoteDataSource>(
+    () => SalonProfileRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
 }

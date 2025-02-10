@@ -1,3 +1,4 @@
+import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../core/utils/animations/custom_progress_indcator.dart';
@@ -37,15 +38,26 @@ class FashionHousesListView extends StatelessWidget {
                 final shop = state.shops[index];
                 // نعرض فقط المحلات التي نوعها خياط
                 if (shop.type == 'tailor') {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 16.0),
-                    child: BeautyServiceCard(
-                      image: shop.mainImageUrl,
-                      name: shop.name,
-                      location: '${shop.cityName}، ${shop.stateName}',
-                      rating: shop.avgRating ?? 0.0,
-                      ratingCount: shop.loversCount,
-                      tags: shop.services.map((e) => e.name).toList(),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SalonProfileView(salonId: shop.id),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0),
+                      child: BeautyServiceCard(
+                        image: shop.mainImageUrl,
+                        name: shop.name,
+                        location: '${shop.cityName}، ${shop.stateName}',
+                        rating: shop.avgRating ?? 0.0,
+                        ratingCount: shop.loversCount,
+                        tags: shop.services.map((e) => e.name).toList(),
+                      ),
                     ),
                   );
                 }

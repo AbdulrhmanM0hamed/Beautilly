@@ -1,10 +1,12 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ServiceCard extends StatelessWidget {
-  final ServiceModel service;
+  final Service service;
 
   const ServiceCard({
     super.key,
@@ -31,11 +33,20 @@ class ServiceCard extends StatelessWidget {
           // Service Image
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: Image.asset(
-              service.image,
+            child: CachedNetworkImage(
+              imageUrl: service.image,
               width: 90,
               height: 90,
               fit: BoxFit.cover,
+              placeholder: (context, url) => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              errorWidget: (context, url, error) => Image.asset(
+                'assets/images/salon_image.jpg',
+                width: 90,
+                height: 90,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
           const SizedBox(width: 16),
@@ -52,42 +63,30 @@ class ServiceCard extends StatelessWidget {
                     fontFamily: FontConstant.cairo,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  service.duration,
-                  style: getMediumStyle(
-                    color: AppColors.grey,
-                    fontSize: FontSize.size14,
-                    fontFamily: FontConstant.cairo,
+                if (service.description != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    service.description!,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: getMediumStyle(
+                      color: AppColors.grey,
+                      fontSize: FontSize.size14,
+                      fontFamily: FontConstant.cairo,
+                    ),
                   ),
-                ),
+                ],
                 const SizedBox(height: 8),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Price with discount
-                    Row(
-                      children: [
-                        Text(
-                          '${service.price} ر.س',
-                          style: getBoldStyle(
-                            fontSize: FontSize.size16,
-                            fontFamily: FontConstant.cairo,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                        if (service.discount != null) ...[
-                          const SizedBox(width: 8),
-                          Text(
-                            '${service.discount} ر.س',
-                            style: getMediumStyle(
-                              fontSize: FontSize.size14,
-                              fontFamily: FontConstant.cairo,
-                              color: AppColors.grey,
-                            ),
-                          ),
-                        ],
-                      ],
+                    Text(
+                      '${double.parse(service.price).toStringAsFixed(0)} ر.س',
+                      style: getBoldStyle(
+                        fontSize: FontSize.size16,
+                        fontFamily: FontConstant.cairo,
+                        color: AppColors.primary,
+                      ),
                     ),
                     // Add Button
                     Container(

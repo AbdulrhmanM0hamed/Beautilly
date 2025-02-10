@@ -35,7 +35,7 @@ class _SalonQuickViewState extends State<SalonQuickView> {
                     parent: animation,
                     curve: Curves.easeOut,
                   )),
-                  child: const SalonProfileView(),
+                  child: const SalonProfileView(salonId: 1),
                 );
               },
             ),

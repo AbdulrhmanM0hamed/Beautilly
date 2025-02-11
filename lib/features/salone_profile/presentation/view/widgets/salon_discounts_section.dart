@@ -94,7 +94,7 @@ class SalonDiscountsSection extends StatelessWidget {
 
                       // المحتوى
                       Padding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(horizontal: 12 , vertical: 12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -105,7 +105,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 12,
-                                    vertical: 6,
+                                    vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.white.withOpacity(0.2),
@@ -118,7 +118,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                         discount.discountValue,
                                         style: getBoldStyle(
                                           fontFamily: FontConstant.cairo,
-                                          fontSize: FontSize.size18,
+                                          fontSize: FontSize.size14,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -126,7 +126,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                         '% خصم',
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 14,
+                                          fontSize: 12,
                                         ),
                                       ),
                                     ],
@@ -160,6 +160,17 @@ class SalonDiscountsSection extends StatelessWidget {
                             // الخدمات المشمولة
                             if (discount.services.isNotEmpty) ...[
                               Text(
+                                discount.title,
+                                style: getMediumStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  fontSize: FontSize.size12,
+                                  color: AppColors.accent,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 4,
+                              ),
+                              Text(
                                 'يشمل:',
                                 style: getMediumStyle(
                                   fontFamily: FontConstant.cairo,
@@ -167,32 +178,28 @@ class SalonDiscountsSection extends StatelessWidget {
                                   color: Colors.white.withOpacity(0.8),
                                 ),
                               ),
-                              const SizedBox(height: 4),
                               ...discount.services.take(2).map(
-                                    (service) => Padding(
-                                      padding: const EdgeInsets.only(bottom: 2),
-                                      child: Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.check_circle_outline,
-                                            color: Colors.white,
-                                            size: 14,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Expanded(
-                                            child: Text(
-                                              service.name,
-                                              style: getMediumStyle(
-                                                fontFamily: FontConstant.cairo,
-                                                fontSize: FontSize.size12,
-                                                color: Colors.white,
-                                              ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
+                                    (service) => Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.check_circle_outline,
+                                          color: Colors.white,
+                                          size: 14,
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            service.name,
+                                            style: getMediumStyle(
+                                              fontFamily: FontConstant.cairo,
+                                              fontSize: FontSize.size12,
+                                              color: Colors.white,
                                             ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                               if (discount.services.length > 2)

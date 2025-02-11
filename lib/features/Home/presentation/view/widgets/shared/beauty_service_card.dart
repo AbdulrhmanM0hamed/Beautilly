@@ -1,8 +1,6 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
-import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_quick_view.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -80,7 +78,7 @@ class BeautyServiceCard extends StatelessWidget {
               ),
             ],
           ),
-    
+
           // Content Section
           Padding(
             padding: const EdgeInsets.all(12),
@@ -131,7 +129,7 @@ class BeautyServiceCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
-    
+
                 // Location
                 Row(
                   children: [
@@ -155,7 +153,7 @@ class BeautyServiceCard extends StatelessWidget {
                     ),
                   ],
                 ),
-    
+
                 // Tags
                 if (tags != null && tags!.isNotEmpty) ...[
                   const SizedBox(height: 8),

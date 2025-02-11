@@ -62,7 +62,7 @@ class OrderDetailsView extends StatelessWidget {
                 context
                     .read<OrderDetailsCubit>()
                     .updateOfferStatus(state.offerId);
-                
+
                 if (fromAllOrders) {
                   context.read<OrdersCubit>().loadAllOrders();
                 } else {
@@ -72,28 +72,26 @@ class OrderDetailsView extends StatelessWidget {
                 // تأخير عرض الرسالة والتنقل
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (context.mounted) {
-                   CustomSnackbar.showSuccess(
-                    context: context,
-                    message: 'تم قبول العرض بنجاح',
-                  );
+                    CustomSnackbar.showSuccess(
+                      context: context,
+                      message: 'تم قبول العرض بنجاح',
+                    );
                   }
                 });
-
               } else if (state is AcceptOfferError) {
-               CustomSnackbar.showError(
-                context: context,
-                message: state.message,
-               );
+                CustomSnackbar.showError(
+                  context: context,
+                  message: state.message,
+                );
               }
             },
-
             child: BlocListener<CancelOfferCubit, CancelOfferState>(
               listener: (context, state) {
                 if (state is CancelOfferSuccess) {
                   context
                       .read<OrderDetailsCubit>()
                       .updateOfferStatus(state.offerId);
-                  
+
                   if (fromAllOrders) {
                     context.read<OrdersCubit>().loadAllOrders();
                   } else {
@@ -103,22 +101,19 @@ class OrderDetailsView extends StatelessWidget {
                   // تأخير عرض الرسالة والتنقل
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     if (context.mounted) {
-                     CustomSnackbar.showSuccess(
-                      context: context,
-                      message: 'تم إلغاء قبول العرض بنجاح',
-                     );
-                
+                      CustomSnackbar.showSuccess(
+                        context: context,
+                        message: 'تم إلغاء قبول العرض بنجاح',
+                      );
                     }
-
                   });
                 } else if (state is CancelOfferError) {
-                 CustomSnackbar.showError(
-                  context: context,
-                  message: state.message,
-                 );
+                  CustomSnackbar.showError(
+                    context: context,
+                    message: state.message,
+                  );
                 }
               },
-
               child: Scaffold(
                 body: CustomScrollView(
                   slivers: [
@@ -192,57 +187,59 @@ class OrderDetailsView extends StatelessWidget {
                             // معلومات العميل
                             Row(
                               children: [
+                                // صورة العميل
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(25),
                                   child: CachedNetworkImage(
-                                    imageUrl:
-                                        orderDetails.customer.images.medium,
-                                    width: 50,
-                                    height: 50,
+                                    imageUrl: orderDetails.customer.images.medium,
+                                    width: 45,  // تصغير حجم الصورة
+                                    height: 45,
                                     fit: BoxFit.cover,
                                     placeholder: (context, url) => CircleAvatar(
-                                      radius: 25,
-                                      backgroundColor:
-                                          AppColors.primary.withOpacity(0.1),
+                                      radius: 22.5,  // نصف القطر يساوي نصف العرض
+                                      backgroundColor: AppColors.primary.withOpacity(0.1),
                                       child: Text(
-                                        orderDetails.customer.name[0]
-                                            .toUpperCase(),
+                                        orderDetails.customer.name[0].toUpperCase(),
                                         style: getBoldStyle(
                                           color: AppColors.primary,
-                                          fontSize: FontSize.size20,
+                                          fontSize: FontSize.size16,  // تصغير حجم الحرف
                                           fontFamily: FontConstant.cairo,
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: 12),  // تقليل المسافة
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         orderDetails.customer.name,
                                         style: getBoldStyle(
-                                          fontSize: FontSize.size18,
+                                          fontSize: FontSize.size16,  // تصغير حجم الخط
                                           fontFamily: FontConstant.cairo,
                                         ),
                                       ),
+                                      const SizedBox(height: 4),  // تقليل المسافة
                                       Row(
                                         children: [
-                                          const Icon(
+                                        const  Icon(
                                             Icons.location_on_outlined,
-                                            size: 16,
+                                            size: 16,  // تصغير حجم الأيقونة
                                             color: Colors.grey,
                                           ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            '${orderDetails.customer.address.city}، ${orderDetails.customer.address.state}',
-                                            style: getRegularStyle(
-                                              color: Colors.grey[600],
-                                              fontSize: FontSize.size12,
-                                              fontFamily: FontConstant.cairo,
+                                          const SizedBox(width: 2),  // تقليل المسافة
+                                          Expanded(  // إضافة Expanded لمنع تجاوز النص
+                                            child: Text(
+                                              '${orderDetails.customer.address.city}، ${orderDetails.customer.address.state}',
+                                              style: getRegularStyle(
+                                                color: Colors.grey[600],
+                                                fontSize: FontSize.size12,
+                                                fontFamily: FontConstant.cairo,
+                                              ),
+                                              maxLines: 1,  // تحديد عدد الأسطر
+                                              overflow: TextOverflow.ellipsis,  // إضافة ... عند تجاوز النص
                                             ),
                                           ),
                                         ],
@@ -250,9 +247,8 @@ class OrderDetailsView extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                const Spacer(),
-                                _buildStatusChip(orderDetails.status,
-                                    orderDetails.statusLabel),
+                                const SizedBox(width: 8),  // مسافة قبل حالة الطلب
+                                _buildStatusChip(orderDetails.status, orderDetails.statusLabel),
                               ],
                             ),
                             const SizedBox(height: 24),

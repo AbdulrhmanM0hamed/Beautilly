@@ -1,6 +1,5 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/outline_with_icon.dart';
 import 'package:cached_network_image/cached_network_image.dart';

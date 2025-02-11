@@ -19,6 +19,7 @@ class SalonProfile {
   final List<Staff> staff;
   final SalonImages images;
   final RatingsSummary ratings;
+  final UserInteraction userInteraction;
 
   const SalonProfile({
     required this.id,
@@ -38,6 +39,7 @@ class SalonProfile {
     required this.staff,
     required this.images,
     required this.ratings,
+    required this.userInteraction,
   });
 }
 
@@ -226,5 +228,17 @@ class User {
     required this.id,
     required this.name,
     this.avatar,
+  });
+}
+
+class UserInteraction {
+  final bool hasRated;
+  final bool hasLiked;
+  final Rating? userRating;
+
+  const UserInteraction({
+    required this.hasRated,
+    required this.hasLiked,
+    this.userRating,
   });
 } 

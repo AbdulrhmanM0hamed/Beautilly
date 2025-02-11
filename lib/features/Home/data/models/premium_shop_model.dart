@@ -1,3 +1,5 @@
+import 'package:beautilly/features/salone_profile/data/models/salon_profile_model.dart';
+
 import '../../domain/entities/premium_shop.dart';
 
 class PremiumShopModel extends PremiumShop {
@@ -11,6 +13,7 @@ class PremiumShopModel extends PremiumShop {
     required super.mainImageUrl,
     super.avgRating,
     required super.services,
+    super.userInteraction,
   });
 
   factory PremiumShopModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +29,9 @@ class PremiumShopModel extends PremiumShop {
       services: (json['services'] as List)
           .map((service) => PremiumShopServiceModel.fromJson(service))
           .toList(),
+      userInteraction: json['user_interaction'] != null
+          ? UserInteractionModel.fromJson(json['user_interaction'])
+          : null,
     );
   }
 
@@ -39,7 +45,9 @@ class PremiumShopModel extends PremiumShop {
       'state_name': stateName,
       'main_shop_image_url': mainImageUrl,
       'avg_rating': avgRating,
-      'services': services.map((service) => (service as PremiumShopServiceModel).toJson()).toList(),
+      'services': services
+          .map((service) => (service as PremiumShopServiceModel).toJson())
+          .toList(),
     };
   }
 }
@@ -66,4 +74,4 @@ class PremiumShopServiceModel extends PremiumShopService {
       'price': price,
     };
   }
-} 
+}

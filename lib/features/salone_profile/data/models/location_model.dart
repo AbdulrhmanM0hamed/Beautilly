@@ -8,10 +8,16 @@ class LocationModel extends Location {
   });
 
   factory LocationModel.fromJson(Map<String, dynamic> json) {
+    String getLocationName(dynamic value) {
+      if (value is String) return value;
+      if (value is Map) return value['name'] ?? '';
+      return '';
+    }
+
     return LocationModel(
-      city: json['city'],
-      state: json['state'],
-      country: json['country'],
+      city: getLocationName(json['city']),
+      state: getLocationName(json['state']),
+      country: json['country'] ?? '',
     );
   }
 

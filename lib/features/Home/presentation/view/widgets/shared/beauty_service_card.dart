@@ -1,8 +1,12 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
+import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
+import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_state.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BeautyServiceCard extends StatelessWidget {
   final String image;
@@ -11,6 +15,9 @@ class BeautyServiceCard extends StatelessWidget {
   final double rating;
   final int ratingCount;
   final List<String>? tags;
+  final bool isFavorite;
+  final int shopId;
+  final Function()? onFavoritePressed;
 
   const BeautyServiceCard({
     super.key,
@@ -19,7 +26,10 @@ class BeautyServiceCard extends StatelessWidget {
     required this.location,
     required this.rating,
     required this.ratingCount,
+    required this.shopId,
     this.tags,
+    this.isFavorite = false,
+    this.onFavoritePressed,
   });
 
   @override
@@ -63,17 +73,44 @@ class BeautyServiceCard extends StatelessWidget {
               Positioned(
                 top: 8,
                 right: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.favorite_border,
-                    color: AppColors.error,
-                    size: 18,
-                  ),
+                child: BlocBuilder<ToggleFavoritesCubit, ToggleFavoritesState>(
+                  builder: (context, state) {
+                    final bool isLoading = state is ToggleFavoritesLoading;
+                    final bool isFav = state is ToggleFavoritesSuccess ? 
+                                       state.isFavorite : 
+                                       isFavorite;
+
+                    return GestureDetector(
+                      onTap: isLoading ? null : () {
+                        if (isFav) {
+                          context.read<ToggleFavoritesCubit>().removeFromFavorites(shopId);
+                        } else {
+                          context.read<ToggleFavoritesCubit>().addToFavorites(shopId);
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: isLoading
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.error,
+                                ),
+                              )
+                            : Icon(
+                                isFav ? Icons.favorite : Icons.favorite_border,
+                                color: AppColors.error,
+                                size: 18,
+                              ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

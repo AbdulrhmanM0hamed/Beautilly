@@ -1,3 +1,5 @@
+import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
+
 class PremiumShop {
   final int id;
   final String name;
@@ -8,6 +10,7 @@ class PremiumShop {
   final String mainImageUrl;
   final double? avgRating;
   final List<PremiumShopService> services;
+  final UserInteraction? userInteraction;
 
   const PremiumShop({
     required this.id,
@@ -19,6 +22,7 @@ class PremiumShop {
     required this.mainImageUrl,
     this.avgRating,
     required this.services,
+    this.userInteraction,
   });
 }
 

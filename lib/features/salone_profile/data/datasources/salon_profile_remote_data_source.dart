@@ -39,34 +39,29 @@ class SalonProfileRemoteDataSourceImpl implements SalonProfileRemoteDataSource {
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
           'x-api-key': ApiEndpoints.api_key,
-          HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.contentTypeHeader: 'application/json',
+          HttpHeaders.acceptHeader: 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
       );
 
       if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-
-        if (jsonResponse['success'] == true && jsonResponse['data'] != null) {
-          return SalonProfileModel.fromJson(jsonResponse['data']);
+        final decodedJson = json.decode(response.body);
+        
+        if (decodedJson['success'] == true && decodedJson['data'] != null) {
+          try {
+            return SalonProfileModel.fromJson(decodedJson['data']);
+          } catch (e) {
+            throw ServerException('حدث خطأ في معالجة البيانات');
+          }
         } else {
-          throw ServerException(
-            jsonResponse['message'] ?? 'فشل في تحميل بيانات الصالون',
-          );
+          throw ServerException('لا توجد بيانات متاحة');
         }
-      } else if (response.statusCode == 401) {
-        throw UnauthorizedException(
-          'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول',
-        );
       } else {
-        final error = json.decode(response.body);
-        throw ServerException(
-          error['message'] ?? 'فشل في تحميل بيانات الصالون',
-        );
+        throw ServerException('فشل في جلب بيانات الصالون');
       }
     } catch (e) {
-      throw ServerException('حدث خطأ غير متوقع: $e');
+      throw ServerException('حدث خطأ غير متوقع');
     }
   }
 
@@ -118,7 +113,7 @@ class SalonProfileRemoteDataSourceImpl implements SalonProfileRemoteDataSource {
       throw ServerException('حدث خطأ غير متوقع: $e');
     }
   }
-  
+
   @override
   Future<void> deleteShopRating(int shopId) async {
     try {
@@ -222,4 +217,4 @@ class SalonProfileRemoteDataSourceImpl implements SalonProfileRemoteDataSource {
       throw ServerException('حدث خطأ غير متوقع');
     }
   }
-} 
+}

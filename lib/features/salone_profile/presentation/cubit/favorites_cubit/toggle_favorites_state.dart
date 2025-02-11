@@ -2,7 +2,7 @@ abstract class ToggleFavoritesState {
   const ToggleFavoritesState();
 }
 
-class ToggleFavoriteInitial extends ToggleFavoritesState {}
+class ToggleFavoritesInitial extends ToggleFavoritesState {}
 
 class ToggleFavoritesLoading extends ToggleFavoritesState {}
 

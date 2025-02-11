@@ -12,8 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_discounts_section.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../presentation/cubit/favorites_cubit/favorites_cubit.dart';
-import '../../../presentation/cubit/favorites_cubit/favorites_state.dart';
+import '../../cubit/favorites_cubit/toggle_favorites_cubit.dart';
+import '../../cubit/favorites_cubit/toggle_favorites_state.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -64,64 +64,65 @@ class SalonProfileViewBody extends StatelessWidget {
                     ),
                   ),
                   // Action Buttons
-                  // Positioned(
-                  //   top: 50,
-                  //   left: 16,
-                  //   child: Row(
-                  //     children: [
-                  //       // BlocConsumer<FavoritesCubit, FavoritesState>(
-                  //       //   listener: (context, state) {
-                  //       //     if (state is FavoritesError) {
-                  //       //       CustomSnackbar.showError(
-                  //       //         context: context,
-                  //       //         message: state.message,
-                  //       //       );
-                  //       //     }
-                  //       //   },
-                  //       //   builder: (context, state) {
-                  //       //     final bool isLoading = state is FavoritesLoading;
-                  //       //     final bool isFavorite = state is FavoritesSuccess
-                  //       //         ? state.isFavorite
-                  //       //         : profile.isFavorite;
+                  Positioned(
+                    top: 50,
+                    left: 16,
+                    child: Row(
+                      children: [
+                        BlocConsumer<ToggleFavoritesCubit, ToggleFavoritesState>(
+                          listener: (context, state) {
+                            if (state is ToggleFavoritesError) {
+                              CustomSnackbar.showError(
+                                context: context,
+                                message: state.message,
+                              );
+                            }
+                          },
+                          builder: (context, state) {
+                            final bool isLoading = state is ToggleFavoritesLoading;
+                            final bool isFavorite = state is ToggleFavoritesSuccess 
+                                ? state.isFavorite 
+                                : profile.userInteraction.hasLiked;
 
-                  //       //     return CircleAvatar(
-                  //       //       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  //       //       child: isLoading
-                  //       //           ? const SizedBox(
-                  //       //               width: 20,
-                  //       //               height: 20,
-                  //       //               child: CircularProgressIndicator(
-                  //       //                 strokeWidth: 2,
-                  //       //                 valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                  //       //               ),
-                  //       //             )
-                  //       //           : IconButton(
-                  //       //               icon: Icon(
-                  //       //                 isFavorite ? Icons.favorite : Icons.favorite_border,
-                  //       //                 color: Colors.red,
-                  //       //               ),
-                  //       //               onPressed: () {
-                  //       //                 context.read<FavoritesCubit>().toggleFavorite(
-                  //       //                       profile.id,
-                  //       //                       isFavorite,
-                  //       //                     );
-                  //       //               },
-                  //       //             ),
-                  //       //     );
-                  //       //   },
-                  //       // ),
-                  //       // const SizedBox(width: 8),
-                  //       // CircleAvatar(
-                  //       //   backgroundColor:
-                  //       //       Theme.of(context).scaffoldBackgroundColor,
-                  //       //   child: SvgPicture.asset(
-                  //       //     AppAssets.map,
-                  //       //     color: AppColors.secondary,
-                  //       //   ),
-                  //       // ),
-                  //     ],
-                  //   ),
-                  // ),
+                            return CircleAvatar(
+                              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                              child: IconButton(
+                                onPressed: isLoading 
+                                    ? null 
+                                    : () {
+                                        if (isFavorite) {
+                                          context.read<ToggleFavoritesCubit>().removeFromFavorites(profile.id);
+                                        } else {
+                                          context.read<ToggleFavoritesCubit>().addToFavorites(profile.id);
+                                        }
+                                      },
+                                icon: isLoading
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : Icon(
+                                        isFavorite ? Icons.favorite : Icons.favorite_border,
+                                        color: isFavorite ? Colors.red : AppColors.secondary,
+                                      ),
+                              ),
+                            );
+                          },
+                        ),
+                        const SizedBox(width: 8),
+                        CircleAvatar(
+                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                          child: SvgPicture.asset(
+                            AppAssets.map,
+                            color: AppColors.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
               leading: const Padding(
@@ -160,6 +161,7 @@ class SalonProfileViewBody extends StatelessWidget {
                       staff: profile.staff,
                     ),
                     SalonReviewsSection(
+                      hasRated: profile.userInteraction.hasRated,
                       salonId: profile.id,
                       ratings: profile.ratings,
                     ),

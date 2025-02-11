@@ -23,6 +23,7 @@ import 'package:beautilly/features/orders/domain/repositories/orders_repository.
 import 'package:beautilly/features/orders/domain/usecases/get_my_orders.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:beautilly/features/salone_profile/data/datasources/salon_profile_remote_data_source.dart';
+import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
 import 'package:get_it/get_it.dart';
 import '../../features/Home/data/repositories/statistics_repository_impl.dart';
 import '../../features/Home/domain/repositories/statistics_repository.dart';
@@ -188,6 +189,7 @@ Future<void> init() async {
   );
 
   // Favorites Feature
+  // 1. تسجيل DataSource
   sl.registerLazySingleton<FavoritesRemoteDataSource>(
     () => FavoritesRemoteDataSourceImpl(
       client: sl(),
@@ -195,17 +197,18 @@ Future<void> init() async {
     ),
   );
 
+  // 2. تسجيل Repository
   sl.registerLazySingleton<FavoritesRepository>(
     () => FavoritesRepositoryImpl(sl()),
   );
 
-  sl.registerFactory(
-    () => FavoritesCubit(
-      repository: sl(),
-      addToFavoritesUseCase: sl(),
-      removeFromFavoritesUseCase: sl(),
-    ),
-  );
+  // sl.registerLazySingleton<FavoritesCubit>(
+  //   () => FavoritesCubit(
+  //     repository: sl(),
+  //     addToFavoritesUseCase: sl<AddToFavoritesUseCase>(),
+  //     removeFromFavoritesUseCase: sl<RemoveFromFavoritesUseCase>(),
+  //   ),
+  // );
 
   sl.registerLazySingleton(() => AddToFavoritesUseCase(sl()));
   sl.registerLazySingleton(() => RemoveFromFavoritesUseCase(sl()));
@@ -297,14 +300,6 @@ Future<void> init() async {
       ));
 
   // Salon Profile Feature
-  sl.registerFactory(
-    () => SalonProfileCubit(getSalonProfileUseCase: sl()),
-  );
-
-  sl.registerLazySingleton(
-    () => GetSalonProfileUseCase(sl()),
-  );
-
   sl.registerLazySingleton<SalonProfileRepository>(
     () => SalonProfileRepositoryImpl(
       remoteDataSource: sl(),
@@ -315,6 +310,31 @@ Future<void> init() async {
     () => SalonProfileRemoteDataSourceImpl(
       client: sl(),
       cacheService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton(
+    () => GetSalonProfileUseCase(sl<SalonProfileRepository>()),
+  );
+
+  sl.registerFactory<SalonProfileCubit>(
+    () => SalonProfileCubit(
+      getSalonProfileUseCase: sl<GetSalonProfileUseCase>(),
+    ),
+  );
+
+  // تسجيل FavoritesCubit
+  sl.registerFactory<FavoritesCubit>(
+    () => FavoritesCubit(
+      repository: sl<FavoritesRepository>(),
+      addToFavoritesUseCase: sl<AddToFavoritesUseCase>(),
+      removeFromFavoritesUseCase: sl<RemoveFromFavoritesUseCase>(),
+    ),
+  );
+  sl.registerFactory<ToggleFavoritesCubit>(
+    () => ToggleFavoritesCubit(
+      addToFavoritesUseCase: sl<AddToFavoritesUseCase>(),
+      removeFromFavoritesUseCase: sl<RemoveFromFavoritesUseCase>(),
     ),
   );
 

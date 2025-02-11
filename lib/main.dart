@@ -1,3 +1,4 @@
+import 'package:beautilly/features/profile/presentation/cubit/favorites_cubit/favorites_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/splash/view/splash_view.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ void main() async {
   runApp(const MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -23,6 +25,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => di.sl<ProfileCubit>()..loadProfile(),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<FavoritesCubit>(),
         ),
       ],
       child: MaterialApp(

@@ -18,11 +18,13 @@ import 'package:beautilly/features/salone_profile/presentation/cubit/salon_profi
 class SalonReviewsSection extends StatelessWidget {
   final RatingsSummary ratings;
   final int salonId;
+  final bool hasRated;
 
   const SalonReviewsSection({
     super.key,
     required this.ratings,
     required this.salonId,
+    required this.hasRated,
   });
 
   void _showAddRatingDialog(BuildContext context) {
@@ -189,7 +191,7 @@ class SalonReviewsSection extends StatelessWidget {
                   listener: (context, state) {
                     if (state is RatingDeleted) {
                       salonProfileCubit.getSalonProfile(salonId);
-                      
+
                       Future.delayed(const Duration(milliseconds: 300), () {
                         if (context.mounted) {
                           Navigator.pop(context);
@@ -224,7 +226,9 @@ class SalonReviewsSection extends StatelessWidget {
                             onPressed: state is RatingLoading
                                 ? null
                                 : () {
-                                    context.read<RatingCubit>().deleteRating(salonId);
+                                    context
+                                        .read<RatingCubit>()
+                                        .deleteRating(salonId);
                                   },
                             backgroundColor: Colors.red,
                             textColor: Colors.white,
@@ -276,7 +280,7 @@ class SalonReviewsSection extends StatelessWidget {
                   fontFamily: FontConstant.cairo,
                 ),
               ),
-              if (ratings.hasUserRating)
+              if (hasRated)
                 TextButton.icon(
                   onPressed: () => _showDeleteRatingDialog(context),
                   icon: const Icon(Icons.delete_outline, color: Colors.red),
@@ -437,7 +441,7 @@ class SalonReviewsSection extends StatelessWidget {
 
   Widget _buildReviewCard(BuildContext context, Rating review) {
     final isUserRating = review.user.id == sl<CacheService>().getUserId();
-    
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -452,20 +456,18 @@ class SalonReviewsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // User Info & Rating
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // User info row
               Expanded(
                 child: Row(
                   children: [
-                    // User Avatar
                     ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: CachedNetworkImage(
                         imageUrl:
-                            "https://dallik.com/storage/${review.user.avatar}" ?? '',
+                            "https://dallik.com/storage/${review.user.avatar}" ??
+                                '',
                         width: 40,
                         height: 40,
                         fit: BoxFit.cover,
@@ -480,8 +482,6 @@ class SalonReviewsSection extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12),
-
-                    // User Name & Date
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,7 +495,7 @@ class SalonReviewsSection extends StatelessWidget {
                                   fontFamily: FontConstant.cairo,
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               Row(
                                 children: List.generate(5, (index) {
                                   return Icon(
@@ -507,6 +507,16 @@ class SalonReviewsSection extends StatelessWidget {
                                   );
                                 }),
                               ),
+                              if (isUserRating)
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete_outline,
+                                    color: Colors.red,
+                                    size: 20,
+                                  ),
+                                  onPressed: () =>
+                                      _showDeleteRatingDialog(context),
+                                ),
                             ],
                           ),
                           Text(
@@ -518,48 +528,23 @@ class SalonReviewsSection extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            review.comment!,
-                            style: getMediumStyle(
-                              fontSize: FontSize.size14,
-                              fontFamily: FontConstant.cairo,
+                          if (review.comment != null &&
+                              review.comment!.isNotEmpty)
+                            Text(
+                              review.comment!,
+                              style: getMediumStyle(
+                                fontSize: FontSize.size14,
+                                fontFamily: FontConstant.cairo,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                     ),
                   ],
                 ),
               ),
-              // Add delete button if user's review
-              if (isUserRating)
-                IconButton(
-                  icon: const Icon(
-                    Icons.delete_outline,
-                    color: Colors.red,
-                    size: 20,
-                  ),
-                  onPressed: () => _showDeleteRatingDialog(context),
-                ),
             ],
           ),
-
-          // Comment Section
-          // if (review.comment != null && review.comment!.isNotEmpty) ...[
-          //   const SizedBox(height: 8),
-          //   Container(
-          //     margin: const EdgeInsets.only(
-          //       right: 48,
-          //     ), // نفس عرض الصورة + المسافة
-          //     child: Text(
-          //       review.comment!,
-          //       style: getMediumStyle(
-          //         fontSize: FontSize.size14,
-          //         fontFamily: FontConstant.cairo,
-          //       ),
-          //     ),
-          //   ),
-          // ],
         ],
       ),
     );

@@ -91,6 +91,7 @@ class SalonProfileViewBody extends StatelessWidget {
                       staff: profile.staff,
                     ),
                     SalonReviewsSection(
+                      salonId: profile.id,
                       ratings: profile.ratings,
                     ),
                    

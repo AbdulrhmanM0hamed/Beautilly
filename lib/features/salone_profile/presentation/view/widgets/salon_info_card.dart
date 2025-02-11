@@ -2,6 +2,7 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
+import 'package:beautilly/features/salone_profile/presentation/view/widgets/outline_with_icon.dart';
 import 'package:flutter/material.dart';
 
 class SalonInfoCard extends StatelessWidget {
@@ -21,7 +22,6 @@ class SalonInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-     
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(16),
@@ -111,13 +111,7 @@ class SalonInfoCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'عن الصالون',
-                    style: getBoldStyle(
-                      fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size18,
-                    ),
-                  ),
+                  const OutlineWithIcon(icon: Icons.store, title: "عن الصالون"),
                   const SizedBox(height: 8),
                   Text(
                     description,
@@ -137,38 +131,11 @@ class SalonInfoCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.primary.withOpacity(0.9),
-                              AppColors.primary.withOpacity(0.6),
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          color: AppColors.white,
-                          Icons.access_time_rounded,
-                          size: 20,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Text(
-                        'ساعات العمل',
-                        style: getBoldStyle(
-                          fontFamily: FontConstant.cairo,
-                          fontSize: FontSize.size18,
-                        ),
-                      ),
-                    ],
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: OutlineWithIcon(
+                    icon: Icons.access_time_rounded,
+                    title: "ساعات العمل",
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -190,7 +157,7 @@ class SalonInfoCard extends StatelessWidget {
                       List<Color> cardColors = isToday
                           ? [
                               AppColors.primary,
-                              AppColors.primary.withOpacity(0.5)
+                              AppColors.primary.withOpacity(0.6)
                             ]
                           : index % 3 == 0
                               ? [Colors.purple.shade300, Colors.purple.shade500]

@@ -4,4 +4,5 @@ import '../entities/salon_profile.dart';
 
 abstract class SalonProfileRepository {
   Future<Either<Failure, SalonProfile>> getSalonProfile(int salonId);
+  Future<Either<Failure, void>> addShopRating(int shopId, int rating, String? comment);
 } 

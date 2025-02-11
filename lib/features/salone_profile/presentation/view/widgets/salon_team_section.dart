@@ -2,6 +2,7 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
+import 'package:beautilly/features/salone_profile/presentation/view/widgets/outline_with_icon.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/core/utils/common/staff_gallery_dialog.dart';
@@ -23,36 +24,9 @@ class SalonTeamSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.primary.withOpacity(.9),
-                      AppColors.primary.withOpacity(.6),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Icon(
-                  Icons.groups_rounded,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'فريق العمل',
-                style: getBoldStyle(
-                  fontSize: FontSize.size20,
-                  fontFamily: FontConstant.cairo,
-                ),
-              ),
-            ],
+          OutlineWithIcon(
+            icon: Icons.groups_rounded,
+            title: 'فريق العمل',
           ),
           const SizedBox(height: 16),
           SizedBox(

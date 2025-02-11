@@ -1,17 +1,148 @@
+import 'package:beautilly/core/utils/common/custom_dialog_button.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
+import 'package:beautilly/features/salone_profile/presentation/cubit/rating_cubit/rating_cubit.dart';
+import 'package:beautilly/features/salone_profile/presentation/cubit/rating_cubit/rating_state.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:get_it/get_it.dart';
+import 'package:beautilly/features/salone_profile/presentation/cubit/salon_profile_cubit/salon_profile_cubit.dart';
 
 class SalonReviewsSection extends StatelessWidget {
   final RatingsSummary ratings;
+  final int salonId;
 
   const SalonReviewsSection({
     super.key,
     required this.ratings,
+    required this.salonId,
   });
+
+  void _showAddRatingDialog(BuildContext context) {
+    int selectedRating = 5;
+    final commentController = TextEditingController();
+    final salonProfileCubit = context.read<SalonProfileCubit>();
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+            value: salonProfileCubit,
+          ),
+          BlocProvider(
+            create: (_) => GetIt.I<RatingCubit>(),
+          ),
+        ],
+        child: Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'إضافة تقييم',
+                  style: getBoldStyle(
+                    fontSize: FontSize.size18,
+                    fontFamily: FontConstant.cairo,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                RatingBar.builder(
+                  initialRating: 5,
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  itemCount: 5,
+                  itemSize: 32,
+                  itemBuilder: (context, _) => const Icon(
+                    Icons.star,
+                    color: Colors.amber,
+                  ),
+                  onRatingUpdate: (rating) {
+                    selectedRating = rating.toInt();
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: commentController,
+                  maxLines: 3,
+                  decoration: const InputDecoration(
+                    hintText: 'اكتب تعليقك هنا...',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                BlocConsumer<RatingCubit, RatingState>(
+                  listener: (context, state) {
+                    if (state is RatingSuccess) {
+                      salonProfileCubit.getSalonProfile(salonId);
+
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          CustomSnackbar.showSuccess(
+                            context: context,
+                            message: 'تم إضافة تقييمك بنجاح',
+                          );
+                        }
+                      });
+                    } else if (state is RatingError) {
+                      CustomSnackbar.showError(
+                        context: context,
+                        message: state.message,
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: CustomDialogButton(
+                            text: 'إلغاء',
+                            onPressed: () => Navigator.pop(context),
+                            isDestructive: true,
+                            backgroundColor: Colors.white,
+                            textColor: Colors.red,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: CustomDialogButton(
+                            text: state is RatingLoading ? '' : 'إرسال',
+                            onPressed: state is RatingLoading
+                                ? null
+                                : () {
+                                    context.read<RatingCubit>().addRating(
+                                          shopId: salonId,
+                                          rating: selectedRating,
+                                          comment:
+                                              commentController.text.trim(),
+                                        );
+                                  },
+                            backgroundColor: AppColors.primary,
+                            textColor: Colors.white,
+                            isLoading: state is RatingLoading,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +167,30 @@ class SalonReviewsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'التقييمات',
+                style: getBoldStyle(
+                  fontSize: FontSize.size20,
+                  fontFamily: FontConstant.cairo,
+                ),
+              ),
+              TextButton.icon(
+                onPressed: () => _showAddRatingDialog(context),
+                icon: const Icon(Icons.add),
+                label: Text(
+                  'إضافة تقييم',
+                  style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size14),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
           // Header
           Row(
             children: [

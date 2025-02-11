@@ -14,11 +14,12 @@ class SalonProfileLoading extends SalonProfileState {}
 
 class SalonProfileLoaded extends SalonProfileState {
   final SalonProfile profile;
+  final bool shouldRefresh;
 
-  const SalonProfileLoaded(this.profile);
+  const SalonProfileLoaded(this.profile, {this.shouldRefresh = false});
 
   @override
-  List<Object?> get props => [profile];
+  List<Object?> get props => [profile, shouldRefresh];
 }
 
 class SalonProfileError extends SalonProfileState {

@@ -6,6 +6,8 @@ import 'package:beautilly/features/salone_profile/presentation/cubit/salon_profi
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_profile_view_body.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/services/service_locator.dart';
+import '../cubit/rating_cubit/rating_cubit.dart';
 
 class SalonProfileView extends StatelessWidget {
   final int salonId;
@@ -17,16 +19,29 @@ class SalonProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<SalonProfileCubit>()..getSalonProfile(salonId),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => sl<SalonProfileCubit>()..getSalonProfile(salonId),
+        ),
+        BlocProvider(
+          create: (context) => sl<RatingCubit>(),
+        ),
+      ],
       child: Scaffold(
-        body: BlocBuilder<SalonProfileCubit, SalonProfileState>(
+        body: BlocConsumer<SalonProfileCubit, SalonProfileState>(
+          listener: (context, state) {
+            if (state is SalonProfileLoaded && state.shouldRefresh) {
+              // يمكنك إضافة أي منطق إضافي هنا إذا لزم الأمر
+            }
+          },
           builder: (context, state) {
             if (state is SalonProfileLoading) {
               return const Center(
-                  child: CustomProgressIndcator(
-                color: AppColors.primary,
-              ));
+                child: CustomProgressIndcator(
+                  color: AppColors.primary,
+                ),
+              );
             }
 
             if (state is SalonProfileError) {

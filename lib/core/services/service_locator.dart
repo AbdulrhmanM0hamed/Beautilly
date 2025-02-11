@@ -64,6 +64,8 @@ import '../../features/salone_profile/presentation/cubit/salon_profile_cubit/sal
 import '../../features/salone_profile/domain/usecases/get_salon_profile.dart';
 import '../../features/salone_profile/data/repositories/salon_profile_repository_impl.dart';
 import '../../features/salone_profile/domain/repositories/salon_profile_repository.dart';
+import '../../features/salone_profile/presentation/cubit/rating_cubit/rating_cubit.dart';
+import '../../features/salone_profile/domain/usecases/add_shop_rating_usecase.dart';
 
 // Tailoring Requests Feature
 
@@ -304,5 +306,14 @@ Future<void> init() async {
       client: sl(),
       cacheService: sl(),
     ),
+  );
+
+  // Rating Feature
+  sl.registerFactory(
+    () => RatingCubit(addShopRatingUseCase: sl()),
+  );
+
+  sl.registerLazySingleton(
+    () => AddShopRatingUseCase(sl()),
   );
 }

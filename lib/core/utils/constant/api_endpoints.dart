@@ -135,4 +135,8 @@ class ApiEndpoints {
       '$baseUrl/orders/$orderId/accept-offer/$offerId?api_key=$api_key';
   static String cancelOffer(int orderId, int offerId) =>
       '$baseUrl/orders/$orderId/cancel-offer/$offerId?api_key=$api_key';
+
+  // Ratings & Reviews
+  static String addShopRating(int shopId) => 
+    '$baseUrl/shops/$shopId/rate?api_key=$api_key';
 }

@@ -5,6 +5,7 @@ import 'package:beautilly/features/Home/presentation/view/widgets/discount_numbe
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../../domain/entities/discount.dart';
+import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 
 class OfferCard extends StatelessWidget {
   final Discount discount;
@@ -111,7 +112,18 @@ class OfferCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const CustomMaterialButton(),
+              CustomMaterialButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SalonProfileView(
+                        salonId: discount.shop.id,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ],

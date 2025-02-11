@@ -4,12 +4,17 @@ import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomMaterialButton extends StatelessWidget {
-  const CustomMaterialButton({super.key});
+  final VoidCallback? onPressed;
+
+  const CustomMaterialButton({
+    super.key,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+
     return Align(
       alignment: Alignment.bottomRight,
       child: Container(
@@ -22,9 +27,10 @@ class CustomMaterialButton extends StatelessWidget {
           ),
         ),
         child: MaterialButton(
-          onPressed: () {},
+          onPressed: onPressed,
           child: Padding(
-            padding: EdgeInsets.only(right: size.width * 0.025), // 2.5% of screen width
+            padding: EdgeInsets.only(
+                right: size.width * 0.020), // 2.5% of screen width
             child: Text(
               'احصل على العرض الآن!',
               style: getBoldStyle(

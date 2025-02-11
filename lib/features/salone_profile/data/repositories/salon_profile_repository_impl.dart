@@ -50,4 +50,42 @@ class SalonProfileRepositoryImpl implements SalonProfileRepository {
       return Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> deleteShopRating(int shopId) async {
+    try {
+      await remoteDataSource.deleteShopRating(shopId);
+      return const Right(null);
+    } on UnauthorizedException catch (e) {
+      return Left(AuthFailure(e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> addToFavorites(int shopId) async {
+    try {
+      await remoteDataSource.addToFavorites(shopId);
+      return const Right(null);
+    } on UnauthorizedException catch (e) {
+      return Left(AuthFailure(e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> removeFromFavorites(int shopId) async {
+    try {
+      await remoteDataSource.removeFromFavorites(shopId);
+      return const Right(null);
+    } on UnauthorizedException catch (e) {
+      return Left(AuthFailure(e.message));
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    }
+  }
 }

@@ -1,5 +1,7 @@
 import 'package:beautilly/core/utils/common/arrow_back_widget.dart';
 import 'package:beautilly/core/utils/common/image_viewer.dart';
+import 'package:beautilly/core/utils/constant/app_assets.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_gallery_grid.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_info_card.dart';
@@ -7,9 +9,13 @@ import 'package:beautilly/features/salone_profile/presentation/view/widgets/salo
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_team_section.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_reviews_section.dart';
 import 'package:flutter/material.dart';
-import 'package:beautilly/features/salone_profile/presentation/view/widgets/booking_bottom_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_discounts_section.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../presentation/cubit/favorites_cubit/favorites_cubit.dart';
+import '../../../presentation/cubit/favorites_cubit/favorites_state.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SalonProfileViewBody extends StatelessWidget {
   final SalonProfile profile;
@@ -29,31 +35,94 @@ class SalonProfileViewBody extends StatelessWidget {
             SliverAppBar(
               expandedHeight: 300,
               pinned: true,
-              flexibleSpace: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ImageViewer(
+              flexibleSpace: Stack(
+                children: [
+                  // Background Image
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ImageViewer(
+                            imageUrl: profile.images.main,
+                          ),
+                        ),
+                      );
+                    },
+                    child: FlexibleSpaceBar(
+                      background: CachedNetworkImage(
                         imageUrl: profile.images.main,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Image.asset(
+                          'assets/images/salon_image.jpg',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  );
-                },
-                child: FlexibleSpaceBar(
-                  background: CachedNetworkImage(
-                    imageUrl: profile.images.main,
-
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    errorWidget: (context, url, error) => Image.asset(
-                      'assets/images/salon_image.jpg',
-                      fit: BoxFit.cover,
-                    ),
                   ),
-                ),
+                  // Action Buttons
+                  // Positioned(
+                  //   top: 50,
+                  //   left: 16,
+                  //   child: Row(
+                  //     children: [
+                  //       // BlocConsumer<FavoritesCubit, FavoritesState>(
+                  //       //   listener: (context, state) {
+                  //       //     if (state is FavoritesError) {
+                  //       //       CustomSnackbar.showError(
+                  //       //         context: context,
+                  //       //         message: state.message,
+                  //       //       );
+                  //       //     }
+                  //       //   },
+                  //       //   builder: (context, state) {
+                  //       //     final bool isLoading = state is FavoritesLoading;
+                  //       //     final bool isFavorite = state is FavoritesSuccess
+                  //       //         ? state.isFavorite
+                  //       //         : profile.isFavorite;
+
+                  //       //     return CircleAvatar(
+                  //       //       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  //       //       child: isLoading
+                  //       //           ? const SizedBox(
+                  //       //               width: 20,
+                  //       //               height: 20,
+                  //       //               child: CircularProgressIndicator(
+                  //       //                 strokeWidth: 2,
+                  //       //                 valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                  //       //               ),
+                  //       //             )
+                  //       //           : IconButton(
+                  //       //               icon: Icon(
+                  //       //                 isFavorite ? Icons.favorite : Icons.favorite_border,
+                  //       //                 color: Colors.red,
+                  //       //               ),
+                  //       //               onPressed: () {
+                  //       //                 context.read<FavoritesCubit>().toggleFavorite(
+                  //       //                       profile.id,
+                  //       //                       isFavorite,
+                  //       //                     );
+                  //       //               },
+                  //       //             ),
+                  //       //     );
+                  //       //   },
+                  //       // ),
+                  //       // const SizedBox(width: 8),
+                  //       // CircleAvatar(
+                  //       //   backgroundColor:
+                  //       //       Theme.of(context).scaffoldBackgroundColor,
+                  //       //   child: SvgPicture.asset(
+                  //       //     AppAssets.map,
+                  //       //     color: AppColors.secondary,
+                  //       //   ),
+                  //       // ),
+                  //     ],
+                  //   ),
+                  // ),
+                ],
               ),
               leading: const Padding(
                 padding: EdgeInsets.all(8.0),
@@ -94,7 +163,6 @@ class SalonProfileViewBody extends StatelessWidget {
                       salonId: profile.id,
                       ratings: profile.ratings,
                     ),
-                   
                   ],
                 ),
               ),

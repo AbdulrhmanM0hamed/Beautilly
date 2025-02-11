@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
 import '../cubit/rating_cubit/rating_cubit.dart';
+import '../cubit/favorites_cubit/favorites_cubit.dart';
 
 class SalonProfileView extends StatelessWidget {
   final int salonId;
@@ -26,6 +27,9 @@ class SalonProfileView extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => sl<RatingCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<FavoritesCubit>(),
         ),
       ],
       child: Scaffold(

@@ -8,8 +8,8 @@ class RatingsSummaryModel extends RatingsSummary {
   });
 
   factory RatingsSummaryModel.fromJson(Map<String, dynamic> json) {
-    return RatingsSummaryModel(
-      average: json['average'] is int 
+      return RatingsSummaryModel(
+        average: json['average'] is int 
           ? (json['average'] as int).toDouble()
           : json['average'] is double 
               ? json['average'] 

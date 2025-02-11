@@ -66,6 +66,9 @@ import '../../features/salone_profile/data/repositories/salon_profile_repository
 import '../../features/salone_profile/domain/repositories/salon_profile_repository.dart';
 import '../../features/salone_profile/presentation/cubit/rating_cubit/rating_cubit.dart';
 import '../../features/salone_profile/domain/usecases/add_shop_rating_usecase.dart';
+import '../../features/salone_profile/domain/usecases/delete_shop_rating_usecase.dart';
+import '../../features/salone_profile/domain/usecases/add_to_favorites_usecase.dart';
+import '../../features/salone_profile/domain/usecases/remove_from_favorites_usecase.dart';
 
 // Tailoring Requests Feature
 
@@ -197,8 +200,15 @@ Future<void> init() async {
   );
 
   sl.registerFactory(
-    () => FavoritesCubit(repository: sl()),
+    () => FavoritesCubit(
+      repository: sl(),
+      addToFavoritesUseCase: sl(),
+      removeFromFavoritesUseCase: sl(),
+    ),
   );
+
+  sl.registerLazySingleton(() => AddToFavoritesUseCase(sl()));
+  sl.registerLazySingleton(() => RemoveFromFavoritesUseCase(sl()));
 
   // services Feature
   sl.registerLazySingleton<ServicesRemoteDataSource>(
@@ -310,10 +320,17 @@ Future<void> init() async {
 
   // Rating Feature
   sl.registerFactory(
-    () => RatingCubit(addShopRatingUseCase: sl()),
+    () => RatingCubit(
+      addShopRatingUseCase: sl(),
+      deleteShopRatingUseCase: sl(),
+    ),
   );
 
   sl.registerLazySingleton(
     () => AddShopRatingUseCase(sl()),
+  );
+
+  sl.registerLazySingleton(
+    () => DeleteShopRatingUseCase(sl()),
   );
 }

@@ -1,3 +1,5 @@
+import 'package:beautilly/core/services/cache/cache_service.dart';
+import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/common/custom_dialog_button.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
@@ -144,6 +146,103 @@ class SalonReviewsSection extends StatelessWidget {
     );
   }
 
+  void _showDeleteRatingDialog(BuildContext context) {
+    final salonProfileCubit = context.read<SalonProfileCubit>();
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+            value: salonProfileCubit,
+          ),
+          BlocProvider(
+            create: (_) => GetIt.I<RatingCubit>(),
+          ),
+        ],
+        child: Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'حذف التقييم',
+                  style: getBoldStyle(
+                    fontSize: FontSize.size18,
+                    fontFamily: FontConstant.cairo,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'هل أنت متأكد من حذف تقييمك؟',
+                  style: getMediumStyle(
+                    fontSize: FontSize.size14,
+                    fontFamily: FontConstant.cairo,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                BlocConsumer<RatingCubit, RatingState>(
+                  listener: (context, state) {
+                    if (state is RatingDeleted) {
+                      salonProfileCubit.getSalonProfile(salonId);
+                      
+                      Future.delayed(const Duration(milliseconds: 300), () {
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          CustomSnackbar.showSuccess(
+                            context: context,
+                            message: 'تم حذف التقييم بنجاح',
+                          );
+                        }
+                      });
+                    } else if (state is RatingError) {
+                      CustomSnackbar.showError(
+                        context: context,
+                        message: state.message,
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: CustomDialogButton(
+                            text: 'إلغاء',
+                            onPressed: () => Navigator.pop(context),
+                            backgroundColor: Colors.white,
+                            textColor: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: CustomDialogButton(
+                            text: 'حذف',
+                            onPressed: state is RatingLoading
+                                ? null
+                                : () {
+                                    context.read<RatingCubit>().deleteRating(salonId);
+                                  },
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            isLoading: state is RatingLoading,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // حساب عدد التقييمات لكل نجمة بشكل صحيح
@@ -177,16 +276,31 @@ class SalonReviewsSection extends StatelessWidget {
                   fontFamily: FontConstant.cairo,
                 ),
               ),
-              TextButton.icon(
-                onPressed: () => _showAddRatingDialog(context),
-                icon: const Icon(Icons.add),
-                label: Text(
-                  'إضافة تقييم',
-                  style: getBoldStyle(
+              if (ratings.hasUserRating)
+                TextButton.icon(
+                  onPressed: () => _showDeleteRatingDialog(context),
+                  icon: const Icon(Icons.delete_outline, color: Colors.red),
+                  label: Text(
+                    'حذف التقييم',
+                    style: getBoldStyle(
                       fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size14),
+                      fontSize: FontSize.size14,
+                      color: Colors.red,
+                    ),
+                  ),
+                )
+              else
+                TextButton.icon(
+                  onPressed: () => _showAddRatingDialog(context),
+                  icon: const Icon(Icons.add),
+                  label: Text(
+                    'إضافة تقييم',
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size14,
+                    ),
+                  ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -315,13 +429,15 @@ class SalonReviewsSection extends StatelessWidget {
           const SizedBox(height: 16),
 
           // Reviews List
-          ...ratings.ratings.map((review) => _buildReviewCard(review)),
+          ...ratings.ratings.map((review) => _buildReviewCard(context, review)),
         ],
       ),
     );
   }
 
-  Widget _buildReviewCard(Rating review) {
+  Widget _buildReviewCard(BuildContext context, Rating review) {
+    final isUserRating = review.user.id == sl<CacheService>().getUserId();
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -338,77 +454,93 @@ class SalonReviewsSection extends StatelessWidget {
         children: [
           // User Info & Rating
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // User Avatar
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: CachedNetworkImage(
-                  imageUrl:
-                      "https://dallik.com/storage/${review.user.avatar}" ?? '',
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.person),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: Colors.grey[300],
-                    child: const Icon(Icons.person),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-
-              // User Name & Date
+              // User info row
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          review.user.name,
-                          style: getBoldStyle(
-                            fontSize: FontSize.size16,
-                            fontFamily: FontConstant.cairo,
-                          ),
+                    // User Avatar
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: CachedNetworkImage(
+                        imageUrl:
+                            "https://dallik.com/storage/${review.user.avatar}" ?? '',
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.person),
                         ),
-                        Spacer(),
-                        Row(
-                          children: List.generate(5, (index) {
-                            return Icon(
-                              index < review.rating
-                                  ? Icons.star
-                                  : Icons.star_border,
-                              color: AppColors.accent,
-                              size: 16,
-                            );
-                          }),
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.grey[300],
+                          child: const Icon(Icons.person),
                         ),
-                      ],
-                    ),
-                    Text(
-                      review.createdAt.toString(),
-                      style: getMediumStyle(
-                        fontSize: FontSize.size12,
-                        fontFamily: FontConstant.cairo,
-                        color: AppColors.grey,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      review.comment!,
-                      style: getMediumStyle(
-                        fontSize: FontSize.size14,
-                        fontFamily: FontConstant.cairo,
+                    const SizedBox(width: 12),
+
+                    // User Name & Date
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                review.user.name,
+                                style: getBoldStyle(
+                                  fontSize: FontSize.size16,
+                                  fontFamily: FontConstant.cairo,
+                                ),
+                              ),
+                              Spacer(),
+                              Row(
+                                children: List.generate(5, (index) {
+                                  return Icon(
+                                    index < review.rating
+                                        ? Icons.star
+                                        : Icons.star_border,
+                                    color: AppColors.accent,
+                                    size: 16,
+                                  );
+                                }),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            review.createdAt.toString(),
+                            style: getMediumStyle(
+                              fontSize: FontSize.size12,
+                              fontFamily: FontConstant.cairo,
+                              color: AppColors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            review.comment!,
+                            style: getMediumStyle(
+                              fontSize: FontSize.size14,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-
-              // Rating Stars
+              // Add delete button if user's review
+              if (isUserRating)
+                IconButton(
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: Colors.red,
+                    size: 20,
+                  ),
+                  onPressed: () => _showDeleteRatingDialog(context),
+                ),
             ],
           ),
 

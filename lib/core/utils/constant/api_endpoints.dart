@@ -139,4 +139,14 @@ class ApiEndpoints {
   // Ratings & Reviews
   static String addShopRating(int shopId) => 
     '$baseUrl/shops/$shopId/rate?api_key=$api_key';
+  
+  static String deleteShopRating(int shopId) => 
+    '$baseUrl/shops/$shopId/rate?api_key=$api_key';
+
+  // Favorites
+  static String addToFavorites(int shopId) => 
+    '$baseUrl/shops/$shopId/like?api_key=$api_key';
+  
+  static String removeFromFavorites(int shopId) => 
+    '$baseUrl/shops/$shopId/like?api_key=$api_key';
 }

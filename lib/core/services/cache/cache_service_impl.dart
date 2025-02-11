@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'cache_service.dart';
 
 class CacheServiceImpl implements CacheService {
+  
   final SharedPreferences _prefs;
   static const String _tokenKey = 'token';
   static const String _userKey = 'user';
@@ -47,5 +48,13 @@ class CacheServiceImpl implements CacheService {
   @override
   Future<void> saveSessionCookie(String cookie) async {
     await _prefs.setString(_sessionCookieKey, cookie);
+  }
+
+  @override
+  int? getUserId() {
+    final userStr = _prefs.getString(_userKey);
+    if (userStr == null) return null;
+    final user = jsonDecode(userStr) as Map<String, dynamic>;
+    return user['id'] as int?;
   }
 } 

@@ -11,6 +11,8 @@ class RatingSuccess extends RatingState {
   RatingSuccess({required this.rating, this.comment});
 }
 
+class RatingDeleted extends RatingState {}
+
 class RatingError extends RatingState {
   final String message;
 

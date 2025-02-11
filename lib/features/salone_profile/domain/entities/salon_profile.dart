@@ -1,3 +1,6 @@
+import 'package:beautilly/core/services/service_locator.dart';
+import 'package:beautilly/core/services/cache/cache_service.dart';
+
 class SalonProfile {
   final int id;
   final String name;
@@ -191,6 +194,11 @@ class RatingsSummary {
     required this.count,
     required this.ratings,
   });
+
+  bool get hasUserRating {
+    final currentUserId = sl<CacheService>().getUserId();
+    return ratings.any((rating) => rating.user.id == currentUserId);
+  }
 }
 
 class Rating {

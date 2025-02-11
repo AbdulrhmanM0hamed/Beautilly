@@ -5,7 +5,7 @@ import 'favorites_state.dart';
 class FavoritesCubit extends Cubit<FavoritesState> {
   final FavoritesRepository repository;
 
-  FavoritesCubit({required this.repository}) : super(FavoritesInitial());
+  FavoritesCubit({required this.repository, required Object addToFavoritesUseCase, required Object removeFromFavoritesUseCase}) : super(FavoritesInitial());
 
   Future<void> loadFavorites() async {
     emit(FavoritesLoading());

@@ -34,8 +34,14 @@ class ServicesRemoteDataSourceImpl implements ServicesRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        return data.map((json) => ServiceModel.fromJson(json)).toList();
+        final decodedData = json.decode(response.body);
+
+        if (decodedData['status'] == 'success') {
+          final List<dynamic> data = decodedData['data'];
+          return data.map((json) => ServiceModel.fromJson(json)).toList();
+        } else {
+          throw ServerException('فشل في تحميل الخدمات');
+        }
       } else {
         throw ServerException('فشل في تحميل الخدمات');
       }

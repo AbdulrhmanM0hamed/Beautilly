@@ -75,9 +75,9 @@ class BeautyServiceCard extends StatelessWidget {
                 child: BlocBuilder<ToggleFavoritesCubit, ToggleFavoritesState>(
                   builder: (context, state) {
                     final bool isLoading = state is ToggleFavoritesLoading;
-                    final bool isFav = state is ToggleFavoritesSuccess ? 
-                                       state.isFavorite : 
-                                       isFavorite;
+                    final bool isFav = state is ToggleFavoritesSuccess 
+                                       ? state.isFavorite 
+                                       : isFavorite;
 
                     return GestureDetector(
                       onTap: isLoading ? null : () {

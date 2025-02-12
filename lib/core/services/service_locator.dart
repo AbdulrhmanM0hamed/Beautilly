@@ -71,6 +71,8 @@ import '../../features/salone_profile/domain/usecases/delete_shop_rating_usecase
 import '../../features/salone_profile/domain/usecases/add_to_favorites_usecase.dart';
 import '../../features/salone_profile/domain/usecases/remove_from_favorites_usecase.dart';
 
+import '../../features/Home/presentation/cubit/service_shops_cubit/service_shops_cubit.dart';
+
 // Tailoring Requests Feature
 
 final sl = GetIt.instance;
@@ -242,7 +244,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<PremiumShopsRepository>(
-    () => PremiumShopsRepositoryImpl(sl()),
+    () => PremiumShopsRepositoryImpl( sl()),
   );
 
   sl.registerLazySingleton(
@@ -352,5 +354,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton(
     () => DeleteShopRatingUseCase(sl()),
+  );
+
+  // Service Shops Feature
+  sl.registerFactory(
+    () => ServiceShopsCubit(
+      getServices: sl(),
+    ),
   );
 }

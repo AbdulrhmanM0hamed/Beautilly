@@ -1,5 +1,6 @@
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
+import 'package:equatable/equatable.dart';
 
 class SalonProfile {
   final int id;
@@ -231,14 +232,19 @@ class User {
   });
 }
 
-class UserInteraction {
+class UserInteraction extends Equatable {
   final bool hasRated;
   final bool hasLiked;
+  final bool hasCommented;
   final Rating? userRating;
 
   const UserInteraction({
     required this.hasRated,
     required this.hasLiked,
+    required this.hasCommented,
     this.userRating,
   });
+
+  @override
+  List<Object?> get props => [hasRated, hasLiked, hasCommented, userRating];
 } 

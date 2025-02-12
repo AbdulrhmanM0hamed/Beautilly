@@ -79,6 +79,12 @@ class ShopModel extends ShopEntity {
     required super.id,
     required super.name,
     required super.price,
+    required super.loversCount,
+    required super.cityName,
+    required super.stateName,
+    required super.mainImageUrl,
+    super.avgRating,
+    required super.services,
   });
 
   factory ShopModel.fromJson(Map<String, dynamic> json) {
@@ -86,6 +92,46 @@ class ShopModel extends ShopEntity {
       id: json['id'],
       name: json['name'],
       price: json['price'],
+      loversCount: json['lovers_count'] ?? 0,
+      cityName: json['city_name'] ?? '',
+      stateName: json['state_name'] ?? '',
+      mainImageUrl: json['main_shop_image_url'] ?? '',
+      avgRating: json['avg_rating']?.toDouble(),
+      services: json['services'] != null 
+          ? (json['services'] as List)
+              .map((service) => ServicePivotModel.fromJson(service))
+              .toList()
+          : [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'lovers_count': loversCount,
+      'city_name': cityName,
+      'state_name': stateName,
+      'main_shop_image_url': mainImageUrl,
+      'avg_rating': avgRating,
+      'services': services.map((service) => (service as ServicePivotModel).toJson()).toList(),
+    };
+  }
+}
+
+class ServicePivotModel extends ServicePivot {
+  const ServicePivotModel({
+    required super.id,
+    required super.name,
+    required super.price,
+  });
+
+  factory ServicePivotModel.fromJson(Map<String, dynamic> json) {
+    return ServicePivotModel(
+      id: json['id'],
+      name: json['name'],
+      price: json['pivot']['price'],
     );
   }
 

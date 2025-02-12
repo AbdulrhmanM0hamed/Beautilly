@@ -29,8 +29,8 @@ class PremiumShopModel extends PremiumShop {
       services: (json['services'] as List)
           .map((service) => PremiumShopServiceModel.fromJson(service))
           .toList(),
-      userInteraction: json['user_interaction'] != null
-          ? UserInteractionModel.fromJson(json['user_interaction'])
+      userInteraction: json['user_interactions'] != null 
+          ? UserInteractionModel.fromJson(json['user_interactions'])
           : null,
     );
   }

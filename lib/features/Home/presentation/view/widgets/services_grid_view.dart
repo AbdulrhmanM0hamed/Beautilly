@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubit/service_cubit/services_cubit.dart';
 import '../../cubit/service_cubit/services_state.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:beautilly/features/Home/presentation/view/service_details_view.dart';
 
 class ServicesGridView extends StatefulWidget {
   final int maxItems;
@@ -40,6 +41,7 @@ class _ServicesGridViewState extends State<ServicesGridView> {
         if (state is ServicesLoaded) {
           final services = state.services.take(widget.maxItems).toList();
           return GridView.builder(
+            padding: EdgeInsets.zero,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -89,7 +91,12 @@ class ServiceCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
           onTap: () {
-            // التنقل إلى صفحة تفاصيل الخدمة
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ServiceDetailsView(service: service),
+              ),
+            );
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

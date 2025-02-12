@@ -52,9 +52,7 @@ class SalonProfileModel extends SalonProfile {
         'ratings': []
       });
       final userInteraction = UserInteractionModel.fromJson(
-        json['user_interaction'] is Map 
-            ? json['user_interaction'] 
-            : {}
+        json['user_interactions'] ?? {}
       );
 
       return SalonProfileModel(
@@ -109,7 +107,7 @@ class SalonProfileModel extends SalonProfile {
           .toList(),
       'images': (images as SalonImagesModel).toJson(),
       'ratings': (ratings as RatingsSummaryModel).toJson(),
-      'user_interaction': (userInteraction as UserInteractionModel).toJson(),
+      'user_interactions': (userInteraction as UserInteractionModel).toJson(),
     };
   }
 }
@@ -118,6 +116,7 @@ class UserInteractionModel extends UserInteraction {
   const UserInteractionModel({
     required super.hasRated,
     required super.hasLiked,
+    required super.hasCommented,
     super.userRating,
   });
 
@@ -126,6 +125,7 @@ class UserInteractionModel extends UserInteraction {
       return const UserInteractionModel(
         hasRated: false,
         hasLiked: false,
+        hasCommented: false,
       );
     }
 
@@ -147,12 +147,14 @@ class UserInteractionModel extends UserInteraction {
       return UserInteractionModel(
         hasRated: json['has_rated'] ?? false,
         hasLiked: json['has_liked'] ?? false,
+        hasCommented: json['has_commented'] ?? false,
         userRating: userRating,
       );
     } catch (e) {
       return const UserInteractionModel(
         hasRated: false,
         hasLiked: false,
+        hasCommented: false,
       );
     }
   }
@@ -161,6 +163,7 @@ class UserInteractionModel extends UserInteraction {
     return {
       'has_rated': hasRated,
       'has_liked': hasLiked,
+      'has_commented': hasCommented,
       'user_rating': userRating != null ? (userRating as RatingModel).toJson() : null,
     };
   }

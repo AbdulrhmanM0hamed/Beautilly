@@ -91,6 +91,44 @@ class ResponsiveCardSizes {
       );
     }
   }
+
+  static ServiceGridDimensions getServiceGridDimensions(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isTablet = size.width >= AppResponsive.mobileBreakpoint;
+    final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
+    
+    if (isDesktop) {
+      return ServiceGridDimensions(
+        crossAxisCount: 4,
+        childAspectRatio: 1.1,
+        padding: size.width * 0.02,
+        spacing: size.width * 0.015,
+        iconSize: size.width * 0.025,
+        titleSize: size.width * 0.015,
+        borderRadius: 16,
+      );
+    } else if (isTablet) {
+      return ServiceGridDimensions(
+        crossAxisCount: 3,
+        childAspectRatio: 1.0,
+        padding: size.width * 0.03,
+        spacing: size.width * 0.02,
+        iconSize: size.width * 0.05,
+        titleSize: size.width * 0.0235,
+        borderRadius: 14,
+      );
+    } else {
+      return ServiceGridDimensions(
+        crossAxisCount: 2,
+        childAspectRatio: 0.9,
+        padding: size.width * 0.04,
+        spacing: size.width * 0.03,
+        iconSize: size.width * 0.06,
+        titleSize: size.width * 0.035,
+        borderRadius: 12,
+      );
+    }
+  }
 }
 
 class CardDimensions {
@@ -150,5 +188,25 @@ class OfferCardDimensions {
     required this.discountCircleSize,
     required this.buttonHeight,
     required this.buttonTextSize,
+  });
+}
+
+class ServiceGridDimensions {
+  final int crossAxisCount;
+  final double childAspectRatio;
+  final double padding;
+  final double spacing;
+  final double iconSize;
+  final double titleSize;
+  final double borderRadius;
+
+  const ServiceGridDimensions({
+    required this.crossAxisCount,
+    required this.childAspectRatio,
+    required this.padding,
+    required this.spacing,
+    required this.iconSize,
+    required this.titleSize,
+    required this.borderRadius,
   });
 } 

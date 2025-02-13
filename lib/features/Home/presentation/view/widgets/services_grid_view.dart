@@ -1,13 +1,14 @@
-import 'package:beautilly/core/utils/constant/font_manger.dart';
-import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/shimmer/service_card_shimmer.dart';
-import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Home/domain/entities/service.dart';
+import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
+import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../cubit/service_cubit/services_cubit.dart';
-import '../../cubit/service_cubit/services_state.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 import 'package:beautilly/features/Home/presentation/view/service_details_view.dart';
 
 class ServicesGridView extends StatefulWidget {
@@ -15,7 +16,7 @@ class ServicesGridView extends StatefulWidget {
 
   const ServicesGridView({
     super.key,
-    this.maxItems = 8,
+    required this.maxItems,
   });
 
   @override
@@ -26,12 +27,14 @@ class _ServicesGridViewState extends State<ServicesGridView> {
   @override
   void initState() {
     super.initState();
-    // تحميل الخدمات عند بداية عرض الـ widget
+    // تحميل الخدمات عند بداية تحميل الـ widget
     context.read<ServicesCubit>().loadServices();
   }
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = ResponsiveCardSizes.getServiceGridDimensions(context);
+
     return BlocBuilder<ServicesCubit, ServicesState>(
       builder: (context, state) {
         if (state is ServicesLoading) {
@@ -41,18 +44,19 @@ class _ServicesGridViewState extends State<ServicesGridView> {
         if (state is ServicesLoaded) {
           final services = state.services.take(widget.maxItems).toList();
           return GridView.builder(
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.symmetric(horizontal: dimensions.padding),
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 1.05,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: dimensions.crossAxisCount,
+              childAspectRatio: dimensions.childAspectRatio,
+              crossAxisSpacing: dimensions.spacing,
+              mainAxisSpacing: dimensions.spacing,
             ),
             itemCount: services.length,
             itemBuilder: (context, index) => ServiceCard(
               service: services[index],
+              dimensions: dimensions,
             ),
           );
         }
@@ -65,10 +69,12 @@ class _ServicesGridViewState extends State<ServicesGridView> {
 
 class ServiceCard extends StatelessWidget {
   final ServiceEntity service;
+  final ServiceGridDimensions dimensions;
 
   const ServiceCard({
     super.key,
     required this.service,
+    required this.dimensions,
   });
 
   @override
@@ -76,7 +82,7 @@ class ServiceCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(dimensions.borderRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -87,9 +93,9 @@ class ServiceCard extends StatelessWidget {
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(dimensions.borderRadius),
         child: InkWell(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(dimensions.borderRadius),
           onTap: () {
             Navigator.push(
               context,
@@ -103,12 +109,11 @@ class ServiceCard extends StatelessWidget {
             children: [
               // صورة الخدمة
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(dimensions.borderRadius),
                 ),
                 child: Stack(
                   children: [
-                    // الصورة الرئيسية
                     AspectRatio(
                       aspectRatio: 1.5,
                       child: CachedNetworkImage(
@@ -133,85 +138,25 @@ class ServiceCard extends StatelessWidget {
                     Positioned(
                       top: 8,
                       right: 8,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: service.type == 'salon'
-                              ? AppColors.primary
-                              : Colors.purple,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              service.type == 'salon'
-                                  ? Icons.spa_outlined
-                                  : Icons.design_services_outlined,
-                              color: Colors.white,
-                              size: 12,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              service.type == 'salon' ? 'صالون' : 'دار ازياء',
-                              style: getMediumStyle(
-                                fontFamily: FontConstant.cairo,
-                                color: Colors.white,
-                                fontSize: FontSize.size10,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      child: _buildTypeChip(),
                     ),
                     // عدد المتاجر
                     if (service.shops.isNotEmpty)
                       Positioned(
                         bottom: 8,
                         left: 8,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.7),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Icon(
-                                Icons.store_outlined,
-                                color: Colors.white,
-                                size: 12,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${service.shops.length} متجر',
-                                style: getMediumStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  color: Colors.white,
-                                  fontSize: FontSize.size10,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        child: _buildShopsCountChip(),
                       ),
                   ],
                 ),
               ),
               // اسم الخدمة
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+                padding: EdgeInsets.all(dimensions.padding / 2),
                 child: Text(
                   service.name,
                   style: getBoldStyle(
-                    fontSize: FontSize.size13,
+                    fontSize: dimensions.titleSize,
                     fontFamily: FontConstant.cairo,
                   ),
                   maxLines: 1,
@@ -221,6 +166,66 @@ class ServiceCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildTypeChip() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: service.type == 'salon' ? AppColors.primary : Colors.purple,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            service.type == 'salon'
+                ? Icons.spa_outlined
+                : Icons.design_services_outlined,
+            color: Colors.white,
+            size: dimensions.iconSize * 0.65,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            service.type == 'salon' ? 'صالون' : 'دار ازياء',
+            style: getMediumStyle(
+              fontFamily: FontConstant.cairo,
+              color: Colors.white,
+              fontSize: dimensions.titleSize * 0.85,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShopsCountChip() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.store_outlined,
+            color: Colors.white,
+            size: dimensions.iconSize * 0.6,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '${service.shops.length} متجر',
+            style: getMediumStyle(
+              fontFamily: FontConstant.cairo,
+              color: Colors.white,
+              fontSize: dimensions.titleSize * 0.9,
+            ),
+          ),
+        ],
       ),
     );
   }

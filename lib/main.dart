@@ -8,13 +8,19 @@ import 'core/utils/theme/app_theme.dart';
 import 'core/services/service_locator.dart' as di;
 import 'features/auth/presentation/view/signin_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
-  runApp(const MyApp());
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => const MyApp(),
+    ),
+  );
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -31,11 +37,12 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        locale: DevicePreview.locale(context),
+        builder: DevicePreview.appBuilder,
         debugShowCheckedModeBanner: false,
         title: 'Beautilly',
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        locale: const Locale('ar'),
         supportedLocales: const [
           Locale('ar'),
         ],
@@ -45,7 +52,7 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         onGenerateRoute: onGenratedRoutes,
-        initialRoute: SplashView.routeName,
+        initialRoute: SigninView.routeName,
       ),
     );
   }

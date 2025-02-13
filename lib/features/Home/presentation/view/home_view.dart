@@ -16,6 +16,8 @@ import '../cubit/service_cubit/services_cubit.dart';
 import '../cubit/statistics_cubit/statistics_cubit.dart';
 import '../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../cubit/discounts_cubit/discounts_cubit.dart';
+import 'package:beautilly/core/utils/responsive/app_responsive.dart';
+import 'package:beautilly/core/utils/responsive/responsive_layout.dart';
 
 class HomeView extends StatefulWidget {
   static const String routeName = '/home';
@@ -45,6 +47,17 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    // تهيئة الـ responsive values
+    AppResponsive().init(context);
+    
+    return ResponsiveLayout(
+      mobile: _buildMobileLayout(),
+      tablet: _buildTabletLayout(),
+      desktop: _buildDesktopLayout(),
+    );
+  }
+
+  Widget _buildMobileLayout() {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -109,6 +122,16 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
     );
+  }
+
+  Widget _buildTabletLayout() {
+    // Implementation for tablet layout
+    return _buildMobileLayout();
+  }
+
+  Widget _buildDesktopLayout() {
+    // Implementation for desktop layout
+    return _buildMobileLayout();
   }
 
   BottomNavigationBarItem _buildNavItem(String iconPath, String label) {

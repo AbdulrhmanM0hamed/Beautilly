@@ -9,64 +9,74 @@ import '../../../../../core/utils/widgets/custom_snackbar.dart';
 import '../../cubit/statistics_cubit/statistics_cubit.dart';
 import '../../cubit/statistics_cubit/statistics_state.dart';
 import 'package:beautilly/core/services/service_locator.dart';
+import 'package:beautilly/core/utils/responsive/app_responsive.dart';
+import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 
 class StatisticsSection extends StatelessWidget {
   const StatisticsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => sl<StatisticsCubit>()..getStatistics(),
-      child: BlocConsumer<StatisticsCubit, StatisticsState>(
-        listener: (context, state) {
-          if (state is StatisticsError) {
-            CustomSnackbar.showError(
-              context: context,
-              message: state.message,
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is StatisticsLoading) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'إحصائيات دلالك',
-                  style: getBoldStyle(
-                    fontSize: FontSize.size20,
-                    fontFamily: FontConstant.cairo,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                StatisticsShimmer(),
-              ],
-            );
-          }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isTablet = constraints.maxWidth >= AppResponsive.mobileBreakpoint;
+        final padding = AppResponsive.getScreenProportion(16);
+        final titleSize = isTablet ? FontSize.size24 : FontSize.size20;
 
-          if (state is StatisticsLoaded) {
-            final stats = state.statistics;
-            return Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'إحصائيات دلالك',
-                    style: getBoldStyle(
-                      fontSize: FontSize.size20,
-                      fontFamily: FontConstant.cairo,
+        return BlocProvider(
+          create: (context) => sl<StatisticsCubit>()..getStatistics(),
+          child: BlocConsumer<StatisticsCubit, StatisticsState>(
+            listener: (context, state) {
+              if (state is StatisticsError) {
+                CustomSnackbar.showError(
+                  context: context,
+                  message: state.message,
+                );
+              }
+            },
+            builder: (context, state) {
+              if (state is StatisticsLoading) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'إحصائيات دلالك',
+                      style: getBoldStyle(
+                        fontSize: titleSize,
+                        fontFamily: FontConstant.cairo,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  _StatisticsGrid(statistics: stats),
-                ],
-              ),
-            );
-          }
+                    SizedBox(height: padding),
+                    StatisticsShimmer(),
+                  ],
+                );
+              }
 
-          return const SizedBox.shrink();
-        },
-      ),
+              if (state is StatisticsLoaded) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: padding),
+                      child: Text(
+                        'إحصائيات دلالك',
+                        style: getBoldStyle(
+                          fontSize: titleSize,
+                          fontFamily: FontConstant.cairo,
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: padding),
+                    _StatisticsGrid(statistics: state.statistics),
+                  ],
+                );
+              }
+
+              return const SizedBox.shrink();
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -78,40 +88,62 @@ class _StatisticsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 4,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      childAspectRatio: 1.1,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final dimensions = ResponsiveCardSizes.getCardDimensions(context, constraints);
 
-      children: [
-        StatisticCard(
-          title: 'عميل سعيد',
-          value: statistics.happyClients,
-          icon: Icons.people_outline,
-          color: AppColors.primary,
-        ),
-        StatisticCard(
-          title: 'خدمة متنوعة',
-          value: statistics.services,
-          icon: Icons.spa_outlined,
-          color: AppColors.secondary,
-        ),
-        StatisticCard(
-          title: 'دار أزياء',
-          value: statistics.fashionHouses,
-          icon: Icons.shopping_bag_outlined,
-          color: AppColors.accent,
-        ),
-        StatisticCard(
-          title: 'صالون تجميل',
-          value: statistics.beautySalons,
-          icon: Icons.store_outlined,
-          color: Colors.purple,
-        ),
-      ],
+        return SizedBox(
+          height: dimensions.height,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildStatCard(
+                'عميل سعيد',
+                statistics.happyClients,
+                Icons.people_outline,
+                AppColors.primary,
+                dimensions.width,
+              ),
+              SizedBox(width: dimensions.spacing),
+              _buildStatCard(
+                'خدمة متنوعة',
+                statistics.services,
+                Icons.spa_outlined,
+                AppColors.secondary,
+                dimensions.width,
+              ),
+              SizedBox(width: dimensions.spacing),
+              _buildStatCard(
+                'دار أزياء',
+                statistics.fashionHouses,
+                Icons.shopping_bag_outlined,
+                AppColors.accent,
+                dimensions.width,
+              ),
+              SizedBox(width: dimensions.spacing),
+              _buildStatCard(
+                'صالون تجميل',
+                statistics.beautySalons,
+                Icons.store_outlined,
+                Colors.purple,
+                dimensions.width,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildStatCard(String title, int value, IconData icon, Color color, double width) {
+    return SizedBox(
+      width: width,
+      child: StatisticCard(
+        title: title,
+        value: value,
+        icon: icon,
+        color: color,
+      ),
     );
   }
 }
@@ -175,61 +207,82 @@ class _StatisticCardState extends State<StatisticCard>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) {
-        return Transform.scale(
-          scale: _scaleAnimation.value,
-          child: Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-              color: widget.color.withOpacity(0.18),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: widget.color.withOpacity(0.3),
-                width: 1.5,
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final sizes = ResponsiveCardSizes.getInternalSizes(constraints);
+
+        return AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _scaleAnimation.value,
+              child: Container(
+                padding: ResponsiveCardSizes.getPadding(sizes),
+                decoration: BoxDecoration(
+                  color: widget.color.withOpacity(0.15),
+                  borderRadius: ResponsiveCardSizes.defaultBorderRadius,
+                  border: Border.all(
+                    color: widget.color.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                ),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(widget.icon, color: widget.color, size: 24),
-                    SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        value: _controller.value,
-                        strokeWidth: 2,
-                        backgroundColor: widget.color.withOpacity(0.2),
-                        valueColor: AlwaysStoppedAnimation<Color>(widget.color),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Icon(
+                          widget.icon,
+                          color: widget.color,
+                          size: sizes.iconSize,
+                        ),
+                        SizedBox(
+                          width: sizes.progressSize,
+                          height: sizes.progressSize,
+                          child: CircularProgressIndicator(
+                            value: _controller.value,
+                            strokeWidth: sizes.progressStrokeWidth,
+                            backgroundColor: widget.color.withOpacity(0.2),
+                            valueColor: AlwaysStoppedAnimation<Color>(widget.color),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const Spacer(),
+
+                    FittedBox(
+                      child: Text(
+                        widget.title,
+                        style: TextStyle(
+                          fontSize: sizes.titleSize,
+                          fontWeight: FontWeight.w600,
+                          color: widget.color,
+                          height: 1.2,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+
+                    SizedBox(height: sizes.verticalPadding * 1),
+
+                    FittedBox(
+                      child: Text(
+                        _valueAnimation.value.toInt().toString(),
+                        style: TextStyle(
+                          fontSize: sizes.valueSize,
+                          fontWeight: FontWeight.bold,
+                          color: widget.color,
+                          height: 1,
+                        ),
                       ),
                     ),
                   ],
                 ),
-                const Spacer(),
-                Text(
-                  widget.title,
-                  style: getMediumStyle(
-                    fontSize: FontSize.size12,
-                    fontFamily: FontConstant.cairo,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  _valueAnimation.value.toInt().toString(),
-                  style: getBoldStyle(
-                    fontSize: FontSize.size16,
-                    fontFamily: FontConstant.cairo,
-                    color: widget.color,
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );

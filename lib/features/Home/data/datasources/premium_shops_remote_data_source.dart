@@ -12,6 +12,7 @@ abstract class PremiumShopsRemoteDataSource {
 class PremiumShopsRemoteDataSourceImpl implements PremiumShopsRemoteDataSource {
   final http.Client client;
   final CacheService cacheService;
+  
 
   PremiumShopsRemoteDataSourceImpl({
     required this.client,

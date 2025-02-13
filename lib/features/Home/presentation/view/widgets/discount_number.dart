@@ -1,6 +1,7 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:flutter/material.dart';
+import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 
 class DiscountNumber extends StatelessWidget {
   final int discount;
@@ -8,16 +9,15 @@ class DiscountNumber extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final circleSize = size.width * 0.2;
+    final dimensions = ResponsiveCardSizes.getOfferCardDimensions(context);
     
     return Padding(
-      padding: EdgeInsets.only(left: size.width * 0.06),
+      padding: EdgeInsets.only(left: dimensions.horizontalPadding),
       child: Transform.rotate(
         angle: -0.6,
         child: Container(
-          width: circleSize,
-          height: circleSize,
+          width: dimensions.discountCircleSize,
+          height: dimensions.discountCircleSize,
           decoration: const BoxDecoration(
             color: Colors.orange,
             shape: BoxShape.circle,
@@ -30,17 +30,19 @@ class DiscountNumber extends StatelessWidget {
                 children: [
                   Text(
                     'حتى',
-                    style: getRegularStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: size.width * 0.035,
+                      fontSize: dimensions.descriptionSize,
+                      fontWeight: FontWeight.normal,
                       fontFamily: FontConstant.cairo,
                     ),
                   ),
                   Text(
                     '$discount%',
-                    style: getBoldStyle(
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: size.width * 0.06,
+                      fontSize: dimensions.titleSize,
+                      fontWeight: FontWeight.bold,
                       fontFamily: FontConstant.cairo,
                     ),
                   ),

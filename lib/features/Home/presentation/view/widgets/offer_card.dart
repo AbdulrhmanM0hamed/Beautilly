@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../../domain/entities/discount.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
+import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 
 class OfferCard extends StatelessWidget {
   final Discount discount;
@@ -17,13 +18,11 @@ class OfferCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final cardHeight = size.height * 0.18;
-    final cutoutSize = size.width * 0.075;
+    final dimensions = ResponsiveCardSizes.getOfferCardDimensions(context);
     
     return Container(
-      height: cardHeight,
-      width: size.width * 0.85,
+      height: dimensions.height,
+      width: dimensions.width,
       margin: const EdgeInsets.only(left: 16),
       child: Stack(
         children: [
@@ -37,17 +36,17 @@ class OfferCard extends StatelessWidget {
                   BlendMode.darken,
                 ),
               ),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: dimensions.borderRadius,
             ),
           ),
           Positioned(
-            left: -cutoutSize / 2,
+            left: -dimensions.cutoutSize / 2,
             top: 0,
             bottom: 0,
             child: Center(
               child: Container(
-                width: cutoutSize,
-                height: cutoutSize,
+                width: dimensions.cutoutSize,
+                height: dimensions.cutoutSize,
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   shape: BoxShape.circle,
@@ -56,13 +55,13 @@ class OfferCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            right: -cutoutSize / 2,
+            right: -dimensions.cutoutSize / 2,
             top: 0,
             bottom: 0,
             child: Center(
               child: Container(
-                width: cutoutSize,
-                height: cutoutSize,
+                width: dimensions.cutoutSize,
+                height: dimensions.cutoutSize,
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   shape: BoxShape.circle,
@@ -80,24 +79,29 @@ class OfferCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(right: size.width * 0.06 , top: size.height * 0.019),
+                      padding: EdgeInsets.only(
+                        right: dimensions.horizontalPadding,
+                        top: dimensions.verticalPadding,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             discount.title,
-                            style: getBoldStyle(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: size.width * 0.05,
+                              fontSize: dimensions.titleSize,
+                              fontWeight: FontWeight.bold,
                               fontFamily: FontConstant.cairo,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             discount.description,
-                            style: getMediumStyle(
+                            style: TextStyle(
                               color: Colors.white.withOpacity(0.8),
-                              fontSize: size.width * 0.03,
+                              fontSize: dimensions.descriptionSize,
+                              fontWeight: FontWeight.w500,
                               fontFamily: FontConstant.cairo,
                             ),
                             maxLines: 1,

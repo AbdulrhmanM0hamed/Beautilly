@@ -2,6 +2,7 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 
 class CustomMaterialButton extends StatelessWidget {
   final VoidCallback? onPressed;
@@ -13,12 +14,12 @@ class CustomMaterialButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final dimensions = ResponsiveCardSizes.getOfferCardDimensions(context);
 
     return Align(
       alignment: Alignment.bottomRight,
       child: Container(
-        height: size.height * 0.04, // 4% of screen height
+        height: dimensions.buttonHeight,
         decoration: BoxDecoration(
           color: AppColors.primary.withOpacity(0.6),
           borderRadius: const BorderRadius.only(
@@ -29,13 +30,13 @@ class CustomMaterialButton extends StatelessWidget {
         child: MaterialButton(
           onPressed: onPressed,
           child: Padding(
-            padding: EdgeInsets.only(
-                right: size.width * 0.020), // 2.5% of screen width
+            padding: EdgeInsets.only(right: dimensions.horizontalPadding / 3),
             child: Text(
               'احصل على العرض الآن!',
-              style: getBoldStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: size.width * 0.035, // 3.5% of screen width
+                fontSize: dimensions.buttonTextSize,
+                fontWeight: FontWeight.bold,
                 fontFamily: FontConstant.cairo,
               ),
             ),

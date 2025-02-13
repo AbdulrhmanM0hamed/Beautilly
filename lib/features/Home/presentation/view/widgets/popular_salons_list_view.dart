@@ -8,6 +8,7 @@ import '../../../../../core/utils/theme/app_colors.dart';
 import '../../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../../cubit/premium_shops_cubit/premium_shops_state.dart';
 import 'shared/beauty_service_card.dart';
+import '../../../../../core/utils/responsive/app_responsive.dart';
 
 
 class PopularSalonsListView extends StatefulWidget {
@@ -26,6 +27,10 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isTablet = size.width >= AppResponsive.mobileBreakpoint;
+    final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
+
     return BlocBuilder<PremiumShopsCubit, PremiumShopsState>(
       builder: (context, state) {
         if (state is PremiumShopsLoading) {
@@ -44,8 +49,11 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
 
         if (state is PremiumShopsLoaded) {
           return SizedBox(
-            height: 245,
+            height: isDesktop ? 320 : isTablet ? 300 : 270,
             child: ListView.builder(
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? 24 : isTablet ? 20 : 16,
+              ),
               scrollDirection: Axis.horizontal,
               itemCount: state.shops.length,
               itemBuilder: (context, index) {
@@ -64,7 +72,9 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
                         );
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
+                        padding: EdgeInsetsDirectional.only(
+                          end: isDesktop ? 24 : isTablet ? 20 : 16,
+                        ),
                         child: BeautyServiceCard(
                           image: shop.mainImageUrl,
                           name: shop.name,

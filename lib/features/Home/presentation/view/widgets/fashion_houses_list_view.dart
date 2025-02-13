@@ -8,12 +8,17 @@ import '../../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../../cubit/premium_shops_cubit/premium_shops_state.dart';
 import 'shared/beauty_service_card.dart';
 import 'package:get_it/get_it.dart';
+import '../../../../../core/utils/responsive/app_responsive.dart';
 
 class FashionHousesListView extends StatelessWidget {
   const FashionHousesListView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isTablet = size.width >= AppResponsive.mobileBreakpoint;
+    final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
+
     return BlocBuilder<PremiumShopsCubit, PremiumShopsState>(
       builder: (context, state) {
         if (state is PremiumShopsLoading) {
@@ -32,13 +37,15 @@ class FashionHousesListView extends StatelessWidget {
 
         if (state is PremiumShopsLoaded) {
           return SizedBox(
-            height: 260,
+            height: isDesktop ? 320 : isTablet ? 280 : 260,
             child: ListView.builder(
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? 24 : isTablet ? 20 : 16,
+              ),
               scrollDirection: Axis.horizontal,
               itemCount: state.shops.length,
               itemBuilder: (context, index) {
                 final shop = state.shops[index];
-                // نعرض فقط المحلات التي نوعها خياط
                 if (shop.type == 'tailor') {
                   return BlocProvider(
                     create: (context) => GetIt.I<ToggleFavoritesCubit>(),
@@ -47,13 +54,14 @@ class FashionHousesListView extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                SalonProfileView(salonId: shop.id),
+                            builder: (context) => SalonProfileView(salonId: shop.id),
                           ),
                         );
                       },
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 16.0),
+                        padding: EdgeInsetsDirectional.only(
+                          end: isDesktop ? 24 : isTablet ? 20 : 16,
+                        ),
                         child: BeautyServiceCard(
                           shopId: shop.id,
                           image: shop.mainImageUrl,
@@ -68,7 +76,7 @@ class FashionHousesListView extends StatelessWidget {
                     ),
                   );
                 }
-                return const SizedBox.shrink(); // نخفي المحلات الأخرى
+                return const SizedBox.shrink();
               },
             ),
           );

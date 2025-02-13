@@ -1,3 +1,4 @@
+import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:flutter/material.dart';
 import 'app_responsive.dart';
 
@@ -129,6 +130,67 @@ class ResponsiveCardSizes {
       );
     }
   }
+
+  static BeautyServiceCardDimensions getBeautyServiceCardDimensions(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    
+    // Large Tablet (1280x1880)
+    if (size.width >= 1280) {
+      return const BeautyServiceCardDimensions(
+        width: 350,  // تقليل العرض قليلاً
+        height: 320, // تقليل الارتفاع
+        imageHeight: 180, // تقليل ارتفاع الصورة
+        padding: 16,
+        titleSize: 24, // تصغير حجم العنوان
+        ratingSize: 22,
+        locationSize: 20,
+        tagSize: 16,
+        iconSize: 23,
+      );
+    } 
+    // Medium Tablet (1024x1350)
+    else if (size.width >= 1024) {
+      return const BeautyServiceCardDimensions(
+        width: 300,
+        height: 300,
+        imageHeight: 180,
+        padding: 14,
+        titleSize: 20,
+        ratingSize: 18,
+        locationSize: 17,
+        tagSize: 15,
+        iconSize: 22,
+      );
+    }
+    // Small Tablet (800x1280)
+    else if (size.width >= 800) {
+      return const BeautyServiceCardDimensions(
+        width: 280,
+        height: 300,
+        imageHeight: 160,
+        padding: 15,
+        titleSize: 18,
+        ratingSize: 16,
+        locationSize: 16,
+        tagSize: 15,
+        iconSize: 22,
+      );
+    }
+    // Mobile
+    else {
+      return const BeautyServiceCardDimensions(
+        width: 220,
+        height: 240,
+        imageHeight: 140,
+        padding: 12,
+        titleSize: FontSize.size14,
+        ratingSize: FontSize.size12,
+        locationSize: FontSize.size12,
+        tagSize: FontSize.size10,
+        iconSize: 16,
+      );
+    }
+  }
 }
 
 class CardDimensions {
@@ -208,5 +270,29 @@ class ServiceGridDimensions {
     required this.iconSize,
     required this.titleSize,
     required this.borderRadius,
+  });
+}
+
+class BeautyServiceCardDimensions {
+  final double width;
+  final double height;
+  final double imageHeight;
+  final double padding;
+  final double titleSize;
+  final double ratingSize;
+  final double locationSize;
+  final double tagSize;
+  final double iconSize;
+
+  const BeautyServiceCardDimensions({
+    required this.width,
+    required this.height,
+    required this.imageHeight,
+    required this.padding,
+    required this.titleSize,
+    required this.ratingSize,
+    required this.locationSize,
+    required this.tagSize,
+    required this.iconSize,
   });
 } 

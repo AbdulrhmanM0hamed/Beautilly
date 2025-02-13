@@ -6,6 +6,7 @@ import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_c
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 
 class BeautyServiceCard extends StatelessWidget {
   final String image;
@@ -33,8 +34,10 @@ class BeautyServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = ResponsiveCardSizes.getBeautyServiceCardDimensions(context);
+    
     return Container(
-      width: 220,
+      width: dimensions.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: Theme.of(context).scaffoldBackgroundColor,
@@ -46,11 +49,10 @@ class BeautyServiceCard extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
                 child: CachedNetworkImage(
                   imageUrl: image,
-                  height: 140,
+                  height: dimensions.imageHeight,
                   width: double.infinity,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Container(
@@ -117,7 +119,7 @@ class BeautyServiceCard extends StatelessWidget {
 
           // Content Section
           Padding(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(dimensions.padding),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -128,7 +130,7 @@ class BeautyServiceCard extends StatelessWidget {
                       child: Text(
                         name,
                         style: getBoldStyle(
-                          fontSize: FontSize.size14,
+                          fontSize: dimensions.titleSize,
                           fontFamily: FontConstant.cairo,
                         ),
                         maxLines: 1,
@@ -138,16 +140,16 @@ class BeautyServiceCard extends StatelessWidget {
                     const SizedBox(width: 4),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.star,
                           color: Colors.amber,
-                          size: 16,
+                          size: dimensions.iconSize,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           rating.toString(),
                           style: getBoldStyle(
-                            fontSize: FontSize.size12,
+                            fontSize: dimensions.ratingSize,
                             fontFamily: FontConstant.cairo,
                           ),
                         ),
@@ -156,7 +158,7 @@ class BeautyServiceCard extends StatelessWidget {
                           '($ratingCount)',
                           style: getMediumStyle(
                             color: AppColors.grey,
-                            fontSize: FontSize.size12,
+                            fontSize: dimensions.ratingSize,
                             fontFamily: FontConstant.cairo,
                           ),
                         ),
@@ -169,10 +171,10 @@ class BeautyServiceCard extends StatelessWidget {
                 // Location
                 Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.location_on,
                       color: AppColors.grey,
-                      size: 14,
+                      size: dimensions.iconSize,
                     ),
                     const SizedBox(width: 4),
                     Expanded(
@@ -180,7 +182,7 @@ class BeautyServiceCard extends StatelessWidget {
                         location,
                         style: getMediumStyle(
                           color: AppColors.grey,
-                          fontSize: FontSize.size12,
+                          fontSize: dimensions.locationSize,
                           fontFamily: FontConstant.cairo,
                         ),
                         maxLines: 1,
@@ -199,7 +201,7 @@ class BeautyServiceCard extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       itemCount: tags!.length,
                       itemBuilder: (context, index) {
-                        return _buildTag(tags![index]);
+                        return _buildTag(tags![index], dimensions);
                       },
                     ),
                   ),
@@ -212,13 +214,10 @@ class BeautyServiceCard extends StatelessWidget {
     );
   }
 
-  Widget _buildTag(String label) {
+  Widget _buildTag(String label, BeautyServiceCardDimensions dimensions) {
     return Container(
       margin: const EdgeInsets.only(left: 8),
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
@@ -227,7 +226,7 @@ class BeautyServiceCard extends StatelessWidget {
         label,
         style: getMediumStyle(
           color: AppColors.primary,
-          fontSize: FontSize.size10,
+          fontSize: dimensions.tagSize,
           fontFamily: FontConstant.cairo,
         ),
       ),

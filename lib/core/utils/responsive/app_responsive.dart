@@ -7,6 +7,10 @@ class AppResponsive {
   static late double defaultSize;
   static late Orientation orientation;
 
+  static const double desktopBreakpoint = 1200;
+  static const double tabletBreakpoint = 800;
+  static const double mobileBreakpoint = 600;
+
   void init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);
     screenWidth = _mediaQueryData.size.width;
@@ -23,9 +27,6 @@ class AppResponsive {
   }
 
   // Breakpoints
-  static const double mobileBreakpoint = 600;
-  static const double tabletBreakpoint = 900;
-  
   static bool isMobile(BuildContext context) =>
       MediaQuery.of(context).size.width < mobileBreakpoint;
       

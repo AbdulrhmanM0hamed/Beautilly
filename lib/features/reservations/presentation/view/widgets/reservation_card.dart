@@ -1,3 +1,4 @@
+import 'package:beautilly/features/reservations/presentation/view/widgets/status_badge.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/utils/constant/font_manger.dart';
 import '../../../../../core/utils/constant/styles_manger.dart';
@@ -5,6 +6,9 @@ import '../../../../../core/utils/theme/app_colors.dart';
 import '../../../domain/entities/reservation.dart';
 import 'package:intl/intl.dart' as intl;
 import '../../../../../core/utils/theme/app_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'shimmer_effect.dart';
+import '../../../../../core/utils/responsive/responsive_card_sizes.dart';
 
 class ReservationCard extends StatelessWidget {
   final ReservationEntity reservation;
@@ -17,380 +21,279 @@ class ReservationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).extension<CustomColors>()!;
+    final dimensions =
+        ResponsiveCardSizes.getReservationCardDimensions(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      width: dimensions.width,
+      height: dimensions.height,
       decoration: BoxDecoration(
         color: colors.cardContentBg,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(dimensions.borderRadius),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).shadowColor,
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            // التفاصيل
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header with Status
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: colors.cardHeaderBg,
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(16)),
-                ),
-                child: Row(
-                  children: [
-                    // Shop Logo
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: colors.cardContentBg,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primary.withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Text(
-                        reservation.shop.name[0].toUpperCase(),
-                        style: getBoldStyle(
-                          fontFamily: FontConstant.cairo,
-                          color: AppColors.primary,
-                          fontSize: FontSize.size18,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    // Shop Info
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            reservation.shop.name,
-                            style: getBoldStyle(
-                              fontFamily: FontConstant.cairo,
-                              color: colors.textPrimary,
-                              fontSize: FontSize.size16,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.spa_outlined,
-                                size: 14,
-                                color: AppColors.primary.withOpacity(0.7),
-                              ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  reservation.service.name,
-                                  style: getRegularStyle(
-                                    fontFamily: FontConstant.cairo,
-                                    color: colors.textSecondary,
-                                    fontSize: FontSize.size14,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    _buildStatusBadge(colors),
-                  ],
-                ),
-              ),
-
-              // Time & Details
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Appointment Time
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: colors.timeContainerBg,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: colors.timeContainerBorder,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          _buildTimeInfo(
-                            icon: Icons.access_time_rounded,
-                            title: 'وقت البدء',
-                            time: reservation.startTime,
-                            iconColor: AppColors.primary,
-                            colors: colors,
-                          ),
-                          Container(
-                            height: 40,
-                            width: 1,
-                            margin: const EdgeInsets.symmetric(horizontal: 16),
-                            color: colors.timeContainerBorder,
-                          ),
-                          _buildTimeInfo(
-                            icon: Icons.timer_outlined,
-                            title: 'وقت الانتهاء',
-                            time: reservation.endTime,
-                            iconColor: Colors.orange,
-                            colors: colors,
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Discount Badge if available
-                    if (reservation.discount != null) ...[
-                      const SizedBox(height: 16),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              Colors.green.shade400,
-                              Colors.green.shade300,
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.green.withOpacity(0.2),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.local_offer_rounded,
-                              color: Colors.white,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              'خصم ${reservation.discount}%',
-                              style: getMediumStyle(
-                                fontFamily: FontConstant.cairo,
-                                color: Colors.white,
-                                fontSize: FontSize.size14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-
-                    // Actions for pending reservations
-                    if (reservation.status == 'pending') ...[
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          _buildActionButton(
-                            onPressed: () {
-                              // إلغاء الحجز
-                            },
-                            icon: Icons.close_rounded,
-                            label: 'إلغاء الحجز',
-                            color: AppColors.error,
-                            isOutlined: true,
-                          ),
-                          const SizedBox(width: 12),
-                          _buildActionButton(
-                            onPressed: () {
-                              // تعديل الحجز
-                            },
-                            icon: Icons.edit_calendar_rounded,
-                            label: 'تعديل الحجز',
-                            color: AppColors.primary,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatusBadge(CustomColors colors) {
-    Color statusColor;
-    String statusText;
-    IconData statusIcon;
-
-    switch (reservation.status) {
-      case 'completed':
-        statusColor = Colors.green;
-        statusText = 'مكتمل';
-        statusIcon = Icons.check_circle_rounded;
-        break;
-      case 'pending':
-        statusColor = Colors.orange;
-        statusText = 'قيد الانتظار';
-        statusIcon = Icons.schedule_rounded;
-        break;
-      case 'confirmed':
-        statusColor = AppColors.primary;
-        statusText = 'تم التأكيد';
-        statusIcon = Icons.schedule_rounded;
-        break;
-      case 'canceled':
-        statusColor = Colors.red;
-        statusText = 'ملغي';
-        statusIcon = Icons.cancel_rounded;
-        break;
-      default:
-        statusColor = Colors.grey;
-        statusText = 'غير معروف';
-        statusIcon = Icons.help_rounded;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: statusColor.withOpacity(0.2),
-            blurRadius: 4,
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: dimensions.borderRadius,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(statusIcon, size: 16, color: statusColor),
-          const SizedBox(width: 4),
-          Text(
-            statusText,
-            style: getMediumStyle(
-              fontFamily: FontConstant.cairo,
-              color: statusColor,
-              fontSize: FontSize.size12,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(dimensions.borderRadius),
+        child: Column(
+          children: [
+            // Header with Shop Image
+            SizedBox(
+              height: dimensions.imageHeight,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: reservation.shop.image,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => const ShimmerEffect(
+                      height: double.infinity,
+                      width: double.infinity,
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[200],
+                      child: Icon(
+                        Icons.store_rounded,
+                        size: 40,
+                        color: Colors.grey[400],
+                      ),
+                    ),
+                  ),
+                  // Gradient Overlay
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.7),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // Content
+                  Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Status Badge
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            StatusBadge(status: reservation.status),
+                            if (reservation.type == 'discount')
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: dimensions.padding,
+                                  vertical: 1,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.9),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.discount_rounded,
+                                      color: Colors.white,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${(double.parse(reservation.discount?.discountValue.toString() ?? '0')).toInt()}%',
+                                      style: getMediumStyle(
+                                        color: Colors.white,
+                                        fontSize: FontSize.size13,
+                                        fontFamily: FontConstant.cairo,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                        const Spacer(),
+                        // Shop Info
+                        Text(
+                          reservation.shop.name,
+                          style: getBoldStyle(
+                            color: Colors.white,
+                            fontSize: dimensions.titleSize,
+                            fontFamily: FontConstant.cairo,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              reservation.type == 'service'
+                                  ? Icons.spa_rounded
+                                  : Icons.local_offer_rounded,
+                              color: Colors.white70,
+                              size: 16,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              reservation.type == 'service'
+                                  ? reservation.service?.name ?? 'خدمة'
+                                  : reservation.discount?.title ?? 'عرض',
+                              style: getMediumStyle(
+                                color: Colors.white70,
+                                fontSize: dimensions.subtitleSize,
+                                fontFamily: FontConstant.cairo,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Column(
+                children: [
+                  // Time Info
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: dimensions.padding,
+                      vertical: dimensions.padding / 3,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildTimeInfo(
+                            icon: Icons.calendar_today_rounded,
+                            label: 'التاريخ',
+                            value: _formatDate(reservation.startTime),
+                            colors: colors,
+                            dimensions: dimensions,
+                          ),
+                        ),
+                        SizedBox(width: dimensions.spacing),
+                        Expanded(
+                          child: _buildTimeInfo(
+                            icon: Icons.access_time_rounded,
+                            label: 'الوقت',
+                            value: _formatTime(reservation.startTime),
+                            colors: colors,
+                            dimensions: dimensions,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
+                  if (reservation.status == 'pending')
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: dimensions.padding,
+                        right: dimensions.padding,
+                        bottom: dimensions.padding / 2,
+                      ),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 28,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // إلغاء الحجز
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(255, 245, 57, 75),
+                            foregroundColor: Colors.white,
+                            elevation: 0,
+                            padding: const EdgeInsets.symmetric(vertical: 0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'إلغاء',
+                            style: getMediumStyle(
+                              fontFamily: FontConstant.cairo,
+                              fontSize: dimensions.subtitleSize,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildTimeInfo({
     required IconData icon,
-    required String title,
-    required DateTime time,
-    required Color iconColor,
-    required CustomColors colors,
-  }) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 18, color: iconColor),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: getMediumStyle(
-                  fontFamily: FontConstant.cairo,
-                  color: colors.textSecondary,
-                  fontSize: FontSize.size12,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            _formatDateTime(time),
-            style: getBoldStyle(
-              fontFamily: FontConstant.cairo,
-              color: colors.textPrimary,
-              fontSize: FontSize.size14,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required VoidCallback onPressed,
-    required IconData icon,
     required String label,
-    required Color color,
-    bool isOutlined = false,
+    required String value,
+    required CustomColors colors,
+    required ReservationCardDimensions dimensions,
   }) {
-    return Material(
-      color: isOutlined ? Colors.transparent : color,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    return Row(
+      children: [
+        Container(
+          padding: EdgeInsets.all(dimensions.padding / 2),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: isOutlined ? Border.all(color: color) : null,
+            color: AppColors.primary.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(dimensions.borderRadius / 2),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+          child: Icon(
+            icon,
+            color: AppColors.primary,
+            size: dimensions.iconSize,
+          ),
+        ),
+        SizedBox(width: dimensions.spacing),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                icon,
-                size: 18,
-                color: isOutlined ? color : Colors.white,
-              ),
-              const SizedBox(width: 8),
               Text(
                 label,
-                style: getMediumStyle(
+                style: getRegularStyle(
+                  color: colors.textSecondary,
+                  fontSize: dimensions.subtitleSize,
                   fontFamily: FontConstant.cairo,
-                  color: isOutlined ? color : Colors.white,
-                  fontSize: FontSize.size14,
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                value,
+                style: getBoldStyle(
+                  color: colors.textPrimary,
+                  fontSize: dimensions.titleSize,
+                  fontFamily: FontConstant.cairo,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 
-  String _formatDateTime(DateTime dateTime) {
-    final date = intl.DateFormat('yyyy/MM/dd').format(dateTime);
-    final time = intl.DateFormat('hh:mm a').format(dateTime);
-    return '$date\n$time';
+  String _formatDate(DateTime dateTime) {
+    return intl.DateFormat('MM/dd/yy', 'en').format(dateTime);
+  }
+
+  String _formatTime(DateTime dateTime) {
+    return intl.DateFormat('hh:mm a').format(dateTime);
   }
 }

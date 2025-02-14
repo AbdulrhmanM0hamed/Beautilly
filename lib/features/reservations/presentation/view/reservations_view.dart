@@ -12,7 +12,7 @@ class ReservationsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<ReservationsCubit>(),
+      create: (context) => sl<ReservationsCubit>()..getMyReservations(),
       child: DefaultTabController(
         length: 2,
         child: Scaffold(

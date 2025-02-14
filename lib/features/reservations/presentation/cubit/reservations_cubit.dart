@@ -3,22 +3,27 @@ import '../../domain/usecases/get_my_reservations.dart';
 import 'reservations_state.dart';
 
 class ReservationsCubit extends Cubit<ReservationsState> {
-  final GetMyReservations getMyReservations;
+  final GetMyReservations  getMyReservationsUseCase;
 
   ReservationsCubit({
-    required this.getMyReservations,
+    required this.getMyReservationsUseCase,
   }) : super(ReservationsInitial());
 
-  Future<void> loadMyReservations() async {
-    if (isClosed) return;
+  Future<void> getMyReservations() async {
     emit(ReservationsLoading());
+    print('Loading reservations...');
+
+    final result = await getMyReservationsUseCase();
     
-    final result = await getMyReservations();
-    
-    if (isClosed) return;
     result.fold(
-      (failure) => emit(ReservationsError(failure.message)),
-      (reservations) => emit(ReservationsSuccess(reservations)),
+      (failure) {
+        print('Error loading reservations: ${failure.message}');
+        emit(ReservationsError(failure.message));
+      },
+      (reservations) {
+        print('Loaded ${reservations.length} reservations');
+        emit(ReservationsSuccess(reservations));
+      },
     );
   }
 } 

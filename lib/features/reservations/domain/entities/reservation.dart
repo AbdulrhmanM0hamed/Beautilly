@@ -1,52 +1,49 @@
 import 'package:equatable/equatable.dart';
 
-class ReservationEntity extends Equatable {
+class ReservationEntity {
   final int id;
   final Shop shop;
-  final Service service;
-  final double? discount;
-  final DateTime startTime;
-  final DateTime endTime;
+  final Service? service;
+  final Discount? discount;
+  final String date;
+  final TimeModel time;
   final String status;
+  final String? price;
+  final String type;
 
   const ReservationEntity({
     required this.id,
     required this.shop,
-    required this.service,
+    this.service,
     this.discount,
-    required this.startTime,
-    required this.endTime,
+    required this.date,
+    required this.time,
     required this.status,
+    this.price,
+    required this.type,
   });
 
-  @override
-  List<Object?> get props => [
-        id,
-        shop,
-        service,
-        discount,
-        startTime,
-        endTime,
-        status,
-      ];
+  DateTime get startTime => DateTime.parse('$date ${time.raw}');
+  
+  DateTime get endTime {
+    final start = DateTime.parse('$date ${time.raw}');
+    return start.add(const Duration(hours: 1));
+  }
 }
 
-class Shop extends Equatable {
+class Shop {
   final int id;
   final String name;
-  final List<String> media;
+  final String image;
 
   const Shop({
     required this.id,
     required this.name,
-    required this.media,
+    required this.image,
   });
-
-  @override
-  List<Object?> get props => [id, name, media];
 }
 
-class Service extends Equatable {
+class Service {
   final int id;
   final String name;
 
@@ -54,7 +51,30 @@ class Service extends Equatable {
     required this.id,
     required this.name,
   });
+}
 
-  @override
-  List<Object?> get props => [id, name];
+class Discount {
+  final int id;
+  final String title;
+  final String? originalPrice;
+  final String discountValue;
+  final String discountType;
+
+  const Discount({
+    required this.id,
+    required this.title,
+    this.originalPrice,
+    required this.discountValue,
+    required this.discountType,
+  });
+}
+
+class TimeModel {
+  final String formatted;
+  final String raw;
+
+  const TimeModel({
+    required this.formatted,
+    required this.raw,
+  });
 } 

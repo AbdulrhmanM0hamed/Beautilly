@@ -34,30 +34,28 @@ class ReservationsRemoteDataSourceImpl implements ReservationsRemoteDataSource {
           'Authorization': 'Bearer $token',
           'x-api-key': ApiEndpoints.api_key,
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
       );
 
-      // طباعة الـ response للتحقق من المشكلة
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
+        print('Decoded Response: $jsonResponse');
 
-        // التحقق من نجاح الطلب
         if (jsonResponse['success'] == true) {
-          final data = jsonResponse['data'] as List;
-          print(data);
-          // إذا كانت القائمة فارغة
-          if (data.isEmpty) {
-            return [];
-          }
+          final reservationsData = jsonResponse['data']['reservations'] as List;
+          print('Reservations Data: $reservationsData');
 
-          return data
-              .map((reservation) => ReservationModel.fromJson(reservation))
+          return reservationsData
+              .map((reservation) {
+                print('Processing Reservation: $reservation');
+                return ReservationModel.fromJson(reservation);
+              })
               .toList();
         } else {
-          // طباعة رسالة الخطأ من السيرفر إن وجدت
           throw ServerException(
               jsonResponse['message'] ?? 'حدث خطأ في تحميل الحجوزات');
         }
@@ -65,15 +63,13 @@ class ReservationsRemoteDataSourceImpl implements ReservationsRemoteDataSource {
         throw UnauthorizedException(
             'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
-        // طباعة تفاصيل الخطأ
-
         throw ServerException('فشل في تحميل الحجوزات');
       }
     } catch (e) {
-      // طباعة الخطأ للتحقق
+      print('Error in getMyReservations: $e');
       if (e is UnauthorizedException) rethrow;
       if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ غير متوقع');
+      throw ServerException('حدث خطأ غير متوقع: $e');
     }
   }
 }

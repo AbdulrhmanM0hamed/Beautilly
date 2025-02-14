@@ -191,6 +191,88 @@ class ResponsiveCardSizes {
       );
     }
   }
+
+  // Reservation Card Sizes
+  // static const double reservationDesktopCardWidth = 320.0;
+  // static const double reservationDesktopCardHeight = 380.0;
+  // static const double reservationDesktopImageHeight = 200.0;
+
+  // static const double reservationTabletCardWidth = 280.0;
+  // static const double reservationTabletCardHeight = 340.0;
+  // static const double reservationTabletImageHeight = 180.0;
+
+  // static const double reservationLargeMobileCardWidth = 240.0;
+  // static const double reservationLargeMobileCardHeight = 320.0;
+  // static const double reservationLargeMobileImageHeight = 160.0;
+
+  // static const double reservationMobileCardWidth = 200.0;
+  // static const double reservationMobileCardHeight = 300.0;
+  // static const double reservationMobileImageHeight = 140.0;
+
+  static ReservationCardDimensions getReservationCardDimensions(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    
+    // Large Tablet (1280x1880)
+    if (size.width >= 1280) {
+      return const ReservationCardDimensions(
+        width: 300,
+        height: 320,                // تقليل من 340
+        imageHeight: 180,
+        padding: 16,
+        spacing: 16,
+        titleSize: FontSize.size20,
+        subtitleSize: FontSize.size18,
+        iconSize: 24,
+        borderRadius: 16,
+        statusBadgeHeight: 32,
+      );
+    } 
+    // Medium Tablet (1024x1350)
+    else if (size.width >= 1024) {
+      return const ReservationCardDimensions(
+        width: 280,
+        height: 260,                // تقليل من 280
+        imageHeight: 220,
+        padding: 14,
+        spacing: 14,
+        titleSize: FontSize.size18,
+        subtitleSize: FontSize.size16,
+        iconSize: 22,
+        borderRadius: 14,
+        statusBadgeHeight: 28,
+      );
+    }
+    // Small Tablet (800x1280)
+    else if (size.width >= 800) {
+      return const ReservationCardDimensions(
+        width: 260,
+        height: 220,                // تقليل من 260
+        imageHeight: 220,
+        padding: 12,
+        spacing: 12,
+        titleSize: FontSize.size14,
+        subtitleSize: FontSize.size12,
+        iconSize: 20,
+        borderRadius: 12,
+        statusBadgeHeight: 24,
+      );
+    }
+    // Mobile
+    else {
+      return ReservationCardDimensions(
+        width: size.width * 0.45,
+        height: 300,                 // زيادة الارتفاع
+        imageHeight: 120,            // زيادة ارتفاع الصورة
+        padding: 6,                  
+        spacing: 2,                  
+        titleSize: FontSize.size10,  
+        subtitleSize: FontSize.size9,
+        iconSize: 14,
+        borderRadius: 8,
+        statusBadgeHeight: 20,
+      );
+    }
+  }
 }
 
 class CardDimensions {
@@ -294,5 +376,31 @@ class BeautyServiceCardDimensions {
     required this.locationSize,
     required this.tagSize,
     required this.iconSize,
+  });
+}
+
+class ReservationCardDimensions {
+  final double width;
+  final double height;
+  final double imageHeight;
+  final double padding;
+  final double spacing;
+  final double titleSize;
+  final double subtitleSize;
+  final double iconSize;
+  final double borderRadius;
+  final double statusBadgeHeight;
+
+  const ReservationCardDimensions({
+    required this.width,
+    required this.height,
+    required this.imageHeight,
+    required this.padding,
+    required this.spacing,
+    required this.titleSize,
+    required this.subtitleSize,
+    required this.iconSize,
+    required this.borderRadius,
+    required this.statusBadgeHeight,
   });
 } 

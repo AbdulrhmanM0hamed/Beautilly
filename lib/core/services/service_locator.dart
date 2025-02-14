@@ -167,7 +167,7 @@ Future<void> init() async {
 
   sl.registerFactory(
     () => ReservationsCubit(
-      getMyReservations: sl(),
+      getMyReservationsUseCase: sl(),
     ),
   );
 

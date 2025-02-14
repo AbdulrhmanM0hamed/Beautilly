@@ -38,20 +38,15 @@ class ReservationsRemoteDataSourceImpl implements ReservationsRemoteDataSource {
         },
       );
 
-      print('Response Status Code: ${response.statusCode}');
-      print('Response Body: ${response.body}');
-
+      
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-        print('Decoded Response: $jsonResponse');
 
         if (jsonResponse['success'] == true) {
           final reservationsData = jsonResponse['data']['reservations'] as List;
-          print('Reservations Data: $reservationsData');
 
           return reservationsData
               .map((reservation) {
-                print('Processing Reservation: $reservation');
                 return ReservationModel.fromJson(reservation);
               })
               .toList();
@@ -66,7 +61,6 @@ class ReservationsRemoteDataSourceImpl implements ReservationsRemoteDataSource {
         throw ServerException('فشل في تحميل الحجوزات');
       }
     } catch (e) {
-      print('Error in getMyReservations: $e');
       if (e is UnauthorizedException) rethrow;
       if (e is ServerException) rethrow;
       throw ServerException('حدث خطأ غير متوقع: $e');

@@ -11,17 +11,14 @@ class ReservationsCubit extends Cubit<ReservationsState> {
 
   Future<void> getMyReservations() async {
     emit(ReservationsLoading());
-    print('Loading reservations...');
 
     final result = await getMyReservationsUseCase();
     
     result.fold(
       (failure) {
-        print('Error loading reservations: ${failure.message}');
         emit(ReservationsError(failure.message));
       },
       (reservations) {
-        print('Loaded ${reservations.length} reservations');
         emit(ReservationsSuccess(reservations));
       },
     );

@@ -92,7 +92,7 @@ class ReservationCard extends StatelessWidget {
                               Container(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: dimensions.padding,
-                                  vertical: 1,
+                                  vertical: .5,
                                 ),
                                 decoration: BoxDecoration(
                                   color: Colors.green.withOpacity(0.9),
@@ -111,7 +111,7 @@ class ReservationCard extends StatelessWidget {
                                       '${(double.parse(reservation.discount?.discountValue.toString() ?? '0')).toInt()}%',
                                       style: getMediumStyle(
                                         color: Colors.white,
-                                        fontSize: FontSize.size13,
+                                        fontSize: dimensions.titleSize,
                                         fontFamily: FontConstant.cairo,
                                       ),
                                     ),

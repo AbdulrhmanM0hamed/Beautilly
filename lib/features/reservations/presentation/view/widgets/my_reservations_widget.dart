@@ -9,7 +9,6 @@ import '../../cubit/reservations_cubit.dart';
 import '../../cubit/reservations_state.dart';
 import 'reservation_card.dart';
 
-
 class MyReservationsWidget extends StatefulWidget {
   final bool isActive;
 
@@ -46,11 +45,11 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
         if (state is ReservationsSuccess) {
           final reservations = state.reservations.where((reservation) {
             if (widget.isActive) {
-              return reservation.status == 'pending' || 
-                     reservation.status == 'confirmed';
+              return reservation.status == 'pending' ||
+                  reservation.status == 'confirmed';
             } else {
-              return reservation.status == 'completed' || 
-                     reservation.status == 'canceled';
+              return reservation.status == 'completed' ||
+                  reservation.status == 'canceled';
             }
           }).toList();
 
@@ -66,7 +65,9 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    widget.isActive ? 'لا توجد حجوزات نشطة' : 'لا توجد حجوزات سابقة',
+                    widget.isActive
+                        ? 'لا توجد حجوزات نشطة'
+                        : 'لا توجد حجوزات سابقة',
                     style: getMediumStyle(
                       color: Colors.grey[600]!,
                       fontSize: FontSize.size16,
@@ -150,15 +151,15 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
   }
 
   int _getCrossAxisCount(double width) {
-    if (width >= 1200) return 3;      // Desktop
-    if (width >= 800) return 2;       // Tablet
-    return 2;                         // Mobile
+    if (width >= 1200) return 3; // Desktop
+    if (width >= 800) return 2; // Tablet
+    return 2; // Mobile
   }
 
   double _getChildAspectRatio(double width) {
-    if (width >= 1200) return 1.3;    // Desktop - تقليل الارتفاع
+    if (width >= 1200) return 1.3; // Desktop - تقليل الارتفاع
     if (width == 800) return 1.2;
-    if (width > 800) return 1.5;     // Tablet - تقليل الارتفاع
-    return 0.90;                       // Mobile - زيادة الارتفاع
+    if (width > 800) return 1.24; // Tablet - تقليل الارتفاع
+    return 0.90; // Mobile - زيادة الارتفاع
   }
-} 
+}

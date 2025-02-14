@@ -14,7 +14,6 @@ class ReservationModel extends ReservationEntity {
   });
 
   factory ReservationModel.fromJson(Map<String, dynamic> json) {
-    print('Creating ReservationModel from: $json');
     return ReservationModel(
       id: json['id'],
       shop: ShopModel.fromJson(json['shop']),

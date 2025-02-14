@@ -10,7 +10,6 @@ import '../../cubit/premium_shops_cubit/premium_shops_state.dart';
 import 'shared/beauty_service_card.dart';
 import '../../../../../core/utils/responsive/app_responsive.dart';
 
-
 class PopularSalonsListView extends StatefulWidget {
   const PopularSalonsListView({super.key});
 
@@ -49,11 +48,12 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
 
         if (state is PremiumShopsLoaded) {
           return SizedBox(
-            height: isDesktop ? 320 : isTablet ? 300 : 270,
+            height: isDesktop
+                ? 320
+                : isTablet
+                    ? 300
+                    : 270,
             child: ListView.builder(
-              padding: EdgeInsets.symmetric(
-                horizontal: isDesktop ? 24 : isTablet ? 20 : 16,
-              ),
               scrollDirection: Axis.horizontal,
               itemCount: state.shops.length,
               itemBuilder: (context, index) {
@@ -73,7 +73,11 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
                       },
                       child: Padding(
                         padding: EdgeInsetsDirectional.only(
-                          end: isDesktop ? 24 : isTablet ? 20 : 16,
+                          end: isDesktop
+                              ? 24
+                              : isTablet
+                                  ? 20
+                                  : 16,
                         ),
                         child: BeautyServiceCard(
                           image: shop.mainImageUrl,

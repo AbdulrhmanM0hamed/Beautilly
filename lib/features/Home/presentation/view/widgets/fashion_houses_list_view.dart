@@ -37,11 +37,12 @@ class FashionHousesListView extends StatelessWidget {
 
         if (state is PremiumShopsLoaded) {
           return SizedBox(
-            height: isDesktop ? 320 : isTablet ? 280 : 260,
+            height: isDesktop
+                ? 320
+                : isTablet
+                    ? 280
+                    : 260,
             child: ListView.builder(
-              padding: EdgeInsets.symmetric(
-                horizontal: isDesktop ? 24 : isTablet ? 20 : 16,
-              ),
               scrollDirection: Axis.horizontal,
               itemCount: state.shops.length,
               itemBuilder: (context, index) {
@@ -54,13 +55,18 @@ class FashionHousesListView extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => SalonProfileView(salonId: shop.id),
+                            builder: (context) =>
+                                SalonProfileView(salonId: shop.id),
                           ),
                         );
                       },
                       child: Padding(
                         padding: EdgeInsetsDirectional.only(
-                          end: isDesktop ? 24 : isTablet ? 20 : 16,
+                          end: isDesktop
+                              ? 24
+                              : isTablet
+                                  ? 20
+                                  : 16,
                         ),
                         child: BeautyServiceCard(
                           shopId: shop.id,

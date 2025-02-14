@@ -1,5 +1,4 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
-import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/custom_material_button.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/discount_number.dart';
 import 'package:cached_network_image/cached_network_image.dart';

@@ -92,7 +92,49 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
     required int dayId,
     required int timeId,
   }) async {
-    // نفس المنطق السابق مع تغيير الـ endpoint
+    final token = await cacheService.getToken();
+    final sessionCookie = await cacheService.getSessionCookie();
+
+    if (token == null) {
+      throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
+    }
+
+    try {
+      final response = await client.post(
+        Uri.parse(ApiEndpoints.bookDiscount(shopId)),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'x-api-key': ApiEndpoints.api_key,
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          if (sessionCookie != null) 'Cookie': sessionCookie,
+        },
+        body: json.encode({
+          'discount_id': discountId,
+          'day_id': dayId,
+          'time_id': timeId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['success'] == true) {
+          return;
+        } else {
+          throw ServerException(
+              jsonResponse['message'] ?? 'حدث خطأ في عملية حجز العرض');
+        }
+      } else if (response.statusCode == 401) {
+        throw UnauthorizedException(
+            'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+      } else {
+        throw ServerException('فشل في عملية حجز العرض');
+      }
+    } catch (e) {
+      if (e is UnauthorizedException) rethrow;
+      if (e is ServerException) rethrow;
+      throw ServerException('حدث خطأ غير متوقع');
+    }
   }
 
   @override

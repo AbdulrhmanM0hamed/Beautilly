@@ -14,6 +14,7 @@ class BookingDialog extends StatefulWidget {
   final String serviceName;
   final String servicePrice;
   final String serviceDescription;
+  final bool isDiscount;
 
   const BookingDialog({
     super.key,
@@ -22,6 +23,7 @@ class BookingDialog extends StatefulWidget {
     required this.serviceName,
     required this.servicePrice,
     required this.serviceDescription,
+    this.isDiscount = false,
   });
 
   @override
@@ -352,12 +354,21 @@ class _BookingDialogState extends State<BookingDialog> {
                           onPressed:
                               selectedDayId != null && selectedTimeId != null
                                   ? () {
-                                      context.read<BookingCubit>().bookService(
-                                            shopId: widget.shopId,
-                                            serviceId: widget.serviceId,
-                                            dayId: selectedDayId!,
-                                            timeId: selectedTimeId!,
-                                          );
+                                      if (widget.isDiscount) {
+                                        context.read<BookingCubit>().bookDiscount(
+                                              shopId: widget.shopId,
+                                              discountId: widget.serviceId,
+                                              dayId: selectedDayId!,
+                                              timeId: selectedTimeId!,
+                                            );
+                                      } else {
+                                        context.read<BookingCubit>().bookService(
+                                              shopId: widget.shopId,
+                                              serviceId: widget.serviceId,
+                                              dayId: selectedDayId!,
+                                              timeId: selectedTimeId!,
+                                            );
+                                      }
                                     }
                                   : null,
                           style: ElevatedButton.styleFrom(

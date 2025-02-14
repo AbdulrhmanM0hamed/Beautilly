@@ -37,19 +37,16 @@ class BookingCubit extends Cubit<BookingState> {
     required int timeId,
   }) async {
     emit(BookingLoading());
-    try {
-      await repository.bookDiscount(
-        shopId: shopId,
-        discountId: discountId,
-        dayId: dayId,
-        timeId: timeId,
-      );
-      emit(BookingSuccess('تم حجز العرض بنجاح'));
-    } on ServerFailure catch (failure) {
-      emit(BookingError(failure.message));
-    } catch (e) {
-      emit(BookingError('حدث خطأ غير متوقع'));
-    }
+    final result = await repository.bookDiscount(
+      shopId: shopId,
+      discountId: discountId,
+      dayId: dayId,
+      timeId: timeId,
+    );
+    result.fold(
+      (failure) => emit(BookingError(failure.message)),
+      (_) => emit(BookingSuccess('تم حجز العرض بنجاح')),
+    );
   }
 
   Future<void> loadAvailableDates(int shopId) async {

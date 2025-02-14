@@ -270,45 +270,6 @@ class SalonReviewsSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'التقييمات',
-                style: getBoldStyle(
-                  fontSize: FontSize.size20,
-                  fontFamily: FontConstant.cairo,
-                ),
-              ),
-              if (hasRated)
-                TextButton.icon(
-                  onPressed: () => _showDeleteRatingDialog(context),
-                  icon: const Icon(Icons.delete_outline, color: Colors.red),
-                  label: Text(
-                    'حذف التقييم',
-                    style: getBoldStyle(
-                      fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size14,
-                      color: Colors.red,
-                    ),
-                  ),
-                )
-              else
-                TextButton.icon(
-                  onPressed: () => _showAddRatingDialog(context),
-                  icon: const Icon(Icons.add),
-                  label: Text(
-                    'إضافة تقييم',
-                    style: getBoldStyle(
-                      fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size14,
-                    ),
-                  ),
-                ),
-            ],
-          ),
-          const SizedBox(height: 16),
-
           // Header
           Row(
             children: [
@@ -356,6 +317,32 @@ class SalonReviewsSection extends StatelessWidget {
                   ],
                 ),
               ),
+              Spacer(),
+              if (hasRated)
+                TextButton.icon(
+                  onPressed: () => _showDeleteRatingDialog(context),
+                  icon: const Icon(Icons.delete_outline, color: Colors.red),
+                  label: Text(
+                    'حذف التقييم',
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size14,
+                      color: Colors.red,
+                    ),
+                  ),
+                )
+              else
+                TextButton.icon(
+                  onPressed: () => _showAddRatingDialog(context),
+                  icon: const Icon(Icons.add),
+                  label: Text(
+                    'إضافة تقييم',
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size14,
+                    ),
+                  ),
+                ),
             ],
           ),
           const SizedBox(height: 16),

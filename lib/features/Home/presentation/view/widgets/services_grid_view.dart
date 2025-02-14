@@ -44,7 +44,7 @@ class _ServicesGridViewState extends State<ServicesGridView> {
         if (state is ServicesLoaded) {
           final services = state.services.take(widget.maxItems).toList();
           return GridView.builder(
-            padding: EdgeInsets.symmetric(horizontal: dimensions.padding),
+            
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -80,6 +80,7 @@ class ServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+    
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(dimensions.borderRadius),
@@ -115,7 +116,7 @@ class ServiceCard extends StatelessWidget {
                 child: Stack(
                   children: [
                     AspectRatio(
-                      aspectRatio: 1.5,
+                      aspectRatio: 1.8,
                       child: CachedNetworkImage(
                         imageUrl: service.image,
                         fit: BoxFit.cover,
@@ -152,7 +153,10 @@ class ServiceCard extends StatelessWidget {
               ),
               // اسم الخدمة
               Padding(
-                padding: EdgeInsets.all(dimensions.padding / 2),
+                padding: EdgeInsets.symmetric(
+                  horizontal: dimensions.padding / 2,
+                  vertical: dimensions.padding / 1.5,
+                ),
                 child: Text(
                   service.name,
                   style: getBoldStyle(

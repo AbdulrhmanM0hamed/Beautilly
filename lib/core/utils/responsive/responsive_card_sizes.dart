@@ -101,7 +101,7 @@ class ResponsiveCardSizes {
     if (isDesktop) {
       return ServiceGridDimensions(
         crossAxisCount: 4,
-        childAspectRatio: 1.1,
+        childAspectRatio: 1.25,
         padding: size.width * 0.02,
         spacing: size.width * 0.015,
         iconSize: size.width * 0.025,
@@ -111,17 +111,17 @@ class ResponsiveCardSizes {
     } else if (isTablet) {
       return ServiceGridDimensions(
         crossAxisCount: 3,
-        childAspectRatio: 1.0,
+        childAspectRatio: 1.25,
         padding: size.width * 0.03,
         spacing: size.width * 0.02,
         iconSize: size.width * 0.05,
-        titleSize: size.width * 0.0235,
+        titleSize: size.width * 0.020,
         borderRadius: 14,
       );
     } else {
       return ServiceGridDimensions(
         crossAxisCount: 2,
-        childAspectRatio: 0.9,
+        childAspectRatio: 1.25,
         padding: size.width * 0.04,
         spacing: size.width * 0.03,
         iconSize: size.width * 0.06,

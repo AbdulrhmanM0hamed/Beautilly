@@ -35,4 +35,10 @@ class AppColors {
   static const Color shimmerBase = Color(0xFFE0E0E0);
   static const Color shimmerHighlight = Color(0xFFF5F5F5);
   static const Color white = Color.fromARGB(255, 255, 255, 255);
+
+  static Color getContainerBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? Colors.grey[800]! // لون داكن للوضع الليلي
+        : Colors.grey[100]!; // لون فاتح للوضع النهاري
+  }
 }

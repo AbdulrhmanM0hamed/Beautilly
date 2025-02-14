@@ -16,7 +16,7 @@ class ServiceModel extends Service {
       name: json['name'],
       description: json['description'] ?? '',
       type: json['type'],
-      price: json['price'].toString(),
+      price: json['price'],
       image: json['image'] ?? '',
     );
   }
@@ -31,4 +31,4 @@ class ServiceModel extends Service {
       'image': image,
     };
   }
-} 
+}

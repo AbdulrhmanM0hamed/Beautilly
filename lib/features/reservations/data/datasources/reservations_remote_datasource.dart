@@ -47,7 +47,7 @@ class ReservationsRemoteDataSourceImpl implements ReservationsRemoteDataSource {
         // التحقق من نجاح الطلب
         if (jsonResponse['success'] == true) {
           final data = jsonResponse['data'] as List;
-
+          print(data);
           // إذا كانت القائمة فارغة
           if (data.isEmpty) {
             return [];

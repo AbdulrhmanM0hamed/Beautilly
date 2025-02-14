@@ -152,6 +152,7 @@ class SalonProfileViewBody extends StatelessWidget {
                       discounts: profile.discounts,
                     ),
                     SalonServicesSection(
+                      shopId: profile.id,
                       services: profile.services,
                     ),
                     SalonGalleryGrid(

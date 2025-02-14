@@ -72,6 +72,10 @@ import '../../features/salone_profile/domain/usecases/add_to_favorites_usecase.d
 import '../../features/salone_profile/domain/usecases/remove_from_favorites_usecase.dart';
 
 import '../../features/Home/presentation/cubit/service_shops_cubit/service_shops_cubit.dart';
+import '../../features/booking/data/datasources/booking_remote_datasource.dart';
+import '../../features/booking/data/repositories/booking_repository_impl.dart';
+import '../../features/booking/domain/repositories/booking_repository.dart';
+import '../../features/booking/presentation/cubit/booking_cubit.dart';
 
 // Tailoring Requests Feature
 
@@ -362,4 +366,24 @@ Future<void> init() async {
       getServices: sl(),
     ),
   );
+
+  // Booking Feature
+  // Cubit
+  sl.registerFactory(() => BookingCubit(repository: sl()));
+
+  // Repository
+  sl.registerLazySingleton<BookingRepository>(
+    () => BookingRepositoryImpl(sl()),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<BookingRemoteDataSource>(
+    () => BookingRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  // External
+
 }

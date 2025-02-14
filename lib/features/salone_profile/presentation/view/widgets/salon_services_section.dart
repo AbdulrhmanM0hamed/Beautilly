@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 
 class SalonServicesSection extends StatelessWidget {
   final List<Service> services;
+  final int shopId;
 
   const SalonServicesSection({
     super.key,
     required this.services,
+    required this.shopId,
   });
 
   @override
@@ -52,7 +54,13 @@ class SalonServicesSection extends StatelessWidget {
             itemCount: services.length > 4 ? 4 : services.length,
             itemBuilder: (context, index) {
               final service = services[index];
-              return ServiceCard(service: service);
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: ServiceCard(
+                  service: service,
+                  shopId: shopId,
+                ),
+              );
             },
           ),
         ],

@@ -149,4 +149,17 @@ class ApiEndpoints {
   
   static String removeFromFavorites(int shopId) => 
     '$baseUrl/shops/$shopId/like?api_key=$api_key';
+
+  // Shop Details & Booking
+  static String shopFullDetails(int shopId) => 
+    '$baseUrl/shops/$shopId/full-details?api_key=$api_key';
+  
+  static String bookService(int shopId) => 
+    '$baseUrl/shops/$shopId/book-service?api_key=$api_key';
+  
+  static String bookDiscount(int shopId) => 
+    '$baseUrl/shops/$shopId/book-discount?api_key=$api_key';
+  
+  static String cancelAppointment(int serviceId) => 
+    '$baseUrl/appointments/$serviceId/cancel?api_key=$api_key';
 }

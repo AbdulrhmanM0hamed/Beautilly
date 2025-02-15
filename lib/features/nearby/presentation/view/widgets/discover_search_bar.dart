@@ -2,8 +2,13 @@ import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/nearby/presentation/cubit/search_shops_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../domain/entities/shop_type.dart';
+import '../../cubit/search_shops_cubit.dart';
+import './discover_filter_chips.dart';
 
 class DiscoverSearchBar extends StatelessWidget {
   const DiscoverSearchBar({super.key});
@@ -30,6 +35,11 @@ class DiscoverSearchBar extends StatelessWidget {
               color: Colors.transparent,
               child: TextField(
                 textAlignVertical: TextAlignVertical.center,
+                onChanged: (query) {
+                  context
+                      .read<SearchShopsCubit>()
+                      .searchShops(query: query);
+                },
                 decoration: InputDecoration(
                   hintText: 'ابحث عن صالون أو دار أزياء',
                   hintStyle: getMediumStyle(
@@ -47,23 +57,12 @@ class DiscoverSearchBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  suffixIcon: IconButton(
-                    icon: const Icon(
-                      Icons.close,
-                      color: AppColors.grey,
-                      size: 20,
-                    ),
-                    onPressed: () {
-                      // Clear search text
-                    },
-                  ),
                   border: InputBorder.none,
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none,
                   filled: false,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16),
                 ),
               ),
             ),
@@ -88,9 +87,7 @@ class DiscoverSearchBar extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(24),
-              onTap: () {
-                // Show filter options
-              },
+              onTap: () {},
               child: Padding(
                 padding: const EdgeInsets.all(12),
                 child: SvgPicture.asset(

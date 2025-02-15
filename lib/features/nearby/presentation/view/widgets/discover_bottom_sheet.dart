@@ -1,15 +1,18 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/features/nearby/presentation/view/widgets/nearby_service_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../cubit/search_shops_cubit.dart';
+import '../../cubit/search_shops_state.dart';
+import 'nearby_service_card.dart';
 
 class DiscoverBottomSheet extends StatelessWidget {
+  final ScrollController scrollController;
+
   const DiscoverBottomSheet({
     super.key,
     required this.scrollController,
   });
-
-  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
@@ -57,14 +60,63 @@ class DiscoverBottomSheet extends StatelessWidget {
           const SizedBox(height: 16),
           // List of Nearby Services
           Expanded(
-            child: ListView.builder(
-              controller: scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: 10,
-              itemBuilder: (context, index) {
-                return const Padding(
-                  padding: EdgeInsets.only(bottom: 16),
-                  child: NearbyServiceCard(),
+            child: BlocBuilder<SearchShopsCubit, SearchShopsState>(
+              builder: (context, state) {
+                if (state is SearchShopsLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
+                if (state is SearchShopsError) {
+                  return Center(
+                    child: Text(
+                      state.message,
+                      style: getMediumStyle(
+                        fontSize: FontSize.size14,
+                        fontFamily: FontConstant.cairo,
+                      ),
+                    ),
+                  );
+                }
+
+                if (state is SearchShopsLoaded) {
+                  if (state.shops.isEmpty) {
+                    return Center(
+                      child: Text(
+                        'لا توجد نتائج',
+                        style: getMediumStyle(
+                          fontSize: FontSize.size14,
+                          fontFamily: FontConstant.cairo,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    controller: scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    itemCount: state.shops.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: NearbyServiceCard(
+                          shop: state.shops[index],
+                        ),
+                      );
+                    },
+                  );
+                }
+
+                // Initial state or when search is cleared
+                return const Center(
+                  child: Text(
+                    'ابحث عن صالون أو دار أزياء',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                  ),
                 );
               },
             ),

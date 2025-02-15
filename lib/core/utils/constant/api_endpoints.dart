@@ -167,4 +167,9 @@ class ApiEndpoints {
   // Search Services
   static String searchServices(String query) => 
     '$baseUrl/services/search?query=$query&api_key=$api_key';
+
+  // Search Endpoints
+  static String searchShops = '$baseUrl/shops/search';
+  static String searchShopsByType({required String type, String? search}) => 
+    '$baseUrl/shops/search?type=$type${search != null ? '&search=$search' : ''}&api_key=$api_key';
 }

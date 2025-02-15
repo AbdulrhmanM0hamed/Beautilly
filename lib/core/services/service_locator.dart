@@ -11,6 +11,10 @@ import 'package:beautilly/features/Home/domain/usecases/get_services_usecase.dar
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/auth/data/datasources/auth_remote_data_source.dart';
+import 'package:beautilly/features/nearby/data/datasources/search_shops_remote_datasource.dart';
+import 'package:beautilly/features/nearby/data/repositories/search_shops_repository_impl.dart';
+import 'package:beautilly/features/nearby/domain/repositories/search_shops_repository.dart';
+import 'package:beautilly/features/nearby/presentation/cubit/search_shops_cubit.dart';
 import 'package:beautilly/features/orders/domain/usecases/accept_offer_usecase.dart';
 import 'package:beautilly/features/orders/domain/usecases/add_order_usecase.dart';
 import 'package:beautilly/features/orders/domain/usecases/delete_order_usecase.dart';
@@ -391,6 +395,22 @@ Future<void> init() async {
   // Data sources
   sl.registerLazySingleton<BookingRemoteDataSource>(
     () => BookingRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  // Cubits
+  sl.registerFactory(() => SearchShopsCubit(repository: sl()));
+
+  // Repositories
+  sl.registerLazySingleton<SearchShopsRepository>(
+    () => SearchShopsRepositoryImpl(sl()),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<SearchShopsRemoteDataSource>(
+    () => SearchShopsRemoteDataSourceImpl(
       client: sl(),
       cacheService: sl(),
     ),

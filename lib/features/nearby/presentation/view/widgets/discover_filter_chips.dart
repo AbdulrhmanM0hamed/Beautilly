@@ -2,6 +2,10 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../domain/entities/shop_type.dart';
+import '../../cubit/search_shops_cubit.dart';
+import '../../cubit/search_shops_state.dart';
 
 class DiscoverFilterChips extends StatelessWidget {
   const DiscoverFilterChips({super.key});
@@ -10,19 +14,42 @@ class DiscoverFilterChips extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          _buildFilterChip('الكل', true, context),
-          _buildFilterChip('صالونات', false, context),
-          _buildFilterChip('دور أزياء', false, context),
-          _buildFilterChip('مكياج', false, context),
-          _buildFilterChip('شعر', false, context),
-        ],
+      child: BlocBuilder<SearchShopsCubit, SearchShopsState>(
+        builder: (context, state) {
+          final cubit = context.read<SearchShopsCubit>();
+          return Row(
+            children: [
+              _buildFilterChip(
+                ShopType.all.arabicName,
+                cubit.selectedType == ShopType.all,
+                context,
+                () => cubit.changeType(ShopType.all),
+              ),
+              _buildFilterChip(
+                ShopType.salon.arabicName,
+                cubit.selectedType == ShopType.salon,
+                context,
+                () => cubit.changeType(ShopType.salon),
+              ),
+              _buildFilterChip(
+                ShopType.tailor.arabicName,
+                cubit.selectedType == ShopType.tailor,
+                context,
+                () => cubit.changeType(ShopType.tailor),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildFilterChip(String label, bool isSelected, BuildContext context) {
+  Widget _buildFilterChip(
+    String label,
+    bool isSelected,
+    BuildContext context,
+    VoidCallback onTap,
+  ) {
     return Container(
       margin: const EdgeInsets.only(left: 8),
       child: FilterChip(
@@ -35,9 +62,7 @@ class DiscoverFilterChips extends StatelessWidget {
           ),
         ),
         selected: isSelected,
-        onSelected: (bool value) {
-          // Handle filter selection
-        },
+        onSelected: (_) => onTap(),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         selectedColor: AppColors.primary,
         checkmarkColor: Colors.white,

@@ -4,9 +4,16 @@ import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../../domain/entities/search_shop.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class NearbyServiceCard extends StatelessWidget {
-  const NearbyServiceCard({super.key});
+  final SearchShop shop;
+
+  const NearbyServiceCard({
+    super.key,
+    required this.shop,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +28,16 @@ class NearbyServiceCard extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius:
-                    const BorderRadius.horizontal(right: Radius.circular(8)),
-                child: Image.network(
-                  'https://images.unsplash.com/photo-1600948836101-f9ffda59d250?q=80&w=2036&auto=format&fit=crop',
+                borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
+                child: CachedNetworkImage(
+                  imageUrl: shop.mainImageUrl,
                   width: 120,
                   height: 120,
                   fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    color: Colors.grey[300],
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
               Positioned(
@@ -87,7 +97,7 @@ class NearbyServiceCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: Text(
-                          'صالون روز للتجميل',
+                          shop.name,
                           style: getBoldStyle(
                             fontSize: FontSize.size14,
                             fontFamily: FontConstant.cairo,
@@ -109,7 +119,7 @@ class NearbyServiceCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '4.7',
+                        shop.avgRating.toStringAsFixed(1),
                         style: getBoldStyle(
                           fontSize: FontSize.size12,
                           fontFamily: FontConstant.cairo,
@@ -117,7 +127,7 @@ class NearbyServiceCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '(120)',
+                        '(${shop.loversCount})',
                         style: getMediumStyle(
                           color: AppColors.grey,
                           fontSize: FontSize.size12,
@@ -144,47 +154,35 @@ class NearbyServiceCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          'تصفيف شعر',
-                          style: getMediumStyle(
-                            color: AppColors.primary,
-                            fontSize: FontSize.size10,
-                            fontFamily: FontConstant.cairo,
-                          ),
-                        ),
+                  if (shop.services.isNotEmpty)
+                    SizedBox(
+                      height: 24,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: shop.services.length.clamp(0, 2),
+                        separatorBuilder: (context, index) => const SizedBox(width: 8),
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              shop.services[index].name,
+                              style: getMediumStyle(
+                                color: AppColors.primary,
+                                fontSize: FontSize.size10,
+                                fontFamily: FontConstant.cairo,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          'مكياج',
-                          style: getMediumStyle(
-                            color: AppColors.primary,
-                            fontSize: FontSize.size10,
-                            fontFamily: FontConstant.cairo,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
                 ],
               ),
             ),

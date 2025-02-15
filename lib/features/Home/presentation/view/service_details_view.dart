@@ -1,17 +1,10 @@
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/features/Home/presentation/cubit/service_shops_cubit/service_shops_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../../../../core/services/service_locator.dart';
 import '../../domain/entities/service.dart';
-import '../widgets/service_details/service_header.dart';
 import '../widgets/service_details/service_shop_card.dart';
-import '../widgets/service_details/service_description.dart';
-import '../cubit/service_shops_cubit/service_shops_cubit.dart';
-import 'package:beautilly/core/utils/shimmer/service_shop_card_shimmer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ServiceDetailsView extends StatelessWidget {
@@ -24,9 +17,6 @@ class ServiceDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        'Service ${service.name} has ${service.shops.length} shops'); // للتأكد من عدد المتاجر
-
     return Scaffold(
       appBar: CustomAppBar(title: service.name),
       body: SingleChildScrollView(

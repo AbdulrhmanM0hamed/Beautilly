@@ -28,7 +28,7 @@ class _ServicesGridViewState extends State<ServicesGridView> {
   void initState() {
     super.initState();
     // تحميل الخدمات عند بداية تحميل الـ widget
-    context.read<ServicesCubit>().loadServices();
+    context.read<ServicesCubit>().getServices();
   }
 
   @override
@@ -38,25 +38,38 @@ class _ServicesGridViewState extends State<ServicesGridView> {
     return BlocBuilder<ServicesCubit, ServicesState>(
       builder: (context, state) {
         if (state is ServicesLoading) {
-          return ServicesGridShimmer();
+          return const ServicesGridShimmer();
+        }
+
+        if (state is ServicesError) {
+          return Center(
+            child: Text(state.message),
+          );
         }
 
         if (state is ServicesLoaded) {
+          if (state.services.isEmpty) {
+            return const Center(
+              child: Text('لا توجد نتائج'),
+            );
+          }
+
           final services = state.services.take(widget.maxItems).toList();
-          return GridView.builder(
-            
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: dimensions.crossAxisCount,
-              childAspectRatio: dimensions.childAspectRatio,
-              crossAxisSpacing: dimensions.spacing,
-              mainAxisSpacing: dimensions.spacing,
-            ),
-            itemCount: services.length,
-            itemBuilder: (context, index) => ServiceCard(
-              service: services[index],
-              dimensions: dimensions,
+          return SizedBox(
+            child: GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: dimensions.crossAxisCount,
+                childAspectRatio: dimensions.childAspectRatio,
+                crossAxisSpacing: dimensions.spacing,
+                mainAxisSpacing: dimensions.spacing,
+              ),
+              itemCount: services.length,
+              itemBuilder: (context, index) => ServiceCard(
+                service: services[index],
+                dimensions: dimensions,
+              ),
             ),
           );
         }
@@ -80,7 +93,6 @@ class ServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-    
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(dimensions.borderRadius),

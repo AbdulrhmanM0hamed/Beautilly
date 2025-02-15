@@ -48,6 +48,7 @@ class ApiEndpoints {
       '$baseUrl/notifications?api_key=$api_key'; // قائمة الإشعارات
   static const String markNotificationRead =
       '$baseUrl/notifications/read/?api_key=$api_key'; // تحديد إشعار كمقروء
+  static const String refreshToken = '$baseUrl/auth/refresh';
 
   // الباقات والاشتراكات
   static const String packages =
@@ -137,29 +138,33 @@ class ApiEndpoints {
       '$baseUrl/orders/$orderId/cancel-offer/$offerId?api_key=$api_key';
 
   // Ratings & Reviews
-  static String addShopRating(int shopId) => 
-    '$baseUrl/shops/$shopId/rate?api_key=$api_key';
-  
-  static String deleteShopRating(int shopId) => 
-    '$baseUrl/shops/$shopId/rate?api_key=$api_key';
+  static String addShopRating(int shopId) =>
+      '$baseUrl/shops/$shopId/rate?api_key=$api_key';
+
+  static String deleteShopRating(int shopId) =>
+      '$baseUrl/shops/$shopId/rate?api_key=$api_key';
 
   // Favorites
-  static String addToFavorites(int shopId) => 
-    '$baseUrl/shops/$shopId/like?api_key=$api_key';
-  
-  static String removeFromFavorites(int shopId) => 
-    '$baseUrl/shops/$shopId/like?api_key=$api_key';
+  static String addToFavorites(int shopId) =>
+      '$baseUrl/shops/$shopId/like?api_key=$api_key';
+
+  static String removeFromFavorites(int shopId) =>
+      '$baseUrl/shops/$shopId/like?api_key=$api_key';
 
   // Shop Details & Booking
-  static String shopFullDetails(int shopId) => 
-    '$baseUrl/shops/$shopId/full-details?api_key=$api_key';
-  
-  static String bookService(int shopId) => 
-    '$baseUrl/shops/$shopId/book-service?api_key=$api_key';
-  
-  static String bookDiscount(int shopId) => 
-    '$baseUrl/shops/$shopId/book-discount?api_key=$api_key';
-  
-  static String cancelAppointment(int serviceId) => 
-    '$baseUrl/appointments/$serviceId/cancel?api_key=$api_key';
+  static String shopFullDetails(int shopId) =>
+      '$baseUrl/shops/$shopId/full-details?api_key=$api_key';
+
+  static String bookService(int shopId) =>
+      '$baseUrl/shops/$shopId/book-service?api_key=$api_key';
+
+  static String bookDiscount(int shopId) =>
+      '$baseUrl/shops/$shopId/book-discount?api_key=$api_key';
+
+  static String cancelAppointment(int serviceId) =>
+      '$baseUrl/appointments/$serviceId/cancel?api_key=$api_key';
+
+  // Search Services
+  static String searchServices(String query) => 
+    '$baseUrl/services/search?query=$query&api_key=$api_key';
 }

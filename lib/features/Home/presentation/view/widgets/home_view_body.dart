@@ -25,7 +25,7 @@ class HomeViewBody extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async {
         await Future.wait([
-          context.read<ServicesCubit>().loadServices(),
+          context.read<ServicesCubit>().getServices(),
           context.read<StatisticsCubit>().getStatistics(),
           context.read<PremiumShopsCubit>().loadPremiumShops(),
           context.read<DiscountsCubit>().loadDiscounts(),
@@ -107,7 +107,7 @@ class HomeViewBody extends StatelessWidget {
                 ),
                 const SizedBox(height: 16.0),
                 const ServicesGridView(maxItems: 8),
-                const SizedBox(height: 16.0),
+                const SizedBox(height: 22.0),
                 Text(
                   'أشهر صالونات التجميل',
                   style: getBoldStyle(

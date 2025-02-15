@@ -21,4 +21,18 @@ class ServicesRepositoryImpl implements ServicesRepository {
       return const Left(ServerFailure('حدث خطأ غير متوقع'));
     }
   }
+
+  @override
+  Future<Either<Failure, List<ServiceEntity>>> searchServices(String query) async {
+    try {
+      final services = await remoteDataSource.searchServices(query);
+      return Right(services);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on UnauthorizedException catch (e) {
+      return Left(ServerFailure(e.message));
+    } catch (e) {
+      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
 } 

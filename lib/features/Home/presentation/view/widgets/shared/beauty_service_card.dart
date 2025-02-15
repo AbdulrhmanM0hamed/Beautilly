@@ -34,8 +34,9 @@ class BeautyServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dimensions = ResponsiveCardSizes.getBeautyServiceCardDimensions(context);
-    
+    final dimensions =
+        ResponsiveCardSizes.getBeautyServiceCardDimensions(context);
+
     return Container(
       width: dimensions.width,
       decoration: BoxDecoration(
@@ -49,7 +50,8 @@ class BeautyServiceCard extends StatelessWidget {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(12)),
                 child: CachedNetworkImage(
                   imageUrl: image,
                   height: dimensions.imageHeight,
@@ -77,18 +79,24 @@ class BeautyServiceCard extends StatelessWidget {
                 child: BlocBuilder<ToggleFavoritesCubit, ToggleFavoritesState>(
                   builder: (context, state) {
                     final bool isLoading = state is ToggleFavoritesLoading;
-                    final bool isFav = state is ToggleFavoritesSuccess 
-                                       ? state.isFavorite 
-                                       : isFavorite;
+                    final bool isFav = state is ToggleFavoritesSuccess
+                        ? state.isFavorite
+                        : isFavorite;
 
                     return GestureDetector(
-                      onTap: isLoading ? null : () {
-                        if (isFav) {
-                          context.read<ToggleFavoritesCubit>().removeFromFavorites(shopId);
-                        } else {
-                          context.read<ToggleFavoritesCubit>().addToFavorites(shopId);
-                        }
-                      },
+                      onTap: isLoading
+                          ? null
+                          : () {
+                              if (isFav) {
+                                context
+                                    .read<ToggleFavoritesCubit>()
+                                    .removeFromFavorites(shopId);
+                              } else {
+                                context
+                                    .read<ToggleFavoritesCubit>()
+                                    .addToFavorites(shopId);
+                              }
+                            },
                       child: Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -196,7 +204,7 @@ class BeautyServiceCard extends StatelessWidget {
                 if (tags != null && tags!.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   SizedBox(
-                    height: 24,
+                    height: 30,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: tags!.length,
@@ -222,12 +230,14 @@ class BeautyServiceCard extends StatelessWidget {
         color: AppColors.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(
-        label,
-        style: getMediumStyle(
-          color: AppColors.primary,
-          fontSize: dimensions.tagSize,
-          fontFamily: FontConstant.cairo,
+      child: Center(
+        child: Text(
+          label,
+          style: getMediumStyle(
+            color: AppColors.primary,
+            fontSize: dimensions.tagSize,
+            fontFamily: FontConstant.cairo,
+          ),
         ),
       ),
     );

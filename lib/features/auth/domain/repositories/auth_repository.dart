@@ -14,4 +14,5 @@ abstract class AuthRepository {
     required String passwordConfirmation,
   });
   Future<Either<Failure, void>> logout();
+  Future<Either<Failure, String>> refreshToken();
 }

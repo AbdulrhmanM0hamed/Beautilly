@@ -10,6 +10,7 @@ import 'package:beautilly/features/Home/domain/usecases/get_premium_shops_usecas
 import 'package:beautilly/features/Home/domain/usecases/get_services_usecase.dart';
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
+import 'package:beautilly/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:beautilly/features/orders/domain/usecases/accept_offer_usecase.dart';
 import 'package:beautilly/features/orders/domain/usecases/add_order_usecase.dart';
 import 'package:beautilly/features/orders/domain/usecases/delete_order_usecase.dart';
@@ -89,8 +90,16 @@ Future<void> init() async {
   sl.registerLazySingleton(() => http.Client());
 
   // Auth Feature
-  sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
-  sl.registerLazySingleton(() => Logout(sl()));
+  sl.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(sl(), sl()),
+  );
   sl.registerFactory(() => AuthCubit(sl(), sl()));
 
   // Tailoring Requests Feature
@@ -156,6 +165,7 @@ Future<void> init() async {
     () => ReservationsRemoteDataSourceImpl(
       client: sl(),
       cacheService: sl(),
+      authRepository: sl(),
     ),
   );
 
@@ -236,7 +246,7 @@ Future<void> init() async {
   );
 
   sl.registerFactory(
-    () => ServicesCubit(getServices: sl()),
+    () => ServicesCubit(sl<ServicesRepository>()),
   );
 
   // Premium Shops Feature
@@ -248,7 +258,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<PremiumShopsRepository>(
-    () => PremiumShopsRepositoryImpl( sl()),
+    () => PremiumShopsRepositoryImpl(sl()),
   );
 
   sl.registerLazySingleton(
@@ -369,7 +379,9 @@ Future<void> init() async {
 
   // Booking Feature
   // Cubit
-  sl.registerFactory(() => BookingCubit(repository: sl()));
+  sl.registerFactory(() => BookingCubit(
+        repository: sl(),
+      ));
 
   // Repository
   sl.registerLazySingleton<BookingRepository>(
@@ -383,7 +395,4 @@ Future<void> init() async {
       cacheService: sl(),
     ),
   );
-
-  // External
-
 }

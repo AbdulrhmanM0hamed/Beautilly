@@ -22,6 +22,8 @@ abstract class BookingRemoteDataSource {
   });
 
   Future<List<AvailableDate>> getAvailableDates(int shopId);
+
+  Future<void> cancelAppointment(int appointmentId);
 }
 
 class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
@@ -160,7 +162,8 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
         if (jsonResponse['success'] == true) {
-          final data = jsonResponse['data']['available_dates'] as Map<String, dynamic>;
+          final data =
+              jsonResponse['data']['available_dates'] as Map<String, dynamic>;
           final dates = (data['items'] as List)
               .map((date) => AvailableDateModel.fromJson(date))
               .toList();
@@ -181,4 +184,45 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
       throw ServerException('حدث خطأ غير متوقع');
     }
   }
-} 
+
+  @override
+  Future<void> cancelAppointment(int appointmentId) async {
+    final token = await cacheService.getToken();
+    final sessionCookie = await cacheService.getSessionCookie();
+
+    if (token == null) {
+      throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
+    }
+
+    try {
+      final response = await client.delete(
+        Uri.parse(ApiEndpoints.cancelAppointment(appointmentId)),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'x-api-key': ApiEndpoints.api_key,
+          'Accept': 'application/json',
+          if (sessionCookie != null) 'Cookie': sessionCookie,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        if (jsonResponse['success'] == true) {
+          return;
+        } else {
+          throw ServerException(
+              jsonResponse['message'] ?? 'فشل في إلغاء الحجز');
+        }
+      } else if (response.statusCode == 401) {
+        throw UnauthorizedException(
+            'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+      } else {
+        throw ServerException('فشل في إلغاء الحجز');
+      }
+    } catch (e) {
+      if (e is UnauthorizedException) rethrow;
+      if (e is ServerException) rethrow;
+      throw ServerException('حدث خطأ غير متوقع');
+    }
+  }
+}

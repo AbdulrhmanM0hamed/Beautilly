@@ -3,11 +3,14 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/responsive/app_responsive.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/booking/presentation/cubit/booking_cubit.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubit/reservations_cubit.dart';
 import '../../cubit/reservations_state.dart';
 import 'reservation_card.dart';
+
 
 class MyReservationsWidget extends StatefulWidget {
   final bool isActive;
@@ -67,7 +70,7 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
                   Text(
                     widget.isActive
                         ? 'لا توجد حجوزات نشطة'
-                        : 'لا توجد حجوزات سابقة',
+                        : 'لا توجد حجوزات مكتملة',
                     style: getMediumStyle(
                       color: Colors.grey[600]!,
                       fontSize: FontSize.size16,
@@ -83,21 +86,33 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
             onRefresh: () async {
               await context.read<ReservationsCubit>().getMyReservations();
             },
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: isDesktop ? 24 : 16,
-              ),
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: _getCrossAxisCount(size.width),
-                  childAspectRatio: _getChildAspectRatio(size.width),
-                  crossAxisSpacing: isDesktop ? 24 : 16,
-                  mainAxisSpacing: isDesktop ? 24 : 16,
+            child: Builder(
+              builder: (context) => Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: isDesktop ? 24 : 16,
                 ),
-                itemCount: reservations.length,
-                itemBuilder: (context, index) => ReservationCard(
-                  reservation: reservations[index],
+                child: GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: _getCrossAxisCount(size.width),
+                    childAspectRatio: _getChildAspectRatio(size.width),
+                    crossAxisSpacing: isDesktop ? 24 : 16,
+                    mainAxisSpacing: isDesktop ? 24 : 16,
+                  ),
+                  itemCount: reservations.length,
+                  itemBuilder: (context, index) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(
+                        value: context.read<ReservationsCubit>(),
+                      ),
+                      BlocProvider.value(
+                        value: context.read<BookingCubit>(),
+                      ),
+                    ],
+                    child: ReservationCard(
+                      reservation: reservations[index],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -157,9 +172,10 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
   }
 
   double _getChildAspectRatio(double width) {
-    if (width >= 1200) return 1.3; // Desktop - تقليل الارتفاع
+    if (width >= 1000) return 1.38; // Desktop - تقليل الارتفاع
     if (width == 800) return 1.2;
-    if (width > 800) return 1.24; // Tablet - تقليل الارتفاع
+    if (width >= 600) return 1.24;
+    // Tablet - تقليل الارتفاع
     return 0.90; // Mobile - زيادة الارتفاع
   }
 }

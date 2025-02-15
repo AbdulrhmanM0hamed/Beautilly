@@ -4,7 +4,7 @@ class ServiceModel extends ServiceEntity {
   const ServiceModel({
     required super.id,
     required super.name,
-    super.description,
+    required super.description,
     required super.type,
     required super.category,
     required super.image,
@@ -97,7 +97,7 @@ class ShopModel extends ShopEntity {
       stateName: json['state_name'] ?? '',
       mainImageUrl: json['main_shop_image_url'] ?? '',
       avgRating: json['avg_rating']?.toDouble(),
-      services: json['services'] != null 
+      services: json['services'] != null
           ? (json['services'] as List)
               .map((service) => ServicePivotModel.fromJson(service))
               .toList()
@@ -115,7 +115,9 @@ class ShopModel extends ShopEntity {
       'state_name': stateName,
       'main_shop_image_url': mainImageUrl,
       'avg_rating': avgRating,
-      'services': services.map((service) => (service as ServicePivotModel).toJson()).toList(),
+      'services': services
+          .map((service) => (service as ServicePivotModel).toJson())
+          .toList(),
     };
   }
 }
@@ -142,4 +144,4 @@ class ServicePivotModel extends ServicePivot {
       'price': price,
     };
   }
-} 
+}

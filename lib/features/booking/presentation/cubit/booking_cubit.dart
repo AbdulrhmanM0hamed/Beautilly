@@ -57,4 +57,15 @@ class BookingCubit extends Cubit<BookingState> {
       (dates) => emit(DatesLoaded(dates))
     );
   }
+
+  Future<void> cancelAppointment(int appointmentId) async {
+    emit(CancelAppointmentLoading());
+
+    final result = await repository.cancelAppointment(appointmentId);
+
+    result.fold(
+      (failure) => emit(CancelAppointmentError(failure.message)),
+      (_) => emit(CancelAppointmentSuccess()),
+    );
+  }
 } 

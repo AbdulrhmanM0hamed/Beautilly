@@ -1,3 +1,4 @@
+import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 import 'package:flutter/material.dart';
 import '../../../../../core/utils/constant/font_manger.dart';
 import '../../../../../core/utils/constant/styles_manger.dart';
@@ -19,6 +20,8 @@ class StatusBadge extends StatelessWidget {
     final fontSize = size.width > 800 ? FontSize.size14: FontSize.size12;
     final iconSize = size.width > 800 ? 16.0 : 16.0;
     final horizontalPadding = size.width > 800 ? 20.9 : 8.0;
+    final dimensions =
+        ResponsiveCardSizes.getReservationCardDimensions(context);
 
     Color color;
     String text;
@@ -74,7 +77,7 @@ class StatusBadge extends StatelessWidget {
             text,
             style: getMediumStyle(
               color: Colors.white,
-              fontSize: fontSize,
+              fontSize: dimensions.titleSize,
               fontFamily: FontConstant.cairo,
             ),
           ),

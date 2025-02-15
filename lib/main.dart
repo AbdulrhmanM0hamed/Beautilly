@@ -10,6 +10,7 @@ import 'features/auth/presentation/view/signin_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
+import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,9 +32,6 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => di.sl<ProfileCubit>()..loadProfile(),
-        ),
-        BlocProvider(
-          create: (context) => di.sl<FavoritesCubit>(),
         ),
       ],
       child: MaterialApp(

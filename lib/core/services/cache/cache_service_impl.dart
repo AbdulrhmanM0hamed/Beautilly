@@ -8,6 +8,7 @@ class CacheServiceImpl implements CacheService {
   static const String _tokenKey = 'token';
   static const String _userKey = 'user';
   static const String _sessionCookieKey = 'session_cookie';
+  static const String _refreshTokenKey = 'refresh_token';
 
   CacheServiceImpl(this._prefs);
 
@@ -38,6 +39,8 @@ class CacheServiceImpl implements CacheService {
   Future<void> clearCache() async {
     await _prefs.remove(_tokenKey);
     await _prefs.remove(_userKey);
+    await _prefs.remove(_sessionCookieKey);
+    await _prefs.remove(_refreshTokenKey);
   }
 
   @override
@@ -56,5 +59,15 @@ class CacheServiceImpl implements CacheService {
     if (userStr == null) return null;
     final user = jsonDecode(userStr) as Map<String, dynamic>;
     return user['id'] as int?;
+  }
+  
+  @override
+  Future<String?> getRefreshToken() async {
+    return _prefs.getString(_refreshTokenKey);
+  }
+  
+  @override
+  Future<void> saveRefreshToken(String token) async {
+    await _prefs.setString(_refreshTokenKey, token);
   }
 } 

@@ -7,4 +7,6 @@ abstract class CacheService {
   Future<void> saveSessionCookie(String cookie);
   Future<void> clearCache();
   int? getUserId();
+  Future<String?> getRefreshToken();
+  Future<void> saveRefreshToken(String token);
 } 

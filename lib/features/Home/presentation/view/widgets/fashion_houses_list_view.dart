@@ -1,3 +1,4 @@
+import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,6 @@ import '../../../../../core/utils/theme/app_colors.dart';
 import '../../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../../cubit/premium_shops_cubit/premium_shops_state.dart';
 import 'shared/beauty_service_card.dart';
-import 'package:get_it/get_it.dart';
 import '../../../../../core/utils/responsive/app_responsive.dart';
 
 class FashionHousesListView extends StatelessWidget {
@@ -49,7 +49,7 @@ class FashionHousesListView extends StatelessWidget {
                 final shop = state.shops[index];
                 if (shop.type == 'tailor') {
                   return BlocProvider(
-                    create: (context) => GetIt.I<ToggleFavoritesCubit>(),
+                    create: (context) => sl<ToggleFavoritesCubit>(),
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(

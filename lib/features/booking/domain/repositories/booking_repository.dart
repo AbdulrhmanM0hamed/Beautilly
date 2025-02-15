@@ -18,4 +18,6 @@ abstract class BookingRepository {
   });
 
   Future<Either<Failure, List<AvailableDate>>> getAvailableDates(int shopId);
+
+  Future<Either<Failure, void>> cancelAppointment(int appointmentId);
 } 

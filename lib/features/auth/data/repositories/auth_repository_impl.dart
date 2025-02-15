@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:beautilly/core/error/exceptions.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/core/utils/constant/api_endpoints.dart';
+import 'package:beautilly/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/error/failures.dart';
@@ -9,8 +11,9 @@ import '../models/user_model.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final CacheService _cacheService;
+  final AuthRemoteDataSource remoteDataSource;
 
-  AuthRepositoryImpl(this._cacheService);
+  AuthRepositoryImpl(this._cacheService, this.remoteDataSource);
 
   @override
   Future<Either<Failure, Map<String, dynamic>>> login(
@@ -204,6 +207,16 @@ class AuthRepositoryImpl implements AuthRepository {
       }
     } catch (e) {
       return const Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, String>> refreshToken() async {
+    try {
+      final result = await remoteDataSource.refreshToken();
+      return Right(result);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
     }
   }
 }

@@ -66,5 +66,21 @@ class BookingRepositoryImpl implements BookingRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, void>> cancelAppointment(int appointmentId) async {
+ 
+
+    try {
+      await remoteDataSource.cancelAppointment(appointmentId);
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(e.message));
+    } on UnauthorizedException catch (e) {
+      return Left(AuthFailure(e.message));
+    } catch (e) {
+      return Left(ServerFailure('حدث خطأ غير متوقع'));
+    }
+  }
+
   // باقي التنفيذ مشابه
 } 

@@ -1,4 +1,6 @@
-
+import 'package:beautilly/core/utils/common/custom_app_bar.dart';
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_shops_cubit/service_shops_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +12,7 @@ import '../widgets/service_details/service_shop_card.dart';
 import '../widgets/service_details/service_description.dart';
 import '../cubit/service_shops_cubit/service_shops_cubit.dart';
 import 'package:beautilly/core/utils/shimmer/service_shop_card_shimmer.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ServiceDetailsView extends StatelessWidget {
   final ServiceEntity service;
@@ -21,63 +24,66 @@ class ServiceDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final cubit = sl<ServiceShopsCubit>();
-        cubit.loadShopsByIds(service.shops.map((shop) => shop.id).toList());
-        return cubit;
-      },
-      child: Scaffold(
-        body: CustomScrollView(
-          slivers: [
-            // Header with service image and details
-            ServiceHeader(service: service),
+    print(
+        'Service ${service.name} has ${service.shops.length} shops'); // للتأكد من عدد المتاجر
 
-            // Service description
-            SliverToBoxAdapter(
-              child: ServiceDescription(service: service),
+    return Scaffold(
+      appBar: CustomAppBar(title: service.name),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // صورة الخدمة
+            CachedNetworkImage(
+              imageUrl: service.image,
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
             ),
-            // Shops Grid
-
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              sliver: BlocBuilder<ServiceShopsCubit, ServiceShopsState>(
-                builder: (context, state) {
-                  if (state is ServiceShopsLoading) {
-                    return SliverToBoxAdapter(
-                      child: MasonryGridView.count(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 16,
-                        crossAxisSpacing: 16,
-                        itemCount: 4,
-                        itemBuilder: (context, index) =>
-                            const ServiceShopCardShimmer(),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // وصف الخدمة
+                  Text(
+                    service.description,
+                    style: getRegularStyle(
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                      fontSize: FontSize.size14,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // عنوان المتاجر
+                  Text(
+                    'المتاجر التي تقدم هذه الخدمة',
+                    style: getBoldStyle(
+                      color: Theme.of(context).textTheme.titleLarge?.color,
+                      fontSize: FontSize.size16,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // قائمة المتاجر
+                  if (service.shops.isEmpty)
+                    const Center(
+                      child: Text('لا توجد متاجر متاحة حالياً'),
+                    )
+                  else
+                    MasonryGridView.count(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      itemCount: service.shops.length,
+                      itemBuilder: (context, index) => ServiceShopCard(
+                        shop: service.shops[index],
                       ),
-                    );
-                  }
-
-                  if (state is ServiceShopsLoaded) {
-                    return SliverToBoxAdapter(
-                      child: MasonryGridView.count(
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 16,
-                        crossAxisSpacing: 16,
-                        itemCount: state.shops.length,
-                        itemBuilder: (context, index) => ServiceShopCard(
-                          shop: state.shops[index],
-                        ),
-                      ),
-                    );
-                  }
-
-                  return const SliverToBoxAdapter(child: SizedBox());
-                },
+                    ),
+                ],
               ),
             ),
           ],

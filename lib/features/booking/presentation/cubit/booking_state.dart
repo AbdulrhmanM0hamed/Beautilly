@@ -19,4 +19,17 @@ class BookingError extends BookingState {
 class DatesLoaded extends BookingState {
   final List<AvailableDate> dates;
   DatesLoaded(this.dates);
+}
+
+// إضافة حالات إلغاء الحجز
+class CancelAppointmentLoading extends BookingState {}
+
+class CancelAppointmentSuccess extends BookingState {
+  final String message;
+  CancelAppointmentSuccess([this.message = 'تم إلغاء الحجز بنجاح']);
+}
+
+class CancelAppointmentError extends BookingState {
+  final String message;
+  CancelAppointmentError(this.message);
 } 

@@ -22,42 +22,17 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
   final Set<Marker> _markers = {};
   final LatLng _center = const LatLng(24.7136, 46.6753);
   bool _isMapLoading = true;
-  String? _mapStyle;
   Position? _currentPosition;
 
   @override
   void initState() {
     super.initState();
-    _loadMapStyle();
-    Future.delayed(Duration.zero, () {
-      if (!mounted) return;
-      _showLocationDialog();
-    });
+    _getCurrentLocation();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _loadMapStyle();
-  }
-
-  Future<void> _loadMapStyle() async {
-    try {
-      final isDark = Theme.of(context).brightness == Brightness.dark;
-      final stylePath =
-          isDark ? 'assets/map_style_dark.json' : 'assets/map_style_light.json';
-      final style = await rootBundle.loadString(stylePath);
-
-      setState(() {
-        _mapStyle = style;
-      });
-
-      if (mapController != null && _mapStyle != null) {
-        await mapController!.setMapStyle(_mapStyle);
-      }
-    } catch (e) {
-      debugPrint('Error loading map style: $e');
-    }
   }
 
   void _showLocationDialog() {
@@ -106,10 +81,6 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
   void _onMapCreated(GoogleMapController controller) async {
     mapController = controller;
 
-    if (_mapStyle != null) {
-      await controller.setMapStyle(_mapStyle);
-    }
-
     // تحديث الماركر الافتراضي إذا لم يكن هناك موقع حالي
     if (_currentPosition == null) {
       _markers.add(
@@ -130,6 +101,28 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
     });
   }
 
+  void _showLocationOnMap(double latitude, double longitude) {
+    setState(() {
+      _markers.clear();
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('shop_location'),
+          position: LatLng(latitude, longitude),
+          infoWindow: const InfoWindow(title: 'موقع المتجر'),
+        ),
+      );
+    });
+
+    mapController?.animateCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(latitude, longitude),
+          zoom: 15,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -138,8 +131,7 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           onMapCreated: _onMapCreated,
           initialCameraPosition: CameraPosition(
             target: _currentPosition != null
-                ? LatLng(
-                    _currentPosition!.latitude, _currentPosition!.longitude)
+                ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
                 : _center,
             zoom: 14.0,
             tilt: 0.0,
@@ -151,14 +143,16 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           zoomControlsEnabled: false,
           mapToolbarEnabled: false,
           compassEnabled: true,
-          buildingsEnabled: false,
+          buildingsEnabled: true,
+          indoorViewEnabled: true,
           mapType: MapType.normal,
-          tiltGesturesEnabled: false,
+          tiltGesturesEnabled: true,
           rotateGesturesEnabled: true,
           scrollGesturesEnabled: true,
           zoomGesturesEnabled: true,
+          trafficEnabled: true,
           minMaxZoomPreference: const MinMaxZoomPreference(3, 20),
-          padding: const EdgeInsets.only(bottom: 100),
+          padding: EdgeInsets.zero,
         ),
         if (_isMapLoading)
           Container(
@@ -184,12 +178,13 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           child: DiscoverFilterChips(),
         ),
         DraggableScrollableSheet(
-          initialChildSize: 0.3,
+          initialChildSize: 0.4,
           minChildSize: 0.1,
           maxChildSize: 0.9,
           builder: (context, scrollController) {
             return DiscoverBottomSheet(
               scrollController: scrollController,
+              onLocationSelect: _showLocationOnMap,
             );
           },
         ),

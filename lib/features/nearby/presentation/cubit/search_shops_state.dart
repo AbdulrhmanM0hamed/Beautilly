@@ -1,11 +1,8 @@
-import 'package:equatable/equatable.dart';
-import '../../domain/entities/search_shop.dart';
+import 'package:beautilly/features/Home/data/models/service_model.dart';
 
-abstract class SearchShopsState extends Equatable {
+
+abstract class SearchShopsState {
   const SearchShopsState();
-
-  @override
-  List<Object?> get props => [];
 }
 
 class SearchShopsInitial extends SearchShopsState {}
@@ -13,19 +10,18 @@ class SearchShopsInitial extends SearchShopsState {}
 class SearchShopsLoading extends SearchShopsState {}
 
 class SearchShopsLoaded extends SearchShopsState {
-  final List<SearchShop> shops;
+  final List<dynamic> shops;
 
   const SearchShopsLoaded(this.shops);
-
-  @override
-  List<Object?> get props => [shops];
 }
 
 class SearchShopsError extends SearchShopsState {
   final String message;
 
   const SearchShopsError(this.message);
+}
 
-  @override
-  List<Object?> get props => [message];
+class SearchShopsTypeLoaded extends SearchShopsState {
+  final List<ShopModel> shops;
+  const SearchShopsTypeLoaded(this.shops);
 } 

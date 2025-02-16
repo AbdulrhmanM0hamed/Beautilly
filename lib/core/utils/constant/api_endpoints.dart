@@ -170,6 +170,26 @@ class ApiEndpoints {
 
   // Search Endpoints
   static String searchShops = '$baseUrl/shops/search';
-  static String searchShopsByType({required String type, String? search}) => 
+  static String searchShopsByType({ String? type, String? search}) => 
     '$baseUrl/shops/search?type=$type${search != null ? '&search=$search' : ''}&api_key=$api_key';
+
+  static String filterShops({String? type, String? search}) {
+    final params = <String, String>{
+      'api_key': api_key,
+    };
+    
+    if (type != null && type != 'all') {
+      params['type'] = type;
+    }
+    
+    if (search != null && search.isNotEmpty) {
+      params['search'] = search;
+    }
+
+    final queryString = params.entries
+        .map((e) => '${e.key}=${e.value}')
+        .join('&');
+
+    return '$baseUrl/filter-shops?$queryString';
+  }
 }

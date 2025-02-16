@@ -1,5 +1,7 @@
+import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubit/search_shops_cubit.dart';
@@ -8,10 +10,12 @@ import 'nearby_service_card.dart';
 
 class DiscoverBottomSheet extends StatelessWidget {
   final ScrollController scrollController;
+  final Function(double latitude, double longitude)? onLocationSelect;
 
   const DiscoverBottomSheet({
     super.key,
     required this.scrollController,
+    this.onLocationSelect,
   });
 
   @override
@@ -64,7 +68,9 @@ class DiscoverBottomSheet extends StatelessWidget {
               builder: (context, state) {
                 if (state is SearchShopsLoading) {
                   return const Center(
-                    child: CircularProgressIndicator(),
+                    child: CustomProgressIndcator(
+                      color: AppColors.primary,
+                    ),
                   );
                 }
 
@@ -95,20 +101,20 @@ class DiscoverBottomSheet extends StatelessWidget {
 
                   return ListView.builder(
                     controller: scrollController,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.all(16),
                     itemCount: state.shops.length,
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 16),
                         child: NearbyServiceCard(
                           shop: state.shops[index],
+                          onLocationTap: onLocationSelect,
                         ),
                       );
                     },
                   );
                 }
 
-                // Initial state or when search is cleared
                 return const Center(
                   child: Text(
                     'ابحث عن صالون أو دار أزياء',

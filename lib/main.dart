@@ -1,6 +1,4 @@
-import 'package:beautilly/features/profile/presentation/cubit/favorites_cubit/favorites_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
-import 'package:beautilly/features/splash/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/utils/helper/on_genrated_routes.dart';
@@ -10,7 +8,6 @@ import 'features/auth/presentation/view/signin_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
-import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'app_responsive.dart';
 
 class ResponsiveCardSizes {
-  static CardDimensions getCardDimensions(BuildContext context, BoxConstraints constraints) {
+  static CardDimensions getCardDimensions(
+      BuildContext context, BoxConstraints constraints) {
     final availableWidth = constraints.maxWidth;
     final spacing = availableWidth * 0.02;
     final cardWidth = (availableWidth - (spacing * 3)) / 4;
@@ -19,7 +20,7 @@ class ResponsiveCardSizes {
   static CardInternalSizes getInternalSizes(BoxConstraints constraints) {
     final cardWidth = constraints.maxWidth;
     final cardHeight = constraints.maxHeight;
-    
+
     return CardInternalSizes(
       verticalPadding: cardHeight * 0.1,
       horizontalPadding: cardWidth * 0.1,
@@ -32,7 +33,7 @@ class ResponsiveCardSizes {
   }
 
   static BorderRadius defaultBorderRadius = BorderRadius.circular(16);
-  
+
   static EdgeInsets getPadding(CardInternalSizes sizes) {
     return EdgeInsets.symmetric(
       vertical: sizes.verticalPadding,
@@ -44,16 +45,16 @@ class ResponsiveCardSizes {
     final size = MediaQuery.of(context).size;
     final isTablet = size.width >= AppResponsive.mobileBreakpoint;
     final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
-    
+
     if (isDesktop) {
       // نسب خاصة للشاشات الكبيرة
       return OfferCardDimensions(
-        width: size.width * 0.45,          // عرض أصغر
-        height: size.height * 0.3,         // ارتفاع أصغر
-        cutoutSize: size.width * 0.03,      // دوائر جانبية أصغر
+        width: size.width * 0.45, // عرض أصغر
+        height: size.height * 0.3, // ارتفاع أصغر
+        cutoutSize: size.width * 0.03, // دوائر جانبية أصغر
         horizontalPadding: size.width * 0.02,
         verticalPadding: size.height * 0.01,
-        titleSize: size.width * 0.025,      // خط أصغر للعنوان
+        titleSize: size.width * 0.025, // خط أصغر للعنوان
         descriptionSize: size.width * 0.019, // خط أصغر للوصف
         borderRadius: BorderRadius.circular(20),
         discountCircleSize: size.width * 0.08, // دائرة خصم أصغر
@@ -97,7 +98,7 @@ class ResponsiveCardSizes {
     final size = MediaQuery.of(context).size;
     final isTablet = size.width >= AppResponsive.mobileBreakpoint;
     final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
-    
+
     if (isDesktop) {
       return ServiceGridDimensions(
         crossAxisCount: 4,
@@ -131,13 +132,14 @@ class ResponsiveCardSizes {
     }
   }
 
-  static BeautyServiceCardDimensions getBeautyServiceCardDimensions(BuildContext context) {
+  static BeautyServiceCardDimensions getBeautyServiceCardDimensions(
+      BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+
     // Large Tablet (1280x1880)
     if (size.width >= 1280) {
       return const BeautyServiceCardDimensions(
-        width: 350,  // تقليل العرض قليلاً
+        width: 350, // تقليل العرض قليلاً
         height: 320, // تقليل الارتفاع
         imageHeight: 180, // تقليل ارتفاع الصورة
         padding: 16,
@@ -147,7 +149,7 @@ class ResponsiveCardSizes {
         tagSize: 16,
         iconSize: 23,
       );
-    } 
+    }
     // Medium Tablet (1024x1350)
     else if (size.width >= 1024) {
       return const BeautyServiceCardDimensions(
@@ -209,14 +211,15 @@ class ResponsiveCardSizes {
   // static const double reservationMobileCardHeight = 300.0;
   // static const double reservationMobileImageHeight = 140.0;
 
-  static ReservationCardDimensions getReservationCardDimensions(BuildContext context) {
+  static ReservationCardDimensions getReservationCardDimensions(
+      BuildContext context) {
     final size = MediaQuery.of(context).size;
-    
+
     // Large Tablet (1280x1880)
     if (size.width >= 1280) {
       return const ReservationCardDimensions(
         width: 300,
-        height: 320,                // تقليل من 340
+        height: 320, // تقليل من 340
         imageHeight: 180,
         padding: 16,
         spacing: 16,
@@ -226,12 +229,12 @@ class ResponsiveCardSizes {
         borderRadius: 16,
         statusBadgeHeight: 32,
       );
-    } 
+    }
     // Medium Tablet (1024x1350)
     else if (size.width >= 1024) {
       return const ReservationCardDimensions(
         width: 280,
-        height: 260,                // تقليل من 280
+        height: 260, // تقليل من 280
         imageHeight: 220,
         padding: 14,
         spacing: 14,
@@ -246,7 +249,7 @@ class ResponsiveCardSizes {
     else if (size.width >= 800) {
       return const ReservationCardDimensions(
         width: 260,
-        height: 220,                // تقليل من 260
+        height: 220, // تقليل من 260
         imageHeight: 220,
         padding: 12,
         spacing: 12,
@@ -261,15 +264,65 @@ class ResponsiveCardSizes {
     else {
       return ReservationCardDimensions(
         width: size.width * 0.45,
-        height: 300,                 // زيادة الارتفاع
-        imageHeight: 120,            // زيادة ارتفاع الصورة
-        padding: 6,                  
-        spacing: 2,                  
-        titleSize: FontSize.size10,  
+        height: 300, // زيادة الارتفاع
+        imageHeight: 120, // زيادة ارتفاع الصورة
+        padding: 6,
+        spacing: 2,
+        titleSize: FontSize.size10,
         subtitleSize: FontSize.size9,
         iconSize: 14,
         borderRadius: 8,
         statusBadgeHeight: 20,
+      );
+    }
+  }
+
+  static OrderCardDimensions getOrderCardDimensions(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isTablet = size.width >= AppResponsive.mobileBreakpoint;
+    final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
+
+    if (isDesktop) {
+      return OrderCardDimensions(
+        width: size.width * 0.28,
+        height: size.height * 0.50, // زيادة الارتفاع
+        imageHeight: size.height * 0.22,
+        padding: 12,
+        spacing: 8,
+        titleSize: 14,
+        subtitleSize: 12,
+        iconSize: 16,
+        borderRadius: 12,
+        chipHeight: 26, // تصغير ارتفاع الـ chips
+        avatarSize: 32,
+      );
+    } else if (isTablet) {
+      return OrderCardDimensions(
+        width: size.width * 0.4,
+        height: size.height * 0.45, // زيادة الارتفاع
+        imageHeight: size.height * 0.20,
+        padding: 10,
+        spacing: 8,
+        titleSize: 13,
+        subtitleSize: 11,
+        iconSize: 14,
+        borderRadius: 12,
+        chipHeight: 24, // تصغير ارتفاع الـ chips
+        avatarSize: 28,
+      );
+    } else {
+      return OrderCardDimensions(
+        width: size.width * 0.45, // تقليل العرض
+        height: size.height * 0.40, // زيادة الارتفاع
+        imageHeight: size.height * 0.18,
+        padding: 8,
+        spacing: 6,
+        titleSize: 12,
+        subtitleSize: 10,
+        iconSize: 12,
+        borderRadius: 10,
+        chipHeight: 22, // تصغير ارتفاع الـ chips
+        avatarSize: 24,
       );
     }
   }
@@ -403,4 +456,32 @@ class ReservationCardDimensions {
     required this.borderRadius,
     required this.statusBadgeHeight,
   });
-} 
+}
+
+class OrderCardDimensions {
+  final double width;
+  final double height;
+  final double imageHeight;
+  final double padding;
+  final double spacing;
+  final double titleSize;
+  final double subtitleSize;
+  final double iconSize;
+  final double borderRadius;
+  final double chipHeight;
+  final double avatarSize;
+
+  const OrderCardDimensions({
+    required this.width,
+    required this.height,
+    required this.imageHeight,
+    required this.padding,
+    required this.spacing,
+    required this.titleSize,
+    required this.subtitleSize,
+    required this.iconSize,
+    required this.borderRadius,
+    required this.chipHeight,
+    required this.avatarSize,
+  });
+}

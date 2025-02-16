@@ -1,15 +1,15 @@
 import 'dart:convert';
+import 'package:beautilly/features/Home/data/models/service_model.dart';
+import 'package:beautilly/features/nearby/domain/entities/shop_type.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
 import '../models/search_shop_model.dart';
+import 'package:flutter/foundation.dart';
 
 abstract class SearchShopsRemoteDataSource {
-  Future<List<SearchShopModel>> searchShops({
-    required String query,
-    String? type,
-  });
+  Future<List<SearchShopModel>> filterShops({String? type, String? search});
 }
 
 class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
@@ -22,21 +22,16 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
   });
 
   @override
-  Future<List<SearchShopModel>> searchShops({
-    required String query,
-    String? type,
-  }) async {
+  Future<List<SearchShopModel>> filterShops(
+      {String? type, String? search}) async {
     try {
-      final token = await cacheService.getToken();
       final sessionCookie = await cacheService.getSessionCookie();
+      final token = await cacheService.getToken();
 
-      final queryParams = {
-        'search': query,
-        if (type != null) 'type': type,
-      };
+      final url = ApiEndpoints.filterShops(type: type, search: search);
 
       final response = await client.get(
-        Uri.parse(ApiEndpoints.searchShops).replace(queryParameters: queryParams),
+        Uri.parse(url),
         headers: {
           if (token != null) 'Authorization': 'Bearer $token',
           'x-api-key': ApiEndpoints.api_key,
@@ -46,21 +41,20 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
       );
 
       if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        if (jsonResponse['success'] == true) {
-          final shopsData = jsonResponse['data']['shops'] as List;
-          return shopsData
-              .map((shop) => SearchShopModel.fromJson(shop))
-              .toList();
+        final data = json.decode(response.body);
+
+        if (data['success'] == true) {
+          final List<dynamic> shops = data['data']['shops'] as List;
+          return shops.map((shop) => SearchShopModel.fromJson(shop)).toList();
         } else {
-          throw ServerException(
-              jsonResponse['message'] ?? 'فشل في البحث عن المتاجر');
+          throw ServerException('لا توجد نتائج');
         }
       } else {
-        throw ServerException('فشل في البحث عن المتاجر');
+        final error = json.decode(response.body);
+        throw ServerException(error['message'] ?? 'حدث خطأ في البحث');
       }
     } catch (e) {
-      throw ServerException('حدث خطأ غير متوقع');
+      throw ServerException(e.toString());
     }
   }
-} 
+}

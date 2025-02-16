@@ -405,7 +405,7 @@ Future<void> init() async {
 
   // Repositories
   sl.registerLazySingleton<SearchShopsRepository>(
-    () => SearchShopsRepositoryImpl(sl()),
+    () => SearchShopsRepositoryImpl(remoteDataSource:  sl()),
   );
 
   // Data sources

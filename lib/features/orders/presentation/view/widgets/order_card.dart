@@ -1,26 +1,29 @@
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
+
+import 'package:beautilly/core/utils/theme/app_theme.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/orders/domain/entities/order.dart';
 import 'package:beautilly/features/orders/presentation/view/order_details_view.dart';
+import 'package:beautilly/features/reservations/presentation/view/widgets/shimmer_effect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../../core/utils/constant/font_manger.dart';
 import '../../../../../core/utils/constant/styles_manger.dart';
 import '../../../../../core/utils/theme/app_colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';
 import 'package:beautilly/core/utils/common/custom_dialog_button.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 
 class OrderCard extends StatefulWidget {
   final OrderEntity order;
   final bool isMyRequest;
   final Function(int)? onDelete;
- 
+
   const OrderCard({
     super.key,
     required this.order,
@@ -37,6 +40,9 @@ class _OrderCardState extends State<OrderCard> {
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = ResponsiveCardSizes.getOrderCardDimensions(context);
+    final colors = Theme.of(context).extension<CustomColors>()!;
+
     return Stack(
       children: [
         GestureDetector(
@@ -94,325 +100,170 @@ class _OrderCardState extends State<OrderCard> {
                 _isLoading ? SystemMouseCursors.wait : SystemMouseCursors.click,
             child: Opacity(
               opacity: _isLoading ? 0.7 : 1.0,
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.only(bottom: 12),
+              child: Container(
+                width: dimensions.width,
+                height: dimensions.height,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(16),
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Theme.of(context).cardColor,
-                      Theme.of(context).cardColor.withOpacity(0.9),
-                    ],
-                  ),
+                  color: colors.cardContentBg,
+                  borderRadius: BorderRadius.circular(dimensions.borderRadius),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      spreadRadius: 2,
-                      offset: const Offset(0, 4),
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: dimensions.borderRadius,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Header & Image Section
-                    Stack(
-                      children: [
-                        // Image
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16)),
-                          child: CachedNetworkImage(
-                            imageUrl: widget.order.images.medium,
-                            height: 160,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Shimmer.fromColors(
-                              baseColor: Colors.grey[300]!,
-                              highlightColor: Colors.grey[100]!,
-                              child: Container(
-                                height: 160,
-                                color: Colors.white,
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              height: 160,
-                              color: Colors.grey[100],
-                              child: const Icon(Icons.error_outline,
-                                  color: Colors.grey),
-                            ),
-                          ),
-                        ),
-                        // Gradient Overlay
-                        Container(
-                          height: 160,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(16)),
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.black.withOpacity(0.6),
-                              ],
-                            ),
-                          ),
-                        ),
-                        // Status Badge
-                        Positioned(
-                          top: 12,
-                          right: 12,
-                          child: _buildStatusBadge(),
-                        ),
-                        // User Info
-                        Positioned(
-                          bottom: 12,
-                          left: 12,
-                          right: 12,
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 18,
-                                backgroundColor: Colors.white,
-                                child: widget.order.customer.avatar != null
-                                    ? ClipOval(
-                                        child: CachedNetworkImage(
-                                          imageUrl:
-                                              "https://dallik.com/storage/${widget.order.customer.avatar}",
-                                          width: 36,
-                                          height: 36,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) =>
-                                              const CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            color: AppColors.primary,
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              _buildAvatarText(),
-                                        ),
-                                      )
-                                    : _buildAvatarText(),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      widget.order.customer.name,
-                                      style: getMediumStyle(
-                                        fontFamily: FontConstant.cairo,
-                                        color: Colors.white,
-                                        fontSize: FontSize.size16,
-                                      ),
-                                    ),
-                                    Text(
-                                      'طلب #${widget.order.id}',
-                                      style: getRegularStyle(
-                                        fontFamily: FontConstant.cairo,
-                                        color: Colors.white.withOpacity(0.8),
-                                        fontSize: FontSize.size12,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    // Details Section
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    // Header with Image
+                    SizedBox(
+                      height: dimensions.imageHeight,
+                      child: Stack(
+                        fit: StackFit.expand,
                         children: [
-                          // Description
-
-                          Row(
-                            children: [
-                              Text(
-                                widget.order.description,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: getRegularStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  fontSize: FontSize.size14,
+                          // Order Image
+                          ClipRRect(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(dimensions.borderRadius),
+                            ),
+                            child: CachedNetworkImage(
+                              imageUrl: widget.order.images.main,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) =>
+                                  const ShimmerEffect(
+                                height: double.infinity,
+                                width: double.infinity,
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.grey[200],
+                                child: Icon(
+                                  Icons.design_services_outlined,
+                                  size: dimensions.iconSize * 2,
+                                  color: Colors.grey[400],
                                 ),
                               ),
-                              Spacer(),
-                              // إضافة تاريخ الإنشاء هنا
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const Icon(
-                                          Icons.access_time_rounded,
-                                          size: 14,
-                                          color: AppColors.primary,
-                                        ),
-                                        const SizedBox(width: 4),
-                                        Text(
-                                          _formatDate(widget.order.createdAt),
-                                          style: getRegularStyle(
-                                            fontFamily: FontConstant.cairo,
-                                            fontSize: FontSize.size12,
-                                            color: AppColors.primary,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                            ),
+                          ),
+                          // Gradient Overlay
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.black.withOpacity(0.7),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                          const SizedBox(height: 8),
-
-                          const SizedBox(height: 16),
-
-                          // Measurements & Fabrics
-                          Wrap(
-                            spacing: 8,
-                            runSpacing: 8,
-                            children: [
-                              _buildInfoChip(
-                                Icons.height,
-                                '${widget.order.height} سم',
-                                AppColors.primary.withOpacity(0.1),
-                              ),
-                              _buildInfoChip(
-                                Icons.monitor_weight_outlined,
-                                '${widget.order.weight} كجم',
-                                AppColors.primary.withOpacity(0.1),
-                              ),
-                              _buildInfoChip(
-                                Icons.straighten,
-                                widget.order.size,
-                                AppColors.primary.withOpacity(0.1),
-                              ),
-                              ...widget.order.fabrics
-                                  .map((fabric) => _buildInfoChip(
-                                        Icons.format_paint_outlined,
-                                        fabric.type,
-                                        _getColorFromHex(fabric.color)
-                                            .withOpacity(0.1),
-                                        textColor:
-                                            _getColorFromHex(fabric.color),
-                                      )),
-                            ],
-                          ),
-                          // Actions
-                          if (widget.isMyRequest) ...[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                          // Status & Date
+                          Padding(
+                            padding: EdgeInsets.all(dimensions.padding),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                IconButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (context) => AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                        ),
-                                        title: Text(
-                                          'تأكيد الحذف',
-                                          style: getBoldStyle(
-                                            fontFamily: FontConstant.cairo,
-                                            fontSize: FontSize.size18,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    _buildStatusChip(dimensions),
+                                    _buildDateChip(dimensions),
+                                  ],
+                                ),
+                                const Spacer(),
+                                // Customer Info
+                                Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: dimensions.avatarSize / 2,
+                                      backgroundColor: Colors.white,
+                                      child: _buildCustomerAvatar(dimensions),
+                                    ),
+                                    SizedBox(width: dimensions.spacing),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            widget.order.customer.name,
+                                            style: getBoldStyle(
+                                              color: Colors.white,
+                                              fontSize: dimensions.titleSize,
+                                              fontFamily: FontConstant.cairo,
+                                            ),
                                           ),
-                                        ),
-                                        content: Text(
-                                          'هل أنت متأكد من حذف هذا الطلب؟',
-                                          style: getRegularStyle(
-                                            fontFamily: FontConstant.cairo,
-                                            fontSize: FontSize.size14,
-                                          ),
-                                        ),
-                                        actions: [
-                                          Container(
-                                            margin: const EdgeInsets.only(
-                                                bottom: 8, left: 8, right: 8),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Expanded(
-                                                  child: CustomDialogButton(
-                                                    text: 'إلغاء',
-                                                    onPressed: () =>
-                                                        Navigator.pop(context),
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 12),
-                                                Expanded(
-                                                  child: CustomDialogButton(
-                                                    text: 'حذف',
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                      widget.onDelete?.call(
-                                                          widget.order.id);
-                                                    },
-                                                    isDestructive: true,
-                                                  ),
-                                                ),
-                                              ],
+                                          Text(
+                                            'طلب #${widget.order.id}',
+                                            style: getMediumStyle(
+                                              color: Colors.white70,
+                                              fontSize: dimensions.subtitleSize,
+                                              fontFamily: FontConstant.cairo,
                                             ),
                                           ),
                                         ],
                                       ),
-                                    );
-                                  },
-                                  icon: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        color: AppColors.error,
-                                      ),
-                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          'assets/icons/trash.svg',
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          'حذف الطلب',
-                                          style: getRegularStyle(
-                                            fontFamily: FontConstant.cairo,
-                                            color: AppColors.error,
-                                            fontSize: FontSize.size12,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  color: AppColors.error,
-                                  tooltip: 'حذف',
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ],
+                      ),
+                    ),
+
+                    // Order Details
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(dimensions.padding),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.order.description,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: getRegularStyle(
+                                fontSize: dimensions.subtitleSize,
+                                fontFamily: FontConstant.cairo,
+                              ),
+                            ),
+                            SizedBox(height: dimensions.spacing),
+                            // Measurements & Fabrics
+                            Wrap(
+                              spacing: dimensions.spacing,
+                              runSpacing: dimensions.spacing / 2,
+                              children: [
+                                _buildMeasurementChip(
+                                  Icons.height,
+                                  '${widget.order.height} سم',
+                                  dimensions,
+                                ),
+                                _buildMeasurementChip(
+                                  Icons.monitor_weight_outlined,
+                                  '${widget.order.weight} كجم',
+                                  dimensions,
+                                ),
+                                _buildMeasurementChip(
+                                  Icons.straighten,
+                                  widget.order.size,
+                                  dimensions,
+                                ),
+                                ...widget.order.fabrics.map((fabric) =>
+                                    _buildFabricChip(fabric, dimensions)),
+                              ],
+                            ),
+                            const Spacer(),
+                            // Delete Button
+                            if (widget.isMyRequest &&
+                                widget.order.status == 'pending')
+                              _buildDeleteButton(dimensions),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -439,7 +290,7 @@ class _OrderCardState extends State<OrderCard> {
     );
   }
 
-  Widget _buildStatusBadge() {
+  Widget _buildStatusChip(OrderCardDimensions dimensions) {
     Color statusColor;
     IconData statusIcon;
 
@@ -492,12 +343,107 @@ class _OrderCardState extends State<OrderCard> {
     );
   }
 
-  Widget _buildInfoChip(IconData icon, String label, Color backgroundColor,
-      {Color? textColor}) {
+  Widget _buildDateChip(OrderCardDimensions dimensions) {
+    // حساب الفرق بين التاريخ الحالي وتاريخ إنشاء الطلب
+    final difference = DateTime.now().difference(widget.order.createdAt);
+
+    if (difference.inDays == 0) {
+      if (difference.inHours == 0) {
+        return Text(
+          'منذ ${difference.inMinutes} دقيقة',
+          style: getRegularStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size12,
+            color: Colors.white70,
+          ),
+        );
+      }
+      return Text(
+        'منذ ${difference.inHours} ساعة',
+        style: getRegularStyle(
+          fontFamily: FontConstant.cairo,
+          fontSize: FontSize.size12,
+          color: Colors.white70,
+        ),
+      );
+    } else if (difference.inDays < 7) {
+      return Text(
+        'منذ ${difference.inDays} يوم',
+        style: getRegularStyle(
+          fontFamily: FontConstant.cairo,
+          fontSize: FontSize.size12,
+          color: Colors.white70,
+        ),
+      );
+    } else {
+      // تنسيق التاريخ بالشكل المطلوب
+      return Text(
+        '${widget.order.createdAt.day}/${widget.order.createdAt.month}/${widget.order.createdAt.year}',
+        style: getRegularStyle(
+          fontFamily: FontConstant.cairo,
+          fontSize: FontSize.size12,
+          color: Colors.white70,
+        ),
+      );
+    }
+  }
+
+  Widget _buildCustomerAvatar(OrderCardDimensions dimensions) {
+    if (widget.order.customer.avatar != null) {
+      return ClipOval(
+        child: CachedNetworkImage(
+          imageUrl:
+              "https://dallik.com/storage/${widget.order.customer.avatar}",
+          width: dimensions.avatarSize,
+          height: dimensions.avatarSize,
+          fit: BoxFit.cover,
+          placeholder: (context, url) => const CircularProgressIndicator(
+            strokeWidth: 2,
+            color: AppColors.primary,
+          ),
+          errorWidget: (context, url, error) => _buildAvatarText(dimensions),
+        ),
+      );
+    } else {
+      return _buildAvatarText(dimensions);
+    }
+  }
+
+  Widget _buildAvatarText(OrderCardDimensions dimensions) {
+    return Text(
+      widget.order.customer.name[0].toUpperCase(),
+      style: getBoldStyle(
+        fontFamily: FontConstant.cairo,
+        color: AppColors.primary,
+        fontSize: FontSize.size16,
+      ),
+    );
+  }
+
+  Widget _buildMeasurementChip(
+      IconData icon, String label, OrderCardDimensions dimensions) {
+    return _buildInfoChip(
+        icon, label, dimensions.chipHeight, dimensions.chipHeight);
+  }
+
+  Widget _buildFabricChip(Fabric fabric, OrderCardDimensions dimensions) {
+    return _buildInfoChip(
+      Icons.format_paint_outlined,
+      fabric.type,
+      dimensions.chipHeight,
+      dimensions.chipHeight,
+      textColor: _getColorFromHex(fabric.color),
+    );
+  }
+
+  Widget _buildInfoChip(
+      IconData icon, String label, double height, double width,
+      {Color? textColor} // إضافة معامل اختياري للون النص
+      ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color:
@@ -518,6 +464,7 @@ class _OrderCardState extends State<OrderCard> {
             style: getRegularStyle(
               fontFamily: FontConstant.cairo,
               fontSize: FontSize.size12,
+              color: textColor,
             ),
           ),
         ],
@@ -537,31 +484,91 @@ class _OrderCardState extends State<OrderCard> {
     }
   }
 
-  String _formatDate(DateTime date) {
-    // حساب الفرق بين التاريخ الحالي وتاريخ إنشاء الطلب
-    final difference = DateTime.now().difference(date);
-
-    if (difference.inDays == 0) {
-      if (difference.inHours == 0) {
-        return 'منذ ${difference.inMinutes} دقيقة';
-      }
-      return 'منذ ${difference.inHours} ساعة';
-    } else if (difference.inDays < 7) {
-      return 'منذ ${difference.inDays} يوم';
-    } else {
-      // تنسيق التاريخ بالشكل المطلوب
-      return '${date.day}/${date.month}/${date.year}';
-    }
-  }
-
-  Widget _buildAvatarText() {
-    return Text(
-      widget.order.customer.name[0].toUpperCase(),
-      style: getBoldStyle(
-        fontFamily: FontConstant.cairo,
-        color: AppColors.primary,
-        fontSize: FontSize.size16,
-      ),
+  Widget _buildDeleteButton(OrderCardDimensions dimensions) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                title: Text(
+                  'تأكيد الحذف',
+                  style: getBoldStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size18,
+                  ),
+                ),
+                content: Text(
+                  'هل أنت متأكد من حذف هذا الطلب؟',
+                  style: getRegularStyle(
+                    fontFamily: FontConstant.cairo,
+                    fontSize: FontSize.size14,
+                  ),
+                ),
+                actions: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: CustomDialogButton(
+                            text: 'إلغاء',
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: CustomDialogButton(
+                            text: 'حذف',
+                            onPressed: () {
+                              Navigator.pop(context);
+                              widget.onDelete?.call(widget.order.id);
+                            },
+                            isDestructive: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          icon: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: AppColors.error,
+              ),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              children: [
+                SvgPicture.asset(
+                  'assets/icons/trash.svg',
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'حذف الطلب',
+                  style: getRegularStyle(
+                    fontFamily: FontConstant.cairo,
+                    color: AppColors.error,
+                    fontSize: FontSize.size12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          color: AppColors.error,
+          tooltip: 'حذف',
+        ),
+      ],
     );
   }
 }

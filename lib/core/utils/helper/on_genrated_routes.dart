@@ -6,7 +6,6 @@ import 'package:beautilly/features/auth/presentation/view/signup_view.dart';
 import 'package:beautilly/features/onboarding/presentation/view/onboarding_view.dart';
 import 'package:beautilly/features/orders/presentation/view/add_order_view.dart';
 import 'package:beautilly/features/splash/view/splash_view.dart';
-import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../features/orders/presentation/cubit/add_order_cubit/add_order_cubit.dart';

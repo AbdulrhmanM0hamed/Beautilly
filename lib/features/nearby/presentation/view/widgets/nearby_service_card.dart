@@ -9,10 +9,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class NearbyServiceCard extends StatelessWidget {
   final SearchShop shop;
+  final Function(double latitude, double longitude)? onLocationTap;
 
   const NearbyServiceCard({
     super.key,
     required this.shop,
+    this.onLocationTap,
   });
 
   @override
@@ -30,7 +32,7 @@ class NearbyServiceCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: const BorderRadius.horizontal(right: Radius.circular(8)),
                 child: CachedNetworkImage(
-                  imageUrl: shop.mainImageUrl,
+                  imageUrl: shop.mainImage.medium,
                   width: 120,
                   height: 120,
                   fit: BoxFit.cover,
@@ -119,17 +121,8 @@ class NearbyServiceCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        shop.avgRating.toStringAsFixed(1),
+                        shop.rating.toStringAsFixed(1),
                         style: getBoldStyle(
-                          fontSize: FontSize.size12,
-                          fontFamily: FontConstant.cairo,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '(${shop.loversCount})',
-                        style: getMediumStyle(
-                          color: AppColors.grey,
                           fontSize: FontSize.size12,
                           fontFamily: FontConstant.cairo,
                         ),
@@ -143,46 +136,47 @@ class NearbyServiceCard extends StatelessWidget {
                           color: AppColors.primary.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: SvgPicture.asset(
-                          AppAssets.direction,
-                          colorFilter: const ColorFilter.mode(
-                            AppColors.primary,
-                            BlendMode.srcIn,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (shop.location.latitude != null && 
+                                shop.location.longitude != null &&
+                                onLocationTap != null) {
+                              onLocationTap!(
+                                shop.location.latitude!,
+                                shop.location.longitude!,
+                              );
+                            }
+                          },
+                          child: SvgPicture.asset(
+                            AppAssets.direction,
+                            colorFilter: const ColorFilter.mode(
+                              AppColors.primary,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
-                  if (shop.services.isNotEmpty)
-                    SizedBox(
-                      height: 24,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: shop.services.length.clamp(0, 2),
-                        separatorBuilder: (context, index) => const SizedBox(width: 8),
-                        itemBuilder: (context, index) {
-                          return Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              shop.services[index].name,
-                              style: getMediumStyle(
-                                color: AppColors.primary,
-                                fontSize: FontSize.size10,
-                                fontFamily: FontConstant.cairo,
-                              ),
-                            ),
-                          );
-                        },
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      shop.typeName,
+                      style: getMediumStyle(
+                        color: AppColors.primary,
+                        fontSize: FontSize.size10,
+                        fontFamily: FontConstant.cairo,
                       ),
                     ),
+                  ),
                 ],
               ),
             ),

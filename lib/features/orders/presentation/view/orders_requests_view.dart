@@ -1,6 +1,8 @@
+import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/responsive/app_responsive.dart';
 
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
@@ -11,6 +13,7 @@ import 'package:beautilly/features/orders/presentation/cubit/orders_state.dart';
 import 'package:beautilly/features/orders/presentation/view/add_order_view.dart';
 import 'package:beautilly/features/orders/presentation/view/widgets/all_oreder_widget.dart';
 import 'package:beautilly/features/orders/presentation/view/widgets/my_orders_widget.dart';
+import 'package:beautilly/features/orders/presentation/view/widgets/order_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
@@ -178,5 +181,148 @@ class _RefreshableOrdersListState extends State<RefreshableOrdersList> {
         child: widget.child,
       ),
     );
+  }
+}
+
+class MyOrdersWidget extends StatelessWidget {
+  const MyOrdersWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isTablet = size.width >= AppResponsive.mobileBreakpoint;
+    final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
+
+    return BlocBuilder<OrdersCubit, OrdersState>(
+      builder: (context, state) {
+        if (state is OrdersLoading) {
+          return const Center(
+            child: CustomProgressIndcator(color: AppColors.primary),
+          );
+        }
+
+        if (state is OrdersSuccess) {
+          final orders = state.orders;
+
+          if (orders.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.design_services_outlined,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'لا توجد طلبات',
+                    style: getMediumStyle(
+                      color: Colors.grey[600]!,
+                      fontSize: FontSize.size16,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<OrdersCubit>().loadMyOrders();
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: isDesktop ? 24 : 16,
+              ),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: _getCrossAxisCount(size.width),
+                  childAspectRatio: _getChildAspectRatio(size.width),
+                  crossAxisSpacing: isDesktop ? 24 : 16,
+                  mainAxisSpacing: isDesktop ? 24 : 16,
+                ),
+                itemCount: orders.length,
+                itemBuilder: (context, index) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(
+                      value: context.read<OrdersCubit>(),
+                    ),
+                    BlocProvider.value(
+                      value: context.read<DeleteOrderCubit>(),
+                    ),
+                  ],
+                  child: OrderCard(
+                    order: orders[index],
+                    isMyRequest: true,
+                    onDelete: (id) {
+                      context.read<DeleteOrderCubit>().deleteOrder(id);
+                    },
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (state is OrdersError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Colors.red[300],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  state.message,
+                  style: getMediumStyle(
+                    color: Colors.red[600]!,
+                    fontSize: FontSize.size16,
+                    fontFamily: FontConstant.cairo,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    context.read<OrdersCubit>().loadMyOrders();
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('إعادة المحاولة'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return const SizedBox();
+      },
+    );
+  }
+
+  int _getCrossAxisCount(double width) {
+    if (width >= 1200) return 3; // Desktop
+    if (width >= 800) return 3; // Tablet
+    return 2; // Mobile
+  }
+
+  double _getChildAspectRatio(double width) {
+    if (width >= 1000) return 1.38; // Desktop
+    if (width >= 800) return 0.70; // Tablet
+    if (width >= 600) return 1.24; // Tablet
+    return 0.52; // Mobile
   }
 }

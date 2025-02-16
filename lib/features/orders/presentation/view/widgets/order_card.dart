@@ -169,7 +169,7 @@ class _OrderCardState extends State<OrderCard> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     _buildStatusChip(dimensions),
-                                    _buildDateChip(dimensions),
+                                    const SizedBox(width: 4),
                                   ],
                                 ),
                                 const Spacer(),
@@ -188,13 +188,21 @@ class _OrderCardState extends State<OrderCard> {
                                             CrossAxisAlignment.start,
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Text(
-                                            widget.order.customer.name,
-                                            style: getBoldStyle(
-                                              color: Colors.white,
-                                              fontSize: dimensions.titleSize,
-                                              fontFamily: FontConstant.cairo,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                widget.order.customer.name,
+                                                style: getBoldStyle(
+                                                  color: Colors.white,
+                                                  fontSize:
+                                                      dimensions.titleSize,
+                                                  fontFamily:
+                                                      FontConstant.cairo,
+                                                ),
+                                              ),
+                                              const Spacer(),
+                                              _buildDateChip(dimensions),
+                                            ],
                                           ),
                                           Text(
                                             'طلب #${widget.order.id}',
@@ -222,45 +230,53 @@ class _OrderCardState extends State<OrderCard> {
                         padding: EdgeInsets.all(dimensions.padding),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              widget.order.description,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: getRegularStyle(
-                                fontSize: dimensions.subtitleSize,
-                                fontFamily: FontConstant.cairo,
-                              ),
-                            ),
-                            SizedBox(height: dimensions.spacing),
-                            // Measurements & Fabrics
-                            Wrap(
-                              spacing: dimensions.spacing,
-                              runSpacing: dimensions.spacing / 2,
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                _buildMeasurementChip(
-                                  Icons.height,
-                                  '${widget.order.height} سم',
-                                  dimensions,
+                                Text(
+                                  widget.order.description,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: getMediumStyle(
+                                    
+                                    fontSize: dimensions.subtitleSize,
+                                    fontFamily: FontConstant.cairo,
+                                  ),
                                 ),
-                                _buildMeasurementChip(
-                                  Icons.monitor_weight_outlined,
-                                  '${widget.order.weight} كجم',
-                                  dimensions,
+                                SizedBox(height: dimensions.spacing),
+                                // Measurements & Fabrics
+                                Wrap(
+                                  spacing: dimensions.spacing,
+                                  runSpacing: dimensions.spacing / 2,
+                                  children: [
+                                    _buildMeasurementChip(
+                                      Icons.height,
+                                      '${widget.order.height} سم',
+                                      dimensions,
+                                    ),
+                                    _buildMeasurementChip(
+                                      Icons.monitor_weight_outlined,
+                                      '${widget.order.weight} كجم',
+                                      dimensions,
+                                    ),
+                                    _buildMeasurementChip(
+                                      Icons.straighten,
+                                      widget.order.size,
+                                      dimensions,
+                                    ),
+                                    ...widget.order.fabrics.map((fabric) =>
+                                        _buildFabricChip(fabric, dimensions)),
+                                    const SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
                                 ),
-                                _buildMeasurementChip(
-                                  Icons.straighten,
-                                  widget.order.size,
-                                  dimensions,
-                                ),
-                                ...widget.order.fabrics.map((fabric) =>
-                                    _buildFabricChip(fabric, dimensions)),
                               ],
                             ),
-                            const Spacer(),
-                            // Delete Button
                             if (widget.isMyRequest &&
-                                widget.order.status == 'pending')
+                                widget.order.status == 'uncompleted')
                               _buildDeleteButton(dimensions),
                           ],
                         ),
@@ -303,7 +319,7 @@ class _OrderCardState extends State<OrderCard> {
         statusColor = Colors.blue;
         statusIcon = Icons.pending;
         break;
-      case 'pending':
+      case 'uncompleted':
         statusColor = Colors.orange;
         statusIcon = Icons.schedule;
         break;
@@ -313,7 +329,7 @@ class _OrderCardState extends State<OrderCard> {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -329,7 +345,7 @@ class _OrderCardState extends State<OrderCard> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(statusIcon, size: 16, color: statusColor),
-          const SizedBox(width: 4),
+          const SizedBox(width: 2),
           Text(
             widget.order.statusLabel,
             style: getMediumStyle(
@@ -349,12 +365,19 @@ class _OrderCardState extends State<OrderCard> {
 
     if (difference.inDays == 0) {
       if (difference.inHours == 0) {
-        return Text(
-          'منذ ${difference.inMinutes} دقيقة',
-          style: getRegularStyle(
-            fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size12,
-            color: Colors.white70,
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+          decoration: BoxDecoration(
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Text(
+            'منذ ${difference.inMinutes} دقيقة',
+            style: getRegularStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size12,
+              color: Colors.white70,
+            ),
           ),
         );
       }
@@ -367,19 +390,26 @@ class _OrderCardState extends State<OrderCard> {
         ),
       );
     } else if (difference.inDays < 7) {
-      return Text(
-        'منذ ${difference.inDays} يوم',
-        style: getRegularStyle(
-          fontFamily: FontConstant.cairo,
-          fontSize: FontSize.size12,
-          color: Colors.white70,
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6,),
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.28),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          'منذ ${difference.inDays} يوم',
+          style: getRegularStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size12,
+            color: Colors.white70,
+          ),
         ),
       );
     } else {
       // تنسيق التاريخ بالشكل المطلوب
       return Text(
         '${widget.order.createdAt.day}/${widget.order.createdAt.month}/${widget.order.createdAt.year}',
-        style: getRegularStyle(
+        style: getMediumStyle(
           fontFamily: FontConstant.cairo,
           fontSize: FontSize.size12,
           color: Colors.white70,
@@ -441,13 +471,12 @@ class _OrderCardState extends State<OrderCard> {
       {Color? textColor} // إضافة معامل اختياري للون النص
       ) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color:
-              textColor?.withOpacity(0.2) ?? AppColors.primary.withOpacity(0.2),
+              textColor?.withOpacity(0.3) ?? AppColors.primary.withOpacity(0.2),
         ),
       ),
       child: Row(
@@ -485,90 +514,81 @@ class _OrderCardState extends State<OrderCard> {
   }
 
   Widget _buildDeleteButton(OrderCardDimensions dimensions) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        IconButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) => AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                title: Text(
-                  'تأكيد الحذف',
-                  style: getBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size18,
-                  ),
-                ),
-                content: Text(
-                  'هل أنت متأكد من حذف هذا الطلب؟',
-                  style: getRegularStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size14,
-                  ),
-                ),
-                actions: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: CustomDialogButton(
-                            text: 'إلغاء',
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: CustomDialogButton(
-                            text: 'حذف',
-                            onPressed: () {
-                              Navigator.pop(context);
-                              widget.onDelete?.call(widget.order.id);
-                            },
-                            isDestructive: true,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+    return SizedBox(
+      width: double.infinity,
+      child: TextButton.icon(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-            );
-          },
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: AppColors.error,
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  'assets/icons/trash.svg',
+              title: Text(
+                'تأكيد الحذف',
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size18,
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  'حذف الطلب',
-                  style: getRegularStyle(
-                    fontFamily: FontConstant.cairo,
-                    color: AppColors.error,
-                    fontSize: FontSize.size12,
+              ),
+              content: Text(
+                'هل أنت متأكد من حذف هذا الطلب؟',
+                style: getRegularStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size14,
+                ),
+              ),
+              actions: [
+                Container(
+                  margin: const EdgeInsets.only(bottom: 8, left: 8, right: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: CustomDialogButton(
+                          text: 'إلغاء',
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: CustomDialogButton(
+                          text: 'حذف',
+                          onPressed: () {
+                            Navigator.pop(context);
+                            widget.onDelete?.call(widget.order.id);
+                          },
+                          isDestructive: true,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
+          );
+        },
+        icon: SvgPicture.asset(
+          'assets/icons/trash.svg',
           color: AppColors.error,
-          tooltip: 'حذف',
+          width: 18,
+          height: 18,
         ),
-      ],
+        label: Text(
+          'حذف الطلب',
+          style: getRegularStyle(
+            fontFamily: FontConstant.cairo,
+            color: AppColors.error,
+            fontSize: FontSize.size12,
+          ),
+        ),
+        style: TextButton.styleFrom(
+          side: const BorderSide(color: AppColors.error),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+      ),
     );
   }
 }

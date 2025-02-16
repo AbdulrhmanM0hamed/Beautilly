@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'package:beautilly/features/Home/data/models/service_model.dart';
-import 'package:beautilly/features/nearby/domain/entities/shop_type.dart';
+
 import 'package:http/http.dart' as http;
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
 import '../models/search_shop_model.dart';
-import 'package:flutter/foundation.dart';
 
 abstract class SearchShopsRemoteDataSource {
   Future<List<SearchShopModel>> filterShops({String? type, String? search});

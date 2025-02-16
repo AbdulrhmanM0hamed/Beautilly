@@ -290,7 +290,7 @@ class ResponsiveCardSizes {
         padding: 12,
         spacing: 8,
         titleSize: 14,
-        subtitleSize: 12,
+        subtitleSize: 14,
         iconSize: 16,
         borderRadius: 12,
         chipHeight: 26, // تصغير ارتفاع الـ chips
@@ -304,7 +304,7 @@ class ResponsiveCardSizes {
         padding: 10,
         spacing: 8,
         titleSize: 13,
-        subtitleSize: 11,
+        subtitleSize: 14,
         iconSize: 14,
         borderRadius: 12,
         chipHeight: 24, // تصغير ارتفاع الـ chips
@@ -318,7 +318,7 @@ class ResponsiveCardSizes {
         padding: 8,
         spacing: 6,
         titleSize: 12,
-        subtitleSize: 10,
+        subtitleSize: 12,
         iconSize: 12,
         borderRadius: 10,
         chipHeight: 22, // تصغير ارتفاع الـ chips

@@ -6,7 +6,6 @@ import 'package:beautilly/features/nearby/presentation/view/widgets/discover_fil
 import 'package:beautilly/features/nearby/presentation/view/widgets/discover_location_button.dart';
 import 'package:beautilly/features/nearby/presentation/view/widgets/discover_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 

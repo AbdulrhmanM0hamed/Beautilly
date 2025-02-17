@@ -172,9 +172,10 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
   }
 
   double _getChildAspectRatio(double width) {
-    if (width >= 1000) return 1.38; // Desktop - تقليل الارتفاع
+    if (width >= 1000) return 1.15; // Desktop - تقليل الارتفاع
     if (width == 800) return 1.1;
     if (width >= 600) return 1.24;
+    if (width < 360) return 0.72;
     // Tablet - تقليل الارتفاع
     return 0.90; // Mobile - زيادة الارتفاع
   }

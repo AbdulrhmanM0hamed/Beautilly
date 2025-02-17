@@ -323,8 +323,8 @@ class MyOrdersWidget extends StatelessWidget {
     if (width > 800) return 0.58;
     if (width >= 400 && width <= 600) return 0.55;
     if (width == 360) return 0.50;
-    if (width >= 320 && width <= 390) return 0.52;
-
+    if (width >= 320 && width <= 390) return 0.46;
+    
     return 0.65; // Mobile
   }
 }

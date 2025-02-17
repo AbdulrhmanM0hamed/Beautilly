@@ -285,7 +285,7 @@ class ResponsiveCardSizes {
     if (isDesktop) {
       return OrderCardDimensions(
         width: size.width * 0.31,
-        height: size.height * 9, // زيادة الارتفاع
+        height: size.height * 95, // زيادة الارتفاع
         imageHeight: size.height * 0.22,
         padding: 12,
         spacing: 8,
@@ -313,7 +313,7 @@ class ResponsiveCardSizes {
     } else {
       return OrderCardDimensions(
         width: size.width * 0.45, // تقليل العرض
-        height: size.height * 0.45, // زيادة الارتفاع
+        height: size.height * 0.51, // زيادة الارتفاع
         imageHeight: size.height * 0.18,
         padding: 8,
         spacing: 6,

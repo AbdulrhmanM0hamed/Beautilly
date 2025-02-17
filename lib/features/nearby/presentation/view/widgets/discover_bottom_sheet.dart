@@ -154,11 +154,9 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                             itemBuilder: (context, index) {
                               if (index == state.shops.length) {
                                 return _isLoadingMore
-                                    ? const Center(
-                                        child: Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: CircularProgressIndicator(),
-                                        ),
+                                    ? const Padding(
+                                        padding: EdgeInsets.only(bottom: 16),
+                                        child: NearbyServiceCardShimmer(),
                                       )
                                     : const SizedBox();
                               }
@@ -195,13 +193,15 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
     );
   }
 
-  void _loadMoreData() {
+  void _loadMoreData() async {
+    if (_isLoadingMore) return;
+    
     setState(() {
       _isLoadingMore = true;
     });
 
     _currentPage++;
-    context.read<SearchShopsCubit>().loadMoreShops(page: _currentPage);
+    await context.read<SearchShopsCubit>().loadMoreShops(page: _currentPage);
 
     setState(() {
       _isLoadingMore = false;

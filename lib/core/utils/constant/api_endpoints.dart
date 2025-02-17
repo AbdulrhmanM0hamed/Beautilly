@@ -173,9 +173,10 @@ class ApiEndpoints {
   static String searchShopsByType({ String? type, String? search}) => 
     '$baseUrl/shops/search?type=$type${search != null ? '&search=$search' : ''}&api_key=$api_key';
 
-  static String filterShops({String? type, String? search}) {
+  static String filterShops({String? type, String? search, int page = 1}) {
     final params = <String, String>{
       'api_key': api_key,
+      'page': page.toString(),
     };
     
     if (type != null && type != 'all') {

@@ -1,4 +1,3 @@
-
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
@@ -14,16 +13,18 @@ class SearchShopsRepositoryImpl implements SearchShopsRepository {
   });
 
   @override
-  Future<Either<Failure, List<SearchShop>>> filterShops({
+  Future<Either<Failure, SearchShopsResponse>> filterShops({
     String? type,
     String? search,
+    int page = 1,
   }) async {
     try {
-      final shops = await remoteDataSource.filterShops(
+      final result = await remoteDataSource.filterShops(
         type: type,
         search: search,
+        page: page,
       );
-      return Right(shops);
+      return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(e.toString()));
     }

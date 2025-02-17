@@ -1,11 +1,11 @@
-
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../entities/search_shop.dart';
+import '../../data/datasources/search_shops_remote_datasource.dart';
 
 abstract class SearchShopsRepository {
-  Future<Either<Failure, List<SearchShop>>> filterShops({
+  Future<Either<Failure, SearchShopsResponse>> filterShops({
     String? type,
     String? search,
+    int page = 1,
   });
 }

@@ -6,8 +6,22 @@ import '../../../../core/services/cache/cache_service.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
 import '../models/search_shop_model.dart';
 
+class SearchShopsResponse {
+  final List<SearchShopModel> shops;
+  final PaginationModel pagination;
+
+  SearchShopsResponse({
+    required this.shops,
+    required this.pagination,
+  });
+}
+
 abstract class SearchShopsRemoteDataSource {
-  Future<List<SearchShopModel>> filterShops({String? type, String? search});
+  Future<SearchShopsResponse> filterShops({
+    String? type,
+    String? search,
+    int page = 1,
+  });
 }
 
 class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
@@ -20,13 +34,20 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
   });
 
   @override
-  Future<List<SearchShopModel>> filterShops(
-      {String? type, String? search}) async {
+  Future<SearchShopsResponse> filterShops({
+    String? type,
+    String? search,
+    int page = 1,
+  }) async {
     try {
       final sessionCookie = await cacheService.getSessionCookie();
       final token = await cacheService.getToken();
 
-      final url = ApiEndpoints.filterShops(type: type, search: search);
+      final url = ApiEndpoints.filterShops(
+        type: type,
+        search: search,
+        page: page,
+      );
 
       final response = await client.get(
         Uri.parse(url),
@@ -42,8 +63,15 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
         final data = json.decode(response.body);
 
         if (data['success'] == true) {
-          final List<dynamic> shops = data['data']['shops'] as List;
-          return shops.map((shop) => SearchShopModel.fromJson(shop)).toList();
+          final List<dynamic> shopsData = data['data']['shops'] as List;
+          final paginationData = data['data']['pagination'];
+
+          return SearchShopsResponse(
+            shops: shopsData
+                .map((shop) => SearchShopModel.fromJson(shop))
+                .toList(),
+            pagination: PaginationModel.fromJson(paginationData),
+          );
         } else {
           throw ServerException('لا توجد نتائج');
         }

@@ -72,4 +72,18 @@ class UserInteraction {
     required this.hasRated,
     required this.hasCommented,
   });
+}
+
+class Pagination {
+  final int currentPage;
+  final int lastPage;
+  final int perPage;
+  final int total;
+
+  const Pagination({
+    required this.currentPage,
+    required this.lastPage,
+    required this.perPage,
+    required this.total,
+  });
 } 

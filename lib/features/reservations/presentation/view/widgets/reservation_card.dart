@@ -161,6 +161,7 @@ class ReservationCard extends StatelessWidget {
                                     ? reservation.service?.name ?? 'خدمة'
                                     : reservation.discount?.title ?? 'عرض',
                                 style: getMediumStyle(
+                                  
                                   color: Colors.white70,
                                   fontSize: dimensions.subtitleSize,
                                   fontFamily: FontConstant.cairo,

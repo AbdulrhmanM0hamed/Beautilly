@@ -117,6 +117,7 @@ class _AllOrdersWidgetState extends State<AllOrdersWidget> {
     if (width == 360) return 0.56;
     if (width >= 320 && width <= 390) return 0.56;
     
-    return 0.75; // Mobile
+    return 0.61; // Mobile
   }
 }
+

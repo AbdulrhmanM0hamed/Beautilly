@@ -366,10 +366,10 @@ class _OrderCardState extends State<OrderCard> {
     if (difference.inDays == 0) {
       if (difference.inHours == 0) {
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+          padding: const EdgeInsets.symmetric(horizontal: 2,),
           decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.circular(16),
+            color: AppColors.primary.withOpacity(0.3),
+            borderRadius: BorderRadius.circular(4),
           ),
           child: Text(
             'منذ ${difference.inMinutes} دقيقة',
@@ -391,9 +391,9 @@ class _OrderCardState extends State<OrderCard> {
       );
     } else if (difference.inDays < 7) {
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6,),
+        padding: const EdgeInsets.symmetric(horizontal: 2,),
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.28),
+          color: AppColors.primary.withOpacity(0.3),
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(

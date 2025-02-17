@@ -9,6 +9,7 @@ import '../../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../../cubit/premium_shops_cubit/premium_shops_state.dart';
 import 'shared/beauty_service_card.dart';
 import '../../../../../core/utils/responsive/app_responsive.dart';
+import '../../../../../core/utils/shimmer/service_card_shimmer.dart';
 
 class FashionHousesListView extends StatelessWidget {
   const FashionHousesListView({super.key});
@@ -22,10 +23,9 @@ class FashionHousesListView extends StatelessWidget {
     return BlocBuilder<PremiumShopsCubit, PremiumShopsState>(
       builder: (context, state) {
         if (state is PremiumShopsLoading) {
-          return const Center(
-            child: CustomProgressIndcator(
-              color: AppColors.primary,
-            ),
+          return BeautyServiceListShimmer(
+            isDesktop: size.width >= AppResponsive.tabletBreakpoint,
+            isTablet: size.width >= AppResponsive.mobileBreakpoint,
           );
         }
 
@@ -38,7 +38,7 @@ class FashionHousesListView extends StatelessWidget {
         if (state is PremiumShopsLoaded) {
           return SizedBox(
             height: isDesktop
-                ? 320
+                ? 330
                 : isTablet
                     ? 280
                     : 260,

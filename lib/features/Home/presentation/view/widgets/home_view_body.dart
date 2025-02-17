@@ -106,7 +106,7 @@ class HomeViewBody extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16.0),
-                const ServicesGridView(maxItems: 8),
+                const ServicesGridView(maxItems: 4),
                 const SizedBox(height: 22.0),
                 Text(
                   'أشهر صالونات التجميل',

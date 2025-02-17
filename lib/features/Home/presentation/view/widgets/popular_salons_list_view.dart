@@ -9,6 +9,7 @@ import '../../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../../cubit/premium_shops_cubit/premium_shops_state.dart';
 import 'shared/beauty_service_card.dart';
 import '../../../../../core/utils/responsive/app_responsive.dart';
+import '../../../../../core/utils/shimmer/service_card_shimmer.dart';
 
 class PopularSalonsListView extends StatefulWidget {
   const PopularSalonsListView({super.key});
@@ -33,10 +34,9 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
     return BlocBuilder<PremiumShopsCubit, PremiumShopsState>(
       builder: (context, state) {
         if (state is PremiumShopsLoading) {
-          return const Center(
-            child: CustomProgressIndcator(
-              color: AppColors.primary,
-            ),
+          return BeautyServiceListShimmer(
+            isDesktop: size.width >= AppResponsive.tabletBreakpoint,
+            isTablet: size.width >= AppResponsive.mobileBreakpoint,
           );
         }
 
@@ -49,7 +49,7 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
         if (state is PremiumShopsLoaded) {
           return SizedBox(
             height: isDesktop
-                ? 300
+                ? 330
                 : isTablet
                     ? 290
                     : 260,

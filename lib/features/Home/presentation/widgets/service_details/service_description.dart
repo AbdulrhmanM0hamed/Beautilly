@@ -29,7 +29,7 @@ class ServiceDescription extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            service.description!,
+            service.description,
             style: getRegularStyle(
               fontSize: FontSize.size14,
               fontFamily: FontConstant.cairo,

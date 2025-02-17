@@ -1,4 +1,4 @@
-import 'package:beautilly/core/utils/shimmer/special_view_shimmer.dart';
+import 'package:beautilly/core/utils/shimmer/offer_card_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubit/discounts_cubit/discounts_cubit.dart';
@@ -24,7 +24,14 @@ class _SpecialViewListViewState extends State<SpecialViewListView> {
     return BlocBuilder<DiscountsCubit, DiscountsState>(
       builder: (context, state) {
         if (state is DiscountsLoading) {
-          return const SpecialViewShimmer();
+          return SizedBox(
+            height: 180,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 3,
+              itemBuilder: (context, index) => const OfferCardShimmer(),
+            ),
+          );
         }
 
         if (state is DiscountsLoaded) {

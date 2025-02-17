@@ -9,4 +9,9 @@ abstract class CacheService {
   int? getUserId();
   Future<String?> getRefreshToken();
   Future<void> saveRefreshToken(String token);
+  Future<bool> getRememberMe();
+  Future<void> setRememberMe(bool value);
+  Future<Map<String, String>?> getLoginCredentials();
+  Future<void> saveLoginCredentials(String email, String password);
+  Future<void> clearLoginCredentials();
 } 

@@ -1,4 +1,5 @@
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
+import 'package:beautilly/features/splash/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/utils/helper/on_genrated_routes.dart';
@@ -8,14 +9,29 @@ import 'features/auth/presentation/view/signin_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import 'core/services/cache/cache_service.dart';
+import 'core/services/cache/cache_service_impl.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
   await di.init();
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => const MyApp(),
+    MultiProvider(
+      providers: [
+        Provider<CacheService>(
+          create: (_) => CacheServiceImpl(prefs),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<ProfileCubit>()..loadProfile(),
+        ),
+      ],
+      child: DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => const MyApp(),
+      ),
     ),
   );
 }
@@ -47,7 +63,7 @@ class MyApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         onGenerateRoute: onGenratedRoutes,
-        initialRoute: SigninView.routeName,
+        initialRoute: SplashView.routeName,
       ),
     );
   }

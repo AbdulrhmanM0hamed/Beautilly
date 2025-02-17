@@ -1,3 +1,4 @@
+import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
@@ -31,12 +32,27 @@ class _SigninViewBodyBlocConsumerState
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
+  bool _rememberMe = false;
 
   @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final cacheService = context.read<CacheService>();
+    _rememberMe = await cacheService.getRememberMe();
+    
+    if (_rememberMe) {
+      final credentials = await cacheService.getLoginCredentials();
+      if (credentials != null) {
+        setState(() {
+          _emailController.text = credentials['email']!;
+          _passwordController.text = credentials['password']!;
+        });
+      }
+    }
   }
 
   @override
@@ -46,6 +62,16 @@ class _SigninViewBodyBlocConsumerState
       child: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           if (state is AuthSuccess) {
+            if (_rememberMe) {
+              context.read<CacheService>().setRememberMe(true);
+              context.read<CacheService>().saveLoginCredentials(
+                    _emailController.text.trim(),
+                    _passwordController.text.trim(),
+                  );
+            } else {
+              context.read<CacheService>().clearLoginCredentials();
+            }
+            
             Navigator.pushReplacementNamed(context, HomeView.routeName);
             CustomSnackbar.showSuccess(
               context: context,
@@ -95,22 +121,45 @@ class _SigninViewBodyBlocConsumerState
                           hintText: AppStrings.password,
                         ),
                         const SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, ForgotPasswordView.routeName);
-                            },
-                            child: Text(
-                              AppStrings.forgotPassword,
-                              style: getMediumStyle(
-                                color: AppColors.primary,
-                                fontSize: FontSize.size14,
-                                fontFamily: FontConstant.cairo,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // تذكرني
+                            Row(
+                              children: [
+                                Checkbox(
+                                  value: _rememberMe,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _rememberMe = value ?? false;
+                                    });
+                                  },
+                                ),
+                                Text(
+                                  'تذكرني',
+                                  style: getMediumStyle(
+                                    fontSize: FontSize.size14,
+                                    fontFamily: FontConstant.cairo,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // نسيت كلمة المرور
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pushNamed(
+                                    context, ForgotPasswordView.routeName);
+                              },
+                              child: Text(
+                                AppStrings.forgotPassword,
+                                style: getMediumStyle(
+                                  color: AppColors.primary,
+                                  fontSize: FontSize.size14,
+                                  fontFamily: FontConstant.cairo,
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                         const SizedBox(height: 20),
                         CustomButton(
@@ -150,5 +199,12 @@ class _SigninViewBodyBlocConsumerState
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }

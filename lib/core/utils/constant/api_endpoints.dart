@@ -128,6 +128,7 @@ class ApiEndpoints {
 
   // Orders
   static const String myOrders = '$baseUrl/my-list-orders';
+  static const String allOrders = '$baseUrl/list-orders';
   static const String myReservations =
       '$baseUrl/my-reservations?api_key=$api_key';
 

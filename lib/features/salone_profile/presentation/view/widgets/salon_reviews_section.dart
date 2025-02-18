@@ -30,18 +30,15 @@ class SalonReviewsSection extends StatelessWidget {
   void _showAddRatingDialog(BuildContext context) {
     int selectedRating = 5;
     final commentController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
     final salonProfileCubit = context.read<SalonProfileCubit>();
 
     showDialog(
       context: context,
       builder: (dialogContext) => MultiBlocProvider(
         providers: [
-          BlocProvider.value(
-            value: salonProfileCubit,
-          ),
-          BlocProvider(
-            create: (_) => GetIt.I<RatingCubit>(),
-          ),
+          BlocProvider.value(value: salonProfileCubit),
+          BlocProvider(create: (_) => GetIt.I<RatingCubit>()),
         ],
         child: Dialog(
           shape: RoundedRectangleBorder(
@@ -49,98 +46,125 @@ class SalonReviewsSection extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'إضافة تقييم',
-                  style: getBoldStyle(
-                    fontSize: FontSize.size18,
-                    fontFamily: FontConstant.cairo,
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'إضافة تقييم',
+                    style: getBoldStyle(
+                      fontSize: FontSize.size18,
+                      fontFamily: FontConstant.cairo,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                RatingBar.builder(
-                  initialRating: 5,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  itemCount: 5,
-                  itemSize: 32,
-                  itemBuilder: (context, _) => const Icon(
-                    Icons.star,
-                    color: Colors.amber,
+                  const SizedBox(height: 16),
+                  RatingBar.builder(
+                    initialRating: 5,
+                    minRating: 1,
+                    direction: Axis.horizontal,
+                    itemCount: 5,
+                    itemSize: 32,
+                    itemBuilder: (context, _) => const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    ),
+                    onRatingUpdate: (rating) {
+                      selectedRating = rating.toInt();
+                    },
                   ),
-                  onRatingUpdate: (rating) {
-                    selectedRating = rating.toInt();
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: commentController,
-                  maxLines: 3,
-                  decoration: const InputDecoration(
-                    hintText: 'اكتب تعليقك هنا...',
-                    border: OutlineInputBorder(),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: commentController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintText: 'اكتب تعليقك هنا...',
+                      border: const OutlineInputBorder(),
+                      errorStyle: getMediumStyle(
+                        fontSize: FontSize.size12,
+                        color: Colors.red,
+                        fontFamily: FontConstant.cairo,
+                      ),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'يجب كتابة تعليق مع التقييم';
+                      }
+                      if (value.trim().length < 3) {
+                        return 'التعليق قصير جداً';
+                      }
+                      if (value.trim().length > 150) {
+                        return 'التعليق طويل جداً';
+                      }
+                      return null;
+                    },
                   ),
-                ),
-                const SizedBox(height: 16),
-                BlocConsumer<RatingCubit, RatingState>(
-                  listener: (context, state) {
-                    if (state is RatingSuccess) {
-                      salonProfileCubit.getSalonProfile(salonId);
-
-                      Future.delayed(const Duration(milliseconds: 300), () {
-                        if (context.mounted) {
-                          Navigator.pop(context);
-                          CustomSnackbar.showSuccess(
-                            context: context,
-                            message: 'تم إضافة تقييمك بنجاح',
-                          );
-                        }
-                      });
-                    } else if (state is RatingError) {
-                      CustomSnackbar.showError(
-                        context: context,
-                        message: state.message,
+                  const SizedBox(height: 16),
+                  BlocConsumer<RatingCubit, RatingState>(
+                    listener: (context, state) {
+                      if (state is RatingSuccess) {
+                        salonProfileCubit.getSalonProfile(salonId);
+                        Future.delayed(const Duration(milliseconds: 300), () {
+                          if (context.mounted) {
+                            Navigator.pop(context);
+                            CustomSnackbar.showSuccess(
+                              context: context,
+                              message: 'تم إضافة تقييمك بنجاح',
+                            );
+                          }
+                        });
+                      } else if (state is RatingError) {
+                        CustomSnackbar.showError(
+                          context: context,
+                          message: state.message,
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: CustomDialogButton(
+                              text: 'إلغاء',
+                              onPressed: () => Navigator.pop(context),
+                              isDestructive: true,
+                              backgroundColor: Colors.white,
+                              textColor: Colors.red,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: CustomDialogButton(
+                              text: state is RatingLoading ? '' : 'إرسال',
+                              onPressed: state is RatingLoading
+                                  ? null
+                                  : () {
+                                      if (formKey.currentState?.validate() ?? false) {
+                                        if (selectedRating < 1) {
+                                          CustomSnackbar.showError(
+                                            context: context,
+                                            message: 'يجب اختيار تقييم',
+                                          );
+                                          return;
+                                        }
+                                        context.read<RatingCubit>().addRating(
+                                              shopId: salonId,
+                                              rating: selectedRating,
+                                              comment: commentController.text.trim(),
+                                            );
+                                      }
+                                    },
+                              backgroundColor: AppColors.primary,
+                              textColor: Colors.white,
+                              isLoading: state is RatingLoading,
+                            ),
+                          ),
+                        ],
                       );
-                    }
-                  },
-                  builder: (context, state) {
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: CustomDialogButton(
-                            text: 'إلغاء',
-                            onPressed: () => Navigator.pop(context),
-                            isDestructive: true,
-                            backgroundColor: Colors.white,
-                            textColor: Colors.red,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: CustomDialogButton(
-                            text: state is RatingLoading ? '' : 'إرسال',
-                            onPressed: state is RatingLoading
-                                ? null
-                                : () {
-                                    context.read<RatingCubit>().addRating(
-                                          shopId: salonId,
-                                          rating: selectedRating,
-                                          comment:
-                                              commentController.text.trim(),
-                                        );
-                                  },
-                            backgroundColor: AppColors.primary,
-                            textColor: Colors.white,
-                            isLoading: state is RatingLoading,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

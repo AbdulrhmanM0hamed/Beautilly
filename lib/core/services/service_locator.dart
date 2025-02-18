@@ -1,3 +1,4 @@
+import 'package:beautilly/core/error/exceptions.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/features/Home/data/datasources/discounts_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/premium_shops_remote_data_source.dart';
@@ -140,6 +141,7 @@ Future<void> init() async {
   // Home Feature
   sl.registerLazySingleton<OrdersRemoteDataSource>(
     () => OrdersRemoteDataSourceImpl(
+      authRepository: sl(),
       client: sl(),
       cacheService: sl(),
     ),
@@ -189,6 +191,7 @@ Future<void> init() async {
     () => ProfileRemoteDataSourceImpl(
       client: sl(),
       cacheService: sl(),
+      authRepository: sl(),
     ),
   );
 
@@ -213,6 +216,7 @@ Future<void> init() async {
     () => FavoritesRemoteDataSourceImpl(
       client: sl(),
       cacheService: sl(),
+      authRepository: sl(),
     ),
   );
 
@@ -237,6 +241,7 @@ Future<void> init() async {
     () => ServicesRemoteDataSourceImpl(
       client: sl(),
       cacheService: sl(),
+      authRepository: sl(),
     ),
   );
 
@@ -257,6 +262,7 @@ Future<void> init() async {
     () => PremiumShopsRemoteDataSourceImpl(
       client: sl(),
       cacheService: sl(),
+      authRepository: sl(),
     ),
   );
 
@@ -277,6 +283,7 @@ Future<void> init() async {
     () => DiscountsRemoteDataSourceImpl(
       client: sl(),
       cacheService: sl(),
+      authRepository: sl(),
     ),
   );
 
@@ -329,6 +336,7 @@ Future<void> init() async {
     () => SalonProfileRemoteDataSourceImpl(
       client: sl(),
       cacheService: sl(),
+      authRepository: sl(),
     ),
   );
 
@@ -415,3 +423,31 @@ Future<void> init() async {
     ),
   );
 }
+mixin TokenRefreshMixin {
+  Future<T> withTokenRefresh<T>({
+    required Future<T> Function(String token) request,
+    required AuthRepository authRepository,
+    required CacheService cacheService,
+  }) async {
+    try {
+      final token = await cacheService.getToken();
+      if (token == null) {
+        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
+      }
+
+      try {
+        return await request(token);
+      } on UnauthorizedException {
+        // محاولة تجديد الـ token
+        final refreshResult = await authRepository.refreshToken();
+        return refreshResult.fold(
+          (failure) => throw UnauthorizedException('يرجى إعادة تسجيل الدخول'),
+          (newToken) => request(newToken),
+        );
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+}
+

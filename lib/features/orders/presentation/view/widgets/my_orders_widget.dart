@@ -76,7 +76,7 @@ class _MyOrdersWidgetState extends State<MyOrdersWidget> {
                     );
                   }
 
-                  if (state is OrdersSuccess) {
+                  if (state is MyOrdersSuccess) {
                     if (state.orders.isEmpty) {
                       return const Center(child: Text('لا توجد طلبات'));
                     }

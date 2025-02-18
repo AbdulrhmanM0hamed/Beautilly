@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:beautilly/core/services/cache/cache_service.dart';
+import 'package:beautilly/core/services/service_locator.dart';
+import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:beautilly/core/error/exceptions.dart';
 import 'package:beautilly/core/utils/constant/api_endpoints.dart';
@@ -15,206 +17,174 @@ abstract class SalonProfileRemoteDataSource {
   Future<void> removeFromFavorites(int shopId);
 }
 
-class SalonProfileRemoteDataSourceImpl implements SalonProfileRemoteDataSource {
+class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonProfileRemoteDataSource {
   final http.Client client;
   final CacheService cacheService;
+  final AuthRepository authRepository;
 
   SalonProfileRemoteDataSourceImpl({
     required this.client,
     required this.cacheService,
+    required this.authRepository,
   });
 
   @override
   Future<SalonProfileModel> getSalonProfile(int salonId) async {
-    try {
-      final token = await cacheService.getToken();
-      final sessionCookie = await cacheService.getSessionCookie();
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.get(
+          Uri.parse(ApiEndpoints.shopProfile(salonId)),
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer $token',
+            'x-api-key': ApiEndpoints.api_key,
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.acceptHeader: 'application/json',
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+        );
 
-      if (token == null) {
-        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-      }
-
-      final response = await client.get(
-        Uri.parse(ApiEndpoints.shopProfile(salonId)),
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
-          HttpHeaders.contentTypeHeader: 'application/json',
-          HttpHeaders.acceptHeader: 'application/json',
-          if (sessionCookie != null) 'Cookie': sessionCookie,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final decodedJson = json.decode(response.body);
-        
-        if (decodedJson['success'] == true && decodedJson['data'] != null) {
-          try {
-            return SalonProfileModel.fromJson(decodedJson['data']);
-          } catch (e) {
-            throw ServerException('حدث خطأ في معالجة البيانات');
+        if (response.statusCode == 200) {
+          final decodedJson = json.decode(response.body);
+          
+          if (decodedJson['success'] == true && decodedJson['data'] != null) {
+            try {
+              return SalonProfileModel.fromJson(decodedJson['data']);
+            } catch (e) {
+              throw ServerException('حدث خطأ في معالجة البيانات');
+            }
+          } else {
+            throw ServerException('لا توجد بيانات متاحة');
           }
         } else {
-          throw ServerException('لا توجد بيانات متاحة');
+          throw ServerException('فشل في جلب بيانات الصالون');
         }
-      } else {
-        throw ServerException('فشل في جلب بيانات الصالون');
-      }
-    } catch (e) {
-      throw ServerException('حدث خطأ غير متوقع');
-    }
+      },
+    );
   }
 
   @override
   Future<void> addShopRating(int shopId, RatingRequestModel request) async {
-    try {
-      final token = await cacheService.getToken();
-      final sessionCookie = await cacheService.getSessionCookie();
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.post(
+          Uri.parse(ApiEndpoints.addShopRating(shopId)),
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer $token',
+            'x-api-key': ApiEndpoints.api_key,
+            HttpHeaders.acceptHeader: 'application/json',
+            HttpHeaders.contentTypeHeader: 'application/json',
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+          body: json.encode(request.toJson()),
+        );
 
-      if (token == null) {
-        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-      }
-
-      final response = await client.post(
-        Uri.parse(ApiEndpoints.addShopRating(shopId)),
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
-          HttpHeaders.acceptHeader: 'application/json',
-          HttpHeaders.contentTypeHeader: 'application/json',
-          if (sessionCookie != null) 'Cookie': sessionCookie,
-        },
-        body: json.encode(request.toJson()),
-      );
-
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        if (jsonResponse['success'] != true) {
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.body);
+          if (jsonResponse['success'] != true) {
+            throw ServerException(
+              jsonResponse['message'] ?? 'فشل في إضافة التقييم',
+            );
+          }
+        } else if (response.statusCode == 422) {
+          throw ServerException('لديك تقييم سابق لهذا المتجر');
+        } else {
+          final error = json.decode(response.body);
           throw ServerException(
-            jsonResponse['message'] ?? 'فشل في إضافة التقييم',
+            error['message'] ?? 'فشل في إضافة التقييم',
           );
         }
-      } else if (response.statusCode == 401) {
-        throw UnauthorizedException(
-          'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول',
-        );
-      } else if (response.statusCode == 422) {
-        throw ServerException('لديك تقييم سابق لهذا المتجر');
-      } else {
-        final error = json.decode(response.body);
-        throw ServerException(
-          error['message'] ?? 'فشل في إضافة التقييم',
-        );
-      }
-    } catch (e) {
-      if (e is ServerException || e is UnauthorizedException) {
-        rethrow;
-      }
-      throw ServerException('حدث خطأ غير متوقع: $e');
-    }
+      },
+    );
   }
 
   @override
   Future<void> deleteShopRating(int shopId) async {
-    try {
-      final token = await cacheService.getToken();
-      final sessionCookie = await cacheService.getSessionCookie();
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.delete(
+          Uri.parse(ApiEndpoints.deleteShopRating(shopId)),
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer $token',
+            'x-api-key': ApiEndpoints.api_key,
+            HttpHeaders.acceptHeader: 'application/json',
+            HttpHeaders.contentTypeHeader: 'application/json',
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+        );
 
-      if (token == null) {
-        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-      }
-
-      final response = await client.delete(
-        Uri.parse(ApiEndpoints.deleteShopRating(shopId)),
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
-          HttpHeaders.acceptHeader: 'application/json',
-          HttpHeaders.contentTypeHeader: 'application/json',
-          if (sessionCookie != null) 'Cookie': sessionCookie,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        if (jsonResponse['success'] != true) {
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.body);
+          if (jsonResponse['success'] != true) {
+            throw ServerException(
+              jsonResponse['message'] ?? 'فشل في حذف التقييم',
+            );
+          }
+        } else if (response.statusCode == 404) {
+          throw ServerException('لم يتم العثور على تقييم لحذفه');
+        } else {
+          final error = json.decode(response.body);
           throw ServerException(
-            jsonResponse['message'] ?? 'فشل في حذف التقييم',
+            error['message'] ?? 'فشل في حذف التقييم',
           );
         }
-      } else if (response.statusCode == 401) {
-        throw UnauthorizedException(
-          'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول',
-        );
-      } else if (response.statusCode == 404) {
-        throw ServerException('لم يتم العثور على تقييم لحذفه');
-      } else {
-        final error = json.decode(response.body);
-        throw ServerException(
-          error['message'] ?? 'فشل في حذف التقييم',
-        );
-      }
-    } catch (e) {
-      if (e is ServerException || e is UnauthorizedException) {
-        rethrow;
-      }
-      throw ServerException('حدث خطأ غير متوقع: $e');
-    }
+      },
+    );
   }
 
   @override
   Future<void> addToFavorites(int shopId) async {
-    try {
-      final token = await cacheService.getToken();
-      final sessionCookie = await cacheService.getSessionCookie();
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.post(
+          Uri.parse(ApiEndpoints.addToFavorites(shopId)),
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer $token',
+            'x-api-key': ApiEndpoints.api_key,
+            HttpHeaders.acceptHeader: 'application/json',
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+        );
 
-      if (token == null) {
-        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-      }
-
-      final response = await client.post(
-        Uri.parse(ApiEndpoints.addToFavorites(shopId)),
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
-          HttpHeaders.acceptHeader: 'application/json',
-          if (sessionCookie != null) 'Cookie': sessionCookie,
-        },
-      );
-
-      if (response.statusCode != 200) {
-        throw ServerException('فشل في إضافة المتجر للمفضلة');
-      }
-    } catch (e) {
-      throw ServerException('حدث خطأ غير متوقع');
-    }
+        if (response.statusCode != 200) {
+          throw ServerException('فشل في إضافة المتجر للمفضلة');
+        }
+      },
+    );
   }
 
   @override
   Future<void> removeFromFavorites(int shopId) async {
-    try {
-      final token = await cacheService.getToken();
-      final sessionCookie = await cacheService.getSessionCookie();
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.delete(
+          Uri.parse(ApiEndpoints.removeFromFavorites(shopId)),
+          headers: {
+            HttpHeaders.authorizationHeader: 'Bearer $token',
+            'x-api-key': ApiEndpoints.api_key,
+            HttpHeaders.acceptHeader: 'application/json',
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+        );
 
-      if (token == null) {
-        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-      }
-
-      final response = await client.delete(
-        Uri.parse(ApiEndpoints.removeFromFavorites(shopId)),
-        headers: {
-          HttpHeaders.authorizationHeader: 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
-          HttpHeaders.acceptHeader: 'application/json',
-          if (sessionCookie != null) 'Cookie': sessionCookie,
-        },
-      );
-
-      if (response.statusCode != 200) {
-        throw ServerException('فشل في إزالة المتجر من المفضلة');
-      }
-    } catch (e) {
-      throw ServerException('حدث خطأ غير متوقع');
-    }
+        if (response.statusCode != 200) {
+          throw ServerException('فشل في إزالة المتجر من المفضلة');
+        }
+      },
+    );
   }
 }

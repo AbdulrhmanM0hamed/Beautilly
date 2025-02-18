@@ -43,61 +43,58 @@ class _OrderCardState extends State<OrderCard> {
     final dimensions = ResponsiveCardSizes.getOrderCardDimensions(context);
     final colors = Theme.of(context).extension<CustomColors>()!;
 
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: _isLoading
-              ? null
-              : () async {
-                  try {
-                    setState(() => _isLoading = true);
-                    final result = await sl<OrdersRepository>()
-                        .getOrderDetails(widget.order.id);
-                    if (!mounted) return;
+    return GestureDetector(
+      onTap: _isLoading ? null : () async {
+        try {
+          setState(() => _isLoading = true);
+          final result = await sl<OrdersRepository>()
+              .getOrderDetails(widget.order.id);
+          if (!mounted) return;
 
-                    result.fold(
-                      (failure) {
-                        CustomSnackbar.showError(
-                          context: context,
-                          message: failure.message,
-                        );
-                      },
-                      (orderDetails) async {
-                        final shouldRefresh = await Navigator.push<bool>(
-                          context,
-                          PageRoutes.fadeScale(
-                            page: OrderDetailsView(
-                              orderDetails: orderDetails,
-                              isMyOrder: widget.isMyRequest,
-                              fromAllOrders: !widget.isMyRequest,
-                            ),
-                          ),
-                        );
+          result.fold(
+            (failure) {
+              CustomSnackbar.showError(
+                context: context,
+                message: failure.message,
+              );
+            },
+            (orderDetails) async {
+              final shouldRefresh = await Navigator.push<bool>(
+                context,
+                PageRoutes.fadeScale(
+                  page: OrderDetailsView(
+                    orderDetails: orderDetails,
+                    isMyOrder: widget.isMyRequest,
+                    fromAllOrders: !widget.isMyRequest,
+                  ),
+                ),
+              );
 
-                        if (shouldRefresh == true && mounted) {
-                          if (widget.isMyRequest) {
-                            context.read<OrdersCubit>().loadMyOrders();
-                          } else {
-                            context.read<OrdersCubit>().loadAllOrders();
-                          }
-                        }
-                      },
-                    );
-                  } catch (e) {
-                    if (!mounted) return;
-                    CustomSnackbar.showError(
-                      context: context,
-                      message: 'حدث خطأ في تحميل تفاصيل الطلب',
-                    );
-                  } finally {
-                    if (mounted) {
-                      setState(() => _isLoading = false);
-                    }
-                  }
-                },
-          child: MouseRegion(
-            cursor:
-                _isLoading ? SystemMouseCursors.wait : SystemMouseCursors.click,
+              if (shouldRefresh == true && mounted) {
+                if (widget.isMyRequest) {
+                  context.read<OrdersCubit>().loadMyOrders();
+                } else {
+                  context.read<OrdersCubit>().loadAllOrders();
+                }
+              }
+            },
+          );
+        } catch (e) {
+          if (!mounted) return;
+          CustomSnackbar.showError(
+            context: context,
+            message: 'حدث خطأ في تحميل تفاصيل الطلب',
+          );
+        } finally {
+          if (mounted) {
+            setState(() => _isLoading = false);
+          }
+        }
+      },
+      child: Stack(
+        children: [
+          MouseRegion(
+            cursor: _isLoading ? SystemMouseCursors.wait : SystemMouseCursors.click,
             child: Opacity(
               opacity: _isLoading ? 0.7 : 1.0,
               child: Container(
@@ -116,168 +113,28 @@ class _OrderCardState extends State<OrderCard> {
                 ),
                 child: Column(
                   children: [
-                    // Header with Image
-                    SizedBox(
-                      height: dimensions.imageHeight,
-                      child: Stack(
-                        fit: StackFit.expand,
-                        children: [
-                          // Order Image
-                          ClipRRect(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(dimensions.borderRadius),
-                            ),
-                            child: CachedNetworkImage(
-                              imageUrl: widget.order.images.main,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) =>
-                                  const ShimmerEffect(
-                                height: double.infinity,
-                                width: double.infinity,
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                color: Colors.grey[200],
-                                child: Icon(
-                                  Icons.design_services_outlined,
-                                  size: dimensions.iconSize * 2,
-                                  color: Colors.grey[400],
-                                ),
-                              ),
-                            ),
-                          ),
-                          // Gradient Overlay
-                          Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withOpacity(0.7),
-                                ],
-                              ),
-                            ),
-                          ),
-                          // Status & Date
-                          Padding(
-                            padding: EdgeInsets.all(dimensions.padding),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    _buildStatusChip(dimensions),
-                                    const SizedBox(width: 4),
-                                  ],
-                                ),
-                                const Spacer(),
-                                // Customer Info
-                                Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: dimensions.avatarSize / 2,
-                                      backgroundColor: Colors.white,
-                                      child: _buildCustomerAvatar(dimensions),
-                                    ),
-                                    SizedBox(width: dimensions.spacing),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                widget.order.customer.name,
-                                                style: getBoldStyle(
-                                                  color: Colors.white,
-                                                  fontSize:
-                                                      dimensions.titleSize,
-                                                  fontFamily:
-                                                      FontConstant.cairo,
-                                                ),
-                                              ),
-                                              const Spacer(),
-                                              _buildDateChip(dimensions),
-                                            ],
-                                          ),
-                                          Text(
-                                            'طلب #${widget.order.id}',
-                                            style: getMediumStyle(
-                                              color: Colors.white70,
-                                              fontSize: dimensions.subtitleSize,
-                                              fontFamily: FontConstant.cairo,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Order Details
+                    // Header with Image (الجزء العلوي مع الصورة)
                     Expanded(
+                      flex: widget.isMyRequest ? 2 : 1,
+                      child: _buildHeader(dimensions),
+                    ),
+                    
+                    // Details Section (تفاصيل الطلب)
+                    Expanded(
+                      flex: widget.isMyRequest ? 3 : 1, // زيادة مساحة التفاصيل في طلبات المستخدمين
                       child: Padding(
                         padding: EdgeInsets.all(dimensions.padding),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  widget.order.description,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: getMediumStyle(
-                                    
-                                    fontSize: dimensions.subtitleSize,
-                                    fontFamily: FontConstant.cairo,
-                                  ),
-                                ),
-                                SizedBox(height: dimensions.spacing),
-                                // Measurements & Fabrics
-                                Wrap(
-                                  spacing: dimensions.spacing,
-                                  runSpacing: dimensions.spacing / 2,
-                                  children: [
-                                    _buildMeasurementChip(
-                                      Icons.height,
-                                      '${widget.order.height} سم',
-                                      dimensions,
-                                    ),
-                                    _buildMeasurementChip(
-                                      Icons.monitor_weight_outlined,
-                                      '${widget.order.weight} كجم',
-                                      dimensions,
-                                    ),
-                                    _buildMeasurementChip(
-                                      Icons.straighten,
-                                      widget.order.size,
-                                      dimensions,
-                                    ),
-                                    ...widget.order.fabrics.map((fabric) =>
-                                        _buildFabricChip(fabric, dimensions)),
-                                    const SizedBox(
-                                      height: 10,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                            if (widget.isMyRequest &&
-                                widget.order.status == 'uncompleted')
+                            _buildMeasurements(dimensions),
+                            const SizedBox(height: 8),
+                            _buildFabrics(dimensions),
+                            if (widget.isMyRequest) ...[
+                              const Spacer(),
                               _buildDeleteButton(dimensions),
+                            ] else 
+                              const Spacer(), // لملء المساحة في طلبات المستخدمين
                           ],
                         ),
                       ),
@@ -287,21 +144,113 @@ class _OrderCardState extends State<OrderCard> {
               ),
             ),
           ),
-        ),
-        if (_isLoading)
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Center(
+          if (_isLoading)
+            const Positioned.fill(
+              child: Center(
                 child: CustomProgressIndcator(
                   color: AppColors.primary,
+                  size: 30,
                 ),
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(OrderCardDimensions dimensions) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(dimensions.borderRadius),
           ),
+          child: CachedNetworkImage(
+            imageUrl: widget.order.images.main,
+            fit: BoxFit.cover,
+            placeholder: (context, url) => const ShimmerEffect(
+              height: double.infinity,
+              width: double.infinity,
+            ),
+            errorWidget: (context, url, error) => Container(
+              color: Colors.grey[200],
+              child: Icon(
+                Icons.design_services_outlined,
+                size: dimensions.iconSize * 2,
+                color: Colors.grey[400],
+              ),
+            ),
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Colors.black.withOpacity(0.7),
+              ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(dimensions.padding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildStatusChip(dimensions),
+                  const SizedBox(width: 4),
+                ],
+              ),
+              const Spacer(),
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: dimensions.avatarSize / 2,
+                    backgroundColor: Colors.white,
+                    child: _buildCustomerAvatar(dimensions),
+                  ),
+                  SizedBox(width: dimensions.spacing),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              widget.order.customer.name,
+                              style: getBoldStyle(
+                                color: Colors.white,
+                                fontSize: dimensions.titleSize,
+                                fontFamily: FontConstant.cairo,
+                              ),
+                            ),
+                            const Spacer(),
+                            _buildDateChip(dimensions),
+                          ],
+                        ),
+                        Text(
+                          'طلب #${widget.order.id}',
+                          style: getMediumStyle(
+                            color: Colors.white70,
+                            fontSize: dimensions.subtitleSize,
+                            fontFamily: FontConstant.cairo,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -360,24 +309,16 @@ class _OrderCardState extends State<OrderCard> {
   }
 
   Widget _buildDateChip(OrderCardDimensions dimensions) {
-    // حساب الفرق بين التاريخ الحالي وتاريخ إنشاء الطلب
     final difference = DateTime.now().difference(widget.order.createdAt);
 
     if (difference.inDays == 0) {
       if (difference.inHours == 0) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 2,),
-          decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: Text(
-            'منذ ${difference.inMinutes} دقيقة',
-            style: getRegularStyle(
-              fontFamily: FontConstant.cairo,
-              fontSize: FontSize.size12,
-              color: Colors.white70,
-            ),
+        return Text(
+          'منذ ${difference.inMinutes} دقيقة',
+          style: getRegularStyle(
+            fontFamily: FontConstant.cairo,
+            fontSize: FontSize.size12,
+            color: Colors.white70,
           ),
         );
       }
@@ -390,25 +331,17 @@ class _OrderCardState extends State<OrderCard> {
         ),
       );
     } else if (difference.inDays < 7) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 2,),
-        decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          'منذ ${difference.inDays} يوم',
-          style: getRegularStyle(
-            fontFamily: FontConstant.cairo,
-            fontSize: FontSize.size12,
-            color: Colors.white70,
-          ),
+      return Text(
+        'منذ ${difference.inDays} يوم',
+        style: getRegularStyle(
+          fontFamily: FontConstant.cairo,
+          fontSize: FontSize.size12,
+          color: Colors.white70,
         ),
       );
     } else {
-      // تنسيق التاريخ بالشكل المطلوب
       return Text(
-        '${widget.order.createdAt.day}/${widget.order.createdAt.month}/${widget.order.createdAt.year}',
+        '${widget.order.createdAt.day}/${widget.order.createdAt.month}/${widget.order.createdAt.year.toString().substring(2)}',
         style: getMediumStyle(
           fontFamily: FontConstant.cairo,
           fontSize: FontSize.size12,
@@ -422,8 +355,7 @@ class _OrderCardState extends State<OrderCard> {
     if (widget.order.customer.avatar != null) {
       return ClipOval(
         child: CachedNetworkImage(
-          imageUrl:
-              "https://dallik.com/storage/${widget.order.customer.avatar}",
+          imageUrl: "https://dallik.com/storage/${widget.order.customer.avatar}",
           width: dimensions.avatarSize,
           height: dimensions.avatarSize,
           fit: BoxFit.cover,
@@ -450,6 +382,53 @@ class _OrderCardState extends State<OrderCard> {
     );
   }
 
+  Widget _buildMeasurements(OrderCardDimensions dimensions) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          widget.order.description,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: getMediumStyle(
+            fontSize: dimensions.subtitleSize,
+            fontFamily: FontConstant.cairo,
+          ),
+        ),
+        SizedBox(height: dimensions.spacing),
+        Wrap(
+          spacing: dimensions.spacing,
+          runSpacing: dimensions.spacing / 2,
+          children: [
+            _buildMeasurementChip(
+              Icons.height,
+              '${widget.order.height} سم',
+              dimensions,
+            ),
+            _buildMeasurementChip(
+              Icons.monitor_weight_outlined,
+              '${widget.order.weight} كجم',
+              dimensions,
+            ),
+            _buildMeasurementChip(
+              Icons.straighten,
+              widget.order.size,
+              dimensions,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFabrics(OrderCardDimensions dimensions) {
+    return Wrap(
+      spacing: dimensions.spacing,
+      runSpacing: dimensions.spacing / 2,
+      children: widget.order.fabrics.map((fabric) => _buildFabricChip(fabric, dimensions)).toList(),
+    );
+  }
+
   Widget _buildMeasurementChip(
       IconData icon, String label, OrderCardDimensions dimensions) {
     return _buildInfoChip(
@@ -468,15 +447,14 @@ class _OrderCardState extends State<OrderCard> {
 
   Widget _buildInfoChip(
       IconData icon, String label, double height, double width,
-      {Color? textColor} // إضافة معامل اختياري للون النص
+      {Color? textColor}
       ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color:
-              textColor?.withOpacity(0.3) ?? AppColors.primary.withOpacity(0.2),
+          color: textColor?.withOpacity(0.3) ?? AppColors.primary.withOpacity(0.2),
         ),
       ),
       child: Row(
@@ -515,6 +493,7 @@ class _OrderCardState extends State<OrderCard> {
 
   Widget _buildDeleteButton(OrderCardDimensions dimensions) {
     return SizedBox(
+      height: 35,
       width: double.infinity,
       child: TextButton.icon(
         onPressed: () {
@@ -585,7 +564,7 @@ class _OrderCardState extends State<OrderCard> {
         style: TextButton.styleFrom(
           side: const BorderSide(color: AppColors.error),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ),

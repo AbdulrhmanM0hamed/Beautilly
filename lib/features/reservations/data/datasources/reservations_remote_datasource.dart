@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:beautilly/core/services/service_locator.dart';
 import 'package:http/http.dart' as http;
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/cache/cache_service.dart';
@@ -10,7 +11,7 @@ abstract class ReservationsRemoteDataSource {
   Future<List<ReservationModel>> getMyReservations();
 }
 
-class ReservationsRemoteDataSourceImpl implements ReservationsRemoteDataSource {
+class ReservationsRemoteDataSourceImpl with TokenRefreshMixin implements ReservationsRemoteDataSource {
   final http.Client client;
   final CacheService cacheService;
   final AuthRepository authRepository;
@@ -23,58 +24,28 @@ class ReservationsRemoteDataSourceImpl implements ReservationsRemoteDataSource {
 
   @override
   Future<List<ReservationModel>> getMyReservations() async {
-    try {
-      final token = await cacheService.getToken();
-      final sessionCookie = await cacheService.getSessionCookie();
-
-      if (token == null) {
-        throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-      }
-
-      final response = await client.get(
-        Uri.parse(ApiEndpoints.myReservations),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
-          'Accept': 'application/json',
-          if (sessionCookie != null) 'Cookie': sessionCookie,
-        },
-      );
-
-      if (response.statusCode == 401) {
-        final refreshResult = await authRepository.refreshToken();
-        return refreshResult.fold(
-          (failure) => throw UnauthorizedException('يرجى إعادة تسجيل الدخول'),
-          (newToken) async {
-            final newResponse = await client.get(
-              Uri.parse(ApiEndpoints.myReservations),
-              headers: {
-                'Authorization': 'Bearer $newToken',
-                'x-api-key': ApiEndpoints.api_key,
-                'Accept': 'application/json',
-                if (sessionCookie != null) 'Cookie': sessionCookie,
-              },
-            );
-
-            if (newResponse.statusCode == 200) {
-              return _parseResponse(newResponse);
-            } else {
-              throw ServerException('فشل في تحميل الحجوزات');
-            }
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.get(
+          Uri.parse(ApiEndpoints.myReservations),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'x-api-key': ApiEndpoints.api_key,
+            'Accept': 'application/json',
+            if (sessionCookie != null) 'Cookie': sessionCookie,
           },
         );
-      }
 
-      if (response.statusCode == 200) {
-        return _parseResponse(response);
-      } else {
-        throw ServerException('فشل في تحميل الحجوزات');
-      }
-    } catch (e) {
-      if (e is UnauthorizedException) rethrow;
-      if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ غير متوقع: $e');
-    }
+        if (response.statusCode == 200) {
+          return _parseResponse(response);
+        } else {
+          throw ServerException('فشل في تحميل الحجوزات');
+        }
+      },
+    );
   }
 
   List<ReservationModel> _parseResponse(http.Response response) {

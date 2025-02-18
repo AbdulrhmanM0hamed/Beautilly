@@ -41,9 +41,8 @@ class CacheServiceImpl implements CacheService {
   @override
   Future<void> clearCache() async {
     await _prefs.remove(_tokenKey);
-    await _prefs.remove(_userKey);
-    await _prefs.remove(_sessionCookieKey);
     await _prefs.remove(_refreshTokenKey);
+    await _prefs.remove(_sessionCookieKey);
     if (!(await getRememberMe())) {
       await clearLoginCredentials();
     }

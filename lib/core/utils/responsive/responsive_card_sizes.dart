@@ -284,36 +284,37 @@ class ResponsiveCardSizes {
 
     if (isDesktop) {
       return OrderCardDimensions(
-        width: size.width * 0.31,
-        height: size.height * 95, // زيادة الارتفاع
-        imageHeight: size.height * 0.22,
+        width: size.width * 0.28,        // زيادة العرض قليلاً
+        height: size.height * 0.35,      // زيادة الارتفاع
+        imageHeight: size.height * 0.18,  // زيادة ارتفاع الصورة
         padding: 12,
         spacing: 8,
         titleSize: 14,
         subtitleSize: 15,
         iconSize: 16,
         borderRadius: 12,
-        chipHeight: 26, // تصغير ارتفاع الـ chips
+        chipHeight: 26,
         avatarSize: 32,
       );
     } else if (isTablet) {
       return OrderCardDimensions(
-        width: size.width * 0.4,
-        height: size.height * 0.1, // زيادة الارتفاع
-        imageHeight: size.height * 0.20,
+        width: size.width * 0.38,        // زيادة العرض
+        height: size.height * 0.32,      // زيادة الارتفاع
+        imageHeight: size.height * 0.16,
         padding: 10,
         spacing: 8,
         titleSize: 13,
         subtitleSize: 14,
         iconSize: 14,
         borderRadius: 12,
-        chipHeight: 24, // تصغير ارتفاع الـ chips
+        chipHeight: 24,
         avatarSize: 28,
       );
     } else {
+      // الموبايل نفس القيم لأنها مناسبة
       return OrderCardDimensions(
-        width: size.width * 0.45, // تقليل العرض
-        height: size.height * 0.51, // زيادة الارتفاع
+        width: size.width * 0.45,
+        height: size.height * 0.45,
         imageHeight: size.height * 0.18,
         padding: 8,
         spacing: 6,
@@ -321,7 +322,7 @@ class ResponsiveCardSizes {
         subtitleSize: 12,
         iconSize: 12,
         borderRadius: 10,
-        chipHeight: 22, // تصغير ارتفاع الـ chips
+        chipHeight: 22,
         avatarSize: 24,
       );
     }

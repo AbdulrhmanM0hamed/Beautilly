@@ -70,8 +70,8 @@ class NearbyServiceCardShimmer extends StatelessWidget {
                             ),
                             const Spacer(),
                             Container(
-                              width: 35,
-                              height: 35,
+                              width: 40,
+                              height: 40,
                               decoration: BoxDecoration(
                                 color: baseColor,
                                 borderRadius: BorderRadius.circular(8),

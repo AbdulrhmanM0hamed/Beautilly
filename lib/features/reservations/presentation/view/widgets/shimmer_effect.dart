@@ -4,11 +4,13 @@ import 'package:shimmer/shimmer.dart';
 class ShimmerEffect extends StatelessWidget {
   final double height;
   final double width;
+  final BorderRadius? borderRadius;
 
   const ShimmerEffect({
     super.key,
     required this.height,
     required this.width,
+    this.borderRadius,
   });
 
   @override

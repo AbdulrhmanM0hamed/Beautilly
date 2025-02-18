@@ -5,7 +5,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/utils/helper/on_genrated_routes.dart';
 import 'core/utils/theme/app_theme.dart';
 import 'core/services/service_locator.dart' as di;
-import 'features/auth/presentation/view/signin_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';

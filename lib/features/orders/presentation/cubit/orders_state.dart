@@ -1,31 +1,22 @@
-import 'package:equatable/equatable.dart';
 import '../../domain/entities/order.dart';
 
-abstract class OrdersState extends Equatable {
-  const OrdersState();
-
-  @override
-  List<Object?> get props => [];
-}
+abstract class OrdersState {}
 
 class OrdersInitial extends OrdersState {}
 
 class OrdersLoading extends OrdersState {}
 
-class OrdersSuccess extends OrdersState {
-  final List<OrderEntity> orders;
-
-  const OrdersSuccess(this.orders);
-
-  @override
-  List<Object?> get props => [orders];
-}
-
 class OrdersError extends OrdersState {
   final String message;
+  OrdersError(this.message);
+}
 
-  const OrdersError(this.message);
+class MyOrdersSuccess extends OrdersState {
+  final List<OrderEntity> orders;
+  MyOrdersSuccess(this.orders);
+}
 
-  @override
-  List<Object?> get props => [message];
+class AllOrdersSuccess extends OrdersState {
+  final List<OrderEntity> orders;
+  AllOrdersSuccess(this.orders);
 } 

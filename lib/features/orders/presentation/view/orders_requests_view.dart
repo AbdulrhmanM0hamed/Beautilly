@@ -10,7 +10,6 @@ import 'package:beautilly/features/orders/presentation/cubit/delete_order_cubit/
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_state.dart';
 import 'package:beautilly/features/orders/presentation/view/add_order_view.dart';
-import 'package:beautilly/features/orders/presentation/view/widgets/all_oreder_widget.dart';
 import 'package:beautilly/features/orders/presentation/view/widgets/order_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +34,21 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
     _tabController = TabController(length: 2, vsync: this);
     _ordersCubit = sl<OrdersCubit>();
     _deleteOrderCubit = sl<DeleteOrderCubit>();
+
+    // تحميل كلا القائمتين مبدئياً
     _ordersCubit.loadMyOrders();
+    _ordersCubit.loadAllOrders();
+
+    _tabController.addListener(() {
+      if (!_tabController.indexIsChanging) {
+        // تحديث البيانات في الخلفية فقط
+        if (_tabController.index == 0) {
+          _ordersCubit.loadMyOrders();
+        } else {
+          _ordersCubit.loadAllOrders();
+        }
+      }
+    });
   }
 
   @override
@@ -50,12 +63,8 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(
-          value: _ordersCubit,
-        ),
-        BlocProvider.value(
-          value: _deleteOrderCubit,
-        ),
+        BlocProvider.value(value: _ordersCubit),
+        BlocProvider.value(value: _deleteOrderCubit),
       ],
       child: Builder(
         builder: (context) => Scaffold(
@@ -63,13 +72,7 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
             title: 'طلبات التفصيل',
             bottom: TabBar(
               controller: _tabController,
-              onTap: (index) {
-                if (index == 0) {
-                  _ordersCubit.loadMyOrders();
-                } else {
-                  _ordersCubit.loadAllOrders();
-                }
-              },
+              // إزالة onTap لمنع التداخل
               tabs: const [
                 Tab(text: 'طلباتي'),
                 Tab(text: 'طلبات المستخدمين'),
@@ -83,7 +86,14 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
                   context: context,
                   message: 'تم حذف الطلب بنجاح',
                 );
-                _ordersCubit.loadMyOrders();
+                // تحديث الكاش أولاً
+                //   _ordersCubit.removeOrderFromCache(state.orderId);
+                // ثم تحديث البيانات
+                if (_tabController.index == 0) {
+                  _ordersCubit.loadMyOrders();
+                } else {
+                  _ordersCubit.loadAllOrders();
+                }
               } else if (state is DeleteOrderError) {
                 CustomSnackbar.showError(
                   context: context,
@@ -93,6 +103,8 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
             },
             child: TabBarView(
               controller: _tabController,
+              // منع السحب للتنقل بين التابس
+          //    physics: const NeverScrollableScrollPhysics(),
               children: const [
                 MyOrdersWidget(),
                 AllOrdersWidget(),
@@ -158,7 +170,7 @@ class _RefreshableOrdersListState extends State<RefreshableOrdersList> {
   Widget build(BuildContext context) {
     return BlocListener<OrdersCubit, OrdersState>(
       listener: (context, state) {
-        if (state is OrdersSuccess) {
+        if (state is MyOrdersSuccess) {
           // تم تحميل البيانات بنجاح
         } else if (state is OrdersError) {
           CustomSnackbar.showSuccess(
@@ -192,6 +204,11 @@ class MyOrdersWidget extends StatelessWidget {
     final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
 
     return BlocBuilder<OrdersCubit, OrdersState>(
+      buildWhen: (previous, current) {
+        return current is OrdersLoading ||
+            current is MyOrdersSuccess ||
+            current is OrdersError;
+      },
       builder: (context, state) {
         if (state is OrdersLoading) {
           return const Center(
@@ -199,7 +216,7 @@ class MyOrdersWidget extends StatelessWidget {
           );
         }
 
-        if (state is OrdersSuccess) {
+        if (state is MyOrdersSuccess) {
           final orders = state.orders;
 
           if (orders.isEmpty) {
@@ -312,19 +329,164 @@ class MyOrdersWidget extends StatelessWidget {
   }
 
   int _getCrossAxisCount(double width) {
-    if (width >= 1200) return 3; // Desktop
-    if (width >= 800) return 3; // Tablet
-    return 2; // Mobile
+    if (width >= 1200) return 4;      // Desktop
+    if (width >= 800) return 3;       // Tablet
+    return 2;                         // Mobile
   }
 
   double _getChildAspectRatio(double width) {
-    if (width >= 1000) return 0.68; // Desktop - تقليل الارتفاع
-    if (width == 800) return 0.48;
-    if (width > 800) return 0.58;
-    if (width >= 400 && width <= 600) return 0.55;
-    if (width == 360) return 0.50;
-    if (width >= 320 && width <= 390) return 0.53;
-    
-    return 0.55; // Mobile
+    if (width >= 1200) return 0.95;   // Desktop
+    if (width >= 800) return 0.80;    // Tablet
+    if (width > 600) return 0.75;     // Large Tablet
+    if (width >= 400) return 0.65;    // Small Tablet
+    return 0.60;                      // Mobile
+  }
+}
+
+class AllOrdersWidget extends StatelessWidget {
+  const AllOrdersWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<OrdersCubit, OrdersState>(
+      buildWhen: (previous, current) {
+        return current is OrdersLoading ||
+            current is AllOrdersSuccess ||
+            current is OrdersError;
+      },
+      builder: (context, state) {
+        if (state is OrdersLoading) {
+          return const Center(
+            child: CustomProgressIndcator(color: AppColors.primary),
+          );
+        }
+
+        if (state is AllOrdersSuccess) {
+          final orders = state.orders;
+
+          if (orders.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.design_services_outlined,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'لا توجد طلبات',
+                    style: getMediumStyle(
+                      color: Colors.grey[600]!,
+                      fontSize: FontSize.size16,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          final size = MediaQuery.of(context).size;
+          final isTablet = size.width >= AppResponsive.mobileBreakpoint;
+          final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<OrdersCubit>().loadAllOrders();
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: isDesktop ? 24 : 16,
+              ),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: _getCrossAxisCount(size.width),
+                  childAspectRatio: _getChildAspectRatio(size.width),
+                  crossAxisSpacing: isDesktop ? 24 : 16,
+                  mainAxisSpacing: isDesktop ? 24 : 16,
+                ),
+                itemCount: orders.length,
+                itemBuilder: (context, index) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(
+                      value: context.read<OrdersCubit>(),
+                    ),
+                    BlocProvider.value(
+                      value: context.read<DeleteOrderCubit>(),
+                    ),
+                  ],
+                  child: OrderCard(
+                    order: orders[index],
+                    isMyRequest: false,
+                    onDelete: (id) {
+                      context.read<DeleteOrderCubit>().deleteOrder(id);
+                    },
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (state is OrdersError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Colors.red[300],
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  state.message,
+                  style: getMediumStyle(
+                    color: Colors.red[600]!,
+                    fontSize: FontSize.size16,
+                    fontFamily: FontConstant.cairo,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    context.read<OrdersCubit>().loadAllOrders();
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('إعادة المحاولة'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return const SizedBox();
+      },
+    );
+  }
+
+  int _getCrossAxisCount(double width) {
+    if (width >= 1200) return 4;      // Desktop
+    if (width >= 800) return 3;       // Tablet
+    return 2;                         // Mobile
+  }
+
+  double _getChildAspectRatio(double width) {
+    if (width >= 1200) return 0.95;   // Desktop
+    if (width >= 800) return 0.80;    // Tablet
+    if (width > 600) return 0.75;     // Large Tablet
+    if (width >= 400) return 0.65;    // Small Tablet
+    return 0.60;                      // Mobile
   }
 }

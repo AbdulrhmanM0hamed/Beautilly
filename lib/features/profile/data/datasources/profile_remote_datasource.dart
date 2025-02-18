@@ -4,7 +4,9 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/cache/cache_service.dart';
+import '../../../../core/services/service_locator.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
+import '../../../../features/auth/domain/repositories/auth_repository.dart';
 import '../models/profile_model.dart';
 
 abstract class ProfileRemoteDataSource {
@@ -30,61 +32,48 @@ abstract class ProfileRemoteDataSource {
   Future<String> deleteAccount({required String password});
 }
 
-class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
+class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemoteDataSource {
   final http.Client client;
   final CacheService cacheService;
+  final AuthRepository authRepository;
 
   ProfileRemoteDataSourceImpl({
     required this.client,
     required this.cacheService,
+    required this.authRepository,
   });
-
-  Future<Map<String, String>> _getHeaders() async {
-    final token = await cacheService.getToken();
-    final sessionCookie = await cacheService.getSessionCookie();
-
-    if (token == null) {
-      throw UnauthorizedException('يرجى تسجيل الدخول أولاً');
-    }
-
-    return {
-      'Authorization': 'Bearer $token',
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'x-api-key': ApiEndpoints.api_key,
-      if (sessionCookie != null) 'Cookie': sessionCookie,
-    };
-  }
 
   @override
   Future<ProfileModel> getProfile() async {
-    try {
-      final response = await client.get(
-        Uri.parse(ApiEndpoints.profile),
-        headers: await _getHeaders(),
-      );
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.get(
+          Uri.parse(ApiEndpoints.profile),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+            'x-api-key': ApiEndpoints.api_key,
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+        );
 
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-
-        if (jsonResponse['success'] == true) {
-          return ProfileModel.fromJson(jsonResponse['data']);
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.body);
+          if (jsonResponse['success'] == true) {
+            return ProfileModel.fromJson(jsonResponse['data']);
+          } else {
+            throw ServerException(
+              jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
+            );
+          }
         } else {
-          throw ServerException(
-            jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
-          );
+          throw ServerException('فشل في تحميل بيانات الملف الشخصي');
         }
-      } else if (response.statusCode == 401) {
-        throw UnauthorizedException(
-            'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
-      } else {
-        throw ServerException('فشل في تحميل بيانات الملف الشخصي');
-      }
-    } catch (e) {
-      if (e is UnauthorizedException) rethrow;
-      if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ غير متوقع');
-    }
+      },
+    );
   }
 
   @override
@@ -133,33 +122,40 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     String? email,
     String? phone,
   }) async {
-    try {
-      final response = await client.post(
-        Uri.parse(ApiEndpoints.profile),
-        headers: await _getHeaders(),
-        body: jsonEncode({
-          if (name != null) 'name': name,
-          if (email != null) 'email': email,
-          if (phone != null) 'phone': phone,
-        }),
-      );
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.post(
+          Uri.parse(ApiEndpoints.profile),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+            'x-api-key': ApiEndpoints.api_key,
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+          body: jsonEncode({
+            if (name != null) 'name': name,
+            if (email != null) 'email': email,
+            if (phone != null) 'phone': phone,
+          }),
+        );
 
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-        if (jsonResponse['success'] == true) {
-          return ProfileModel.fromJson(jsonResponse['data']);
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.body);
+          if (jsonResponse['success'] == true) {
+            return ProfileModel.fromJson(jsonResponse['data']);
+          } else {
+            throw ServerException(
+              jsonResponse['message'] ?? 'فشل في تحديث البيانات الشخصية',
+            );
+          }
         } else {
-          throw ServerException(
-            jsonResponse['message'] ?? 'فشل في تحديث البيانات الشخصية',
-          );
+          throw ServerException('فشل في تحديث البيانات الشخصية');
         }
-      } else {
-        throw ServerException('فشل في تحديث البيانات الشخصية');
-      }
-    } catch (e) {
-      if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ أثناء تحديث البيانات');
-    }
+      },
+    );
   }
 
   @override
@@ -167,34 +163,37 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     required int cityId,
     required int stateId,
   }) async {
-    try {
-      final response = await client.post(
-        Uri.parse(ApiEndpoints.profile),
-        headers: await _getHeaders(),
-        body: jsonEncode({
-          'city_id': cityId,
-          'state_id': stateId,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-
-        if (jsonResponse['success'] == true) {
-          // تحويل البيانات المستلمة إلى نموذج ProfileModel
-          return ProfileModel.fromJson(jsonResponse['data']);
-        }
-
-        throw ServerException(
-          jsonResponse['message'] ?? 'فشل في تحديث العنوان',
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.post(
+          Uri.parse(ApiEndpoints.profile),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+            'x-api-key': ApiEndpoints.api_key,
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+          body: jsonEncode({
+            'city_id': cityId,
+            'state_id': stateId,
+          }),
         );
-      }
 
-      throw ServerException('فشل في تحديث العنوان');
-    } catch (e) {
-      if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ أثناء تحديث العنوان');
-    }
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.body);
+          if (jsonResponse['success'] == true) {
+            return ProfileModel.fromJson(jsonResponse['data']);
+          }
+          throw ServerException(
+            jsonResponse['message'] ?? 'فشل في تحديث العنوان',
+          );
+        }
+        throw ServerException('فشل في تحديث العنوان');
+      },
+    );
   }
 
   @override
@@ -203,31 +202,37 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     required String newPassword,
     required String confirmPassword,
   }) async {
-    try {
-      final response = await client.post(
-        Uri.parse('${ApiEndpoints.baseUrl}/user/profile'),
-        headers: await _getHeaders(),
-        body: jsonEncode({
-          //      'current_password': currentPassword,
-          'password': newPassword,
-          'password_confirmation': confirmPassword,
-        }),
-      );
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        final sessionCookie = await cacheService.getSessionCookie();
+        final response = await client.post(
+          Uri.parse('${ApiEndpoints.baseUrl}/user/profile'),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
+            'x-api-key': ApiEndpoints.api_key,
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+          body: jsonEncode({
+            //      'current_password': currentPassword,
+            'password': newPassword,
+            'password_confirmation': confirmPassword,
+          }),
+        );
 
-      if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
-
-        if (jsonResponse['success'] == true) {
-          return jsonResponse['message'] ?? 'تم تغيير كلمة المرور بنجاح';
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.body);
+          if (jsonResponse['success'] == true) {
+            return jsonResponse['message'] ?? 'تم تغيير كلمة المرور بنجاح';
+          }
+          throw ServerException(
+              jsonResponse['message'] ?? 'فشل في تغيير كلمة المرور');
         }
-        throw ServerException(
-            jsonResponse['message'] ?? 'فشل في تغيير كلمة المرور');
-      }
-
-      throw ServerException('فشل في تغيير كلمة المرور');
-    } catch (e) {
-      throw ServerException('حدث خطأ أثناء تغيير كلمة المرور');
-    }
+        throw ServerException('فشل في تغيير كلمة المرور');
+      },
+    );
   }
 
   @override

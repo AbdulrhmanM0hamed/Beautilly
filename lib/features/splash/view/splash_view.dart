@@ -1,10 +1,8 @@
-import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/features/Home/presentation/view/home_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:provider/provider.dart';
-import 'package:beautilly/core/utils/theme/app_colors.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});

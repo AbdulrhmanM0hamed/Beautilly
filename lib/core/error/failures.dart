@@ -1,4 +1,3 @@
-
 abstract class Failure {
   final String message;
   const Failure(this.message);
@@ -22,4 +21,8 @@ class NetworkFailure extends Failure {
 
 class ValidationFailure extends Failure {
   const ValidationFailure(String message) : super(message);
+}
+
+class UnauthorizedFailure extends Failure {
+  UnauthorizedFailure(String message) : super(message);
 }

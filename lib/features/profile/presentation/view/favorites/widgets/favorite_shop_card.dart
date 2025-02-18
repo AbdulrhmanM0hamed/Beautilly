@@ -4,111 +4,176 @@ import '../../../../../../core/utils/constant/font_manger.dart';
 import '../../../../../../core/utils/constant/styles_manger.dart';
 import '../../../../../../core/utils/theme/app_colors.dart';
 import '../../../../domain/entities/favorite_shop.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../../features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
+import '../../../../../../features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_state.dart';
 
 class FavoriteShopCard extends StatelessWidget {
   final FavoriteShop shop;
+  final VoidCallback? onRemoved;
 
   const FavoriteShopCard({
     super.key,
     required this.shop,
+    this.onRemoved,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
+    return BlocListener<ToggleFavoritesCubit, ToggleFavoritesState>(
+      listener: (context, state) {
+        if (state is ToggleFavoritesSuccess && !state.isFavorite) {
+          onRemoved?.call();
+        } else if (state is ToggleFavoritesError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            // التنقل إلى صفحة المتجر
-          },
-          child: Column(
-            children: [
-              // صورة المتجر
-              ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
-                child: CachedNetworkImage(
-                  imageUrl: shop.image,
-                  height: 160,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: Colors.grey[200],
-                    child: const Icon(Icons.error),
-                  ),
-                ),
-              ),
-              
-              // معلومات المتجر
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              // التنقل إلى صفحة المتجر
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // صورة المتجر مع Overlay
+                Stack(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            shop.name,
-                            style: getBoldStyle(
-                              fontSize: FontSize.size16,
-                              fontFamily: FontConstant.cairo,
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(16),
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: shop.image,
+                        height: 160,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: Colors.grey[200],
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppColors.primary,
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        _buildFavoriteButton(),
-                      ],
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.grey[200],
+                          child: const Icon(Icons.error),
+                        ),
+                      ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        _buildInfoChip(
-                          icon: Icons.star,
-                          label: shop.rating,
-                          color: const Color.fromARGB(255, 218, 165, 6),
+                    // Gradient Overlay
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: 80,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                              Colors.black.withOpacity(0.6),
+                              Colors.transparent,
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        _buildInfoChip(
-                          icon: Icons.favorite,
-                          label: '${shop.lovesCount}',
-                          color: AppColors.error,
+                      ),
+                    ),
+                    // Shop Type Badge
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
                         ),
-                        const SizedBox(width: 8),
-                        _buildInfoChip(
-                          icon: Icons.store,
-                          label: shop.type == 'tailor' ? 'دار ازياء' : 'صالون',
-                          color: AppColors.primary,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.9),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                      ],
+                        child: Text(
+                          shop.type == 'tailor' ? 'دار ازياء' : 'صالون',
+                          style: getMediumStyle(
+                            color: Colors.white,
+                            fontSize: FontSize.size12,
+                            fontFamily: FontConstant.cairo,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                
+                // معلومات المتجر
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                shop.name,
+                                style: getBoldStyle(
+                                  fontSize: FontSize.size14,
+                                  fontFamily: FontConstant.cairo,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            _buildFavoriteButton(),
+                          ],
+                        ),
+                        const Spacer(),
+                        // Metrics Row
+                        Row(
+                          children: [
+                            _buildMetricChip(
+                              icon: Icons.star,
+                              label: shop.rating,
+                              color: const Color(0xFFFFB800),
+                            ),
+                            const SizedBox(width: 8),
+                            _buildMetricChip(
+                              icon: Icons.favorite,
+                              label: '${shop.lovesCount}',
+                              color: AppColors.error,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -116,42 +181,70 @@ class FavoriteShopCard extends StatelessWidget {
   }
 
   Widget _buildFavoriteButton() {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: () {
-          // تنفيذ إزالة من المفضلة
-        },
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.error.withOpacity(0.1),
+    return BlocBuilder<ToggleFavoritesCubit, ToggleFavoritesState>(
+      builder: (context, state) {
+        final isLoading = state is ToggleFavoritesLoading;
+
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
             borderRadius: BorderRadius.circular(8),
+            onTap: isLoading
+                ? null
+                : () {
+                    context
+                        .read<ToggleFavoritesCubit>()
+                        .removeFromFavorites(shop.id);
+                  },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.error.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: isLoading
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.error,
+                      ),
+                    )
+                  : const Icon(
+                      Icons.favorite,
+                      color: AppColors.error,
+                      size: 20,
+                    ),
+            ),
           ),
-          child: const Icon(
-            Icons.favorite,
-            color: AppColors.error,
-            size: 20,
-          ),
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildInfoChip({
+  Widget _buildMetricChip({
     required IconData icon,
     required String label,
     required Color color,
   }) {
+    // تنسيق الرقم إذا كان تقييم
+    String displayLabel = label;
+    if (icon == Icons.star) {
+      try {
+        final rating = double.parse(label);
+        displayLabel = rating.toStringAsFixed(1);
+      } catch (_) {}
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 8,
-        vertical: 4,
+        horizontal: 12,
+        vertical: 6,
       ),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -163,7 +256,7 @@ class FavoriteShopCard extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           Text(
-            label,
+            displayLabel,
             style: getMediumStyle(
               color: color,
               fontSize: FontSize.size12,

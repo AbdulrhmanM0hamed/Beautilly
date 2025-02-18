@@ -62,7 +62,7 @@ class ApiEndpoints {
   // تحديث تقييم موجود
   static const String myFavoriteShops =
       '$baseUrl/my-favorite-shops/?api_key=$api_key';
-
+//631|46GFWyzIQq9dNOyJXvnqgfLa0nryAjQJBb7rUeVia86b3d15
   // خدمات الموقع
   static const String updateLocation =
       '$baseUrl/location/update?api_key=$api_key'; // تحديث الموقع الحالي

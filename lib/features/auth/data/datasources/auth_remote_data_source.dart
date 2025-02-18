@@ -43,10 +43,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         await cacheService.saveToken(newAccessToken);
         return newAccessToken;
       } else {
-        throw ServerException('فشل في تجديد الجلسة');
+        throw ServerException(message: 'فشل في تجديد الجلسة');
       }
     } catch (e) {
-      throw ServerException('حدث خطأ في الاتصال بالخادم');
+      throw ServerException(message: 'حدث خطأ في الاتصال بالخادم');
     }
   }
 }

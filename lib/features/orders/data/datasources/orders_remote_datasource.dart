@@ -58,7 +58,7 @@ class OrdersRemoteDataSourceImpl
           return orders.map((order) => OrderModel.fromJson(order)).toList();
         } else {
           final error = json.decode(response.body);
-          throw ServerException(error['message'] ?? 'فشل في تحميل الطلبات');
+          throw ServerException(message: error['message'] ?? 'فشل في تحميل الطلبات');
         }
       },
     );
@@ -87,7 +87,7 @@ class OrdersRemoteDataSourceImpl
           return data.map((json) => OrderModel.fromJson(json)).toList();
         } else {
           final error = json.decode(response.body);
-          throw ServerException(error['message'] ?? 'حدث خطأ في الخادم');
+          throw ServerException(message: error['message'] ?? 'حدث خطأ في الخادم');
         }
       },
     );
@@ -143,12 +143,12 @@ class OrdersRemoteDataSourceImpl
         if (jsonResponse['success'] == true) {
           return jsonResponse['data'];
         }
-        throw ServerException(jsonResponse['message'] ?? 'فشل في إضافة الطلب');
+        throw ServerException(message: jsonResponse['message'] ?? 'فشل في إضافة الطلب');
       }
 
-      throw ServerException('فشل في إضافة الطلب: ${response.statusCode}');
+      throw ServerException(message: 'فشل في إضافة الطلب: ${response.statusCode}');
     } catch (e) {
-      throw ServerException('حدث خطأ أثناء إضافة الطلب');
+      throw ServerException(message: 'حدث خطأ أثناء إضافة الطلب');
     }
   }
 
@@ -169,15 +169,15 @@ class OrdersRemoteDataSourceImpl
       );
 
       if (response.statusCode != 200) {
-        throw ServerException('فشل في حذف الطلب');
+        throw ServerException(message: 'فشل في حذف الطلب');
       }
 
       final jsonResponse = json.decode(response.body);
       if (jsonResponse['success'] != true) {
-        throw ServerException(jsonResponse['message'] ?? 'فشل في حذف الطلب');
+        throw ServerException(message: jsonResponse['message'] ?? 'فشل في حذف الطلب');
       }
     } catch (e) {
-      throw ServerException('حدث خطأ أثناء حذف الطلب');
+      throw ServerException(message: 'حدث خطأ أثناء حذف الطلب');
     }
   }
 
@@ -210,17 +210,17 @@ class OrdersRemoteDataSourceImpl
           return OrderDetailsModel.fromJson(orderData);
         } else {
           throw ServerException(
-              jsonResponse['message'] ?? 'فشل في تحميل تفاصيل الطلب');
+              message: jsonResponse['message'] ?? 'فشل في تحميل تفاصيل الطلب');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException(
-            'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
+            'انتهت صلاحية الجلسة  ، يرجى إعادة تسجيل الدخول');
       } else {
         final error = json.decode(response.body);
-        throw ServerException(error['message'] ?? 'فشل في تحميل تفاصيل الطلب');
+        throw ServerException(message: error['message'] ?? 'فشل في تحميل تفاصيل الطلب');
       }
     } catch (e) {
-      throw ServerException('حدث خطأ غير متوقع: $e');
+      throw ServerException(message: 'حدث خطأ غير متوقع: $e');
     }
   }
 
@@ -248,17 +248,17 @@ class OrdersRemoteDataSourceImpl
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = json.decode(response.body);
         if (jsonResponse['success'] != true) {
-          throw ServerException(jsonResponse['message'] ?? 'فشل في قبول العرض');
+          throw ServerException(message: jsonResponse['message'] ?? 'فشل في قبول العرض');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException(
             'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
         final error = json.decode(response.body);
-        throw ServerException(error['message'] ?? 'فشل في قبول العرض');
+        throw ServerException(message: error['message'] ?? 'فشل في قبول العرض');
       }
     } catch (e) {
-      throw ServerException('حدث خطأ أثناء قبول العرض');
+      throw ServerException(message: 'حدث خطأ أثناء قبول العرض');
     }
   }
 
@@ -286,17 +286,17 @@ class OrdersRemoteDataSourceImpl
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = json.decode(response.body);
         if (jsonResponse['success'] != true) {
-          throw ServerException(jsonResponse['message'] ?? 'فشل في قبول العرض');
+          throw ServerException(message: jsonResponse['message'] ?? 'فشل في قبول العرض');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException(
             'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
         final error = json.decode(response.body);
-        throw ServerException(error['message'] ?? 'فشل في قبول العرض');
+        throw ServerException(message: error['message'] ?? 'فشل في قبول العرض');
       }
     } catch (e) {
-      throw ServerException('حدث خطأ أثناء قبول العرض');
+      throw ServerException(message: 'حدث خطأ أثناء قبول العرض');
     }
   }
 }

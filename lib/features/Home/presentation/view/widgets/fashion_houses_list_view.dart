@@ -3,8 +3,7 @@ import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_c
 import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/utils/animations/custom_progress_indcator.dart';
-import '../../../../../core/utils/theme/app_colors.dart';
+
 import '../../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../../cubit/premium_shops_cubit/premium_shops_state.dart';
 import 'shared/beauty_service_card.dart';

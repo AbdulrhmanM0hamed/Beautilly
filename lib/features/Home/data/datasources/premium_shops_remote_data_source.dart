@@ -46,10 +46,10 @@ class PremiumShopsRemoteDataSourceImpl with TokenRefreshMixin implements Premium
             final List<dynamic> shops = decodedData['data']['shops'];
             return shops.map((json) => PremiumShopModel.fromJson(json)).toList();
           } else {
-            throw ServerException(decodedData['message'] ?? 'فشل في تحميل المتاجر المميزة');
+            throw ServerException(message: decodedData['message'] ?? 'فشل في تحميل المتاجر المميزة');
           }
         } else {
-          throw ServerException('فشل في تحميل المتاجر المميزة');
+          throw ServerException(message: 'فشل في تحميل المتاجر المميزة');
         }
       },
     );

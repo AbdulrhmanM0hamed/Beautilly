@@ -73,14 +73,14 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
             pagination: PaginationModel.fromJson(paginationData),
           );
         } else {
-          throw ServerException('لا توجد نتائج');
+          throw ServerException(message: 'لا توجد نتائج');
         }
       } else {
         final error = json.decode(response.body);
-        throw ServerException(error['message'] ?? 'حدث خطأ في البحث');
+        throw ServerException(message: error['message'] ?? 'حدث خطأ في البحث');
       }
     } catch (e) {
-      throw ServerException(e.toString());
+      throw ServerException(message:  e.toString());
     }
   }
 }

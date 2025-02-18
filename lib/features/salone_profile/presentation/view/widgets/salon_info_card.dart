@@ -242,17 +242,17 @@ class SalonInfoCard extends StatelessWidget {
                                       ),
                                       if (isOpen)
                                         Container(
-                                          width: 8,
-                                          height: 8,
+                                          width: 10,
+                                          height: 10,
                                           decoration: BoxDecoration(
-                                            color: Colors.white,
+                                            color: const Color.fromARGB(255, 78, 245, 117),
                                             shape: BoxShape.circle,
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.white
+                                                color: const Color.fromARGB(255, 78, 245, 117)
                                                     .withOpacity(0.5),
-                                                blurRadius: 4,
-                                                spreadRadius: 1,
+                                                blurRadius: 5,
+                                                spreadRadius: 5,
                                               ),
                                             ],
                                           ),

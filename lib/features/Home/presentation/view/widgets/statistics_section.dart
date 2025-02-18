@@ -56,14 +56,11 @@ class StatisticsSection extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: padding),
-                      child: Text(
-                        'إحصائيات دلالك',
-                        style: getBoldStyle(
-                          fontSize: titleSize,
-                          fontFamily: FontConstant.cairo,
-                        ),
+                    Text(
+                      'إحصائيات دلالك',
+                      style: getBoldStyle(
+                        fontSize: titleSize,
+                        fontFamily: FontConstant.cairo,
                       ),
                     ),
                     SizedBox(height: padding),

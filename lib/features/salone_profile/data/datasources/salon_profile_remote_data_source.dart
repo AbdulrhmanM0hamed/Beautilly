@@ -53,13 +53,13 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
             try {
               return SalonProfileModel.fromJson(decodedJson['data']);
             } catch (e) {
-              throw ServerException('حدث خطأ في معالجة البيانات');
+              throw ServerException(message: 'حدث خطأ في معالجة البيانات');
             }
           } else {
-            throw ServerException('لا توجد بيانات متاحة');
+            throw ServerException(message: 'لا توجد بيانات متاحة');
           }
         } else {
-          throw ServerException('فشل في جلب بيانات الصالون');
+          throw ServerException(message: 'فشل في جلب بيانات الصالون');
         }
       },
     );
@@ -88,15 +88,15 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
           final jsonResponse = json.decode(response.body);
           if (jsonResponse['success'] != true) {
             throw ServerException(
-              jsonResponse['message'] ?? 'فشل في إضافة التقييم',
+              message: jsonResponse['message'] ?? 'فشل في إضافة التقييم',
             );
           }
         } else if (response.statusCode == 422) {
-          throw ServerException('لديك تقييم سابق لهذا المتجر');
+          throw ServerException(message: 'لديك تقييم سابق لهذا المتجر');
         } else {
           final error = json.decode(response.body);
           throw ServerException(
-            error['message'] ?? 'فشل في إضافة التقييم',
+            message: error['message'] ?? 'فشل في إضافة التقييم',
           );
         }
       },
@@ -125,15 +125,15 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
           final jsonResponse = json.decode(response.body);
           if (jsonResponse['success'] != true) {
             throw ServerException(
-              jsonResponse['message'] ?? 'فشل في حذف التقييم',
+              message: jsonResponse['message'] ?? 'فشل في حذف التقييم',
             );
           }
         } else if (response.statusCode == 404) {
-          throw ServerException('لم يتم العثور على تقييم لحذفه');
+          throw ServerException(message: 'لم يتم العثور على تقييم لحذفه');
         } else {
           final error = json.decode(response.body);
           throw ServerException(
-            error['message'] ?? 'فشل في حذف التقييم',
+            message: error['message'] ?? 'فشل في حذف التقييم',
           );
         }
       },
@@ -158,7 +158,7 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
         );
 
         if (response.statusCode != 200) {
-          throw ServerException('فشل في إضافة المتجر للمفضلة');
+          throw ServerException(message: 'فشل في إضافة المتجر للمفضلة');
         }
       },
     );
@@ -182,7 +182,7 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
         );
 
         if (response.statusCode != 200) {
-          throw ServerException('فشل في إزالة المتجر من المفضلة');
+          throw ServerException(message: 'فشل في إزالة المتجر من المفضلة');
         }
       },
     );

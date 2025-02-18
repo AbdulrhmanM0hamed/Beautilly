@@ -1,5 +1,6 @@
 import 'package:beautilly/core/error/exceptions.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
+import 'package:beautilly/core/services/network/network_info.dart';
 import 'package:beautilly/features/Home/data/datasources/discounts_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/premium_shops_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/services_remote_datasource.dart';
@@ -30,6 +31,7 @@ import 'package:beautilly/features/orders/domain/usecases/get_my_orders.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:beautilly/features/salone_profile/data/datasources/salon_profile_remote_data_source.dart';
 import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 import '../../features/Home/data/repositories/statistics_repository_impl.dart';
 import '../../features/Home/domain/repositories/statistics_repository.dart';
@@ -102,7 +104,11 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(sl(), sl()),
+    () => AuthRepositoryImpl(
+      sl(),
+      sl(),
+      sl<NetworkInfo>(),
+    ),
   );
   sl.registerFactory(() => AuthCubit(sl(), sl()));
 
@@ -120,11 +126,16 @@ Future<void> init() async {
 
   // Repositories
   sl.registerLazySingleton<StatisticsRepository>(
-    () => StatisticsRepositoryImpl(),
+    () => StatisticsRepositoryImpl(
+      networkInfo: sl(),
+    ),
   );
 
   sl.registerLazySingleton<LocationRepository>(
-    () => LocationRepositoryImpl(),
+    () => LocationRepositoryImpl(
+      client: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   // Cubits
@@ -148,7 +159,10 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<OrdersRepository>(
-    () => OrdersRepositoryImpl(remoteDataSource: sl()),
+    () => OrdersRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   sl.registerLazySingleton(() => AddOrderUseCase(sl()));
@@ -175,7 +189,10 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ReservationsRepository>(
-    () => ReservationsRepositoryImpl(sl()),
+    () => ReservationsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   sl.registerLazySingleton(() => GetMyReservations(sl()));
@@ -196,7 +213,10 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ProfileRepository>(
-    () => ProfileRepositoryImpl(sl()),
+    () => ProfileRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   sl.registerLazySingleton(
@@ -222,7 +242,10 @@ Future<void> init() async {
 
   // 2. تسجيل Repository
   sl.registerLazySingleton<FavoritesRepository>(
-    () => FavoritesRepositoryImpl(sl()),
+    () => FavoritesRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   // sl.registerLazySingleton<FavoritesCubit>(
@@ -246,7 +269,10 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ServicesRepository>(
-    () => ServicesRepositoryImpl(sl()),
+    () => ServicesRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   sl.registerLazySingleton(
@@ -267,7 +293,10 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<PremiumShopsRepository>(
-    () => PremiumShopsRepositoryImpl(sl()),
+    () => PremiumShopsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   sl.registerLazySingleton(
@@ -288,7 +317,10 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<DiscountsRepository>(
-    () => DiscountsRepositoryImpl(sl()),
+    () => DiscountsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   sl.registerLazySingleton(
@@ -329,6 +361,7 @@ Future<void> init() async {
   sl.registerLazySingleton<SalonProfileRepository>(
     () => SalonProfileRepositoryImpl(
       remoteDataSource: sl(),
+      networkInfo: sl(),
     ),
   );
 
@@ -396,7 +429,10 @@ Future<void> init() async {
 
   // Repository
   sl.registerLazySingleton<BookingRepository>(
-    () => BookingRepositoryImpl(sl()),
+    () => BookingRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   // Data sources
@@ -412,7 +448,10 @@ Future<void> init() async {
 
   // Repositories
   sl.registerLazySingleton<SearchShopsRepository>(
-    () => SearchShopsRepositoryImpl(remoteDataSource:  sl()),
+    () => SearchShopsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
   );
 
   // Data sources
@@ -421,6 +460,11 @@ Future<void> init() async {
       client: sl(),
       cacheService: sl(),
     ),
+  );
+
+  // Core
+  sl.registerLazySingleton<NetworkInfo>(
+    () => NetworkInfoImpl(Connectivity()),
   );
 }
 mixin TokenRefreshMixin {

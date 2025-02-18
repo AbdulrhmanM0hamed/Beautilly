@@ -1,28 +1,28 @@
 abstract class Failure {
   final String message;
-  const Failure(this.message);
+  const Failure({required this.message});
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure(String message) : super(message);
+  const ServerFailure({required String message}) : super(message: message);
 }
 
 class AuthFailure extends Failure {
-  const AuthFailure(String message) : super(message);
+  const AuthFailure({required String message}) : super(message: message);
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure(String message) : super(message);
+  const CacheFailure({required String message}) : super(message: message);
 }
 
 class NetworkFailure extends Failure {
-  const NetworkFailure() : super('لا يوجد اتصال بالإنترنت');
+  const NetworkFailure({required String message}) : super(message: message);
 }
 
 class ValidationFailure extends Failure {
-  const ValidationFailure(String message) : super(message);
+  const ValidationFailure({required String message}) : super(message: message);
 }
 
 class UnauthorizedFailure extends Failure {
-  UnauthorizedFailure(String message) : super(message);
+  UnauthorizedFailure({required String message}) : super(message: message);
 }

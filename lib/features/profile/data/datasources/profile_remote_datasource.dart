@@ -66,11 +66,11 @@ class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemot
             return ProfileModel.fromJson(jsonResponse['data']);
           } else {
             throw ServerException(
-              jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
+                message: jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
             );
           }
         } else {
-          throw ServerException('فشل في تحميل بيانات الملف الشخصي');
+          throw ServerException(message: 'فشل في تحميل بيانات الملف الشخصي');
         }
       },
     );
@@ -110,9 +110,9 @@ class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemot
         }
       }
 
-      throw ServerException('فشل في رفع الصورة: ${response.statusCode}');
+      throw ServerException(message: 'فشل في رفع الصورة: ${response.statusCode}');
     } catch (e) {
-      throw ServerException('حدث خطأ أثناء رفع الصورة');
+      throw ServerException(message: 'حدث خطأ أثناء رفع الصورة');
     }
   }
 
@@ -148,11 +148,11 @@ class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemot
             return ProfileModel.fromJson(jsonResponse['data']);
           } else {
             throw ServerException(
-              jsonResponse['message'] ?? 'فشل في تحديث البيانات الشخصية',
+              message: jsonResponse['message'] ?? 'فشل في تحديث البيانات الشخصية',
             );
           }
         } else {
-          throw ServerException('فشل في تحديث البيانات الشخصية');
+          throw ServerException(message: 'فشل في تحديث البيانات الشخصية');
         }
       },
     );
@@ -188,10 +188,10 @@ class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemot
             return ProfileModel.fromJson(jsonResponse['data']);
           }
           throw ServerException(
-            jsonResponse['message'] ?? 'فشل في تحديث العنوان',
+            message: jsonResponse['message'] ?? 'فشل في تحديث العنوان',
           );
         }
-        throw ServerException('فشل في تحديث العنوان');
+        throw ServerException(message: 'فشل في تحديث العنوان');
       },
     );
   }
@@ -228,9 +228,9 @@ class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemot
             return jsonResponse['message'] ?? 'تم تغيير كلمة المرور بنجاح';
           }
           throw ServerException(
-              jsonResponse['message'] ?? 'فشل في تغيير كلمة المرور');
+              message: jsonResponse['message'] ?? 'فشل في تغيير كلمة المرور');
         }
-        throw ServerException('فشل في تغيير كلمة المرور');
+        throw ServerException(message: 'فشل في تغيير كلمة المرور');
       },
     );
   }

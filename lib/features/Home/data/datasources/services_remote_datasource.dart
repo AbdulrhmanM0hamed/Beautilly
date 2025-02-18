@@ -48,10 +48,10 @@ class ServicesRemoteDataSourceImpl with TokenRefreshMixin implements ServicesRem
             final List<dynamic> data = decodedData['data'];
             return data.map((json) => ServiceModel.fromJson(json)).toList();
           } else {
-            throw ServerException('فشل في تحميل الخدمات');
+            throw ServerException(message: 'فشل في تحميل الخدمات');
           }
         } else {
-          throw ServerException('فشل في تحميل الخدمات');
+          throw ServerException(message: 'فشل في تحميل الخدمات');
         }
       },
     );
@@ -83,11 +83,10 @@ class ServicesRemoteDataSourceImpl with TokenRefreshMixin implements ServicesRem
                 .map((service) => ServiceModel.fromJson(service))
                 .toList();
           } else {
-            throw ServerException(
-                jsonResponse['message'] ?? 'فشل في تحميل نتائج البحث');
+            throw ServerException(message: jsonResponse['message'] ?? 'فشل في تحميل نتائج البحث');
           }
         } else {
-          throw ServerException('فشل في تحميل نتائج البحث');
+          throw ServerException(message: 'فشل في تحميل نتائج البحث');
         }
       },
     );

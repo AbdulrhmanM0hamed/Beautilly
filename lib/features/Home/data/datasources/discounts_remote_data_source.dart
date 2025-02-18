@@ -46,10 +46,10 @@ class DiscountsRemoteDataSourceImpl with TokenRefreshMixin implements DiscountsR
             final List<dynamic> discounts = decodedData['data']['discounts'];
             return discounts.map((json) => DiscountModel.fromJson(json)).toList();
           } else {
-            throw ServerException(decodedData['message'] ?? 'فشل في تحميل العروض');
+            throw ServerException(message: decodedData['message'] ?? 'فشل في تحميل العروض');
           }
         } else {
-          throw ServerException('فشل في تحميل العروض');
+          throw ServerException(message: 'فشل في تحميل العروض');
         }
       },
     );

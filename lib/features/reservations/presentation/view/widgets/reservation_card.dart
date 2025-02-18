@@ -1,3 +1,4 @@
+import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/booking/presentation/cubit/booking_cubit.dart';
 import 'package:beautilly/features/booking/presentation/cubit/booking_state.dart';
@@ -217,7 +218,7 @@ class ReservationCard extends StatelessWidget {
                               context: context,
                               barrierDismissible: false,
                               builder: (context) => const Center(
-                                child: CircularProgressIndicator(
+                                child: CustomProgressIndcator(
                                   color: AppColors.primary,
                                 ),
                               ),

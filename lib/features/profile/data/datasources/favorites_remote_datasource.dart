@@ -55,11 +55,11 @@ class FavoritesRemoteDataSourceImpl with TokenRefreshMixin implements FavoritesR
               lovesCount: shop['loves_count'] as int,
             )).toList();
           } else {
-            throw ServerException('فشل في تحميل المفضلة');
+            throw ServerException(message: 'فشل في تحميل المفضلة');
           }
         } else {
           final error = json.decode(response.body);
-          throw ServerException(error['message'] ?? 'فشل في تحميل المفضلة');
+          throw ServerException(message: error['message'] ?? 'فشل في تحميل المفضلة');
         }
       },
     );
@@ -83,7 +83,7 @@ class FavoritesRemoteDataSourceImpl with TokenRefreshMixin implements FavoritesR
         );
 
         if (response.statusCode != 200) {
-          throw ServerException('فشل في إضافة المتجر للمفضلة');
+          throw ServerException(message: 'فشل في إضافة المتجر للمفضلة');
         }
       },
     );
@@ -107,7 +107,7 @@ class FavoritesRemoteDataSourceImpl with TokenRefreshMixin implements FavoritesR
         );
 
         if (response.statusCode != 200) {
-          throw ServerException('فشل في إزالة المتجر من المفضلة');
+          throw ServerException(message: 'فشل في إزالة المتجر من المفضلة');
         }
       },
     );

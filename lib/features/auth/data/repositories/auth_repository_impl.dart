@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:beautilly/core/error/exceptions.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/core/utils/constant/api_endpoints.dart';
@@ -8,18 +9,30 @@ import 'package:http/http.dart' as http;
 import '../../../../core/error/failures.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/user_model.dart';
+import 'package:beautilly/core/services/network/network_info.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final CacheService _cacheService;
   final AuthRemoteDataSource remoteDataSource;
+  final NetworkInfo networkInfo;
 
-  AuthRepositoryImpl(this._cacheService, this.remoteDataSource);
+  AuthRepositoryImpl(
+    this._cacheService,
+    this.remoteDataSource,
+    this.networkInfo,
+  );
 
   @override
   Future<Either<Failure, Map<String, dynamic>>> login(
     String emailOrPhone,
     String password,
   ) async {
+    if (!await networkInfo.isConnected) {
+      return Left(NetworkFailure(
+        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
+      ));
+    }
+
     try {
       final response = await http.post(
         Uri.parse(ApiEndpoints.login),
@@ -69,10 +82,14 @@ class AuthRepositoryImpl implements AuthRepository {
                 ? data['errors'].values.first.first
                 : null) ??
             'فشل تسجيل الدخول';
-        return Left(ServerFailure(message));
+        return Left(ServerFailure(message: message));
       }
+    } on SocketException {
+      return Left(NetworkFailure(
+        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
+      ));
     } catch (e) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
@@ -80,9 +97,14 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<Either<Failure, Map<String, dynamic>>> register(
     Map<String, dynamic> userData,
   ) async {
+    if (!await networkInfo.isConnected) {
+      return Left(NetworkFailure(
+        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
+      ));
+    }
+
     try {
       final uri = Uri.parse(ApiEndpoints.register);
-
       final response = await http.post(
         uri,
         headers: {
@@ -101,15 +123,25 @@ class AuthRepositoryImpl implements AuthRepository {
           'message': data['message'] ?? 'تم التسجيل بنجاح',
         });
       } else {
-        return Left(ServerFailure(data['message'] ?? 'حدث خطأ في التسجيل'));
+        return Left(ServerFailure(message: data['message'] ?? 'حدث خطأ في التسجيل'));
       }
+    } on SocketException {
+      return Left(NetworkFailure(
+        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
+      ));
     } catch (e) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   @override
   Future<Either<Failure, void>> logout() async {
+    if (!await networkInfo.isConnected) {
+      return Left(NetworkFailure(
+        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
+      ));
+    }
+
     try {
       final token = await _cacheService.getToken();
       final sessionCookie = await _cacheService.getSessionCookie();
@@ -131,25 +163,30 @@ class AuthRepositoryImpl implements AuthRepository {
 
       if (response.statusCode == 200 || response.statusCode == 401) {
         await _cacheService.clearCache();
-
-        // تأكيد أن التوكن تم مسحه
-        final tokenAfterLogout = await _cacheService.getToken();
-
         return const Right(null);
       } else {
         final data = jsonDecode(response.body);
-        return Left(ServerFailure(data['message'] ?? 'فشل تسجيل الخروج'));
+        return Left(ServerFailure(message: data['message'] ?? 'فشل تسجيل الخروج'));
       }
+    } on SocketException {
+      return Left(NetworkFailure(
+        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
+      ));
     } catch (e) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   @override
   Future<Either<Failure, String>> forgotPassword(String email) async {
+    if (!await networkInfo.isConnected) {
+      return Left(NetworkFailure(
+        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
+      ));
+    }
+
     try {
       final uri = Uri.parse(ApiEndpoints.forgotPassword);
-
       final response = await http.post(
         uri,
         headers: {
@@ -166,10 +203,14 @@ class AuthRepositoryImpl implements AuthRepository {
       } else {
         final message = data['errors']?['email']?.first ??
             'حدث خطأ في إرسال رابط إعادة تعيين كلمة المرور';
-        return Left(ServerFailure(message));
+        return Left(ServerFailure(message: message));
       }
+    } on SocketException {
+      return Left(NetworkFailure(
+        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
+      ));
     } catch (e) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
@@ -180,9 +221,14 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required String passwordConfirmation,
   }) async {
+    if (!await networkInfo.isConnected) {
+      return Left(NetworkFailure(
+        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
+      ));
+    }
+
     try {
       final uri = Uri.parse(ApiEndpoints.resetPassword);
-
       final response = await http.post(
         uri,
         headers: {
@@ -203,20 +249,36 @@ class AuthRepositoryImpl implements AuthRepository {
         return Right(data['status']);
       } else {
         final message = data['message'] ?? 'حدث خطأ في إعادة تعيين كلمة المرور';
-        return Left(ServerFailure(message));
+        return Left(ServerFailure(message: message));
       }
+    } on SocketException {
+      return Left(NetworkFailure(
+        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
+      ));
     } catch (e) {
-      return const Left(ServerFailure('حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   @override
   Future<Either<Failure, String>> refreshToken() async {
+    if (!await networkInfo.isConnected) {
+      return Left(NetworkFailure(
+        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
+      ));
+    }
+
     try {
       final result = await remoteDataSource.refreshToken();
       return Right(result);
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(ServerFailure(message: e.message));
+    } on SocketException {
+      return Left(NetworkFailure(
+        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
+      ));
+    } catch (e) {
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 }

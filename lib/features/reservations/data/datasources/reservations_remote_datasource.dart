@@ -42,7 +42,7 @@ class ReservationsRemoteDataSourceImpl with TokenRefreshMixin implements Reserva
         if (response.statusCode == 200) {
           return _parseResponse(response);
         } else {
-          throw ServerException('فشل في تحميل الحجوزات');
+          throw ServerException(message: 'فشل في تحميل الحجوزات');
         }
       },
     );
@@ -57,7 +57,7 @@ class ReservationsRemoteDataSourceImpl with TokenRefreshMixin implements Reserva
           .toList();
     } else {
       throw ServerException(
-          jsonResponse['message'] ?? 'حدث خطأ في تحميل الحجوزات');
+          message: jsonResponse['message'] ?? 'حدث خطأ في تحميل الحجوزات');
     }
   }
 }

@@ -1,4 +1,3 @@
-import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/shimmer/nearby_service_card_shimmer.dart';
@@ -49,7 +48,8 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
           return Container(
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(20)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
@@ -99,7 +99,8 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                   child: Row(
                     children: [
                       Text(
@@ -117,8 +118,10 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                 Expanded(
                   child: NotificationListener<ScrollNotification>(
                     onNotification: (scrollInfo) {
-                      if (!_isLoadingMore && _hasMoreData &&
-                          scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+                      if (!_isLoadingMore &&
+                          _hasMoreData &&
+                          scrollInfo.metrics.pixels ==
+                              scrollInfo.metrics.maxScrollExtent) {
                         _loadMoreData();
                       }
                       return true;
@@ -130,9 +133,9 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                             padding: const EdgeInsets.all(16),
                             itemCount: 5,
                             itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: 16),
-                                child: const NearbyServiceCardShimmer(),
+                              return const Padding(
+                                padding: EdgeInsets.only(bottom: 16),
+                                child: NearbyServiceCardShimmer(),
                               );
                             },
                           );
@@ -140,17 +143,45 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
 
                         if (state is SearchShopsError && _currentPage == 1) {
                           return Center(
-                            child: Text(state.message),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.error_outline,
+                                  size: 48,
+                                  color: AppColors.error,
+                                ),
+                                const SizedBox(height: 16),
+                                Text(
+                                  state.message,
+                                  textAlign: TextAlign.center,
+                                  style: getMediumStyle(
+                                    fontSize: FontSize.size14,
+                                    fontFamily: FontConstant.cairo,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                if (state.message.contains('اتصال'))
+                                  TextButton(
+                                    onPressed: () {
+                                      context.read<SearchShopsCubit>().filterShops();
+                                    },
+                                    child: const Text('إعادة المحاولة'),
+                                  ),
+                              ],
+                            ),
                           );
                         }
 
                         if (state is SearchShopsLoaded) {
-                          _hasMoreData = _currentPage < state.pagination.lastPage;
-                          
+                          _hasMoreData =
+                              _currentPage < state.pagination.lastPage;
+
                           return ListView.builder(
                             controller: scrollController,
                             padding: const EdgeInsets.all(16),
-                            itemCount: state.shops.length + (_hasMoreData ? 1 : 0),
+                            itemCount:
+                                state.shops.length + (_hasMoreData ? 1 : 0),
                             itemBuilder: (context, index) {
                               if (index == state.shops.length) {
                                 return _isLoadingMore
@@ -195,7 +226,7 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
 
   void _loadMoreData() async {
     if (_isLoadingMore) return;
-    
+
     setState(() {
       _isLoadingMore = true;
     });

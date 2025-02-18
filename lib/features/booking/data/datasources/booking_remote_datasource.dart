@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:beautilly/features/booking/domain/entities/available_time.dart';
 import 'package:http/http.dart' as http;
+import 'package:beautilly/features/booking/domain/entities/available_time.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
@@ -59,7 +60,7 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
           'Content-Type': 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
-        body: json.encode({
+        body: json.encode({ 
           'service_id': serviceId,
           'day_id': dayId,
           'time_id': timeId,
@@ -71,19 +72,19 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
         if (jsonResponse['success'] == true) {
           return;
         } else {
-          throw ServerException(
-              jsonResponse['message'] ?? 'حدث خطأ في عملية الحجز');
+          throw ServerException( 
+           message:    jsonResponse['message'] ?? 'حدث خطأ في عملية الحجز');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException(
             'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
-        throw ServerException('فشل في عملية الحجز');
+        throw ServerException(message: 'فشل في عملية الحجز');
       }
     } catch (e) {
       if (e is UnauthorizedException) rethrow;
       if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ غير متوقع');
+      throw ServerException(message: 'حدث خطأ غير متوقع');
     }
   }
 
@@ -124,18 +125,18 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
           return;
         } else {
           throw ServerException(
-              jsonResponse['message'] ?? 'حدث خطأ في عملية حجز العرض');
+              message: jsonResponse['message'] ?? 'حدث خطأ في عملية حجز العرض');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException(
             'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
-        throw ServerException('فشل في عملية حجز العرض');
+        throw ServerException(message: 'فشل في عملية حجز العرض');
       }
     } catch (e) {
       if (e is UnauthorizedException) rethrow;
       if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ غير متوقع');
+      throw ServerException(message: 'حدث خطأ غير متوقع');
     }
   }
 
@@ -170,18 +171,18 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
           return dates;
         } else {
           throw ServerException(
-              jsonResponse['message'] ?? 'حدث خطأ في تحميل المواعيد المتاحة');
+              message: jsonResponse['message'] ?? 'حدث خطأ في تحميل المواعيد المتاحة');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException(
             'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
-        throw ServerException('فشل في تحميل المواعيد المتاحة');
+        throw ServerException(message: 'فشل في تحميل المواعيد المتاحة');
       }
     } catch (e) {
       if (e is UnauthorizedException) rethrow;
       if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ غير متوقع');
+      throw ServerException(message: 'حدث خطأ غير متوقع');
     }
   }
 
@@ -211,18 +212,18 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
           return;
         } else {
           throw ServerException(
-              jsonResponse['message'] ?? 'فشل في إلغاء الحجز');
+              message: jsonResponse['message'] ?? 'فشل في إلغاء الحجز');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException(
             'انتهت صلاحية الجلسة، يرجى إعادة تسجيل الدخول');
       } else {
-        throw ServerException('فشل في إلغاء الحجز');
+        throw ServerException(message: 'فشل في إلغاء الحجز');
       }
     } catch (e) {
       if (e is UnauthorizedException) rethrow;
       if (e is ServerException) rethrow;
-      throw ServerException('حدث خطأ غير متوقع');
+      throw ServerException(message: 'حدث خطأ غير متوقع');
     }
   }
 }

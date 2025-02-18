@@ -1,7 +1,9 @@
 class ServerException implements Exception {
   final String message;
 
-  ServerException(this.message);
+  ServerException({
+    this.message = 'حدث خطأ في الخادم',
+  });
 }
 
 class UnauthorizedException implements Exception {
@@ -13,11 +15,17 @@ class UnauthorizedException implements Exception {
 class CacheException implements Exception {
   final String message;
 
-  CacheException(this.message);
+  CacheException({
+    this.message = 'حدث خطأ في التخزين المحلي',
+  });
 }
 
 class NetworkException implements Exception {
-  final String message = 'لا يوجد اتصال بالإنترنت';
+  final String message;
+
+  NetworkException({
+    this.message = 'حدث خطأ في الاتصال بالإنترنت',
+  });
 }
 
 class ValidationException implements Exception {

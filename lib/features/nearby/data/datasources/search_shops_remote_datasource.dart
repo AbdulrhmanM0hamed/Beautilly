@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import '../../../../core/error/exceptions.dart';
@@ -14,6 +16,10 @@ class SearchShopsResponse {
     required this.shops,
     required this.pagination,
   });
+
+  SearchShopsResponse.fromJson(Map<String, dynamic> json)
+      : shops = List<SearchShopModel>.from(json['shops'].map((x) => SearchShopModel.fromJson(x))),
+        pagination = PaginationModel.fromJson(json['pagination']);
 }
 
 abstract class SearchShopsRemoteDataSource {
@@ -40,7 +46,6 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
     int page = 1,
   }) async {
     try {
-      final sessionCookie = await cacheService.getSessionCookie();
       final token = await cacheService.getToken();
 
       final url = ApiEndpoints.filterShops(
@@ -52,35 +57,28 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
       final response = await client.get(
         Uri.parse(url),
         headers: {
-          if (token != null) 'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
           'Accept': 'application/json',
-          if (sessionCookie != null) 'Cookie': sessionCookie,
+          if (token != null) 'Authorization': 'Bearer $token',
         },
-      );
+      ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
+        final data = jsonDecode(response.body);
         if (data['success'] == true) {
-          final List<dynamic> shopsData = data['data']['shops'] as List;
-          final paginationData = data['data']['pagination'];
-
-          return SearchShopsResponse(
-            shops: shopsData
-                .map((shop) => SearchShopModel.fromJson(shop))
-                .toList(),
-            pagination: PaginationModel.fromJson(paginationData),
-          );
-        } else {
-          throw ServerException(message: 'لا توجد نتائج');
+          return SearchShopsResponse.fromJson(data['data']);
         }
+        throw ServerException(message:  data['message'] ?? 'حدث خطأ في الخادم');
+      } else if (response.statusCode == 401) {
+        throw UnauthorizedException( 'يرجى تسجيل الدخول');
       } else {
-        final error = json.decode(response.body);
-        throw ServerException(message: error['message'] ?? 'حدث خطأ في البحث');
+        throw ServerException(message: 'حدث خطأ في الخادم');
       }
+    } on SocketException {
+      throw  ServerException(message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت');
+    } on TimeoutException {
+      throw  ServerException(message: 'انتهت مهلة الاتصال، يرجى المحاولة مرة أخرى');
     } catch (e) {
-      throw ServerException(message:  e.toString());
+      throw  ServerException(message: 'حدث خطأ غير متوقع');
     }
   }
 }

@@ -6,6 +6,7 @@ import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
+import 'package:beautilly/features/profile/presentation/cubit/user_statistics_cubit.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -22,6 +23,9 @@ class ProfileView extends StatelessWidget {
         providers: [
           Provider<AuthRepository>.value(value: sl<AuthRepository>()),
           BlocProvider(create: (context) => sl<AuthCubit>()),
+          BlocProvider(
+            create: (context) => sl<UserStatisticsCubit>()..loadUserStatistics(),
+          ),
         ],
         child: const ProfileViewBody(),
       ),

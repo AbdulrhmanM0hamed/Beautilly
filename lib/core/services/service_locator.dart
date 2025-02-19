@@ -23,12 +23,16 @@ import 'package:beautilly/features/orders/domain/usecases/delete_order_usecase.d
 import 'package:beautilly/features/orders/presentation/cubit/accept_offer_cubit/accept_offer_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/add_order_cubit/add_order_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/delete_order_cubit/delete_order_cubit.dart';
+import 'package:beautilly/features/profile/data/datasources/user_statistics_remote_datasource.dart';
+import 'package:beautilly/features/profile/data/repositories/user_statistics_repository_impl.dart';
+import 'package:beautilly/features/profile/domain/repositories/user_statistics_repository.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/orders/data/datasources/orders_remote_datasource.dart';
 import 'package:beautilly/features/orders/data/repositories/orders_repository_impl.dart';
 import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';
 import 'package:beautilly/features/orders/domain/usecases/get_my_orders.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/user_statistics_cubit.dart';
 import 'package:beautilly/features/salone_profile/data/datasources/salon_profile_remote_data_source.dart';
 import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -465,6 +469,26 @@ Future<void> init() async {
   // Core
   sl.registerLazySingleton<NetworkInfo>(
     () => NetworkInfoImpl(Connectivity()),
+  );
+
+  // User Statistics Feature
+  sl.registerLazySingleton<UserStatisticsRemoteDataSource>(
+    () => UserStatisticsRemoteDataSourceImpl(
+      authRepository: sl(),
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<UserStatisticsRepository>(
+    () => UserStatisticsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => UserStatisticsCubit(repository: sl()),
   );
 }
 mixin TokenRefreshMixin {

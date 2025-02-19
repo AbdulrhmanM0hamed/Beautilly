@@ -194,4 +194,6 @@ class ApiEndpoints {
 
     return '$baseUrl/filter-shops?$queryString';
   }
+
+  static const String userStatistics = '$baseUrl/user/statistics?api_key=$api_key';
 }

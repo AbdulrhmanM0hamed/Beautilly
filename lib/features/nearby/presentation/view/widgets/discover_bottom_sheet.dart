@@ -153,15 +153,14 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                                 ),
                                 const SizedBox(height: 16),
                                 Text(
-                                  state.message,
+                                  _getErrorMessage(state.message),
                                   textAlign: TextAlign.center,
                                   style: getMediumStyle(
                                     fontSize: FontSize.size14,
                                     fontFamily: FontConstant.cairo,
-                                    color: AppColors.textPrimary,
                                   ),
                                 ),
-                                if (state.message.contains('اتصال'))
+                                if (_isNetworkError(state.message))
                                   TextButton(
                                     onPressed: () {
                                       context.read<SearchShopsCubit>().filterShops();
@@ -237,5 +236,19 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
     setState(() {
       _isLoadingMore = false;
     });
+  }
+
+  String _getErrorMessage(String error) {
+    if (_isNetworkError(error)) {
+      return 'لا يمكن الاتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى';
+    }
+    
+    return 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى';
+  }
+
+  bool _isNetworkError(String error) {
+    return error.contains('اتصال') || 
+           error.contains('الإنترنت') || 
+           error.contains('الشبكة');
   }
 }

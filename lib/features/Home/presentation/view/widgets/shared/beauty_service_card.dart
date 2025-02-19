@@ -204,6 +204,7 @@ class BeautyServiceCard extends StatelessWidget {
                 if (tags != null && tags!.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   SizedBox(
+                    
                     height: 30,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,

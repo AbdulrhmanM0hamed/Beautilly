@@ -388,7 +388,7 @@ class _OrderCardState extends State<OrderCard> {
       children: [
         Text(
           widget.order.description,
-          maxLines: 2,
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: getMediumStyle(
             fontSize: dimensions.subtitleSize,

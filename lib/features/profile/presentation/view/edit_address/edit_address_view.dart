@@ -45,6 +45,9 @@ class _EditAddressViewState extends State<EditAddressView> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
+        appBar: CustomAppBar(
+          title: 'تعديل العنوان',
+        ),
         body: Center(
           child: CustomProgressIndcator(
             color: AppColors.primary,

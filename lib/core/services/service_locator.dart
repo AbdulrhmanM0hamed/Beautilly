@@ -224,7 +224,9 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton(
-    () => ProfileCubit(repository: sl()),
+    () => ProfileCubit(
+      repository: sl(),
+    ),
   );
 
   sl.registerFactory(
@@ -388,13 +390,24 @@ Future<void> init() async {
   );
 
   // تسجيل FavoritesCubit
-  sl.registerFactory<FavoritesCubit>(
+  sl.registerLazySingleton<FavoritesCubit>(
     () => FavoritesCubit(
-      repository: sl<FavoritesRepository>(),
-      addToFavoritesUseCase: sl<AddToFavoritesUseCase>(),
-      removeFromFavoritesUseCase: sl<RemoveFromFavoritesUseCase>(),
+        repository: sl(),
+        addToFavoritesUseCase: sl<AddToFavoritesUseCase>(),
+        removeFromFavoritesUseCase: sl<RemoveFromFavoritesUseCase>()),
+  );
+
+
+
+  sl.registerLazySingleton<UserStatisticsCubit>(
+    () => UserStatisticsCubit(
+      repository: sl(),
+      favoritesCubit: sl(),
+      reservationsCubit: sl(),
+      ordersCubit: sl(),
     ),
   );
+
   sl.registerFactory<ToggleFavoritesCubit>(
     () => ToggleFavoritesCubit(
       addToFavoritesUseCase: sl<AddToFavoritesUseCase>(),
@@ -486,11 +499,8 @@ Future<void> init() async {
       networkInfo: sl(),
     ),
   );
-
-  sl.registerFactory(
-    () => UserStatisticsCubit(repository: sl()),
-  );
 }
+
 mixin TokenRefreshMixin {
   Future<T> withTokenRefresh<T>({
     required Future<T> Function(String token) request,
@@ -518,4 +528,3 @@ mixin TokenRefreshMixin {
     }
   }
 }
-

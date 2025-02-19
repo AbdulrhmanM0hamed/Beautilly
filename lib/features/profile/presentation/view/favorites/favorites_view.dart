@@ -10,129 +10,175 @@ import '../../../../../core/utils/responsive/app_responsive.dart';
 import 'widgets/favorite_shop_card.dart';
 import '../../../../../../features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
 
-class FavoritesView extends StatelessWidget {
+class FavoritesView extends StatefulWidget {
   const FavoritesView({super.key});
+
+  @override
+  State<FavoritesView> createState() => _FavoritesViewState();
+}
+
+class _FavoritesViewState extends State<FavoritesView> {
+  late final FavoritesCubit _favoritesCubit;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    _favoritesCubit = sl<FavoritesCubit>();
+    if (!_favoritesCubit.isClosed) {
+      await _favoritesCubit.loadFavorites();
+    }
+    if (mounted) {
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        appBar: CustomAppBar(
+          title: 'المفضلة',
+        ),
+        body: Center(
+          child: CustomProgressIndcator(color: AppColors.primary),
+        ),
+      );
+    }
+
+    return BlocProvider.value(
+      value: _favoritesCubit,
+      child: const Scaffold(
+        appBar: CustomAppBar(
+          title: 'المفضلة',
+        ),
+        body: FavoritesViewBody(),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    // لا نغلق الـ cubit هنا لأنه singleton
+    super.dispose();
+  }
+}
+
+class FavoritesViewBody extends StatelessWidget {
+  const FavoritesViewBody({super.key});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => sl<ToggleFavoritesCubit>(),
-        ),
-      ],
-      child: Scaffold(
-        appBar: const CustomAppBar(
-          title: 'المفضلة',
-        ),
-        body: BlocBuilder<FavoritesCubit, FavoritesState>(
-          builder: (context, state) {
-            if (state is FavoritesLoading) {
-              return const Center(
-                child: CustomProgressIndcator(color: AppColors.primary),
-              );
-            }
+    return BlocBuilder<FavoritesCubit, FavoritesState>(
+      builder: (context, state) {
+        if (state is FavoritesLoading) {
+          return const Center(
+            child: CustomProgressIndcator(color: AppColors.primary),
+          );
+        }
 
-            if (state is FavoritesError) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Colors.red[300],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      state.message,
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.red[600],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        context.read<FavoritesCubit>().loadFavorites();
-                      },
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('إعادة المحاولة'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                      ),
-                    ),
-                  ],
+        if (state is FavoritesError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Colors.red[300],
                 ),
-              );
-            }
-
-            if (state is FavoritesLoaded) {
-              if (state.favorites.isEmpty) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.favorite_border,
-                        size: 64,
-                        color: Colors.grey[400],
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'لا توجد متاجر في المفضلة',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                    ],
+                const SizedBox(height: 16),
+                Text(
+                  state.message,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: Colors.red[600],
                   ),
-                );
-              }
-
-              return RefreshIndicator(
-                onRefresh: () async {
-                  context.read<FavoritesCubit>().loadFavorites();
-                },
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: isDesktop ? 24 : 16,
-                  ),
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: _getCrossAxisCount(size.width),
-                      childAspectRatio: _getChildAspectRatio(size.width),
-                      crossAxisSpacing: isDesktop ? 24 : 16,
-                      mainAxisSpacing: isDesktop ? 24 : 16,
-                    ),
-                    itemCount: state.favorites.length,
-                    itemBuilder: (context, index) => BlocProvider(
-                      create: (context) => sl<ToggleFavoritesCubit>(),
-                      child: FavoriteShopCard(
-                        shop: state.favorites[index],
-                        onRemoved: () {
-                          context.read<FavoritesCubit>().loadFavorites();
-                        },
-                      ),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    context.read<FavoritesCubit>().loadFavorites();
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('إعادة المحاولة'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
                     ),
                   ),
                 ),
-              );
-            }
+              ],
+            ),
+          );
+        }
 
-            return const SizedBox();
-          },
-        ),
-      ),
+        if (state is FavoritesLoaded) {
+          if (state.favorites.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.favorite_border,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'لا توجد متاجر في المفضلة',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<FavoritesCubit>().loadFavorites();
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: isDesktop ? 24 : 16,
+              ),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: _getCrossAxisCount(size.width),
+                  childAspectRatio: _getChildAspectRatio(size.width),
+                  crossAxisSpacing: isDesktop ? 24 : 16,
+                  mainAxisSpacing: isDesktop ? 24 : 16,
+                ),
+                itemCount: state.favorites.length,
+                itemBuilder: (context, index) => BlocProvider(
+                  create: (context) => sl<ToggleFavoritesCubit>(),
+                  child: FavoriteShopCard(
+                    shop: state.favorites[index],
+                    onRemoved: () {
+                      context.read<FavoritesCubit>().loadFavorites();
+                    },
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        return const SizedBox();
+      },
     );
   }
 

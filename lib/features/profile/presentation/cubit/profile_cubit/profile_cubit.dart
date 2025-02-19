@@ -82,7 +82,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         },
         (profile) {
           _profile = profile;
-          emit(ProfileSuccess('تم تحديث البيانات بنجاح'));
+          emit(const ProfileSuccess('تم تحديث البيانات بنجاح'));
           emit(ProfileLoaded(profile));
         },
       );
@@ -154,7 +154,6 @@ class ProfileCubit extends Cubit<ProfileState> {
     if (isClosed) return;
 
     try {
-      print('🔄 بدء تحديث العنوان في الـ Cubit...'); // للتشخيص
       emit(ProfileLoading());
 
       final result = await repository.updateAddress(
@@ -164,19 +163,15 @@ class ProfileCubit extends Cubit<ProfileState> {
 
       result.fold(
         (failure) {
-          print('❌ فشل تحديث العنوان: ${failure.message}'); // للتشخيص
           emit(ProfileError(failure.message));
         },
         (profile) {
-          print('✅ تم تحديث العنوان بنجاح في الـ Cubit'); // للتشخيص
-          print('📋 البيانات الجديدة: ${profile.toJson()}'); // للتشخيص
           _profile = profile;
-          emit(ProfileSuccess('تم تحديث العنوان بنجاح'));
+          emit(const ProfileSuccess('تم تحديث العنوان بنجاح'));
           emit(ProfileLoaded(profile));
         },
       );
     } catch (e) {
-      print('❌ خطأ غير متوقع: $e'); // للتشخيص
       if (!isClosed) {
         emit(ProfileError(e.toString()));
       }

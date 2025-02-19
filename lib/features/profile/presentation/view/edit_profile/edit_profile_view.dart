@@ -52,6 +52,9 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return const Scaffold(
+        appBar: CustomAppBar(
+          title: 'تعديل المعلومات الشخصية',
+        ),
         body: Center(
           child: CustomProgressIndcator(
             color: AppColors.primary,
@@ -63,8 +66,8 @@ class _EditProfileViewState extends State<EditProfileView> {
     return BlocProvider.value(
       value: sl<ProfileCubit>(),
       child: BlocConsumer<ProfileCubit, ProfileState>(
-        listenWhen: (previous, current) => 
-          current is ProfileSuccess || current is ProfileError,
+        listenWhen: (previous, current) =>
+            current is ProfileSuccess || current is ProfileError,
         listener: (context, state) {
           if (state is ProfileSuccess) {
             CustomSnackbar.showSuccess(
@@ -103,17 +106,20 @@ class _EditProfileViewState extends State<EditProfileView> {
                         ),
                         const SizedBox(height: 16),
                         ChangePasswordForm(
-                          currentPasswordController: controller.currentPasswordController,
-                          newPasswordController: controller.newPasswordController,
-                          confirmPasswordController: controller.confirmPasswordController,
+                          currentPasswordController:
+                              controller.currentPasswordController,
+                          newPasswordController:
+                              controller.newPasswordController,
+                          confirmPasswordController:
+                              controller.confirmPasswordController,
                         ),
                         const SizedBox(height: 8),
                         SizedBox(
                           width: double.infinity,
                           child: CustomButton(
-                            onPressed: state is! ProfileLoading 
-                              ? () => controller.updateProfile(context)
-                              : null,
+                            onPressed: state is! ProfileLoading
+                                ? () => controller.updateProfile(context)
+                                : null,
                             text: 'حفظ التغييرات',
                           ),
                         ),
@@ -122,12 +128,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                   ),
                 ),
                 if (state is ProfileLoading)
-                  Container(
-                    color: Colors.black26,
-                    child: const Center(
-                      child: CustomProgressIndcator(
-                        color: AppColors.primary,
-                      ),
+                  const Center(
+                    child: CustomProgressIndcator(
+                      color: AppColors.primary,
                     ),
                   ),
               ],

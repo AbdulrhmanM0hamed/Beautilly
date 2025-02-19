@@ -97,12 +97,16 @@ class ProfileMenuSection extends StatelessWidget {
                       icon: Icons.favorite_border_outlined,
                       title: "المفضلة",
                       onTap: () {
+                        final favoritesCubit = sl<FavoritesCubit>();
+                        if (!favoritesCubit.isClosed) {
+                          favoritesCubit.loadFavorites();
+                        }
+                        
                         Navigator.push(
                           context,
                           PageRoutes.fadeScale(
-                            page: BlocProvider(
-                              create: (context) =>
-                                  sl<FavoritesCubit>()..loadFavorites(),
+                            page: BlocProvider.value(
+                              value: favoritesCubit,
                               child: const FavoritesView(),
                             ),
                           ),

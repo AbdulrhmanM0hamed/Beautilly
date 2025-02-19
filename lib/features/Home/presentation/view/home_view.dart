@@ -36,7 +36,7 @@ class _HomeViewState extends State<HomeView> {
     const KeepAlivePage(child: DiscoverView()),
     const KeepAlivePage(child: ReservationsView()),
     const KeepAlivePage(child: OrdersRequestsView()),
-    const KeepAlivePage(child: ProfileView()),
+     KeepAlivePage(child: ProfileView()),
   ];
 
   @override

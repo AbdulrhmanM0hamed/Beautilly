@@ -17,9 +17,9 @@ class FormValidators {
     if (value.length < 8) {
       return 'كلمة المرور يجب أن تكون 8 أحرف على الأقل';
     }
-    if (!value.contains(RegExp(r'[A-Z]'))) {
-      return 'كلمة المرور يجب أن تحتوي على حرف كبير واحد على الأقل';
-    }
+    // if (!value.contains(RegExp(r'[A-Z]'))) {
+    //   return 'كلمة المرور يجب أن تحتوي على حرف كبير واحد على الأقل';
+    // }
     if (!value.contains(RegExp(r'[0-9]'))) {
       return 'كلمة المرور يجب أن تحتوي على رقم واحد على الأقل';
     }

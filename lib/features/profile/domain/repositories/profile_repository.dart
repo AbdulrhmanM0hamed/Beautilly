@@ -25,7 +25,7 @@ abstract class ProfileRepository {
 
   // تغيير كلمة المرور
   Future<Either<Failure, String>> changePassword({
- //   required String currentPassword,
+    required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   });

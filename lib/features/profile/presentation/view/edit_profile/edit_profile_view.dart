@@ -23,26 +23,17 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
-  late final EditProfileController _controller;
-  bool _isLoading = true;
+  late EditProfileController controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = EditProfileController(widget.profile);
-    _loadInitialData();
-  }
-
-  Future<void> _loadInitialData() async {
-    await Future.delayed(const Duration(milliseconds: 900));
-    if (mounted) {
-      setState(() => _isLoading = false);
-    }
+    controller = EditProfileController(widget.profile);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -50,77 +41,76 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: sl<ProfileCubit>(),
-      child: BlocListener<ProfileCubit, ProfileState>(
-        listener: _handleStateChanges,
-        child: Stack(
-          children: [
-            if (!_isLoading) _buildContent(),
-            if (_isLoading) _buildLoadingIndicator(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _handleStateChanges(BuildContext context, ProfileState state) {
-    if (state is ProfileLoading) {
-      setState(() => _isLoading = true);
-    } else {
-      setState(() => _isLoading = false);
-      if (state is ProfileError) {
-        CustomSnackbar.showError(
-          context: context,
-          message: state.message,
-        );
-      }
-    }
-  }
-
-  Widget _buildContent() {
-    return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'تعديل المعلومات الشخصية',
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _controller.formKey,
-          child: Column(
-            children: [
-              EditProfileForm(
-                profile: widget.profile,
-                nameController: _controller.nameController,
-                emailController: _controller.emailController,
-                phoneController: _controller.phoneController,
-              ),
-              const SizedBox(height: 16),
-              ChangePasswordForm(
-                newPasswordController: _controller.newPasswordController,
-                confirmPasswordController: _controller.confirmPasswordController,
-              ),
-              const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                child: CustomButton(
-                  onPressed: _controller.isPasswordsMatch 
-                      ? () => _controller.updateProfile(context)
-                      : null,
-                  text: 'حفظ التغييرات',
+      child: BlocConsumer<ProfileCubit, ProfileState>(
+        listenWhen: (previous, current) => 
+          current is ProfileSuccess || current is ProfileError,
+        listener: (context, state) {
+          if (state is ProfileSuccess) {
+            CustomSnackbar.showSuccess(
+              context: context,
+              message: state.message,
+            );
+            // مسح حقول كلمة المرور فقط عند نجاح تغيير كلمة المرور
+            if (state.message.contains('كلمة المرور')) {
+              controller.clearPasswordFields();
+            }
+          } else if (state is ProfileError) {
+            CustomSnackbar.showError(
+              context: context,
+              message: state.message,
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: const CustomAppBar(
+              title: 'تعديل المعلومات الشخصية',
+            ),
+            body: Stack(
+              children: [
+                SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Form(
+                    key: controller.formKey,
+                    child: Column(
+                      children: [
+                        EditProfileForm(
+                          profile: widget.profile,
+                          nameController: controller.nameController,
+                          emailController: controller.emailController,
+                          phoneController: controller.phoneController,
+                        ),
+                        const SizedBox(height: 16),
+                        ChangePasswordForm(
+                          currentPasswordController: controller.currentPasswordController,
+                          newPasswordController: controller.newPasswordController,
+                          confirmPasswordController: controller.confirmPasswordController,
+                        ),
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CustomButton(
+                            onPressed: state is! ProfileLoading 
+                              ? () => controller.updateProfile(context)
+                              : null,
+                            text: 'حفظ التغييرات',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoadingIndicator() {
-    return const Scaffold(
-      body: Center(
-        child: CustomProgressIndcator(
-          color: AppColors.primary,
-        ),
+                if (state is ProfileLoading)
+                  Container(
+                    color: Colors.black.withOpacity(0.1),
+                    child: const Center(
+                      child: CustomProgressIndcator(color: AppColors.primary),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

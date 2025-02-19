@@ -28,4 +28,26 @@ class ProfileError extends ProfileState {
 
   @override
   List<Object?> get props => [message];
-} 
+}
+
+class ProfileValidationError extends ProfileState {
+  final String message;
+  final dynamic validationErrors;
+
+  const ProfileValidationError({
+    required this.message,
+    this.validationErrors,
+  });
+
+  @override
+  List<Object?> get props => [message, validationErrors];
+}
+
+class ProfileSuccess extends ProfileState {
+  final String message;
+
+  const ProfileSuccess(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

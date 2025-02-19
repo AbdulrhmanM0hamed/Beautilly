@@ -1,6 +1,5 @@
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/constant/app_strings.dart';
-import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/features/auth/presentation/view/widgets/signin_view_body.dart';
 import 'package:flutter/material.dart';
 

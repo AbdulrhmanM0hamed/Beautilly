@@ -30,8 +30,12 @@ class NetworkException implements Exception {
 
 class ValidationException implements Exception {
   final String message;
+  final dynamic validationErrors;
 
-  ValidationException(this.message);
+  ValidationException({
+    required this.message,
+    this.validationErrors,
+  });
 }
 
 // رسائل الخطأ العربية

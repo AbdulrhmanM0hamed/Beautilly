@@ -17,12 +17,12 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<void> loadProfile() async {
     if (isClosed) return;
-    
+
     try {
       emit(ProfileLoading());
       final result = await repository.getProfile();
       if (isClosed) return;
-      
+
       result.fold(
         (failure) {
           emit(ProfileError(failure.message));
@@ -63,47 +63,72 @@ class ProfileCubit extends Cubit<ProfileState> {
     String? email,
     String? phone,
   }) async {
+    if (isClosed) return;
+
     try {
       emit(ProfileLoading());
+
       final result = await repository.updateProfile(
         name: name,
         email: email,
         phone: phone,
       );
-      
+
       result.fold(
-        (failure) => emit(ProfileError(failure.message)),
+        (failure) {
+          emit(ProfileError(failure.message));
+          // إعادة تحميل البيانات بعد الخطأ
+          loadProfile();
+        },
         (profile) {
-          _profile = profile; // تحديث البيانات المخزنة
+          _profile = profile;
+          emit(ProfileSuccess('تم تحديث البيانات بنجاح'));
           emit(ProfileLoaded(profile));
         },
       );
     } catch (e) {
-      emit(ProfileError(e.toString()));
-      loadProfile(); // إعادة تحميل في حالة الخطأ
+      if (!isClosed) {
+        emit(ProfileError(e.toString()));
+        // إعادة تحميل البيانات بعد الخطأ
+        loadProfile();
+      }
     }
   }
 
   Future<void> changePassword({
-  //  required String currentPassword,
+    required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   }) async {
+    if (isClosed) return;
+
     try {
       emit(ProfileLoading());
+
       final result = await repository.changePassword(
- //       currentPassword: currentPassword,
+        currentPassword: currentPassword,
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       );
-      
+
       result.fold(
-        (failure) => emit(ProfileError(failure.message)),
-        (_) => loadProfile(), // تحديث البيانات بعد تغيير كلمة المرور
+        (failure) {
+          emit(ProfileError(failure.message));
+          // إعادة تحميل البيانات بعد الخطأ لإظهار الحالة الصحيحة
+          loadProfile();
+        },
+        (message) {
+          emit(ProfileSuccess(message));
+          // إعادة تحميل البيانات بعد النجاح
+          loadProfile();
+        },
       );
     } catch (e) {
-      emit(ProfileError(e.toString()));
-      if (!isClosed) loadProfile(); // إعادة تحميل في حالة الخطأ
+      if (!isClosed) {
+        emit(ProfileError(e.toString()));
+        // إعادة تحميل البيانات بعد الخطأ
+        loadProfile();
+      }
     }
   }
 
@@ -111,7 +136,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       emit(ProfileLoading());
       final result = await repository.updateAvatar(image);
-      
+
       result.fold(
         (failure) => emit(ProfileError(failure.message)),
         (_) => loadProfile(), // تحديث البيانات بعد تغيير الصورة
@@ -126,23 +151,35 @@ class ProfileCubit extends Cubit<ProfileState> {
     required int cityId,
     required int stateId,
   }) async {
+    if (isClosed) return;
+
     try {
+      print('🔄 بدء تحديث العنوان في الـ Cubit...'); // للتشخيص
       emit(ProfileLoading());
+
       final result = await repository.updateAddress(
         cityId: cityId,
         stateId: stateId,
       );
-      
+
       result.fold(
-        (failure) => emit(ProfileError(failure.message)),
+        (failure) {
+          print('❌ فشل تحديث العنوان: ${failure.message}'); // للتشخيص
+          emit(ProfileError(failure.message));
+        },
         (profile) {
+          print('✅ تم تحديث العنوان بنجاح في الـ Cubit'); // للتشخيص
+          print('📋 البيانات الجديدة: ${profile.toJson()}'); // للتشخيص
           _profile = profile;
+          emit(ProfileSuccess('تم تحديث العنوان بنجاح'));
           emit(ProfileLoaded(profile));
         },
       );
     } catch (e) {
-      emit(ProfileError(e.toString()));
-      if (!isClosed) loadProfile(); // إعادة تحميل في حالة الخطأ
+      print('❌ خطأ غير متوقع: $e'); // للتشخيص
+      if (!isClosed) {
+        emit(ProfileError(e.toString()));
+      }
     }
   }
-} 
+}

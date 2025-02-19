@@ -19,7 +19,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Either<Failure, ProfileModel>> getProfile() async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -32,18 +32,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   @override
   Future<Either<Failure, String>> updateAvatar(File image) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -56,11 +56,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل في تحديث الصورة الشخصية'));
+      return const Left(ServerFailure(message: 'فشل في تحديث الصورة الشخصية'));
     }
   }
 
@@ -71,7 +71,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     String? phone,
   }) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -88,7 +88,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
@@ -102,11 +102,10 @@ class ProfileRepositoryImpl implements ProfileRepository {
     required int stateId,
   }) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
-
     try {
       final profile = await remoteDataSource.updateAddress(
         cityId: cityId,
@@ -118,27 +117,29 @@ class ProfileRepositoryImpl implements ProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل في تحديث العنوان'));
+      return const Left(ServerFailure(message: 'فشل في تحديث العنوان'));
     }
   }
 
   @override
   Future<Either<Failure, String>> changePassword({
+    required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   }) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
 
     try {
       final message = await remoteDataSource.changePassword(
+        currentPassword: currentPassword,
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       );
@@ -147,12 +148,17 @@ class ProfileRepositoryImpl implements ProfileRepository {
       return Left(AuthFailure(message: e.message));
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
+    } on ValidationException catch (e) {
+      return Left(ValidationFailure(
+        message: e.message,
+        validationErrors: e.validationErrors,
+      ));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل في تغيير كلمة المرور'));
+      return const Left(ServerFailure(message: 'فشل في تغيير كلمة المرور'));
     }
   }
 
@@ -161,7 +167,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     required bool enabled
   }) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -174,7 +180,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
@@ -185,7 +191,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Either<Failure, String>> verifyEmail() async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -198,7 +204,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
@@ -209,7 +215,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Either<Failure, String>> resendVerificationCode() async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -222,7 +228,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
@@ -233,7 +239,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Either<Failure, String>> deleteAccount({required String password}) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -246,11 +252,11 @@ class ProfileRepositoryImpl implements ProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 

@@ -17,7 +17,7 @@ class ApiEndpoints {
   static const String profile = '$baseUrl/user/profile?api_key=$api_key';
   static const String updateProfile = '$baseUrl/profile';
   static const String changePassword =
-      '$baseUrl/profile/change-password?api_key=$api_key';
+      '$baseUrl/user/change-password?api_key=$api_key';
 
   // الحجوزات
   static const String bookings =

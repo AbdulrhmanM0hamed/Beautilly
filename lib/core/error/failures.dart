@@ -20,7 +20,15 @@ class NetworkFailure extends Failure {
 }
 
 class ValidationFailure extends Failure {
-  const ValidationFailure({required String message}) : super(message: message);
+  final dynamic validationErrors;
+
+  const  ValidationFailure({
+    required String message,
+    this.validationErrors,
+  }) : super(message:  message);
+
+  @override
+  List<Object?> get props => [message, validationErrors];
 }
 
 class UnauthorizedFailure extends Failure {

@@ -8,6 +8,7 @@ import '../../../../core/services/service_locator.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';
 import '../../../../features/auth/domain/repositories/auth_repository.dart';
 import '../models/profile_model.dart';
+import '../models/change_password_model.dart';
 
 abstract class ProfileRemoteDataSource {
   Future<ProfileModel> getProfile();
@@ -22,7 +23,7 @@ abstract class ProfileRemoteDataSource {
     required int stateId,
   });
   Future<String> changePassword({
-    //   required String currentPassword,
+    required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   });
@@ -128,18 +129,24 @@ class ProfileRemoteDataSourceImpl
     String? email,
     String? phone,
   }) async {
+    print('⌛ بدء تحديث الملف الشخصي...'); // للتشخيص
+    print('البيانات المرسلة: name=$name, email=$email, phone=$phone'); // للتشخيص
+
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
+        print('🔑 Token: ${token.substring(0, 10)}...'); // للتشخيص
+        print('🍪 Session Cookie: $sessionCookie'); // للتشخيص
+
         final response = await client.post(
           Uri.parse(ApiEndpoints.profile),
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
-            'x-api-key': ApiEndpoints.api_key,
-            if (sessionCookie != null) 'Cookie': sessionCookie,
+            'Content-Type': 'application/json',
+            'Cookie': sessionCookie ?? '',
           },
           body: jsonEncode({
             if (name != null) 'name': name,
@@ -148,19 +155,24 @@ class ProfileRemoteDataSourceImpl
           }),
         );
 
+        print('📡 API Response Status: ${response.statusCode}'); // للتشخيص
+        print('📦 Response Body: ${response.body}'); // للتشخيص
+
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.body);
           if (jsonResponse['success'] == true) {
-            return ProfileModel.fromJson(jsonResponse['data']);
-          } else {
-            throw ServerException(
-              message:
-                  jsonResponse['message'] ?? 'فشل في تحديث البيانات الشخصية',
-            );
+            print('✅ تم تحديث البيانات بنجاح'); // للتشخيص
+            final profile = ProfileModel.fromJson(jsonResponse['data']);
+            print('📋 البيانات المحدثة: ${profile.toJson()}'); // للتشخيص
+            return profile;
           }
-        } else {
-          throw ServerException(message: 'فشل في تحديث البيانات الشخصية');
+          print('❌ خطأ من السيرفر: ${jsonResponse['message']}'); // للتشخيص
+          throw ServerException(
+            message: jsonResponse['message'] ?? 'فشل في تحديث البيانات الشخصية',
+          );
         }
+        print('❌ خطأ في الاتصال: ${response.statusCode}'); // للتشخيص
+        throw ServerException(message: 'فشل في تحديث البيانات الشخصية');
       },
     );
   }
@@ -170,18 +182,24 @@ class ProfileRemoteDataSourceImpl
     required int cityId,
     required int stateId,
   }) async {
+    print('⌛ بدء تحديث العنوان...'); // للتشخيص
+    print('البيانات المرسلة: cityId=$cityId, stateId=$stateId'); // للتشخيص
+
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
+        print('🔑 Token: ${token.substring(0, 10)}...'); // للتشخيص
+        print('🍪 Session Cookie: $sessionCookie'); // للتشخيص
+
         final response = await client.post(
           Uri.parse(ApiEndpoints.profile),
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
-            'x-api-key': ApiEndpoints.api_key,
-            if (sessionCookie != null) 'Cookie': sessionCookie,
+            'Content-Type': 'application/json',
+            'Cookie': sessionCookie ?? '',
           },
           body: jsonEncode({
             'city_id': cityId,
@@ -189,15 +207,23 @@ class ProfileRemoteDataSourceImpl
           }),
         );
 
+        print('📡 API Response Status: ${response.statusCode}'); // للتشخيص
+        print('📦 Response Body: ${response.body}'); // للتشخيص
+
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.body);
           if (jsonResponse['success'] == true) {
-            return ProfileModel.fromJson(jsonResponse['data']);
+            print('✅ تم تحديث العنوان بنجاح'); // للتشخيص
+            final profile = ProfileModel.fromJson(jsonResponse['data']);
+            print('📋 البيانات المحدثة: ${profile.toJson()}'); // للتشخيص
+            return profile;
           }
+          print('❌ خطأ من السيرفر: ${jsonResponse['message']}'); // للتشخيص
           throw ServerException(
             message: jsonResponse['message'] ?? 'فشل في تحديث العنوان',
           );
         }
+        print('❌ خطأ في الاتصال: ${response.statusCode}'); // للتشخيص
         throw ServerException(message: 'فشل في تحديث العنوان');
       },
     );
@@ -205,39 +231,73 @@ class ProfileRemoteDataSourceImpl
 
   @override
   Future<String> changePassword({
-    //   required String currentPassword,
+    required String currentPassword,
     required String newPassword,
     required String confirmPassword,
   }) async {
+    print('⌛ بدء تغيير كلمة المرور...'); // للتشخيص
+    print('جاري التحقق من كلمة المرور الحالية وتغييرها...'); // للتشخيص
+
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
+        print('🔑 Token: ${token.substring(0, 10)}...'); // للتشخيص
+        print('🍪 Session Cookie: $sessionCookie'); // للتشخيص
+
         final response = await client.post(
-          Uri.parse('${ApiEndpoints.baseUrl}/user/profile'),
+          Uri.parse(ApiEndpoints.changePassword),
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
-            'x-api-key': ApiEndpoints.api_key,
-            if (sessionCookie != null) 'Cookie': sessionCookie,
+            'Content-Type': 'application/json',
+            'Cookie': sessionCookie ?? '',
           },
           body: jsonEncode({
-            //      'current_password': currentPassword,
-            'password': newPassword,
+            'current_password': currentPassword,
+            'new_password': newPassword,
             'password_confirmation': confirmPassword,
           }),
         );
 
-        if (response.statusCode == 200) {
-          final jsonResponse = json.decode(response.body);
-          if (jsonResponse['success'] == true) {
-            return jsonResponse['message'] ?? 'تم تغيير كلمة المرور بنجاح';
+        print('📡 API Response Status: ${response.statusCode}'); // للتشخيص
+        print('📦 Response Body: ${response.body}'); // للتشخيص
+
+        final jsonResponse = json.decode(response.body);
+        
+        if (response.statusCode == 422) {
+          print('❌ أخطاء في التحقق: ${jsonResponse['errors']}'); // للتشخيص
+          
+          // إذا كان هناك رسالة خطأ عامة (مثل كلمة المرور الحالية غير صحيحة)
+          if (jsonResponse['message'] != null) {
+            throw ValidationException(
+              message: jsonResponse['message'],
+              validationErrors: null,
+            );
           }
-          throw ServerException(
-              message: jsonResponse['message'] ?? 'فشل في تغيير كلمة المرور');
+          
+          // إذا كان هناك أخطاء تحقق تفصيلية
+          if (jsonResponse['errors'] != null) {
+            final validationError = ChangePasswordValidationError.fromJson(
+              jsonResponse['errors'] as Map<String, dynamic>
+            );
+            throw ValidationException(
+              message: validationError.firstError ?? 'فشل في تغيير كلمة المرور',
+              validationErrors: validationError,
+            );
+          }
         }
-        throw ServerException(message: 'فشل في تغيير كلمة المرور');
+
+        if (response.statusCode == 200 && jsonResponse['success'] == true) {
+          print('✅ تم تغيير كلمة المرور بنجاح'); // للتشخيص
+          return jsonResponse['message'] ?? 'تم تغيير كلمة المرور بنجاح';
+        }
+          
+        print('❌ خطأ من السيرفر: ${jsonResponse['message']}'); // للتشخيص
+        throw ServerException(
+          message: jsonResponse['message'] ?? 'فشل في تغيير كلمة المرور',
+        );
       },
     );
   }

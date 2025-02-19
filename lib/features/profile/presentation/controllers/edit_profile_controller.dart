@@ -11,7 +11,7 @@ class EditProfileController {
   late final TextEditingController nameController;
   late final TextEditingController emailController;
   late final TextEditingController phoneController;
- // late final TextEditingController currentPasswordController;
+  late final TextEditingController currentPasswordController;
   late final TextEditingController newPasswordController;
   late final TextEditingController confirmPasswordController;
 
@@ -23,7 +23,7 @@ class EditProfileController {
     nameController = TextEditingController(text: profile.name);
     emailController = TextEditingController(text: profile.email);
     phoneController = TextEditingController(text: profile.phone);
-   // currentPasswordController = TextEditingController();
+    currentPasswordController = TextEditingController();
     newPasswordController = TextEditingController();
     confirmPasswordController = TextEditingController();
   }
@@ -32,7 +32,7 @@ class EditProfileController {
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
-  //  currentPasswordController.dispose();
+   currentPasswordController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
   }
@@ -45,19 +45,24 @@ class EditProfileController {
     // إذا تم تغيير البيانات الشخصية، نتحقق من صحتها
     if (_isProfileDataChanged()) {
       isProfileDataValid = _validateProfileData();
+      if (!isProfileDataValid) {
+        _showErrorMessage(context, 'يرجى التحقق من صحة البيانات الشخصية');
+        return;
+      }
     }
 
     // إذا تم طلب تغيير كلمة المرور، نتحقق من صحتها
     if (_isPasswordChangeRequested()) {
       isPasswordValid = _validatePasswordData();
+      if (!isPasswordValid) {
+        _showErrorMessage(context, 'يرجى التحقق من صحة كلمة المرور');
+        return;
+      }
     }
 
-    // إذا كان هناك أي خطأ في البيانات المطلوب تغييرها، نتوقف
-    if (!isProfileDataValid || !isPasswordValid) return;
-
-    bool dataChanged = false;
-
     try {
+      bool hasChanges = false;
+
       // تحديث المعلومات الشخصية
       if (_isProfileDataChanged()) {
         await sl<ProfileCubit>().updateProfile(
@@ -65,27 +70,26 @@ class EditProfileController {
           email: emailController.text,
           phone: phoneController.text,
         );
-        dataChanged = true;
+        hasChanges = true;
       }
 
       // تغيير كلمة المرور
       if (_isPasswordChangeRequested()) {
         await sl<ProfileCubit>().changePassword(
+          currentPassword: currentPasswordController.text,
           newPassword: newPasswordController.text,
           confirmPassword: confirmPasswordController.text,
         );
-        dataChanged = true;
+        hasChanges = true;
       }
 
-      if (dataChanged) {
-        await sl<ProfileCubit>().loadProfile();
-        _showSuccessMessage(context);
-        _clearPasswordFields();
-      } else {
+      // نعرض رسالة "لم يتم إجراء تغييرات" فقط إذا لم يكن هناك أي تغييرات
+      if (!hasChanges) {
         _showNoChangesMessage(context);
       }
     } catch (e) {
-      _showErrorMessage(context, e.toString());
+      // نتجاهل عرض رسالة الخطأ هنا لأن ProfileCubit سيقوم بعرضها
+      print('❌ خطأ في تحديث البيانات: $e');
     }
   }
 
@@ -116,17 +120,17 @@ class EditProfileController {
   }
 
   bool _isPasswordChangeRequested() {
-    return //currentPasswordController.text.isNotEmpty &&
-        newPasswordController.text.isNotEmpty &&
-        confirmPasswordController.text.isNotEmpty;
+    return currentPasswordController.text.isNotEmpty &&
+           newPasswordController.text.isNotEmpty &&
+           confirmPasswordController.text.isNotEmpty;
   }
 
   bool get isPasswordsMatch => 
       !_isPasswordChangeRequested() || // إذا لم يتم إدخال كلمات مرور أصلاً
       (newPasswordController.text == confirmPasswordController.text); // أو إذا كانت متطابقة
 
-  void _clearPasswordFields() {
-  //  currentPasswordController.clear();
+  void clearPasswordFields() {
+    currentPasswordController.clear();
     newPasswordController.clear();
     confirmPasswordController.clear();
   }

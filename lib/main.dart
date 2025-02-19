@@ -23,9 +23,6 @@ void main() async {
         Provider<CacheService>(
           create: (_) => CacheServiceImpl(prefs),
         ),
-        BlocProvider(
-          create: (context) => di.sl<ProfileCubit>()..loadProfile(),
-        ),
       ],
       child: DevicePreview(
         enabled: !kReleaseMode,

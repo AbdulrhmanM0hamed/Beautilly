@@ -32,7 +32,9 @@ abstract class ProfileRemoteDataSource {
   Future<String> deleteAccount({required String password});
 }
 
-class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemoteDataSource {
+class ProfileRemoteDataSourceImpl
+    with TokenRefreshMixin
+    implements ProfileRemoteDataSource {
   final http.Client client;
   final CacheService cacheService;
   final AuthRepository authRepository;
@@ -50,6 +52,7 @@ class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemot
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
+
         final response = await client.get(
           Uri.parse(ApiEndpoints.profile),
           headers: {
@@ -63,10 +66,12 @@ class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemot
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.body);
           if (jsonResponse['success'] == true) {
-            return ProfileModel.fromJson(jsonResponse['data']);
+            final profile = ProfileModel.fromJson(jsonResponse['data']);
+            return profile;
           } else {
             throw ServerException(
-                message: jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
+              message:
+                  jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
             );
           }
         } else {
@@ -110,7 +115,8 @@ class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemot
         }
       }
 
-      throw ServerException(message: 'فشل في رفع الصورة: ${response.statusCode}');
+      throw ServerException(
+          message: 'فشل في رفع الصورة: ${response.statusCode}');
     } catch (e) {
       throw ServerException(message: 'حدث خطأ أثناء رفع الصورة');
     }
@@ -148,7 +154,8 @@ class ProfileRemoteDataSourceImpl with TokenRefreshMixin implements ProfileRemot
             return ProfileModel.fromJson(jsonResponse['data']);
           } else {
             throw ServerException(
-              message: jsonResponse['message'] ?? 'فشل في تحديث البيانات الشخصية',
+              message:
+                  jsonResponse['message'] ?? 'فشل في تحديث البيانات الشخصية',
             );
           }
         } else {

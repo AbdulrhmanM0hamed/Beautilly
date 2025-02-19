@@ -21,6 +21,19 @@ class ProfileModel extends Equatable {
     this.image,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'phone': phone,
+      'email_verified_at': emailVerifiedAt,
+      'city': city,
+      'state': state,
+      'image': image,
+    };
+  }
+
   factory ProfileModel.fromJson(Map<String, dynamic> json) {
     return ProfileModel(
       id: json['id'],
@@ -85,4 +98,4 @@ class StateModel extends Equatable {
 
   @override
   List<Object?> get props => [id, name];
-} 
+}

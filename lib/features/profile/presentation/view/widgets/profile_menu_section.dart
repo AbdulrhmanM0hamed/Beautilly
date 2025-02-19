@@ -1,3 +1,4 @@
+import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
@@ -22,176 +23,218 @@ class ProfileMenuSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
-        if (state is ProfileLoaded) {
-          return Column(
-            children: [
-              _buildMenuGroup(
-                title: "الحساب",
-                items: [
-                  MenuItem(
-                    icon: Icons.person_outline,
-                    title: "المعلومات الشخصية",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRoutes.fadeScale(
-                          page: EditProfileView(profile: state.profile),
-                        ),
-                      );
-                    },
-                  ),
-                  MenuItem(
-                    icon: Icons.location_on_outlined,
-                    title: "العنوان",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRoutes.fadeScale(
-                          page: EditAddressView(profile: state.profile),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-              _buildMenuGroup(
-                title: "التفضيلات",
-                items: [
-                  MenuItem(
-                    icon: Icons.notifications_outlined,
-                    title: "الإشعارات",
-                    onTap: () {},
-                  ),
-                  MenuItem(
-                    icon: Icons.favorite_border_outlined,
-                    title: "المفضلة",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageRoutes.fadeScale(
-                          page: BlocProvider(
-                            create: (context) =>
-                                sl<FavoritesCubit>()..loadFavorites(),
-                            child: const FavoritesView(),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  MenuItem(
-                    icon: Icons.dark_mode_outlined,
-                    title: "المظهر",
-                    onTap: () {},
-                  ),
-                ],
-              ),
-              _buildMenuGroup(
-                title: "الدعم",
-                items: [
-                  MenuItem(
-                    icon: Icons.help_outline,
-                    title: "مركز المساعدة",
-                    onTap: () {},
-                  ),
-                  MenuItem(
-                    icon: Icons.policy_outlined,
-                    title: "الشروط والأحكام",
-                    onTap: () {},
-                  ),
-                  MenuItem(
-                    icon: Icons.logout,
-                    title: "تسجيل الخروج",
-                    onTap: () async {
-                      // عرض مربع حوار التأكيد
-                      final shouldLogout = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text(
-                            'تسجيل الخروج',
-                            style: getMediumStyle(
-                              fontFamily: FontConstant.cairo,
-                              fontSize: FontSize.size18,
-                            ),
-                          ),
-                          content: Text(
-                            'هل أنت متأكد من تسجيل الخروج؟',
-                            style: getRegularStyle(
-                              fontFamily: FontConstant.cairo,
-                              fontSize: FontSize.size16,
-                            ),
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context, false),
-                              child: Text(
-                                'إلغاء',
-                                style: getMediumStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  fontSize: FontSize.size14,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
-                            FilledButton(
-                              onPressed: () => Navigator.pop(context, true),
-                              style: FilledButton.styleFrom(
-                                backgroundColor: AppColors.error,
-                              ),
-                              child: Text(
-                                'تسجيل الخروج',
-                                style: getMediumStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  fontSize: FontSize.size14,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      // إذا تم تأكيد تسجيل الخروج
-                      if (shouldLogout == true && context.mounted) {
-                        try {
-                          final repository = context.read<AuthRepository>();
-                          final result = await repository.logout();
-
-                          if (!context.mounted) return;
-
-                          result.fold(
-                            (failure) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(failure.message)),
-                              );
-                            },
-                            (_) {
-                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                SigninView.routeName,
-                                (route) => false,
-                              );
-                              CustomSnackbar.showSuccess(
-                                context: context,
-                                message: "تم تسجيل الخروج بنجاح",
-                              );
-                            },
-                          );
-                        } catch (e) {
-                          if (!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('حدث خطأ أثناء تسجيل الخروج')),
-                          );
-                        }
-                      }
-                    },
-                    isDestructive: true,
-                  ),
-                ],
-              ),
-            ],
+        if (state is ProfileLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        
+        if (state is ProfileError) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(state.message),
+                ElevatedButton(
+                  onPressed: () {
+                    context.read<ProfileCubit>().loadProfile();
+                  },
+                  child: const Text('إعادة المحاولة'),
+                ),
+              ],
+            ),
           );
         }
-        return const SizedBox();
+
+        if (state is ProfileLoaded) {
+          final profile = state.profile;
+          // التحقق من وجود البيانات
+          if (profile.name == null || profile.name!.isEmpty) {
+            context.read<ProfileCubit>().loadProfile(); // إعادة تحميل البيانات
+            return const Center(child: CircularProgressIndicator());
+          }
+          
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildMenuGroup(
+                  title: "إعدادات الحساب",
+                  items: [
+                    MenuItem(
+                      icon: Icons.person_outline,
+                      title: "تعديل الملف الشخصي",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRoutes.fadeScale(
+                            page: EditProfileView(profile: state.profile),
+                          ),
+                        );
+                      },
+                    ),
+                    MenuItem(
+                      icon: Icons.location_on_outlined,
+                      title: "العنوان",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRoutes.fadeScale(
+                            page: EditAddressView(profile: state.profile),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                _buildMenuGroup(
+                  title: "التفضيلات",
+                  items: [
+                    MenuItem(
+                      icon: Icons.notifications_outlined,
+                      title: "الإشعارات",
+                      onTap: () {},
+                    ),
+                    MenuItem(
+                      icon: Icons.favorite_border_outlined,
+                      title: "المفضلة",
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRoutes.fadeScale(
+                            page: BlocProvider(
+                              create: (context) =>
+                                  sl<FavoritesCubit>()..loadFavorites(),
+                              child: const FavoritesView(),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    MenuItem(
+                      icon: Icons.dark_mode_outlined,
+                      title: "المظهر",
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+                _buildMenuGroup(
+                  title: "الدعم",
+                  items: [
+                    MenuItem(
+                      icon: Icons.help_outline,
+                      title: "مركز المساعدة",
+                      onTap: () {},
+                    ),
+                    MenuItem(
+                      icon: Icons.policy_outlined,
+                      title: "الشروط والأحكام",
+                      onTap: () {},
+                    ),
+                    MenuItem(
+                      icon: Icons.logout,
+                      title: "تسجيل الخروج",
+                      onTap: () async {
+                        // عرض مربع حوار التأكيد
+                        final shouldLogout = context.mounted ? await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text(
+                              'تسجيل الخروج',
+                              style: getMediumStyle(
+                                fontFamily: FontConstant.cairo,
+                                fontSize: FontSize.size18,
+                              ),
+                            ),
+                            content: Text(
+                              'هل أنت متأكد من تسجيل الخروج؟',
+                              style: getRegularStyle(
+                                fontFamily: FontConstant.cairo,
+                                fontSize: FontSize.size16,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: Text(
+                                  'إلغاء',
+                                  style: getMediumStyle(
+                                    fontFamily: FontConstant.cairo,
+                                    fontSize: FontSize.size14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                              FilledButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                style: FilledButton.styleFrom(
+                                  backgroundColor: AppColors.error,
+                                ),
+                                child: Text(
+                                  'تسجيل الخروج',
+                                  style: getMediumStyle(
+                                    fontFamily: FontConstant.cairo,
+                                    fontSize: FontSize.size14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ) : null;
+
+                        // إذا تم تأكيد تسجيل الخروج
+                        if (shouldLogout == true && context.mounted) {
+                          try {
+                            final repository = context.read<AuthRepository>();
+                            final result = await repository.logout();
+
+                            if (!context.mounted) return;
+
+                            result.fold(
+                              (failure) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(failure.message)),
+                                );
+                              },
+                              (_) async {
+                                // Clear cache after successful logout
+                                final cacheService = sl<CacheService>();
+                                await cacheService.clearCache();
+
+                                // مسح بيانات ProfileCubit
+                                if (!context.read<ProfileCubit>().isClosed) {
+                                  context.read<ProfileCubit>().clearProfile();
+                                  // لا نقوم بإغلاق الـ Cubit هنا
+                                }
+
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                  SigninView.routeName,
+                                  (route) => false,
+                                );
+                                CustomSnackbar.showSuccess(
+                                  context: context,
+                                  message: "تم تسجيل الخروج بنجاح",
+                                );
+                              },
+                            );
+                          } catch (e) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('حدث خطأ أثناء تسجيل الخروج')),
+                            );
+                          }
+                        }
+                      },
+                      isDestructive: true,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        }
+        
+        return const Center(child: CircularProgressIndicator());
       },
     );
   }

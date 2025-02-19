@@ -9,25 +9,52 @@ class ProfileCubit extends Cubit<ProfileState> {
   ProfileModel? _profile; // تخزين آخر بيانات
 
   ProfileCubit({required this.repository}) : super(ProfileInitial()) {
-    // تحميل البيانات عند إنشاء الـ cubit
-    loadProfile();
+    // لا نحتاج إلى تحميل البيانات عند إنشاء الـ cubit
+    // loadProfile();
   }
 
   ProfileModel? get currentProfile => _profile;
 
   Future<void> loadProfile() async {
+    if (isClosed) return;
+    
     try {
       emit(ProfileLoading());
       final result = await repository.getProfile();
+      if (isClosed) return;
+      
       result.fold(
-        (failure) => emit(ProfileError(failure.message)),
+        (failure) {
+          emit(ProfileError(failure.message));
+          // في حالة الفشل، نعيد المحاولة بعد ثانية واحدة
+          Future.delayed(const Duration(seconds: 1), () {
+            if (!isClosed) loadProfile();
+          });
+        },
         (profile) {
-          _profile = profile; // تحديث البيانات المخزنة
-          emit(ProfileLoaded(profile));
+          if (profile.name != null && profile.name.isNotEmpty) {
+            _profile = profile;
+            emit(ProfileLoaded(profile));
+          } else {
+            emit(ProfileError('بيانات الملف الشخصي غير صالحة'));
+          }
         },
       );
     } catch (e) {
-      emit(ProfileError(e.toString()));
+      if (!isClosed) {
+        emit(ProfileError(e.toString()));
+        // في حالة الخطأ، نعيد المحاولة بعد ثانية واحدة
+        Future.delayed(const Duration(seconds: 1), () {
+          if (!isClosed) loadProfile();
+        });
+      }
+    }
+  }
+
+  void clearProfile() {
+    _profile = null;
+    if (!isClosed) {
+      emit(ProfileInitial());
     }
   }
 
@@ -76,7 +103,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
     } catch (e) {
       emit(ProfileError(e.toString()));
-      loadProfile();
+      if (!isClosed) loadProfile(); // إعادة تحميل في حالة الخطأ
     }
   }
 
@@ -91,7 +118,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
     } catch (e) {
       emit(ProfileError(e.toString()));
-      loadProfile();
+      if (!isClosed) loadProfile(); // إعادة تحميل في حالة الخطأ
     }
   }
 
@@ -115,7 +142,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
     } catch (e) {
       emit(ProfileError(e.toString()));
-      loadProfile();
+      if (!isClosed) loadProfile(); // إعادة تحميل في حالة الخطأ
     }
   }
 } 

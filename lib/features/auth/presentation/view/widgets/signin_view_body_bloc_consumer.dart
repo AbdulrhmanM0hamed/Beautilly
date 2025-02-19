@@ -3,6 +3,7 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/auth/presentation/view/forget_password.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
@@ -41,7 +42,7 @@ class _SigninViewBodyBlocConsumerState
   }
 
   Future<void> _loadSavedCredentials() async {
-    final cacheService = context.read<CacheService>();
+    final cacheService = sl<CacheService>();
     _rememberMe = await cacheService.getRememberMe();
     
     if (_rememberMe) {
@@ -60,23 +61,43 @@ class _SigninViewBodyBlocConsumerState
     return BlocProvider(
       create: (context) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is AuthSuccess) {
-            if (_rememberMe) {
-              context.read<CacheService>().setRememberMe(true);
-              context.read<CacheService>().saveLoginCredentials(
-                    _emailController.text.trim(),
-                    _passwordController.text.trim(),
-                  );
-            } else {
-              context.read<CacheService>().clearLoginCredentials();
+            try {
+              if (_rememberMe) {
+                await sl<CacheService>().setRememberMe(true);
+                await sl<CacheService>().saveLoginCredentials(
+                  _emailController.text.trim(),
+                  _passwordController.text.trim(),
+                );
+              } else {
+                await sl<CacheService>().clearLoginCredentials();
+              }
+              
+              // إعادة تهيئة ProfileCubit وتحميل البيانات الجديدة
+              sl.unregister<ProfileCubit>();
+              sl.registerFactory<ProfileCubit>(() => ProfileCubit(repository: sl()));
+              
+              final profileCubit = sl<ProfileCubit>();
+              if (!profileCubit.isClosed) {
+                await profileCubit.loadProfile();
+              }
+
+              if (!context.mounted) return;
+              
+              Navigator.pushReplacementNamed(context, HomeView.routeName);
+              
+              CustomSnackbar.showSuccess(
+                context: context,
+                message: state.message,
+              );
+            } catch (e) {
+              if (!context.mounted) return;
+              CustomSnackbar.showError(
+                context: context,
+                message: 'حدث خطأ أثناء تحميل البيانات',
+              );
             }
-            
-            Navigator.pushReplacementNamed(context, HomeView.routeName);
-            CustomSnackbar.showSuccess(
-              context: context,
-              message: state.message,
-            );
           } else if (state is AuthError) {
             CustomSnackbar.showError(
               context: context,

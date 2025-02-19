@@ -43,6 +43,8 @@ class CacheServiceImpl implements CacheService {
     await _prefs.remove(_tokenKey);
     await _prefs.remove(_refreshTokenKey);
     await _prefs.remove(_sessionCookieKey);
+    await _prefs.remove(_userKey);  // إضافة مسح بيانات المستخدم
+    
     if (!(await getRememberMe())) {
       await clearLoginCredentials();
     }
@@ -112,4 +114,4 @@ class CacheServiceImpl implements CacheService {
     await _prefs.remove(_passwordKey);
     await _prefs.remove(_rememberMeKey);
   }
-} 
+}

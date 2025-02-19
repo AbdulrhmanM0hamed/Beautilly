@@ -49,7 +49,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     // تهيئة الـ responsive values
     AppResponsive().init(context);
-    
+
     return ResponsiveLayout(
       mobile: _buildMobileLayout(),
       tablet: _buildTabletLayout(),
@@ -72,9 +72,27 @@ class _HomeViewState extends State<HomeView> {
         BlocProvider(
           create: (context) => sl<DiscountsCubit>(),
         ),
+    
       ],
       child: BlocProvider(
-        create: (context) => sl<ProfileCubit>()..loadProfile(),
+        create: (context) {
+          final cubit = sl<ProfileCubit>();
+          
+          if (!cubit.isClosed) {
+            final currentProfile = cubit.currentProfile;
+            if (currentProfile == null) {
+              cubit.loadProfile();
+            }
+          } else {
+            sl.unregister<ProfileCubit>();
+            sl.registerFactory<ProfileCubit>(() => ProfileCubit(repository: sl()));
+            final newCubit = sl<ProfileCubit>();
+            newCubit.loadProfile();
+            return newCubit;
+          }
+          
+          return cubit;
+        },
         child: Scaffold(
           body: PageView(
             controller: _pageController,
@@ -182,7 +200,8 @@ class KeepAlivePage extends StatefulWidget {
   State<KeepAlivePage> createState() => _KeepAlivePageState();
 }
 
-class _KeepAlivePageState extends State<KeepAlivePage> with AutomaticKeepAliveClientMixin {
+class _KeepAlivePageState extends State<KeepAlivePage>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 

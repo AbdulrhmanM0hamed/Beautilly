@@ -81,8 +81,6 @@ import '../../features/salone_profile/domain/usecases/add_shop_rating_usecase.da
 import '../../features/salone_profile/domain/usecases/delete_shop_rating_usecase.dart';
 import '../../features/salone_profile/domain/usecases/add_to_favorites_usecase.dart';
 import '../../features/salone_profile/domain/usecases/remove_from_favorites_usecase.dart';
-
-import '../../features/Home/presentation/cubit/service_shops_cubit/service_shops_cubit.dart';
 import '../../features/booking/data/datasources/booking_remote_datasource.dart';
 import '../../features/booking/data/repositories/booking_repository_impl.dart';
 import '../../features/booking/domain/repositories/booking_repository.dart';
@@ -92,6 +90,8 @@ import '../../features/booking/presentation/cubit/booking_cubit.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+
+
   //! Core Services
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
@@ -99,6 +99,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(Connectivity()));
   sl.registerLazySingleton(() => SharedPreferencesService(sharedPreferences));
+
+
 
   //! Auth Feature
   // Data Sources
@@ -118,6 +120,10 @@ Future<void> init() async {
   sl.registerFactory(() => AuthCubit(sl(), sl()));
   sl.registerFactory<LocationCubit>(() => LocationCubit(sl<LocationRepository>()));
   sl.registerFactory<ForgotPasswordCubit>(() => ForgotPasswordCubit(sl()));
+
+
+//--------------------------------------------------------------------
+
 
   //! Profile Feature
   // Data Sources
@@ -140,6 +146,11 @@ Future<void> init() async {
   // Cubits
   sl.registerLazySingleton(() => ProfileCubit(repository: sl()));
   sl.registerFactory(() => ProfileImageCubit(sl<ProfileRepository>(), sl<ProfileCubit>()));
+
+
+
+//--------------------------------------------------------------------
+
 
   //! User Statistics Feature
   // Data Sources
@@ -168,6 +179,10 @@ Future<void> init() async {
       ordersCubit: sl(),
     ),
   );
+
+
+//--------------------------------------------------------------------
+
 
   //! Favorites Feature
   // Data Sources
@@ -207,6 +222,11 @@ Future<void> init() async {
     ),
   );
 
+
+
+//--------------------------------------------------------------------
+
+
   //! Orders Feature
   // Data Sources
   sl.registerLazySingleton<OrdersRemoteDataSource>(
@@ -240,6 +260,13 @@ Future<void> init() async {
   sl.registerFactory(() => AcceptOfferCubit(acceptOfferUseCase: sl()));
   sl.registerFactory(() => OrderDetailsCubit(sl()));
   sl.registerFactory(() => CancelOfferCubit(cancelOfferUseCase: sl()));
+
+
+
+//--------------------------------------------------------------------
+
+
+
 
   //! Reservations Feature
   // Data Sources
@@ -289,6 +316,11 @@ Future<void> init() async {
   // Cubits
   sl.registerFactory(() => ServicesCubit(sl<ServicesRepository>()));
 
+
+//--------------------------------------------------------------------
+
+
+
   //! Premium Shops Feature
   // Data Sources
   sl.registerLazySingleton<PremiumShopsRemoteDataSource>(
@@ -307,14 +339,19 @@ Future<void> init() async {
     ),
   );
 
-
-  
-
   // Use Cases
   sl.registerLazySingleton(() => GetPremiumShopsUseCase(sl()));
 
   // Cubits
   sl.registerFactory(() => PremiumShopsCubit(getPremiumShopsUseCase: sl()));
+
+
+
+
+//--------------------------------------------------------------------
+
+
+
 
   //! Discounts Feature
   // Data Sources
@@ -339,6 +376,10 @@ Future<void> init() async {
 
   // Cubits
   sl.registerFactory(() => DiscountsCubit(getDiscountsUseCase: sl()));
+
+
+
+//--------------------------------------------------------------------
 
 
 
@@ -376,6 +417,13 @@ Future<void> init() async {
         deleteShopRatingUseCase: sl(),
       ));
 
+
+//--------------------------------------------------------------------
+
+
+
+
+
   //! Booking Feature
   // Data Sources
   sl.registerLazySingleton<BookingRemoteDataSource>(
@@ -395,6 +443,14 @@ Future<void> init() async {
 
   // Cubits
   sl.registerFactory(() => BookingCubit(repository: sl()));
+
+
+
+
+
+//--------------------------------------------------------------------
+
+
 
   //! Search Feature
   // Data Sources
@@ -416,6 +472,13 @@ Future<void> init() async {
   // Cubits
   sl.registerFactory(() => SearchShopsCubit(repository: sl()));
 
+//--------------------------------------------------------------------
+
+
+
+
+
+
   //! Statistics Feature
   // Repositories
   sl.registerLazySingleton<StatisticsRepository>(
@@ -429,6 +492,14 @@ Future<void> init() async {
     () => StatisticsCubit(sl<StatisticsRepository>()),
   );
 
+
+
+
+//--------------------------------------------------------------------
+
+
+
+
   //! Location Feature
   // Repositories
   sl.registerLazySingleton<LocationRepository>(
@@ -438,8 +509,10 @@ Future<void> init() async {
     ),
   );
 
-
 }
+
+
+//--------------------------------------------------------------------
 
 mixin TokenRefreshMixin {
   Future<T> withTokenRefresh<T>({

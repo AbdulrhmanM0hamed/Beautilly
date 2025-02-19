@@ -24,11 +24,22 @@ class EditProfileView extends StatefulWidget {
 
 class _EditProfileViewState extends State<EditProfileView> {
   late EditProfileController controller;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     controller = EditProfileController(widget.profile);
+    _loadInitialData();
+  }
+
+  Future<void> _loadInitialData() async {
+    await Future.delayed(const Duration(milliseconds: 900));
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -39,6 +50,16 @@ class _EditProfileViewState extends State<EditProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CustomProgressIndcator(
+            color: AppColors.primary,
+          ),
+        ),
+      );
+    }
+
     return BlocProvider.value(
       value: sl<ProfileCubit>(),
       child: BlocConsumer<ProfileCubit, ProfileState>(
@@ -102,9 +123,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                 ),
                 if (state is ProfileLoading)
                   Container(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black26,
                     child: const Center(
-                      child: CustomProgressIndcator(color: AppColors.primary),
+                      child: CustomProgressIndcator(
+                        color: AppColors.primary,
+                      ),
                     ),
                   ),
               ],

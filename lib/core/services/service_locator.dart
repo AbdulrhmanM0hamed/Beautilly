@@ -88,18 +88,20 @@ import '../../features/booking/data/repositories/booking_repository_impl.dart';
 import '../../features/booking/domain/repositories/booking_repository.dart';
 import '../../features/booking/presentation/cubit/booking_cubit.dart';
 
-// Tailoring Requests Feature
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
-  // Core
+  //! Core Services
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
   sl.registerLazySingleton<CacheService>(() => CacheServiceImpl(sl()));
   sl.registerLazySingleton(() => http.Client());
+  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(Connectivity()));
+  sl.registerLazySingleton(() => SharedPreferencesService(sharedPreferences));
 
-  // Auth Feature
+  //! Auth Feature
+  // Data Sources
   sl.registerLazySingleton<AuthRemoteDataSource>(
     () => AuthRemoteDataSourceImpl(
       client: sl(),
@@ -107,107 +109,18 @@ Future<void> init() async {
     ),
   );
 
+  // Repositories
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(
-      sl(),
-      sl(),
-      sl<NetworkInfo>(),
-    ),
+    () => AuthRepositoryImpl(sl(), sl(), sl<NetworkInfo>()),
   );
+
+  // Cubits
   sl.registerFactory(() => AuthCubit(sl(), sl()));
-
-  // Tailoring Requests Feature
-  // Data Sources
-
-  // Repositories
-
-  // Use Cases
-
-  // Cubits
-
-  // Services
-  sl.registerLazySingleton(() => SharedPreferencesService(sharedPreferences));
-
-  // Repositories
-  sl.registerLazySingleton<StatisticsRepository>(
-    () => StatisticsRepositoryImpl(
-      networkInfo: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton<LocationRepository>(
-    () => LocationRepositoryImpl(
-      client: sl(),
-      networkInfo: sl(),
-    ),
-  );
-
-  // Cubits
-  sl.registerFactory(
-    () => StatisticsCubit(sl<StatisticsRepository>()),
-  );
-
-  sl.registerFactory<LocationCubit>(
-    () => LocationCubit(sl<LocationRepository>()),
-  );
-
+  sl.registerFactory<LocationCubit>(() => LocationCubit(sl<LocationRepository>()));
   sl.registerFactory<ForgotPasswordCubit>(() => ForgotPasswordCubit(sl()));
 
-  // Home Feature
-  sl.registerLazySingleton<OrdersRemoteDataSource>(
-    () => OrdersRemoteDataSourceImpl(
-      authRepository: sl(),
-      client: sl(),
-      cacheService: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton<OrdersRepository>(
-    () => OrdersRepositoryImpl(
-      remoteDataSource: sl(),
-      networkInfo: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton(() => AddOrderUseCase(sl()));
-  sl.registerFactory(() => AddOrderCubit(addOrderUseCase: sl()));
-
-  sl.registerLazySingleton(() => GetMyOrders(sl()));
-
-  sl.registerLazySingleton(() => GetAllOrders(sl()));
-
-  sl.registerFactory(
-    () => OrdersCubit(
-      getMyOrders: sl(),
-      getAllOrders: sl(),
-    ),
-  );
-
-  // Reservations Feature
-  sl.registerLazySingleton<ReservationsRemoteDataSource>(
-    () => ReservationsRemoteDataSourceImpl(
-      client: sl(),
-      cacheService: sl(),
-      authRepository: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton<ReservationsRepository>(
-    () => ReservationsRepositoryImpl(
-      remoteDataSource: sl(),
-      networkInfo: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton(() => GetMyReservations(sl()));
-
-  sl.registerFactory(
-    () => ReservationsCubit(
-      getMyReservationsUseCase: sl(),
-    ),
-  );
-
-  // Profile Feature
+  //! Profile Feature
+  // Data Sources
   sl.registerLazySingleton<ProfileRemoteDataSource>(
     () => ProfileRemoteDataSourceImpl(
       client: sl(),
@@ -216,6 +129,7 @@ Future<void> init() async {
     ),
   );
 
+  // Repositories
   sl.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(
       remoteDataSource: sl(),
@@ -223,21 +137,40 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerLazySingleton(
-    () => ProfileCubit(
+  // Cubits
+  sl.registerLazySingleton(() => ProfileCubit(repository: sl()));
+  sl.registerFactory(() => ProfileImageCubit(sl<ProfileRepository>(), sl<ProfileCubit>()));
+
+  //! User Statistics Feature
+  // Data Sources
+  sl.registerLazySingleton<UserStatisticsRemoteDataSource>(
+    () => UserStatisticsRemoteDataSourceImpl(
+      authRepository: sl(),
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<UserStatisticsRepository>(
+    () => UserStatisticsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Cubits
+  sl.registerLazySingleton<UserStatisticsCubit>(
+    () => UserStatisticsCubit(
       repository: sl(),
+      favoritesCubit: sl(),
+      reservationsCubit: sl(),
+      ordersCubit: sl(),
     ),
   );
 
-  sl.registerFactory(
-    () => ProfileImageCubit(
-      sl<ProfileRepository>(),
-      sl<ProfileCubit>(),
-    ),
-  );
-
-  // Favorites Feature
-  // 1. تسجيل DataSource
+  //! Favorites Feature
+  // Data Sources
   sl.registerLazySingleton<FavoritesRemoteDataSource>(
     () => FavoritesRemoteDataSourceImpl(
       client: sl(),
@@ -246,7 +179,7 @@ Future<void> init() async {
     ),
   );
 
-  // 2. تسجيل Repository
+  // Repositories
   sl.registerLazySingleton<FavoritesRepository>(
     () => FavoritesRepositoryImpl(
       remoteDataSource: sl(),
@@ -254,157 +187,16 @@ Future<void> init() async {
     ),
   );
 
-  // sl.registerLazySingleton<FavoritesCubit>(
-  //   () => FavoritesCubit(
-  //     repository: sl(),
-  //     addToFavoritesUseCase: sl<AddToFavoritesUseCase>(),
-  //     removeFromFavoritesUseCase: sl<RemoveFromFavoritesUseCase>(),
-  //   ),
-  // );
-
+  // Use Cases
   sl.registerLazySingleton(() => AddToFavoritesUseCase(sl()));
   sl.registerLazySingleton(() => RemoveFromFavoritesUseCase(sl()));
 
-  // services Feature
-  sl.registerLazySingleton<ServicesRemoteDataSource>(
-    () => ServicesRemoteDataSourceImpl(
-      client: sl(),
-      cacheService: sl(),
-      authRepository: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton<ServicesRepository>(
-    () => ServicesRepositoryImpl(
-      remoteDataSource: sl(),
-      networkInfo: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton(
-    () => GetServices(sl()),
-  );
-
-  sl.registerFactory(
-    () => ServicesCubit(sl<ServicesRepository>()),
-  );
-
-  // Premium Shops Feature
-  sl.registerLazySingleton<PremiumShopsRemoteDataSource>(
-    () => PremiumShopsRemoteDataSourceImpl(
-      client: sl(),
-      cacheService: sl(),
-      authRepository: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton<PremiumShopsRepository>(
-    () => PremiumShopsRepositoryImpl(
-      remoteDataSource: sl(),
-      networkInfo: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton(
-    () => GetPremiumShopsUseCase(sl()),
-  );
-
-  sl.registerFactory(
-    () => PremiumShopsCubit(getPremiumShopsUseCase: sl()),
-  );
-
-  // Discounts Feature
-  sl.registerLazySingleton<DiscountsRemoteDataSource>(
-    () => DiscountsRemoteDataSourceImpl(
-      client: sl(),
-      cacheService: sl(),
-      authRepository: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton<DiscountsRepository>(
-    () => DiscountsRepositoryImpl(
-      remoteDataSource: sl(),
-      networkInfo: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton(
-    () => GetDiscountsUseCase(sl()),
-  );
-
-  sl.registerFactory(
-    () => DiscountsCubit(getDiscountsUseCase: sl()),
-  );
-
-  // Orders Feature
-  sl.registerFactory(
-    () => DeleteOrderCubit(deleteOrderUseCase: sl()),
-  );
-
-  sl.registerLazySingleton(
-    () => DeleteOrderUseCase(sl()),
-  );
-
-  // Accept Offer Feature
-  sl.registerLazySingleton(() => AcceptOfferUseCase(sl()));
-  sl.registerFactory(() => AcceptOfferCubit(acceptOfferUseCase: sl()));
-
-  // Repository
-
-  // Data sources
-
   // Cubits
-  sl.registerFactory(() => OrderDetailsCubit(sl()));
-
-  // Orders Feature
-  sl.registerLazySingleton(() => CancelOfferUseCase(sl()));
-  sl.registerFactory(() => CancelOfferCubit(
-        cancelOfferUseCase: sl(),
-      ));
-
-  // Salon Profile Feature
-  sl.registerLazySingleton<SalonProfileRepository>(
-    () => SalonProfileRepositoryImpl(
-      remoteDataSource: sl(),
-      networkInfo: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton<SalonProfileRemoteDataSource>(
-    () => SalonProfileRemoteDataSourceImpl(
-      client: sl(),
-      cacheService: sl(),
-      authRepository: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton(
-    () => GetSalonProfileUseCase(sl<SalonProfileRepository>()),
-  );
-
-  sl.registerFactory<SalonProfileCubit>(
-    () => SalonProfileCubit(
-      getSalonProfileUseCase: sl<GetSalonProfileUseCase>(),
-    ),
-  );
-
-  // تسجيل FavoritesCubit
   sl.registerLazySingleton<FavoritesCubit>(
     () => FavoritesCubit(
-        repository: sl(),
-        addToFavoritesUseCase: sl<AddToFavoritesUseCase>(),
-        removeFromFavoritesUseCase: sl<RemoveFromFavoritesUseCase>()),
-  );
-
-
-
-  sl.registerLazySingleton<UserStatisticsCubit>(
-    () => UserStatisticsCubit(
       repository: sl(),
-      favoritesCubit: sl(),
-      reservationsCubit: sl(),
-      ordersCubit: sl(),
+      addToFavoritesUseCase: sl<AddToFavoritesUseCase>(),
+      removeFromFavoritesUseCase: sl<RemoveFromFavoritesUseCase>(),
     ),
   );
 
@@ -415,44 +207,177 @@ Future<void> init() async {
     ),
   );
 
-  // Rating Feature
-  sl.registerFactory(
-    () => RatingCubit(
-      addShopRatingUseCase: sl(),
-      deleteShopRatingUseCase: sl(),
+  //! Orders Feature
+  // Data Sources
+  sl.registerLazySingleton<OrdersRemoteDataSource>(
+    () => OrdersRemoteDataSourceImpl(
+      authRepository: sl(),
+      client: sl(),
+      cacheService: sl(),
     ),
   );
 
-  sl.registerLazySingleton(
-    () => AddShopRatingUseCase(sl()),
-  );
-
-  sl.registerLazySingleton(
-    () => DeleteShopRatingUseCase(sl()),
-  );
-
-  // Service Shops Feature
-  sl.registerFactory(
-    () => ServiceShopsCubit(
-      getServices: sl(),
-    ),
-  );
-
-  // Booking Feature
-  // Cubit
-  sl.registerFactory(() => BookingCubit(
-        repository: sl(),
-      ));
-
-  // Repository
-  sl.registerLazySingleton<BookingRepository>(
-    () => BookingRepositoryImpl(
+  // Repositories
+  sl.registerLazySingleton<OrdersRepository>(
+    () => OrdersRepositoryImpl(
       remoteDataSource: sl(),
       networkInfo: sl(),
     ),
   );
 
-  // Data sources
+  // Use Cases
+  sl.registerLazySingleton(() => AddOrderUseCase(sl()));
+  sl.registerLazySingleton(() => GetMyOrders(sl()));
+  sl.registerLazySingleton(() => GetAllOrders(sl()));
+  sl.registerLazySingleton(() => DeleteOrderUseCase(sl()));
+  sl.registerLazySingleton(() => AcceptOfferUseCase(sl()));
+  sl.registerLazySingleton(() => CancelOfferUseCase(sl()));
+
+  // Cubits
+  sl.registerFactory(() => OrdersCubit(getMyOrders: sl(), getAllOrders: sl()));
+  sl.registerFactory(() => AddOrderCubit(addOrderUseCase: sl()));
+  sl.registerFactory(() => DeleteOrderCubit(deleteOrderUseCase: sl()));
+  sl.registerFactory(() => AcceptOfferCubit(acceptOfferUseCase: sl()));
+  sl.registerFactory(() => OrderDetailsCubit(sl()));
+  sl.registerFactory(() => CancelOfferCubit(cancelOfferUseCase: sl()));
+
+  //! Reservations Feature
+  // Data Sources
+  sl.registerLazySingleton<ReservationsRemoteDataSource>(
+    () => ReservationsRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+      authRepository: sl(),
+    ),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<ReservationsRepository>(
+    () => ReservationsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetMyReservations(sl()));
+
+  // Cubits
+  sl.registerFactory(() => ReservationsCubit(getMyReservationsUseCase: sl()));
+
+  //! Services Feature
+  // Data Sources
+  sl.registerLazySingleton<ServicesRemoteDataSource>(
+    () => ServicesRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+      authRepository: sl(),
+    ),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<ServicesRepository>(
+    () => ServicesRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetServices(sl()));
+
+  // Cubits
+  sl.registerFactory(() => ServicesCubit(sl<ServicesRepository>()));
+
+  //! Premium Shops Feature
+  // Data Sources
+  sl.registerLazySingleton<PremiumShopsRemoteDataSource>(
+    () => PremiumShopsRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+      authRepository: sl(),
+    ),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<PremiumShopsRepository>(
+    () => PremiumShopsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+
+  
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetPremiumShopsUseCase(sl()));
+
+  // Cubits
+  sl.registerFactory(() => PremiumShopsCubit(getPremiumShopsUseCase: sl()));
+
+  //! Discounts Feature
+  // Data Sources
+  sl.registerLazySingleton<DiscountsRemoteDataSource>(
+    () => DiscountsRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+      authRepository: sl(),
+    ),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<DiscountsRepository>(
+    () => DiscountsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetDiscountsUseCase(sl()));
+
+  // Cubits
+  sl.registerFactory(() => DiscountsCubit(getDiscountsUseCase: sl()));
+
+
+
+
+  //! Salon Profile Feature
+  // Data Sources
+  sl.registerLazySingleton<SalonProfileRemoteDataSource>(
+    () => SalonProfileRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+      authRepository: sl(),
+    ),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<SalonProfileRepository>(
+    () => SalonProfileRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => GetSalonProfileUseCase(sl<SalonProfileRepository>()));
+  sl.registerLazySingleton(() => AddShopRatingUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteShopRatingUseCase(sl()));
+
+  // Cubits
+  sl.registerFactory<SalonProfileCubit>(
+    () => SalonProfileCubit(getSalonProfileUseCase: sl<GetSalonProfileUseCase>()),
+  );
+
+  sl.registerFactory(() => RatingCubit(
+        addShopRatingUseCase: sl(),
+        deleteShopRatingUseCase: sl(),
+      ));
+
+  //! Booking Feature
+  // Data Sources
   sl.registerLazySingleton<BookingRemoteDataSource>(
     () => BookingRemoteDataSourceImpl(
       client: sl(),
@@ -460,8 +385,25 @@ Future<void> init() async {
     ),
   );
 
+  // Repositories
+  sl.registerLazySingleton<BookingRepository>(
+    () => BookingRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
   // Cubits
-  sl.registerFactory(() => SearchShopsCubit(repository: sl()));
+  sl.registerFactory(() => BookingCubit(repository: sl()));
+
+  //! Search Feature
+  // Data Sources
+  sl.registerLazySingleton<SearchShopsRemoteDataSource>(
+    () => SearchShopsRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+    ),
+  );
 
   // Repositories
   sl.registerLazySingleton<SearchShopsRepository>(
@@ -471,34 +413,33 @@ Future<void> init() async {
     ),
   );
 
-  // Data sources
-  sl.registerLazySingleton<SearchShopsRemoteDataSource>(
-    () => SearchShopsRemoteDataSourceImpl(
-      client: sl(),
-      cacheService: sl(),
-    ),
-  );
+  // Cubits
+  sl.registerFactory(() => SearchShopsCubit(repository: sl()));
 
-  // Core
-  sl.registerLazySingleton<NetworkInfo>(
-    () => NetworkInfoImpl(Connectivity()),
-  );
-
-  // User Statistics Feature
-  sl.registerLazySingleton<UserStatisticsRemoteDataSource>(
-    () => UserStatisticsRemoteDataSourceImpl(
-      authRepository: sl(),
-      client: sl(),
-      cacheService: sl(),
-    ),
-  );
-
-  sl.registerLazySingleton<UserStatisticsRepository>(
-    () => UserStatisticsRepositoryImpl(
-      remoteDataSource: sl(),
+  //! Statistics Feature
+  // Repositories
+  sl.registerLazySingleton<StatisticsRepository>(
+    () => StatisticsRepositoryImpl(
       networkInfo: sl(),
     ),
   );
+
+  // Cubits
+  sl.registerLazySingleton<StatisticsCubit>(
+    () => StatisticsCubit(sl<StatisticsRepository>()),
+  );
+
+  //! Location Feature
+  // Repositories
+  sl.registerLazySingleton<LocationRepository>(
+    () => LocationRepositoryImpl(
+      client: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Cubits
+
 }
 
 mixin TokenRefreshMixin {

@@ -30,33 +30,38 @@ class UserStatisticsCubit extends Cubit<UserStatisticsState> {
   }) : super(UserStatisticsInitial()) {
     // الاستماع لتغييرات المفضلة
     _favoritesSubscription = favoritesCubit.stream.listen((state) {
-      if (state is FavoritesLoaded) {
+      if (state is FavoritesLoaded || state is FavoritesError) {
         loadUserStatistics();
       }
     });
 
     // الاستماع لتغييرات الحجوزات
     _reservationsSubscription = reservationsCubit.stream.listen((state) {
-      if (state is ReservationsSuccess) {
+      if (state is ReservationsSuccess || state is ReservationsError) {
         loadUserStatistics();
       }
     });
 
     // الاستماع لتغييرات الطلبات
     _ordersSubscription = ordersCubit.stream.listen((state) {
-      if (state is MyOrdersSuccess) {
+      if (state is MyOrdersSuccess || state is OrdersError) {
         loadUserStatistics();
       }
     });
   }
 
   Future<void> loadUserStatistics() async {
+    if (isClosed) return;
+    
     emit(UserStatisticsLoading());
     final result = await repository.getUserStatistics();
-    result.fold(
-      (failure) => emit(UserStatisticsError(failure.message)),
-      (statistics) => emit(UserStatisticsLoaded(statistics)),
-    );
+    
+    if (!isClosed) {
+      result.fold(
+        (failure) => emit(UserStatisticsError(failure.message)),
+        (statistics) => emit(UserStatisticsLoaded(statistics)),
+      );
+    }
   }
 
   @override

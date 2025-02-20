@@ -73,14 +73,22 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> logout() async {
     emit(AuthLoading());
     
-    final result = await _logout();
-    
-    result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (_) {
-        _cacheService.clearCache();
-        emit(AuthInitial());
-      },
-    );
+    try {
+      final result = await _logout();
+      
+      result.fold(
+        (failure) => emit(AuthError(failure.message)),
+        (_) {
+          // تأكد من مسح الـ cache
+          _cacheService.clearCache();
+          emit(AuthInitial());
+        },
+      );
+    } catch (e) {
+      print('Error in AuthCubit.logout: $e');
+      // حتى في حالة الخطأ، نقوم بمسح الـ cache والخروج
+      await _cacheService.clearCache();
+      emit(AuthInitial());
+    }
   }
 }

@@ -64,7 +64,7 @@ class _HomeViewState extends State<HomeView> {
           create: (context) => sl<ServicesCubit>(),
         ),
         BlocProvider(
-          create: (context) => sl<StatisticsCubit>(),
+          create: (context) => sl<StatisticsCubit>()..getStatistics(),
         ),
         BlocProvider(
           create: (context) => sl<PremiumShopsCubit>(),

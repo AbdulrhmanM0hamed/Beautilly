@@ -113,7 +113,7 @@ Future<void> init() async {
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(sl(), sl(), sl<NetworkInfo>()),
+    () => AuthRepositoryImpl(sl(), sl(), sl<NetworkInfo>() ),
   );
 
   // Cubits
@@ -145,7 +145,7 @@ Future<void> init() async {
 
   // Cubits
   sl.registerLazySingleton(() => ProfileCubit(repository: sl()));
-  sl.registerFactory(() => ProfileImageCubit(sl<ProfileRepository>(), sl<ProfileCubit>()));
+  sl.registerLazySingleton(() => ProfileImageCubit(sl<ProfileRepository>(), sl<ProfileCubit>()));
 
 
 
@@ -154,7 +154,7 @@ Future<void> init() async {
 
   //! User Statistics Feature
   // Data Sources
-  sl.registerLazySingleton<UserStatisticsRemoteDataSource>(
+  sl.registerFactory<UserStatisticsRemoteDataSource>(
     () => UserStatisticsRemoteDataSourceImpl(
       authRepository: sl(),
       client: sl(),
@@ -163,7 +163,7 @@ Future<void> init() async {
   );
 
   // Repositories
-  sl.registerLazySingleton<UserStatisticsRepository>(
+  sl.registerFactory<UserStatisticsRepository>(
     () => UserStatisticsRepositoryImpl(
       remoteDataSource: sl(),
       networkInfo: sl(),
@@ -171,7 +171,7 @@ Future<void> init() async {
   );
 
   // Cubits
-  sl.registerLazySingleton<UserStatisticsCubit>(
+  sl.registerFactory<UserStatisticsCubit>(
     () => UserStatisticsCubit(
       repository: sl(),
       favoritesCubit: sl(),
@@ -481,14 +481,17 @@ Future<void> init() async {
 
   //! Statistics Feature
   // Repositories
-  sl.registerLazySingleton<StatisticsRepository>(
+  sl.registerFactory<StatisticsRepository>(
     () => StatisticsRepositoryImpl(
+      authRepository: sl(),
       networkInfo: sl(),
+      cacheService: sl(),
+      client: sl(),
     ),
   );
 
   // Cubits
-  sl.registerLazySingleton<StatisticsCubit>(
+  sl.registerFactory<StatisticsCubit>(
     () => StatisticsCubit(sl<StatisticsRepository>()),
   );
 

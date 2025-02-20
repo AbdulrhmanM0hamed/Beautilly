@@ -3,6 +3,7 @@ import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
+import 'package:beautilly/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_state.dart';
 import 'package:beautilly/features/profile/presentation/view/edit_profile/edit_profile_view.dart';
@@ -26,7 +27,7 @@ class ProfileMenuSection extends StatelessWidget {
         if (state is ProfileLoading) {
           return const Center(child: CircularProgressIndicator());
         }
-        
+
         if (state is ProfileError) {
           return Center(
             child: Column(
@@ -51,7 +52,7 @@ class ProfileMenuSection extends StatelessWidget {
             context.read<ProfileCubit>().loadProfile(); // إعادة تحميل البيانات
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +102,7 @@ class ProfileMenuSection extends StatelessWidget {
                         if (!favoritesCubit.isClosed) {
                           favoritesCubit.loadFavorites();
                         }
-                        
+
                         Navigator.push(
                           context,
                           PageRoutes.fadeScale(
@@ -136,99 +137,7 @@ class ProfileMenuSection extends StatelessWidget {
                     MenuItem(
                       icon: Icons.logout,
                       title: "تسجيل الخروج",
-                      onTap: () async {
-                        // عرض مربع حوار التأكيد
-                        final shouldLogout = context.mounted ? await showDialog<bool>(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: Text(
-                              'تسجيل الخروج',
-                              style: getMediumStyle(
-                                fontFamily: FontConstant.cairo,
-                                fontSize: FontSize.size18,
-                              ),
-                            ),
-                            content: Text(
-                              'هل أنت متأكد من تسجيل الخروج؟',
-                              style: getRegularStyle(
-                                fontFamily: FontConstant.cairo,
-                                fontSize: FontSize.size16,
-                              ),
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context, false),
-                                child: Text(
-                                  'إلغاء',
-                                  style: getMediumStyle(
-                                    fontFamily: FontConstant.cairo,
-                                    fontSize: FontSize.size14,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                              FilledButton(
-                                onPressed: () => Navigator.pop(context, true),
-                                style: FilledButton.styleFrom(
-                                  backgroundColor: AppColors.error,
-                                ),
-                                child: Text(
-                                  'تسجيل الخروج',
-                                  style: getMediumStyle(
-                                    fontFamily: FontConstant.cairo,
-                                    fontSize: FontSize.size14,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ) : null;
-
-                        // إذا تم تأكيد تسجيل الخروج
-                        if (shouldLogout == true && context.mounted) {
-                          try {
-                            final repository = context.read<AuthRepository>();
-                            final result = await repository.logout();
-
-                            if (!context.mounted) return;
-
-                            result.fold(
-                              (failure) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text(failure.message)),
-                                );
-                              },
-                              (_) async {
-                                // Clear cache after successful logout
-                                final cacheService = sl<CacheService>();
-                                await cacheService.clearCache();
-
-                                // مسح بيانات ProfileCubit
-                                if (!context.read<ProfileCubit>().isClosed) {
-                                  context.read<ProfileCubit>().clearProfile();
-                                  // لا نقوم بإغلاق الـ Cubit هنا
-                                }
-
-                                Navigator.of(context).pushNamedAndRemoveUntil(
-                                  SigninView.routeName,
-                                  (route) => false,
-                                );
-                                CustomSnackbar.showSuccess(
-                                  context: context,
-                                  message: "تم تسجيل الخروج بنجاح",
-                                );
-                              },
-                            );
-                          } catch (e) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('حدث خطأ أثناء تسجيل الخروج')),
-                            );
-                          }
-                        }
-                      },
+                      onTap: () => _handleLogout(context),
                       isDestructive: true,
                     ),
                   ],
@@ -237,10 +146,111 @@ class ProfileMenuSection extends StatelessWidget {
             ),
           );
         }
-        
+
         return const Center(child: CircularProgressIndicator());
       },
     );
+  }
+
+  void _handleLogout(BuildContext context) async {
+
+    final shouldLogout = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          title: Text(
+            'تسجيل الخروج',
+            style: getMediumStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size18,
+            ),
+          ),
+          content: Text(
+            'هل أنت متأكد من تسجيل الخروج؟',
+            style: getRegularStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size16,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(
+                'إلغاء',
+                style: getMediumStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size14,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.error,
+              ),
+              child: Text(
+                'تسجيل الخروج',
+                style: getMediumStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: FontSize.size14,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    if (shouldLogout != true || !context.mounted) return;
+
+    try {
+      // عرض مؤشر التحميل
+      if (!context.mounted) return;
+
+      await context.read<AuthCubit>().logout();
+
+      if (!context.mounted) return;
+
+      // مسح بيانات ProfileCubit
+      if (!context.read<ProfileCubit>().isClosed) {
+        context.read<ProfileCubit>().clearProfile();
+      }
+
+      // الانتقال لصفحة تسجيل الدخول
+      await Navigator.pushNamedAndRemoveUntil(
+        context,
+        SigninView.routeName,
+        (route) => false,
+      );
+
+      // عرض رسالة النجاح
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'تم تسجيل الخروج بنجاح',
+            style: getRegularStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size14,
+              color: Colors.white,
+            ),
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      // الانتقال لصفحة تسجيل الدخول حتى في حالة الخطأ
+      await Navigator.pushNamedAndRemoveUntil(
+        context,
+        SigninView.routeName,
+        (route) => false,
+      );
+    }
   }
 
   Widget _buildMenuGroup({
@@ -269,12 +279,12 @@ class ProfileMenuSection extends StatelessWidget {
     return ListTile(
       leading: Icon(
         item.icon,
-        color: item.isDestructive ? AppColors.error : null,
+        color: item.isDestructive ? Colors.red : null,
       ),
       title: Text(
         item.title,
         style: TextStyle(
-          color: item.isDestructive ? AppColors.error : null,
+          color: item.isDestructive ? Colors.red : null,
         ),
       ),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),

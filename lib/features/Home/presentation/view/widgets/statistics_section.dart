@@ -8,7 +8,6 @@ import 'package:beautilly/core/utils/theme/app_colors.dart';
 import '../../../../../core/utils/widgets/custom_snackbar.dart';
 import '../../cubit/statistics_cubit/statistics_cubit.dart';
 import '../../cubit/statistics_cubit/statistics_state.dart';
-import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/responsive/app_responsive.dart';
 import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 
@@ -23,55 +22,52 @@ class StatisticsSection extends StatelessWidget {
         final padding = AppResponsive.getScreenProportion(16);
         final titleSize = isTablet ? FontSize.size24 : FontSize.size20;
 
-        return BlocProvider(
-          create: (context) => sl<StatisticsCubit>()..getStatistics(),
-          child: BlocConsumer<StatisticsCubit, StatisticsState>(
-            listener: (context, state) {
-              if (state is StatisticsError) {
-                CustomSnackbar.showError(
-                  context: context,
-                  message: state.message,
-                );
-              }
-            },
-            builder: (context, state) {
-              if (state is StatisticsLoading) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'إحصائيات دلالك',
-                      style: getBoldStyle(
-                        fontSize: titleSize,
-                        fontFamily: FontConstant.cairo,
-                      ),
+        return BlocConsumer<StatisticsCubit, StatisticsState>(
+          listener: (context, state) {
+            if (state is StatisticsError) {
+              CustomSnackbar.showError(
+                context: context,
+                message: state.message,
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is StatisticsLoading) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'إحصائيات دلالك',
+                    style: getBoldStyle(
+                      fontSize: titleSize,
+                      fontFamily: FontConstant.cairo,
                     ),
-                    SizedBox(height: padding),
-                    StatisticsShimmer(),
-                  ],
-                );
-              }
+                  ),
+                  SizedBox(height: padding),
+                  StatisticsShimmer(),
+                ],
+              );
+            }
 
-              if (state is StatisticsLoaded) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'إحصائيات دلالك',
-                      style: getBoldStyle(
-                        fontSize: titleSize,
-                        fontFamily: FontConstant.cairo,
-                      ),
+            if (state is StatisticsLoaded) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'إحصائيات دلالك',
+                    style: getBoldStyle(
+                      fontSize: titleSize,
+                      fontFamily: FontConstant.cairo,
                     ),
-                    SizedBox(height: padding),
-                    _StatisticsGrid(statistics: state.statistics),
-                  ],
-                );
-              }
+                  ),
+                  SizedBox(height: padding),
+                  _StatisticsGrid(statistics: state.statistics),
+                ],
+              );
+            }
 
-              return const SizedBox.shrink();
-            },
-          ),
+            return const SizedBox.shrink();
+          },
         );
       },
     );

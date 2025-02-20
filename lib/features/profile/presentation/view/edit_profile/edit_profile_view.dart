@@ -30,6 +30,7 @@ class _EditProfileViewState extends State<EditProfileView> {
   void initState() {
     super.initState();
     controller = EditProfileController(widget.profile);
+    print("🔹 الحساب الحالي: ${widget.profile.email}");
     _loadInitialData();
   }
 
@@ -69,12 +70,13 @@ class _EditProfileViewState extends State<EditProfileView> {
         listenWhen: (previous, current) =>
             current is ProfileSuccess || current is ProfileError,
         listener: (context, state) {
+          print("📢 الحساب: ${widget.profile.email}, الحالة الجديدة: $state");
           if (state is ProfileSuccess) {
             CustomSnackbar.showSuccess(
               context: context,
               message: state.message,
             );
-            // مسح حقول كلمة المرور فقط عند نجاح تغيير كلمة المرور
+            print("✅ تحديث ناجح للحساب: ${widget.profile.email}, الرسالة: ${state.message}");
             if (state.message.contains('كلمة المرور')) {
               controller.clearPasswordFields();
             }
@@ -83,9 +85,11 @@ class _EditProfileViewState extends State<EditProfileView> {
               context: context,
               message: state.message,
             );
+            print("❌ خطأ في الحساب: ${widget.profile.email}, الخطأ: ${state.message}");
           }
         },
         builder: (context, state) {
+          print("🔄 إعادة بناء UI للحساب: ${widget.profile.email}, الحالة: $state");
           return Scaffold(
             appBar: const CustomAppBar(
               title: 'تعديل المعلومات الشخصية',
@@ -118,7 +122,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                           width: double.infinity,
                           child: CustomButton(
                             onPressed: state is! ProfileLoading
-                                ? () => controller.updateProfile(context)
+                                ? () {
+                                    print("📝 بدء تحديث الحساب: ${widget.profile.email}");
+                                    controller.updateProfile(context);
+                                    
+                                  }
                                 : null,
                             text: 'حفظ التغييرات',
                           ),

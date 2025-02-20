@@ -136,44 +136,26 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, void>> logout() async {
-    if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
-        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
-      ));
-    }
-
     try {
       final token = await _cacheService.getToken();
       final sessionCookie = await _cacheService.getSessionCookie();
 
-      if (token == null) {
-        return const Right(null);
-      }
-
       final response = await http.post(
-        Uri.parse(ApiEndpoints.logout),
+        Uri.parse('${ApiEndpoints.logout}?api_key=${ApiEndpoints.api_key}'),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'x-api-key': ApiEndpoints.api_key,
           'Authorization': 'Bearer $token',
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
+        body: '{}',
       );
+      await _cacheService.clearCache();
+      return const Right(null);
 
-      if (response.statusCode == 200 || response.statusCode == 401) {
-        await _cacheService.clearCache();
-        return const Right(null);
-      } else {
-        final data = jsonDecode(response.body);
-        return Left(ServerFailure(message: data['message'] ?? 'فشل تسجيل الخروج'));
-      }
-    } on SocketException {
-      return Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
     } catch (e) {
-      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      await _cacheService.clearCache();
+      return const Right(null);
     }
   }
 

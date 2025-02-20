@@ -14,4 +14,6 @@ abstract class CacheService {
   Future<Map<String, String>?> getLoginCredentials();
   Future<void> saveLoginCredentials(String email, String password);
   Future<void> clearLoginCredentials();
+  Future<String?> getFCMToken();
+  Future<void> saveFCMToken(String token);
 } 

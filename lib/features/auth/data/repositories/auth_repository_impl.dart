@@ -34,6 +34,9 @@ class AuthRepositoryImpl implements AuthRepository {
     }
 
     try {
+      // Get FCM token
+      final fcmToken = await _cacheService.getFCMToken();
+
       final response = await http.post(
         Uri.parse(ApiEndpoints.login),
         headers: {
@@ -44,6 +47,7 @@ class AuthRepositoryImpl implements AuthRepository {
         body: jsonEncode({
           emailOrPhone.contains('@') ? 'email' : 'phone': emailOrPhone,
           'password': password,
+          'fcm_token': fcmToken,
         }),
       );
 

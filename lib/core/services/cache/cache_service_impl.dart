@@ -114,4 +114,14 @@ class CacheServiceImpl implements CacheService {
     await _prefs.remove(_passwordKey);
     await _prefs.remove(_rememberMeKey);
   }
+
+  @override
+  Future<String?> getFCMToken() async {
+    return _prefs.getString('fcm_token');
+  }
+
+  @override
+  Future<void> saveFCMToken(String token) async {
+    await _prefs.setString('fcm_token', token);
+  }
 }

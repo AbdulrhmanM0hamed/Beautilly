@@ -1,6 +1,7 @@
 import 'package:beautilly/core/error/exceptions.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/core/services/network/network_info.dart';
+import 'package:beautilly/core/services/notification/notification_service.dart';
 import 'package:beautilly/features/Home/data/datasources/discounts_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/premium_shops_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/services_remote_datasource.dart';
@@ -85,6 +86,7 @@ import '../../features/booking/data/datasources/booking_remote_datasource.dart';
 import '../../features/booking/data/repositories/booking_repository_impl.dart';
 import '../../features/booking/domain/repositories/booking_repository.dart';
 import '../../features/booking/presentation/cubit/booking_cubit.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 
 final sl = GetIt.instance;
@@ -511,6 +513,12 @@ Future<void> init() async {
       networkInfo: sl(),
     ),
   );
+
+  // Notification Service
+  sl.registerLazySingleton(() => NotificationService(
+    sl(),
+    database: FirebaseDatabase.instance,
+  ));
 
 }
 

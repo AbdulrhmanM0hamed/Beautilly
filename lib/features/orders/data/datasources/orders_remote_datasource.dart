@@ -52,16 +52,21 @@ class OrdersRemoteDataSourceImpl
           },
         );
 
-        if (response.statusCode == 200) {
-          final jsonResponse = json.decode(response.body);
-          final List<dynamic> orders = jsonResponse['data'] as List;
-          return orders.map((order) => OrderModel.fromJson(order)).toList();
-        } else {
-          final error = json.decode(response.body);
-          throw ServerException(message: error['message'] ?? 'فشل في تحميل الطلبات');
-        }
+        return _parseOrdersResponse(response);
       },
     );
+  }
+
+  List<OrderModel> _parseOrdersResponse(http.Response response) {
+    final jsonResponse = json.decode(response.body);
+    if (jsonResponse['success'] == true) {
+      final ordersData = jsonResponse['data'] as List;
+      return ordersData.map((order) => OrderModel.fromJson(order)).toList();
+    } else {
+      throw ServerException(
+        message: jsonResponse['message'] ?? 'حدث خطأ في تحميل الطلبات'
+      );
+    }
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:beautilly/core/services/service_locator.dart';
+import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:beautilly/features/auth/presentation/cubit/auth_state.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
@@ -40,12 +41,12 @@ class ProfileViewContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('حسابي'),
+    return const Scaffold(
+      appBar: CustomAppBar(
+        title: 'حسابي',
         automaticallyImplyLeading: false,
       ),
-      body: const ProfileViewBody(),
+      body:  ProfileViewBody(),
     );
   }
 }

@@ -303,15 +303,17 @@ class BeautyServiceCardShimmer extends StatelessWidget {
 
                   // Tags
                   const SizedBox(height: 8),
-                  SizedBox(
-                    height: 30,
-                    child: Row(
-                      children: List.generate(
-                        3,
-                        (index) => Container(
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      3,
+                      (index) => Padding(
+                        padding: EdgeInsetsDirectional.only(
+                          end: index < 2 ? 8 : 0,  // لا padding للعنصر الأخير
+                        ),
+                        child: Container(
                           width: 60,
                           height: 24,
-                          margin: const EdgeInsets.only(left: 8),
                           decoration: BoxDecoration(
                             color: isDark ? Colors.grey[850] : Colors.white,
                             borderRadius: BorderRadius.circular(12),

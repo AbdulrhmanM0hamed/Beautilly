@@ -16,4 +16,7 @@ abstract class CacheService {
   Future<void> clearLoginCredentials();
   Future<String?> getFCMToken();
   Future<void> saveFCMToken(String token);
+  Future<void> saveUserId(String userId) ;
+  Future<String?> getLastNotificationTimestamp();
+  Future<void> saveLastNotificationTimestamp(String timestamp);
 } 

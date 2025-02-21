@@ -42,6 +42,9 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
   await di.init();
+  
+  // إضافة تأخير قصير
+  await Future.delayed(const Duration(milliseconds: 500));
   await di.sl<NotificationService>().init();
 
   runApp(
@@ -71,7 +74,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        navigatorKey: di.sl<NotificationService>().navigatorKey,
+        navigatorKey: di.sl<GlobalKey<NavigatorState>>(),
         locale: DevicePreview.locale(context),
         builder: DevicePreview.appBuilder,
         debugShowCheckedModeBanner: false,

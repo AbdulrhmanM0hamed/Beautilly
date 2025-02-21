@@ -12,6 +12,8 @@ class CacheServiceImpl implements CacheService {
   static const String _rememberMeKey = 'remember_me';
   static const String _emailKey = 'saved_email';
   static const String _passwordKey = 'saved_password';
+  static const String _userIdKey = 'user_id';
+  static const String _lastNotificationKey = 'last_notification_timestamp';
 
   CacheServiceImpl(this._prefs);
 
@@ -22,7 +24,11 @@ class CacheServiceImpl implements CacheService {
 
   @override
   Future<void> saveUser(Map<String, dynamic> user) async {
-    await _prefs.setString(_userKey, jsonEncode(user));
+    try {
+      await _prefs.setString(_userKey, jsonEncode(user));
+    } catch (e) {
+      print('❌ Error saving user: $e');
+    }
   }
 
   @override
@@ -43,7 +49,8 @@ class CacheServiceImpl implements CacheService {
     await _prefs.remove(_tokenKey);
     await _prefs.remove(_refreshTokenKey);
     await _prefs.remove(_sessionCookieKey);
-    await _prefs.remove(_userKey);  // إضافة مسح بيانات المستخدم
+    await _prefs.remove(_userKey);
+    await _prefs.remove(_lastNotificationKey);
     
     if (!(await getRememberMe())) {
       await clearLoginCredentials();
@@ -62,10 +69,22 @@ class CacheServiceImpl implements CacheService {
 
   @override
   int? getUserId() {
-    final userStr = _prefs.getString(_userKey);
-    if (userStr == null) return null;
-    final user = jsonDecode(userStr) as Map<String, dynamic>;
-    return user['id'] as int?;
+    try {
+      final userStr = _prefs.getString(_userKey);
+      if (userStr == null) {
+        print('🔍 No user data found in cache');
+        return null;
+      }
+
+      final userData = jsonDecode(userStr) as Map<String, dynamic>;
+      final userId = userData['id'] as int?;
+      
+      print('📱 Retrieved user ID from cache: $userId');
+      return userId;
+    } catch (e) {
+      print('❌ Error getting user ID: $e');
+      return null;
+    }
   }
   
   @override
@@ -123,5 +142,20 @@ class CacheServiceImpl implements CacheService {
   @override
   Future<void> saveFCMToken(String token) async {
     await _prefs.setString('fcm_token', token);
+  }
+
+  @override
+  Future<void> saveUserId(String userId) async {
+    await _prefs.setString(_userIdKey, userId);
+  }
+
+  @override
+  Future<String?> getLastNotificationTimestamp() async {
+    return _prefs.getString(_lastNotificationKey);
+  }
+
+  @override
+  Future<void> saveLastNotificationTimestamp(String timestamp) async {
+    await _prefs.setString(_lastNotificationKey, timestamp);
   }
 }

@@ -327,6 +327,42 @@ class ResponsiveCardSizes {
       );
     }
   }
+
+  static ServiceShopGridDimensions getShopGridDimensions(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    if (width > 1200) {
+      return ServiceShopGridDimensions(
+        crossAxisCount: 4,
+        childAspectRatio: 0.85,
+        spacing: 24,
+        borderRadius: 16,
+        padding: 16,
+        titleSize: 18,
+        iconSize: 24,
+      );
+    } else if (width > 900) {
+      return ServiceShopGridDimensions(
+        crossAxisCount: 3,
+        childAspectRatio: 0.85,
+        spacing: 20,
+        borderRadius: 14,
+        padding: 14,
+        titleSize: 16,
+        iconSize: 22,
+      );
+    } else {
+      return ServiceShopGridDimensions(
+        crossAxisCount: 2,
+        childAspectRatio: 0.85,
+        spacing: 16,
+        borderRadius: 12,
+        padding: 12,
+        titleSize: 14,
+        iconSize: 20,
+      );
+    }
+  }
 }
 
 class CardDimensions {
@@ -484,5 +520,25 @@ class OrderCardDimensions {
     required this.borderRadius,
     required this.chipHeight,
     required this.avatarSize,
+  });
+}
+
+class ServiceShopGridDimensions {
+  final int crossAxisCount;
+  final double childAspectRatio;
+  final double spacing;
+  final double borderRadius;
+  final double padding;
+  final double titleSize;
+  final double iconSize;
+
+  ServiceShopGridDimensions({
+    required this.crossAxisCount,
+    required this.childAspectRatio,
+    required this.spacing,
+    required this.borderRadius,
+    required this.padding,
+    required this.titleSize,
+    required this.iconSize,
   });
 }

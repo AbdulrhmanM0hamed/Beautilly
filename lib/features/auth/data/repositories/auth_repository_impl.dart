@@ -10,6 +10,8 @@ import '../../../../core/error/failures.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../models/user_model.dart';
 import 'package:beautilly/core/services/network/network_info.dart';
+import 'package:beautilly/core/services/notification/notification_service.dart';
+import 'package:get_it/get_it.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final CacheService _cacheService;
@@ -28,7 +30,7 @@ class AuthRepositoryImpl implements AuthRepository {
     String password,
   ) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -54,46 +56,37 @@ class AuthRepositoryImpl implements AuthRepository {
       final data = jsonDecode(response.body);
       if (response.statusCode == 200) {
         final token = data['token'] as String;
+        final user = UserModel.fromJson(data['user']);
+        
+        // حفظ بيانات المستخدم
         await _cacheService.saveToken(token);
-        final savedToken = await _cacheService.getToken();
-        if (token != savedToken) {}
-        // حفظ الـ cookie
-        final sessionCookie = response.headers['set-cookie']?.split(';').first;
-        if (sessionCookie != null) {
-          await _cacheService.saveSessionCookie(sessionCookie);
-        }
+        await _cacheService.saveUser(data['user'] as Map<String, dynamic>);
+        await _cacheService.saveUserId(user.id.toString());
+        
+        print('✅ Login successful - User data saved:');
+        print('🔑 Token: $token');
+        print('👤 User ID: ${user.id}');
+        print('📱 FCM Token: $fcmToken');
 
-        final testResponse = await http.get(
-          Uri.parse('${ApiEndpoints.baseUrl}/my-list-orders'),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            if (sessionCookie != null)
-              'Cookie': sessionCookie, // نضيف الـ cookie فقط إذا كان موجوداً
-          },
-        );
+        // إعادة تهيئة خدمة الإشعارات
+        await GetIt.I<NotificationService>().init();
 
         return Right({
-          'user': UserModel.fromJson(data['user']),
           'token': token,
-          'message': data['message'] ?? 'تم تسجيل الدخول بنجاح',
+          'user': user.toJson(),
         });
       } else {
-        final message = data['message'] ??
-            (data['errors'] != null
-                ? data['errors'].values.first.first
-                : null) ??
-            'فشل تسجيل الدخول';
+        final message = data['message'] ?? 'فشل تسجيل الدخول';
+        print('❌ Login failed: $message');
         return Left(ServerFailure(message: message));
       }
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      print('❌ Unexpected error during login: $e');
+      return Left(ServerFailure(message: e.toString()));
     }
   }
 
@@ -154,9 +147,12 @@ class AuthRepositoryImpl implements AuthRepository {
         },
         body: '{}',
       );
+
+      // إلغاء اشتراكات الإشعارات
+      await GetIt.I<NotificationService>().dispose();
+      
       await _cacheService.clearCache();
       return const Right(null);
-
     } catch (e) {
       await _cacheService.clearCache();
       return const Right(null);

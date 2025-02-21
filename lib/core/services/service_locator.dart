@@ -87,6 +87,7 @@ import '../../features/booking/data/repositories/booking_repository_impl.dart';
 import '../../features/booking/domain/repositories/booking_repository.dart';
 import '../../features/booking/presentation/cubit/booking_cubit.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flutter/material.dart';
 
 
 final sl = GetIt.instance;
@@ -101,6 +102,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => http.Client());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(Connectivity()));
   sl.registerLazySingleton(() => SharedPreferencesService(sharedPreferences));
+  sl.registerLazySingleton(() => GlobalKey<NavigatorState>());
 
 
 
@@ -516,7 +518,8 @@ Future<void> init() async {
 
   // Notification Service
   sl.registerLazySingleton(() => NotificationService(
-    sl(),
+    cacheService: sl(),
+    navigatorKey: sl(),
     database: FirebaseDatabase.instance,
   ));
 

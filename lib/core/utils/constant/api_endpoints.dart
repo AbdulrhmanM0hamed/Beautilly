@@ -127,7 +127,7 @@ class ApiEndpoints {
       '$baseUrl/tailoring-offers/reject/?api_key=$api_key'; // رفض عرض تفصيل
 
   // Orders
-  static const String myOrders = '$baseUrl/my-list-orders';
+  static const String myOrders = '$baseUrl/my-list-orders?api_key=$api_key ';
   static const String allOrders = '$baseUrl/list-orders';
   static const String myReservations =
       '$baseUrl/my-reservations?api_key=$api_key';

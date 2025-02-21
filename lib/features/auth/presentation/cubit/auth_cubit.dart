@@ -91,4 +91,13 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthInitial());
     }
   }
+
+  void handleAuthError(String message) {
+    if (message.contains('انتهت صلاحية الجلسة') || 
+        message.contains('الرجاء إعادة تسجيل الدخول')) {
+      logout();
+      // يمكنك إضافة توجيه المستخدم لشاشة تسجيل الدخول هنا
+    }
+    emit(AuthError(message));
+  }
 }

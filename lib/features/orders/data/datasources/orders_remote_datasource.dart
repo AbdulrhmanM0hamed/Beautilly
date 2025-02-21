@@ -37,35 +37,40 @@ class OrdersRemoteDataSourceImpl
 
   @override
   Future<List<OrderModel>> getMyOrders() async {
-    return withTokenRefresh(
-      authRepository: authRepository,
-      cacheService: cacheService,
-      request: (token) async {
-        final sessionCookie = await cacheService.getSessionCookie();
-        final response = await client.get(
-          Uri.parse(ApiEndpoints.myOrders),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
-            'Accept': 'application/json',
-            if (sessionCookie != null) 'Cookie': sessionCookie,
-          },
-        );
+    try {
+      final token = await cacheService.getToken();
+      if (token == null || token.isEmpty) {
+        throw ServerException(message: 'الرجاء إعادة تسجيل الدخول');
+      }
 
-        return _parseOrdersResponse(response);
-      },
-    );
-  }
-
-  List<OrderModel> _parseOrdersResponse(http.Response response) {
-    final jsonResponse = json.decode(response.body);
-    if (jsonResponse['success'] == true) {
-      final ordersData = jsonResponse['data'] as List;
-      return ordersData.map((order) => OrderModel.fromJson(order)).toList();
-    } else {
-      throw ServerException(
-        message: jsonResponse['message'] ?? 'حدث خطأ في تحميل الطلبات'
+      final sessionCookie = await cacheService.getSessionCookie();
+      final response = await client.get(
+        Uri.parse(ApiEndpoints.myOrders),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'x-api-key': ApiEndpoints.api_key,
+          'Accept': 'application/json',
+          if (sessionCookie != null) 'Cookie': sessionCookie,
+        },
       );
+
+      print('📝 Request URL: ${ApiEndpoints.baseUrl}/my-orders');
+      print('📋 Request Headers:');
+      print('   Authorization: Bearer $token');
+      print('   x-api-key: ${ApiEndpoints.api_key}');
+      print('   Cookie: $sessionCookie');
+      print('🔍 Response Status: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body)['data'];
+        return data.map((json) => OrderModel.fromJson(json)).toList();
+      } else {
+        final error = json.decode(response.body);
+        throw ServerException(message: error['message'] ?? 'حدث خطأ في الخادم');
+      }
+    } catch (e) {
+      print('❌ Error fetching my orders: $e');
+      rethrow;
     }
   }
 

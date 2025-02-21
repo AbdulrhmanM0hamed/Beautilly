@@ -10,12 +10,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationService {
   static const String _lastNotificationKey = 'last_notification_timestamp';
+  static const String _lastLoginKey = 'last_login_timestamp';
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
   final CacheService _cacheService;
   final FirebaseDatabase _database;
   final GlobalKey<NavigatorState> navigatorKey;
-  StreamSubscription? _databaseSubscription;
+  StreamSubscription? _reservationNotificationsSubscription;
+  StreamSubscription? _userNotificationsSubscription;
 
   NotificationService({
     required this.navigatorKey,
@@ -26,8 +28,8 @@ class NotificationService {
 
   Future<void> init() async {
     try {
-      // إلغاء الاشتراك السابق إن وجد
-      await _databaseSubscription?.cancel();
+      await _reservationNotificationsSubscription?.cancel();
+      await _userNotificationsSubscription?.cancel();
       
       await _initLocalNotifications();
 
@@ -48,7 +50,11 @@ class NotificationService {
       print('👤 Current user ID: $userId');
 
       if (userId != null) {
-        // إعداد معالجة الإشعارات في الـ foreground
+        // حفظ وقت تسجيل الدخول
+        final loginTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setInt(_lastLoginKey, loginTime);
+
         FirebaseMessaging.onMessage.listen((RemoteMessage message) {
           print('📬 Received foreground message:');
           print('Data: ${message.data}');
@@ -56,8 +62,9 @@ class NotificationService {
           _handleMessage(message, userId);
         });
 
-        // الاستماع للتغييرات في Firebase Database
-        _listenToDatabaseNotifications(userId);
+        // الاستماع للإشعارات
+        _listenToReservationNotifications(userId);
+        _listenToUserNotifications(userId);
       } else {
         print('❌ User ID not found - notifications won\'t work');
       }
@@ -83,87 +90,114 @@ class NotificationService {
     await _localNotifications.initialize(
       initSettings,
       onDidReceiveNotificationResponse: (details) {
-        // التنقل عند الضغط على الإشعار
-        if (details.payload != null) {
-          navigatorKey.currentState?.pushNamed(details.payload!);
-        }
+        print('🔔 Notification tapped: ${details.payload}');
+        // يمكنك إضافة التنقل هنا
       },
     );
 
-    // إنشاء قناة الإشعارات للأندرويد
-    const channel = AndroidNotificationChannel(
-      'high_importance_channel',
-      'High Importance Notifications',
-      description: 'This channel is used for important notifications.',
-      importance: Importance.max,
-      playSound: true,
-      enableVibration: true,
-      enableLights: true,
+    // إعداد قناة الإشعارات لنظام Android
+    await _localNotifications.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(
+      const AndroidNotificationChannel(
+        'high_importance_channel',
+        'High Importance Notifications',
+        description: 'This channel is used for important notifications.',
+        importance: Importance.high,
+        playSound: true,
+        enableVibration: true,
+        showBadge: true,
+      ),
     );
-
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
-
-    print('✅ Local notifications initialized successfully');
   }
 
-  void _listenToDatabaseNotifications(int userId) {
-    print('🎯 Starting database notifications listener for user: $userId');
+  void _listenToReservationNotifications(int userId) async {
+    print('🎯 Starting reservation notifications listener for user: $userId');
     
-    _databaseSubscription = _database
+    final prefs = await SharedPreferences.getInstance();
+    final lastLogin = prefs.getInt(_lastLoginKey) ?? 0;
+    
+    _reservationNotificationsSubscription = _database
         .ref('notifications')
         .child(userId.toString())
         .orderByChild('timestamp')
-        .limitToLast(1)  // نحصل فقط على آخر إشعار
+        .limitToLast(1)  // نفس منطق إشعارات العروض
         .onChildAdded
         .listen((DatabaseEvent event) async {
       try {
         if (event.snapshot.value != null) {
           final data = event.snapshot.value as Map<dynamic, dynamic>;
-          final timestamp = data['timestamp'] as String?;
+          final timestamp = data['timestamp'] is String 
+              ? DateTime.parse(data['timestamp'] as String).millisecondsSinceEpoch ~/ 1000
+              : data['timestamp'] as int;
           
-          // نتحقق من آخر إشعار تم استلامه
-          final lastTimestamp = await _getLastNotificationTimestamp();
+          print('📦 Received reservation notification: $data');
           
-          if (timestamp != null && 
-              (lastTimestamp == null || timestamp.compareTo(lastTimestamp) > 0)) {
+          final lastTimestamp = int.tryParse(
+            await _cacheService.getLastNotificationTimestamp() ?? '0'
+          ) ?? 0;
+          
+          print('⏰ Current timestamp: $timestamp');
+          print('⏰ Last timestamp: $lastTimestamp');
+          
+          if (timestamp > lastTimestamp && data['read'] == false) {
+            print('📨 Processing new reservation notification');
             
-            if (data['read'] == false) {
-              print('📨 Processing new notification: $data');
-              
-              _showLocalNotification(
-                title: 'تحديث حالة الحجز',
-                body: data['message'] as String? ?? '',
-                payload: '/reservation/${data['reservation_id']}',
-              );
+            _showLocalNotification(
+              title: 'تحديث حالة الحجز',
+              body: data['message'] as String? ?? '',
+              payload: '/reservation/${data['reservation_id']}',
+            );
 
-              // تحديث حالة القراءة
-              event.snapshot.ref.update({'read': true});
-              
-              // حفظ وقت آخر إشعار
-              await _saveLastNotificationTimestamp(timestamp);
-            }
+            event.snapshot.ref.update({'read': true});
+            await _cacheService.saveLastNotificationTimestamp(
+              timestamp.toString()
+            );
           } else {
-            print('⏭️ Skipping already processed notification');
+            print('⏭️ Skipping old or read notification');
           }
         }
       } catch (e) {
-        print('❌ Error processing database notification: $e');
+        print('❌ Error processing reservation notification: $e');
+        print('Data received: ${event.snapshot.value}');
       }
-    }, onError: (error) {
-      print('❌ Database listener error: $error');
     });
   }
 
-  Future<String?> _getLastNotificationTimestamp() async {
+  void _listenToUserNotifications(int userId) async {
+    print('🎯 Starting user notifications listener for user: $userId');
+    
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(_lastNotificationKey);
-  }
+    final lastLogin = prefs.getInt(_lastLoginKey) ?? 0;
+    
+    _userNotificationsSubscription = _database
+        .ref('notifications/users')
+        .child(userId.toString())
+        .orderByChild('timestamp')
+        .startAfter(lastLogin)  // استمع فقط للإشعارات بعد آخر تسجيل دخول
+        .onChildAdded
+        .listen((DatabaseEvent event) async {
+      try {
+        if (event.snapshot.value != null) {
+          final data = event.snapshot.value as Map<dynamic, dynamic>;
+          final timestamp = data['timestamp'] as int;
+          
+          print('📦 Received new user notification:');
+          print('Timestamp: $timestamp (Last login: $lastLogin)');
+          print('Data: $data');
+            
+          _showLocalNotification(
+            title: data['title'] as String? ?? 'عرض جديد',
+            body: data['body'] as String? ?? '',
+            payload: '/orders/${data['order_id']}',
+          );
 
-  Future<void> _saveLastNotificationTimestamp(String timestamp) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_lastNotificationKey, timestamp);
+          event.snapshot.ref.update({'read': true});
+        }
+      } catch (e) {
+        print('❌ Error processing user notification: $e');
+        print('Data received: ${event.snapshot.value}');
+      }
+    });
   }
 
   void _handleMessage(RemoteMessage message, int userId) {
@@ -191,34 +225,44 @@ class NotificationService {
     String? payload,
   }) async {
     try {
-      print('🔔 Showing local notification:');
+      print('🔔 Showing notification:');
       print('Title: $title');
       print('Body: $body');
       print('Payload: $payload');
+
+      const androidDetails = AndroidNotificationDetails(
+        'high_importance_channel',
+        'High Importance Notifications',
+        channelDescription: 'This channel is used for important notifications.',
+        importance: Importance.max,
+        priority: Priority.high,
+        showWhen: true,
+        enableVibration: true,
+        playSound: true,
+        icon: '@mipmap/ic_launcher',
+        largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+        styleInformation: BigTextStyleInformation(''),
+      );
+
+      const iosDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
+
+      const details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
 
       await _localNotifications.show(
         DateTime.now().millisecondsSinceEpoch ~/ 1000,
         title,
         body,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            'high_importance_channel',
-            'High Importance Notifications',
-            channelDescription: 'This channel is used for important notifications.',
-            importance: Importance.max,
-            priority: Priority.high,
-            showWhen: true,
-            enableVibration: true,
-            playSound: true,
-          ),
-          iOS: const DarwinNotificationDetails(
-            presentAlert: true,
-            presentBadge: true,
-            presentSound: true,
-          ),
-        ),
+        details,
         payload: payload,
       );
+
       print('✅ Notification shown successfully');
     } catch (e) {
       print('❌ Error showing notification: $e');
@@ -231,6 +275,7 @@ class NotificationService {
   }
 
   Future<void> dispose() async {
-    await _databaseSubscription?.cancel();
+    await _reservationNotificationsSubscription?.cancel();
+    await _userNotificationsSubscription?.cancel();
   }
 }

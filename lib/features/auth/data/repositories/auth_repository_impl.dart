@@ -95,7 +95,7 @@ class AuthRepositoryImpl implements AuthRepository {
     Map<String, dynamic> userData,
   ) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -123,7 +123,7 @@ class AuthRepositoryImpl implements AuthRepository {
         return Left(ServerFailure(message: data['message'] ?? 'حدث خطأ في التسجيل'));
       }
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
@@ -162,7 +162,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, String>> forgotPassword(String email) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -188,7 +188,7 @@ class AuthRepositoryImpl implements AuthRepository {
         return Left(ServerFailure(message: message));
       }
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
@@ -204,7 +204,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String passwordConfirmation,
   }) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -234,7 +234,7 @@ class AuthRepositoryImpl implements AuthRepository {
         return Left(ServerFailure(message: message));
       }
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
@@ -245,7 +245,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, String>> refreshToken() async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -256,7 +256,7 @@ class AuthRepositoryImpl implements AuthRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const  Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {

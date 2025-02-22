@@ -46,12 +46,15 @@ class HomeViewBody extends StatelessWidget {
               children: [
                 const WelcomeTextWidget(),
                 const SizedBox(height: 4.0),
-                Text(
-                  'ابدأ تجربة البحث عن الذى تريده, وسوف نقدم لك ما يناسبك',
-                  style: getMediumStyle(
-                      fontFamily: FontConstant.cairo,
-                      fontSize: FontSize.size14,
-                      color: AppColors.textSecondary),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'ابدأ تجربة البحث عن الذى تريده, وسوف نقدم لك ما يناسبك',
+                    style: getMediumStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size14,
+                        color: AppColors.textSecondary),
+                  ),
                 ),
                 const SizedBox(height: 16.0),
                 const SpecialViewListView(),

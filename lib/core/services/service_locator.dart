@@ -88,6 +88,12 @@ import '../../features/booking/domain/repositories/booking_repository.dart';
 import '../../features/booking/presentation/cubit/booking_cubit.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:beautilly/features/notifications/data/datasources/notifications_remote_datasource.dart';
+import 'package:beautilly/features/notifications/data/repositories/notifications_repository_impl.dart';
+import 'package:beautilly/features/notifications/domain/repositories/notifications_repository.dart';
+import 'package:beautilly/features/notifications/domain/usecases/get_notifications.dart';
+import 'package:beautilly/features/notifications/domain/usecases/mark_notification_as_read.dart';
+import 'package:beautilly/features/notifications/presentation/cubit/notifications_cubit.dart';
 
 
 final sl = GetIt.instance;
@@ -522,6 +528,36 @@ Future<void> init() async {
     navigatorKey: sl(),
     database: FirebaseDatabase.instance,
   ));
+
+  // Notifications Feature
+  // Data sources
+  sl.registerLazySingleton<NotificationsRemoteDataSource>(
+    () => NotificationsRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+      authRepository: sl(),
+    ),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<NotificationsRepository>(
+    () => NotificationsRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  // Use cases
+  sl.registerLazySingleton(() => GetNotificationsUseCase(sl()));
+  sl.registerLazySingleton(() => MarkNotificationAsReadUseCase(sl()));
+
+  // Cubit
+  sl.registerFactory(
+    () => NotificationsCubit(
+      getNotifications: sl(),
+      markAsRead: sl(),
+    ),
+  );
 
 }
 

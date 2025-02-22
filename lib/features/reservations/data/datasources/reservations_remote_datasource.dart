@@ -24,32 +24,42 @@ class ReservationsRemoteDataSourceImpl with TokenRefreshMixin implements Reserva
 
   @override
   Future<List<ReservationModel>> getMyReservations() async {
-    try {
-      final token = await cacheService.getToken();
-      if (token == null || token.isEmpty) {
-        throw ServerException(message: 'الرجاء إعادة تسجيل الدخول');
-      }
+    return withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        print("the token is $token");
+        final sessionCookie = await cacheService.getSessionCookie();
+        print("the session is $sessionCookie");
+        final response = await client.get(
+          Uri.parse(ApiEndpoints.myReservations),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'x-api-key': ApiEndpoints.api_key,
+            'Accept': 'application/json',
+            if (sessionCookie != null) 'Cookie': sessionCookie,
+          },
+        );
 
-      final sessionCookie = await cacheService.getSessionCookie();
-      final response = await client.get(
-        Uri.parse('${ApiEndpoints.baseUrl}/my-reservations'),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
-          'Accept': 'application/json',
-          if (sessionCookie != null) 'Cookie': sessionCookie,
-        },
-      );
+        if (response.statusCode == 200) {
+          return _parseResponse(response);
+        } else {
+          throw ServerException(message: 'فشل في تحميل الحجوزات');
+        }
+      },
+    );
+  }
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body)['data'];
-        return data.map((json) => ReservationModel.fromJson(json)).toList();
-      } else {
-        final error = json.decode(response.body);
-        throw ServerException(message: error['message'] ?? 'حدث خطأ في الخادم');
-      }
-    } catch (e) {
-      rethrow;
+  List<ReservationModel> _parseResponse(http.Response response) {
+    final jsonResponse = json.decode(response.body);
+    if (jsonResponse['success'] == true) {
+      final reservationsData = jsonResponse['data']['reservations'] as List;
+      return reservationsData
+          .map((reservation) => ReservationModel.fromJson(reservation))
+          .toList();
+    } else {
+      throw ServerException(
+          message: jsonResponse['message'] ?? 'حدث خطأ في تحميل الحجوزات');
     }
   }
 }

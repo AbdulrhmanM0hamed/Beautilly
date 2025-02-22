@@ -62,6 +62,7 @@ class AppAssets {
   static const String Star = '$_iconsPath/Star.svg';
   static const String map = '$_iconsPath/map.svg';
   static const String tfsel = '$_iconsPath/tfsel.svg';
+  static const String notificationIcon = '$_iconsPath/notification-icon.svg';
 
   // Bottom Navigation Icons
   static const String homeIconBottom = '$_iconsPath/Home.svg';

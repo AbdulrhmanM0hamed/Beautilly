@@ -111,6 +111,7 @@ class NotificationService {
   }
 
   void _listenToReservationNotifications(int userId) async {
+    
     print('🎯 Starting reservation notifications listener for user: $userId');
     
     final prefs = await SharedPreferences.getInstance();

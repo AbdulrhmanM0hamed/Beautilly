@@ -42,9 +42,6 @@ void main() async {
 
   final prefs = await SharedPreferences.getInstance();
   await di.init();
-  
-  // إضافة تأخير قصير
-  await Future.delayed(const Duration(milliseconds: 500));
   await di.sl<NotificationService>().init();
 
   runApp(

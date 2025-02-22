@@ -36,7 +36,7 @@ class _HomeViewState extends State<HomeView> {
     const KeepAlivePage(child: DiscoverView()),
     const KeepAlivePage(child: ReservationsView()),
     const KeepAlivePage(child: OrdersRequestsView()),
-     KeepAlivePage(child: ProfileView()),
+    KeepAlivePage(child: ProfileView()),
   ];
 
   @override
@@ -72,12 +72,12 @@ class _HomeViewState extends State<HomeView> {
         BlocProvider(
           create: (context) => sl<DiscountsCubit>(),
         ),
-    
+     
       ],
       child: BlocProvider(
         create: (context) {
           final cubit = sl<ProfileCubit>();
-          
+
           if (!cubit.isClosed) {
             final currentProfile = cubit.currentProfile;
             if (currentProfile == null) {
@@ -85,12 +85,13 @@ class _HomeViewState extends State<HomeView> {
             }
           } else {
             sl.unregister<ProfileCubit>();
-            sl.registerFactory<ProfileCubit>(() => ProfileCubit(repository: sl()));
+            sl.registerFactory<ProfileCubit>(
+                () => ProfileCubit(repository: sl()));
             final newCubit = sl<ProfileCubit>();
             newCubit.loadProfile();
             return newCubit;
           }
-          
+
           return cubit;
         },
         child: Scaffold(

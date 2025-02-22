@@ -2,6 +2,7 @@ import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:beautilly/features/notifications/presentation/view/notifications_page.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_state.dart';
 import 'package:beautilly/features/profile/presentation/view/edit_profile/edit_profile_view.dart';
@@ -13,6 +14,7 @@ import '../../../../../core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/features/profile/presentation/view/edit_address/edit_address_view.dart';
 import 'package:beautilly/features/profile/presentation/cubit/favorites_cubit/favorites_cubit.dart';
 import 'package:beautilly/features/profile/presentation/view/favorites/favorites_view.dart';
+import 'package:beautilly/features/notifications/presentation/cubit/notifications_cubit.dart';
 
 class ProfileMenuSection extends StatelessWidget {
   const ProfileMenuSection({super.key});
@@ -89,7 +91,14 @@ class ProfileMenuSection extends StatelessWidget {
                     MenuItem(
                       icon: Icons.notifications_outlined,
                       title: "الإشعارات",
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRoutes.fadeScale(
+                            page: const NotificationsPage(),
+                          ),
+                        );
+                      },
                     ),
                     MenuItem(
                       icon: Icons.favorite_border_outlined,
@@ -150,7 +159,6 @@ class ProfileMenuSection extends StatelessWidget {
   }
 
   void _handleLogout(BuildContext context) async {
-
     final shouldLogout = await showDialog<bool>(
       context: context,
       barrierDismissible: false,

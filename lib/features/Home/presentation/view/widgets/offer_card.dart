@@ -111,7 +111,8 @@ class OfferCard extends StatelessWidget {
                     ),
                   ),
                   DiscountNumber(
-                    discount: double.parse(discount.discountValue).toInt(),
+                    value: discount.discountValue,
+                    type: discount.discountType,
                   ),
                 ],
               ),

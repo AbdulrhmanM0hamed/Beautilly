@@ -8,8 +8,12 @@ class DiscountsLoading extends DiscountsState {}
 
 class DiscountsLoaded extends DiscountsState {
   final List<Discount> discounts;
+  final bool isLastPage;
 
-  DiscountsLoaded(this.discounts);
+  DiscountsLoaded({
+    required this.discounts,
+    required this.isLastPage,
+  });
 }
 
 class DiscountsError extends DiscountsState {

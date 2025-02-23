@@ -385,7 +385,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetDiscountsUseCase(sl()));
 
   // Cubits
-  sl.registerFactory(() => DiscountsCubit(getDiscountsUseCase: sl()));
+  sl.registerFactory(() => DiscountsCubit(repository: sl()));
 
 
 

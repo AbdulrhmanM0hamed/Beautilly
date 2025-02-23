@@ -24,57 +24,11 @@ class Discount {
 
 class DiscountShop {
   final int id;
-  final String name;
-  final String type;
-  final String? description;
-  final String address;
-  final String googleMapsUrl;
   final String mainImageUrl;
-  final String mainImageThumb;
-  final String mainImageMedium;
-  final ShopLocation location;
 
   const DiscountShop({
     required this.id,
-    required this.name,
-    required this.type,
-    this.description,
-    required this.address,
-    required this.googleMapsUrl,
     required this.mainImageUrl,
-    required this.mainImageThumb,
-    required this.mainImageMedium,
-    required this.location,
-  });
-}
-
-class ShopLocation {
-  final LocationCity city;
-  final LocationState state;
-
-  const ShopLocation({
-    required this.city,
-    required this.state,
-  });
-}
-
-class LocationCity {
-  final int id;
-  final String name;
-
-  const LocationCity({
-    required this.id,
-    required this.name,
-  });
-}
-
-class LocationState {
-  final int id;
-  final String name;
-
-  const LocationState({
-    required this.id,
-    required this.name,
   });
 }
 

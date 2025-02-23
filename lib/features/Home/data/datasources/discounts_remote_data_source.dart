@@ -8,7 +8,7 @@ import '../../../../features/auth/domain/repositories/auth_repository.dart';
 import '../models/discount_model.dart';
 
 abstract class DiscountsRemoteDataSource {
-  Future<List<DiscountModel>> getDiscounts();
+  Future<DiscountsResponse> getDiscounts({int page = 1});
 }
 
 class DiscountsRemoteDataSourceImpl with TokenRefreshMixin implements DiscountsRemoteDataSource {
@@ -23,7 +23,9 @@ class DiscountsRemoteDataSourceImpl with TokenRefreshMixin implements DiscountsR
   });
 
   @override
-  Future<List<DiscountModel>> getDiscounts() async {
+  Future<DiscountsResponse> getDiscounts({int page = 1}) async {
+    print('📱 Fetching discounts for page: $page');
+    
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
@@ -31,8 +33,11 @@ class DiscountsRemoteDataSourceImpl with TokenRefreshMixin implements DiscountsR
         try {
           final sessionCookie = await cacheService.getSessionCookie();
           
+          final uri = Uri.parse('${ApiEndpoints.discounts}?page=$page');
+          print('🌐 Request URL: $uri');
+          
           final response = await client.get(
-            Uri.parse(ApiEndpoints.discounts),
+            uri,
             headers: {
               'Authorization': 'Bearer $token',
               'Accept': 'application/json',
@@ -41,18 +46,22 @@ class DiscountsRemoteDataSourceImpl with TokenRefreshMixin implements DiscountsR
             },
           );
 
+          print('📥 Response status: ${response.statusCode}');
+          print('📦 Response body: ${response.body}');
+
           if (response.statusCode == 200) {
             final decodedData = json.decode(response.body);
-            if (decodedData['success']) {
-              final List<dynamic> discounts = decodedData['data']['discounts'];
-              return discounts.map((json) => DiscountModel.fromJson(json)).toList();
-            } else {
-              throw ServerException(message: decodedData['message'] ?? 'فشل في تحميل العروض');
-            }
+            final result = DiscountsResponse.fromJson(decodedData);
+            print('✅ Loaded ${result.discounts.length} discounts');
+            print('📊 Pagination: Page ${result.pagination.currentPage}/${result.pagination.lastPage}');
+            return result;
           } else {
+            print('❌ Failed to load discounts: ${response.body}');
             throw ServerException(message: 'فشل في تحميل العروض');
           }
-        } catch (e) {
+        } catch (e, stackTrace) {
+          print('💥 Error loading discounts: $e');
+          print('Stack trace: $stackTrace');
           rethrow;
         }
       },

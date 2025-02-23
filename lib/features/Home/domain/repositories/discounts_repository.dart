@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../entities/discount.dart';
+import '../../data/models/discount_model.dart';
 
 abstract class DiscountsRepository {
-  Future<Either<Failure, List<Discount>>> getDiscounts();
+  Future<Either<Failure, DiscountsResponse>> getDiscounts({int page = 1});
 } 

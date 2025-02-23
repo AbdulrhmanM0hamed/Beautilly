@@ -13,17 +13,45 @@ class SpecialViewListView extends StatefulWidget {
 }
 
 class _SpecialViewListViewState extends State<SpecialViewListView> {
+  final ScrollController _scrollController = ScrollController();
+  bool _isLoadingMore = false;
+
   @override
   void initState() {
     super.initState();
     context.read<DiscountsCubit>().loadDiscounts();
+    _setupScrollController();
+  }
+
+  void _setupScrollController() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent * 0.7) {
+        _loadMoreDiscounts();
+      }
+    });
+  }
+
+  Future<void> _loadMoreDiscounts() async {
+    final state = context.read<DiscountsCubit>().state;
+    if (state is DiscountsLoaded && !_isLoadingMore && !state.isLastPage) {
+      setState(() => _isLoadingMore = true);
+      await context.read<DiscountsCubit>().loadMoreDiscounts();
+      setState(() => _isLoadingMore = false);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DiscountsCubit, DiscountsState>(
       builder: (context, state) {
-        if (state is DiscountsLoading) {
+        if (state is DiscountsLoading && !_isLoadingMore) {
           return SizedBox(
             height: 180,
             child: ListView.builder(
@@ -38,13 +66,18 @@ class _SpecialViewListViewState extends State<SpecialViewListView> {
           return SizedBox(
             height: 180,
             child: ListView.builder(
+              controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              itemCount: state.discounts.length,
+              itemCount: state.discounts.length + (_isLoadingMore ? 1 : 0),
               itemBuilder: (context, index) {
-                print('🎴 Building offer card for index: $index');
-                return OfferCard(
-                  discount: state.discounts[index],
-                );
+                if (index < state.discounts.length) {
+                  return OfferCard(discount: state.discounts[index]);
+                } else {
+                  return const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: OfferCardShimmer(),
+                  );
+                }
               },
             ),
           );

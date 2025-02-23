@@ -1,4 +1,3 @@
-import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:flutter/material.dart';

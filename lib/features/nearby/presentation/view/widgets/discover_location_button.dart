@@ -9,10 +9,12 @@ class DiscoverLocationButton extends StatelessWidget {
     super.key,
     required this.mapController,
     required this.center,
+    required this.onLocationPressed,
   });
 
   final GoogleMapController mapController;
   final LatLng center;
+  final Function() onLocationPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -34,17 +36,7 @@ class DiscoverLocationButton extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(24),
-          onTap: () {
-            try {
-              mapController.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(target: center, zoom: 14),
-                ),
-              );
-            } catch (e) {
-              debugPrint('Error animating camera: $e');
-            }
-          },
+          onTap: onLocationPressed,
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: SvgPicture.asset(

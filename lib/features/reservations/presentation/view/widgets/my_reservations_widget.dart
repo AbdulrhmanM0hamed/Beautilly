@@ -4,7 +4,6 @@ import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/responsive/app_responsive.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/booking/presentation/cubit/booking_cubit.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubit/reservations_cubit.dart';

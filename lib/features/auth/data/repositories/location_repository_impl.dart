@@ -21,9 +21,9 @@ class LocationRepositoryImpl implements LocationRepository {
   @override
   Future<Either<Failure, List<StateModell>>> getStates() async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
-        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
-      ));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -56,9 +56,8 @@ class LocationRepositoryImpl implements LocationRepository {
         return const Left(ServerFailure(message: 'فشل في تحميل المناطق'));
       }
     } on SocketException {
-      return Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
       return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
@@ -67,9 +66,9 @@ class LocationRepositoryImpl implements LocationRepository {
   @override
   Future<Either<Failure, List<CityModell>>> getCities(int stateId) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
-        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
-      ));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -103,9 +102,8 @@ class LocationRepositoryImpl implements LocationRepository {
         return const Left(ServerFailure(message: 'فشل في تحميل المدن'));
       }
     } on SocketException {
-      return Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
       return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
@@ -114,9 +112,9 @@ class LocationRepositoryImpl implements LocationRepository {
   @override
   Future<Either<Failure, List<CityModell>>> getAllCities() async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
-        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
-      ));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -149,9 +147,8 @@ class LocationRepositoryImpl implements LocationRepository {
         return const Left(ServerFailure(message: 'فشل في تحميل المدن'));
       }
     } on SocketException {
-      return Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
       return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }

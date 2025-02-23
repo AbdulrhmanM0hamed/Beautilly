@@ -36,7 +36,6 @@ class AppAssets {
 
   // Icons
   static const String homeIcon = '$_iconsPath/home.svg';
-  static const String searchIcon = '$_iconsPath/search.svg';
   static const String bookingsIcon = '$_iconsPath/bookings.svg';
   static const String profileIcon = '$_iconsPath/profile.svg';
   static const String favoriteIcon = '$_iconsPath/favorite.svg';
@@ -63,6 +62,7 @@ class AppAssets {
   static const String map = '$_iconsPath/map.svg';
   static const String tfsel = '$_iconsPath/tfsel.svg';
   static const String notificationIcon = '$_iconsPath/notification-icon.svg';
+  static const String searchIcon = '$_iconsPath/search-normal.svg';
 
   // Bottom Navigation Icons
   static const String homeIconBottom = '$_iconsPath/Home.svg';

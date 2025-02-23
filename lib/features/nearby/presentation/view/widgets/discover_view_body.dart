@@ -194,9 +194,31 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
             child: DiscoverLocationButton(
               mapController: mapController!,
               center: _currentPosition != null
-                  ? LatLng(
-                      _currentPosition!.latitude, _currentPosition!.longitude)
+                  ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
                   : _center,
+              onLocationPressed: () async {
+                final position = await Geolocator.getCurrentPosition();
+                setState(() {
+                  _currentPosition = position;
+                  _markers.clear();
+                  _markers.add(
+                    Marker(
+                      markerId: const MarkerId('current_location'),
+                      position: LatLng(position.latitude, position.longitude),
+                      infoWindow: const InfoWindow(title: 'موقعك الحالي'),
+                    ),
+                  );
+                });
+
+                mapController?.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: LatLng(position.latitude, position.longitude),
+                      zoom: 15,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
       ],

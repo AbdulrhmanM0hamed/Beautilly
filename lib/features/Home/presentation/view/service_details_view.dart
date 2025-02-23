@@ -88,7 +88,7 @@ class ServiceDetailsView extends StatelessWidget {
                 children: [
                   // وصف الخدمة
                   Text(
-                    service.description,
+                    service.description ?? '',
                     style: getRegularStyle(
                       color: Theme.of(context).textTheme.bodyLarge?.color,
                       fontSize: FontSize.size14,

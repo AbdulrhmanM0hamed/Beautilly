@@ -8,6 +8,7 @@ import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/orders/domain/entities/order_details.dart';
 import 'package:beautilly/features/orders/presentation/cubit/cancel_offer_cubit/cancel_offer_state.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
+import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -490,270 +491,280 @@ class OrderDetailsView extends StatelessWidget {
       itemCount: orderDetails.offers.length,
       itemBuilder: (context, index) {
         final offer = orderDetails.offers[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 16),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        // صورة الصالون
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(25),
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                (offer.shop as ShopWithDetails).images.medium,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => CircleAvatar(
-                              backgroundColor:
-                                  AppColors.primary.withOpacity(0.1),
-                              child: Text(
-                                offer.shop.name[0].toUpperCase(),
-                                style: getBoldStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  color: AppColors.primary,
-                                  fontSize: FontSize.size16,
-                                ),
-                              ),
-                            ),
-                            errorWidget: (context, url, error) => CircleAvatar(
-                              backgroundColor:
-                                  AppColors.primary.withOpacity(0.1),
-                              child: Text(
-                                offer.shop.name[0].toUpperCase(),
-                                style: getBoldStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  color: AppColors.primary,
-                                  fontSize: FontSize.size16,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                offer.shop.name,
-                                style: getBoldStyle(
-                                  fontFamily: FontConstant.cairo,
-                                  fontSize: FontSize.size16,
-                                ),
-                              ),
-                              if (offer.daysCount != null) ...[
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.location_on_outlined,
-                                      size: 16,
-                                      color: Colors.grey,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      '${(offer.shop as ShopWithDetails).address.city}، ${(offer.shop as ShopWithDetails).address.state}',
-                                      style: getRegularStyle(
-                                        color: Colors.grey[600],
-                                        fontSize: FontSize.size12,
-                                        fontFamily: FontConstant.cairo,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Icon(
-                                      Icons.access_time,
-                                      size: 18,
-                                      color: Colors.grey[600],
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      _formatDate(offer.createdAt),
-                                      style: getRegularStyle(
-                                        fontFamily: FontConstant.cairo,
-                                        fontSize: FontSize.size14,
-                                        color: Colors.grey[600],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.monetization_on_outlined,
-                          color: Colors.green[700],
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${offer.price} ريال',
-                          style: getBoldStyle(
-                            fontFamily: FontConstant.cairo,
-                            fontSize: FontSize.size16,
-                            color: Colors.green[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (offer.notes != null && offer.notes!.isNotEmpty) ...[
-                      const SizedBox(height: 8),
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SalonProfileView(salonId: offer.shop.id),
+              ),
+            );
+          },
+          child: Card(
+            margin: const EdgeInsets.only(bottom: 16),
+            child: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // صورة الصالون
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(25),
+                            child: CachedNetworkImage(
+                              imageUrl:
+                                  (offer.shop as ShopWithDetails).images.medium,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => CircleAvatar(
+                                backgroundColor:
+                                    AppColors.primary.withOpacity(0.1),
+                                child: Text(
+                                  offer.shop.name[0].toUpperCase(),
+                                  style: getBoldStyle(
+                                    fontFamily: FontConstant.cairo,
+                                    color: AppColors.primary,
+                                    fontSize: FontSize.size16,
+                                  ),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => CircleAvatar(
+                                backgroundColor:
+                                    AppColors.primary.withOpacity(0.1),
+                                child: Text(
+                                  offer.shop.name[0].toUpperCase(),
+                                  style: getBoldStyle(
+                                    fontFamily: FontConstant.cairo,
+                                    color: AppColors.primary,
+                                    fontSize: FontSize.size16,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  offer.shop.name,
+                                  style: getBoldStyle(
+                                    fontFamily: FontConstant.cairo,
+                                    fontSize: FontSize.size16,
+                                  ),
+                                ),
+                                if (offer.daysCount != null) ...[
+                                  const SizedBox(height: 4),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on_outlined,
+                                        size: 16,
+                                        color: Colors.grey,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        '${(offer.shop as ShopWithDetails).address.city}، ${(offer.shop as ShopWithDetails).address.state}',
+                                        style: getRegularStyle(
+                                          color: Colors.grey[600],
+                                          fontSize: FontSize.size12,
+                                          fontFamily: FontConstant.cairo,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Icon(
+                                        Icons.access_time,
+                                        size: 18,
+                                        color: Colors.grey[600],
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        _formatDate(offer.createdAt),
+                                        style: getRegularStyle(
+                                          fontFamily: FontConstant.cairo,
+                                          fontSize: FontSize.size14,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
                         children: [
                           Icon(
-                            Icons.description_outlined,
-                            color: Colors.grey[600],
-                            size: 20,
+                            Icons.monetization_on_outlined,
+                            color: Colors.green[700],
                           ),
                           const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              offer.notes!,
+                          Text(
+                            '${offer.price} ريال',
+                            style: getBoldStyle(
+                              fontFamily: FontConstant.cairo,
+                              fontSize: FontSize.size16,
+                              color: Colors.green[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (offer.notes != null && offer.notes!.isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.description_outlined,
+                              color: Colors.grey[600],
+                              size: 20,
+                            ),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                offer.notes!,
+                                style: getRegularStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  fontSize: FontSize.size14,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: 8),
+                      if (offer.daysCount != null) ...[
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.timer_outlined,
+                              size: 20,
+                              color: Colors.grey[600],
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${offer.daysCount} أيام',
                               style: getRegularStyle(
                                 fontFamily: FontConstant.cairo,
                                 fontSize: FontSize.size14,
                                 color: Colors.grey[600],
                               ),
                             ),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: 16),
+                      if (isMyOrder) ...[
+                        if (offer.status == 'accepted') ...[
+                          Row(
+                            children: [
+                              Expanded(
+                                child: BlocBuilder<CancelOfferCubit,
+                                    CancelOfferState>(
+                                  builder: (context, state) {
+                                    if (state is CancelOfferLoading) {
+                                      return const Center(
+                                        child: CustomProgressIndcator(
+                                          color: AppColors.primary,
+                                        ),
+                                      );
+                                    }
+                                    return CustomButton(
+                                      text: 'إلغاء قبول العرض',
+                                      onPressed: () {
+                                        context
+                                            .read<CancelOfferCubit>()
+                                            .cancelOffer(
+                                                orderDetails.id, offer.id);
+                                      },
+                                      backgroundColor: Colors.red,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ] else if (!hasAcceptedOffer) ...[
+                          // إظهار زر القبول فقط إذا لم يكن هناك عرض مقبول
+                          Row(
+                            children: [
+                              Expanded(
+                                child: BlocBuilder<AcceptOfferCubit,
+                                    AcceptOfferState>(
+                                  builder: (context, state) {
+                                    if (state is AcceptOfferLoading) {
+                                      return const Center(
+                                        child: CustomProgressIndcator(
+                                          color: AppColors.primary,
+                                        ),
+                                      );
+                                    }
+                                    return CustomButton(
+                                      text: 'قبول العرض',
+                                      onPressed: () {
+                                        context
+                                            .read<AcceptOfferCubit>()
+                                            .acceptOffer(
+                                                orderDetails.id, offer.id);
+                                      },
+                                      backgroundColor: AppColors.success,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ],
-                      ),
+                      ],
                     ],
-                    const SizedBox(height: 8),
-                    if (offer.daysCount != null) ...[
-                      Row(
+                  ),
+                ),
+                if (offer.status == 'accepted')
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.green.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.green.withOpacity(0.2),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            Icons.timer_outlined,
-                            size: 20,
-                            color: Colors.grey[600],
+                            Icons.check_circle,
+                            color: Colors.green[700],
+                            size: 14,
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${offer.daysCount} أيام',
-                            style: getRegularStyle(
+                            'تم القبول',
+                            style: getMediumStyle(
+                              color: Colors.green[700],
+                              fontSize: FontSize.size12,
                               fontFamily: FontConstant.cairo,
-                              fontSize: FontSize.size14,
-                              color: Colors.grey[600],
                             ),
                           ),
                         ],
                       ),
-                    ],
-                    const SizedBox(height: 16),
-                    if (isMyOrder) ...[
-                      if (offer.status == 'accepted') ...[
-                        Row(
-                          children: [
-                            Expanded(
-                              child: BlocBuilder<CancelOfferCubit,
-                                  CancelOfferState>(
-                                builder: (context, state) {
-                                  if (state is CancelOfferLoading) {
-                                    return const Center(
-                                      child: CustomProgressIndcator(
-                                        color: AppColors.primary,
-                                      ),
-                                    );
-                                  }
-                                  return CustomButton(
-                                    text: 'إلغاء قبول العرض',
-                                    onPressed: () {
-                                      context
-                                          .read<CancelOfferCubit>()
-                                          .cancelOffer(
-                                              orderDetails.id, offer.id);
-                                    },
-                                    backgroundColor: Colors.red,
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ] else if (!hasAcceptedOffer) ...[
-                        // إظهار زر القبول فقط إذا لم يكن هناك عرض مقبول
-                        Row(
-                          children: [
-                            Expanded(
-                              child: BlocBuilder<AcceptOfferCubit,
-                                  AcceptOfferState>(
-                                builder: (context, state) {
-                                  if (state is AcceptOfferLoading) {
-                                    return const Center(
-                                      child: CustomProgressIndcator(
-                                        color: AppColors.primary,
-                                      ),
-                                    );
-                                  }
-                                  return CustomButton(
-                                    text: 'قبول العرض',
-                                    onPressed: () {
-                                      context
-                                          .read<AcceptOfferCubit>()
-                                          .acceptOffer(
-                                              orderDetails.id, offer.id);
-                                    },
-                                    backgroundColor: AppColors.success,
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ],
-                  ],
-                ),
-              ),
-              if (offer.status == 'accepted')
-                Positioned(
-                  top: 12,
-                  left: 12,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.green.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.green.withOpacity(0.2),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.check_circle,
-                          color: Colors.green[700],
-                          size: 14,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'تم القبول',
-                          style: getMediumStyle(
-                            color: Colors.green[700],
-                            fontSize: FontSize.size12,
-                            fontFamily: FontConstant.cairo,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         );
       },

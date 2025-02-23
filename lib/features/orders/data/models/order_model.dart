@@ -66,17 +66,17 @@ class FabricModel extends Fabric {
 class ImagesModel extends MainImage {
   const ImagesModel({
     required super.main,
-    required super.thumb,
-    required super.medium,
-    required super.large,
+    super.thumb = '',
+    super.medium = '',
+    super.large = '',
   });
 
   factory ImagesModel.fromJson(Map<String, dynamic> json) {
     return ImagesModel(
-      main: json['original'],
-      thumb: json['thumb'],
-      medium: json['medium'],
-      large: json['large'],
+      main: json['original'] ?? '',
+      thumb: json['thumb'] ?? '',
+      medium: json['medium'] ?? '',
+      large: json['large'] ?? '',
     );
   }
 }

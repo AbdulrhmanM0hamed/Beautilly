@@ -42,6 +42,8 @@ class OrdersRemoteDataSourceImpl
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
+          print("the session is $sessionCookie") ;
+          print("the token is $token") ;
         final response = await client.get(
           Uri.parse(ApiEndpoints.myOrders),
           headers: {
@@ -50,8 +52,10 @@ class OrdersRemoteDataSourceImpl
             'Accept': 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
-        );
 
+        );
+         print("the token is $token") ;
+        print("the session is $sessionCookie");
         print('📝 Response Status: ${response.statusCode}');
         print('📄 Response Body: ${response.body}');
 
@@ -68,16 +72,36 @@ class OrdersRemoteDataSourceImpl
   }
 
   List<OrderModel> _parseOrdersResponse(http.Response response) {
-    final jsonResponse = json.decode(response.body);
-    if (jsonResponse['success'] == true) {
-      // البيانات موجودة مباشرة في data
-      final ordersData = jsonResponse['data'] as List;
-      return ordersData
-          .map((order) => OrderModel.fromJson(order))
-          .toList();
-    } else {
+    try {
+      print('🔍 Starting to parse response');
+      final jsonResponse = json.decode(response.body);
+      print('📦 JSON Response: $jsonResponse');
+      
+      if (jsonResponse['success'] == true) {
+        print('✅ Success is true');
+        final ordersData = jsonResponse['data'] as List;
+        print('📋 Orders Data: $ordersData');
+        
+        final orders = ordersData
+            .map((order) {
+              print('🔄 Processing order: $order');
+              return OrderModel.fromJson(order);
+            })
+            .toList();
+        
+        print('✨ Successfully parsed ${orders.length} orders');
+        return orders;
+      } else {
+        print('❌ Success is false');
+        throw ServerException(
+          message: jsonResponse['message'] ?? 'حدث خطأ في تحميل الطلبات'
+        );
+      }
+    } catch (e, stackTrace) {
+      print('❌ Error parsing response: $e');
+      print('📜 Stack trace: $stackTrace');
       throw ServerException(
-        message: jsonResponse['message'] ?? 'حدث خطأ في تحميل الطلبات'
+        message: 'حدث خطأ في معالجة البيانات: $e'
       );
     }
   }

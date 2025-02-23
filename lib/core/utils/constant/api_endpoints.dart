@@ -45,7 +45,7 @@ class ApiEndpoints {
 
   // الإشعارات
   static const String notifications =
-      '$baseUrl/notifications?api_key=$api_key'; // قائمة الإشعارات
+      '$baseUrl/notifications?status=unread?api_key=$api_key'; // قائمة الإشعارات
   static const String markNotificationRead =
       '$baseUrl/notifications/read/?api_key=$api_key'; // تحديد إشعار كمقروء
   static const String refreshToken = '$baseUrl/auth/refresh';
@@ -130,7 +130,7 @@ class ApiEndpoints {
   static const String myOrders = '$baseUrl/my-list-orders?api_key=$api_key';
   static const String allOrders = '$baseUrl/list-orders';
   static const String myReservations =
-      '$baseUrl/my-reservations?api_key=$api_key';
+      '$baseUrl/my-reservations';
 
   static String orderDetails(int orderId) => '$baseUrl/orders/$orderId/details';
   static String acceptOffer(int orderId, int offerId) =>

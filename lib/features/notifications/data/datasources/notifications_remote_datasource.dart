@@ -32,7 +32,7 @@ class NotificationsRemoteDataSourceImpl with TokenRefreshMixin implements Notifi
         final sessionCookie = await cacheService.getSessionCookie();
         
         print('🔍 Notifications Request:');
-        print('Token: ${token.substring(0, 20)}...');  // نطبع جزء من التوكن للتحقق
+        print('Token: $token');  // نطبع جزء من التوكن للتحقق
         print('Cookie: $sessionCookie');
 
         final response = await client.get(

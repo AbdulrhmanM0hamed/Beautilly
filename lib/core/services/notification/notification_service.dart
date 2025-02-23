@@ -1,11 +1,15 @@
 import 'dart:async';
 
+import 'package:beautilly/core/utils/constant/api_endpoints.dart';
+import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../cache/cache_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
 
 
 class NotificationService {
@@ -18,11 +22,13 @@ class NotificationService {
   final GlobalKey<NavigatorState> navigatorKey;
   StreamSubscription? _reservationNotificationsSubscription;
   StreamSubscription? _userNotificationsSubscription;
+  final AuthRepository authRepository;
 
   NotificationService({
     required this.navigatorKey,
     required CacheService cacheService,
     required FirebaseDatabase database,
+    required this.authRepository,
   }) : _cacheService = cacheService,
        _database = database;
 
@@ -278,5 +284,46 @@ class NotificationService {
   Future<void> dispose() async {
     await _reservationNotificationsSubscription?.cancel();
     await _userNotificationsSubscription?.cancel();
+  }
+
+  Future<void> _listenToNotifications() async {
+    try {
+      final token = await _cacheService.getToken();
+      final sessionCookie = await _cacheService.getSessionCookie();
+      
+      print('🔍 Notifications Request Headers:');
+      print('Token: $token');
+      print('x-api-key: ${ApiEndpoints.api_key}');
+      print('Cookie: $sessionCookie');
+
+      final response = await http.get(
+        Uri.parse(ApiEndpoints.notifications),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'x-api-key': ApiEndpoints.api_key,
+          'Accept': 'application/json',
+          if (sessionCookie != null) 'Cookie': sessionCookie,
+        },
+      );
+
+      print('📄 Response Status: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      if (response.statusCode == 401) {
+        // تجديد التوكن
+        await _refreshToken();
+      }
+    } catch (e) {
+      print('❌ Error in notifications: $e');
+    }
+  }
+
+  Future<void> _refreshToken() async {
+    try {
+      // محاولة تجديد التوكن
+      await authRepository.refreshToken();
+    } catch (e) {
+      print('❌ Error refreshing token: $e');
+    }
   }
 }

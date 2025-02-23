@@ -524,6 +524,7 @@ Future<void> init() async {
 
   // Notification Service
   sl.registerLazySingleton(() => NotificationService(
+    authRepository: sl(),
     cacheService: sl(),
     navigatorKey: sl(),
     database: FirebaseDatabase.instance,

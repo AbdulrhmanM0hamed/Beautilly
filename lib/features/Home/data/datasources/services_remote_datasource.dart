@@ -29,7 +29,10 @@ class ServicesRemoteDataSourceImpl with TokenRefreshMixin implements ServicesRem
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
+        print('🔍 Getting Services:');
+        print('Token: $token');
         final sessionCookie = await cacheService.getSessionCookie();
+        print('Cookie: $sessionCookie');
 
         final response = await client.get(
           Uri.parse(ApiEndpoints.services),
@@ -41,16 +44,31 @@ class ServicesRemoteDataSourceImpl with TokenRefreshMixin implements ServicesRem
           },
         );
 
+        print('📄 Response Status: ${response.statusCode}');
+        print('Response Body: ${response.body}');
+
         if (response.statusCode == 200) {
           final decodedData = json.decode(response.body);
+          print('📦 Decoded Data: $decodedData');
 
           if (decodedData['status'] == 'success') {
             final List<dynamic> data = decodedData['data'];
-            return data.map((json) => ServiceModel.fromJson(json)).toList();
+            print('📋 Services Data: $data');
+            try {
+              final services = data.map((json) => ServiceModel.fromJson(json)).toList();
+              print('✅ Successfully parsed ${services.length} services');
+              return services;
+            } catch (e, stackTrace) {
+              print('❌ Error parsing services: $e');
+              print('📜 Stack trace: $stackTrace');
+              throw ServerException(message: 'خطأ في معالجة البيانات: $e');
+            }
           } else {
+            print('❌ API returned failure status');
             throw ServerException(message: 'فشل في تحميل الخدمات');
           }
         } else {
+          print('❌ HTTP request failed with status: ${response.statusCode}');
           throw ServerException(message: 'فشل في تحميل الخدمات');
         }
       },

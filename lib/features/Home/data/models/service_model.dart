@@ -4,7 +4,7 @@ class ServiceModel extends ServiceEntity {
   const ServiceModel({
     required super.id,
     required super.name,
-    required super.description,
+    super.description,
     required super.type,
     required super.category,
     required super.image,

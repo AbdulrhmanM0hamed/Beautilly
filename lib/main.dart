@@ -71,6 +71,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        useInheritedMediaQuery: true,
         navigatorKey: di.sl<GlobalKey<NavigatorState>>(),
         locale: DevicePreview.locale(context),
         builder: DevicePreview.appBuilder,

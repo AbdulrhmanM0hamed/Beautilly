@@ -28,28 +28,32 @@ class DiscountsRemoteDataSourceImpl with TokenRefreshMixin implements DiscountsR
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
-        final sessionCookie = await cacheService.getSessionCookie();
-        
-        final response = await client.get(
-          Uri.parse(ApiEndpoints.discounts),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json',
-            'x-api-key': ApiEndpoints.api_key,
-            if (sessionCookie != null) 'Cookie': sessionCookie,
-          },
-        );
+        try {
+          final sessionCookie = await cacheService.getSessionCookie();
+          
+          final response = await client.get(
+            Uri.parse(ApiEndpoints.discounts),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Accept': 'application/json',
+              'x-api-key': ApiEndpoints.api_key,
+              if (sessionCookie != null) 'Cookie': sessionCookie,
+            },
+          );
 
-        if (response.statusCode == 200) {
-          final decodedData = json.decode(response.body);
-          if (decodedData['success']) {
-            final List<dynamic> discounts = decodedData['data']['discounts'];
-            return discounts.map((json) => DiscountModel.fromJson(json)).toList();
+          if (response.statusCode == 200) {
+            final decodedData = json.decode(response.body);
+            if (decodedData['success']) {
+              final List<dynamic> discounts = decodedData['data']['discounts'];
+              return discounts.map((json) => DiscountModel.fromJson(json)).toList();
+            } else {
+              throw ServerException(message: decodedData['message'] ?? 'فشل في تحميل العروض');
+            }
           } else {
-            throw ServerException(message: decodedData['message'] ?? 'فشل في تحميل العروض');
+            throw ServerException(message: 'فشل في تحميل العروض');
           }
-        } else {
-          throw ServerException(message: 'فشل في تحميل العروض');
+        } catch (e) {
+          rethrow;
         }
       },
     );

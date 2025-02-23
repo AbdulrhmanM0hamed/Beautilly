@@ -1,3 +1,4 @@
+import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/core/utils/shimmer/service_card_shimmer.dart';
 import 'package:beautilly/features/Home/domain/entities/service.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
@@ -112,8 +113,8 @@ class ServiceCard extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => ServiceDetailsView(service: service),
+              PageRoutes.fadeScale(
+                page: ServiceDetailsView(service: service),
               ),
             );
           },

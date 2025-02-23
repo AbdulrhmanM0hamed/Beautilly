@@ -11,15 +11,25 @@ class DiscountsCubit extends Cubit<DiscountsState> {
   }) : super(DiscountsInitial());
 
   Future<void> loadDiscounts() async {
-    emit(DiscountsLoading());
+    try {
+      emit(DiscountsLoading());
 
-    final result = await getDiscountsUseCase(const NoParams());
+      final result = await getDiscountsUseCase(const NoParams());
 
-    emit(
       result.fold(
-        (failure) => DiscountsError(failure.message),
-        (discounts) => DiscountsLoaded(discounts),
-      ),
-    );
+        (failure) {
+          emit(DiscountsError(failure.message));
+        },
+        (discounts) {
+          if (discounts.isEmpty) {
+            emit(DiscountsError('لا توجد عروض متاحة'));
+          } else {
+            emit(DiscountsLoaded(discounts));
+          }
+        },
+      );
+    } catch (e) {
+      emit(DiscountsError(e.toString()));
+    }
   }
-} 
+}

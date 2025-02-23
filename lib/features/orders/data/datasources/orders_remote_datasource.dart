@@ -42,8 +42,7 @@ class OrdersRemoteDataSourceImpl
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
-          print("the session is $sessionCookie") ;
-          print("the token is $token") ;
+
         final response = await client.get(
           Uri.parse(ApiEndpoints.myOrders),
           headers: {
@@ -52,20 +51,14 @@ class OrdersRemoteDataSourceImpl
             'Accept': 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
-
         );
-         print("the token is $token") ;
-        print("the session is $sessionCookie");
-        print('📝 Response Status: ${response.statusCode}');
-        print('📄 Response Body: ${response.body}');
 
         if (response.statusCode == 200) {
           return _parseOrdersResponse(response);
         } else {
           final error = json.decode(response.body);
           throw ServerException(
-            message: error['message'] ?? 'فشل في تحميل الطلبات'
-          );
+              message: error['message'] ?? 'فشل في تحميل الطلبات');
         }
       },
     );
@@ -73,36 +66,22 @@ class OrdersRemoteDataSourceImpl
 
   List<OrderModel> _parseOrdersResponse(http.Response response) {
     try {
-      print('🔍 Starting to parse response');
       final jsonResponse = json.decode(response.body);
-      print('📦 JSON Response: $jsonResponse');
-      
+
       if (jsonResponse['success'] == true) {
-        print('✅ Success is true');
         final ordersData = jsonResponse['data'] as List;
-        print('📋 Orders Data: $ordersData');
-        
-        final orders = ordersData
-            .map((order) {
-              print('🔄 Processing order: $order');
-              return OrderModel.fromJson(order);
-            })
-            .toList();
-        
-        print('✨ Successfully parsed ${orders.length} orders');
+
+        final orders = ordersData.map((order) {
+          return OrderModel.fromJson(order);
+        }).toList();
+
         return orders;
       } else {
-        print('❌ Success is false');
         throw ServerException(
-          message: jsonResponse['message'] ?? 'حدث خطأ في تحميل الطلبات'
-        );
+            message: jsonResponse['message'] ?? 'حدث خطأ في تحميل الطلبات');
       }
     } catch (e, stackTrace) {
-      print('❌ Error parsing response: $e');
-      print('📜 Stack trace: $stackTrace');
-      throw ServerException(
-        message: 'حدث خطأ في معالجة البيانات: $e'
-      );
+      throw ServerException(message: 'حدث خطأ في معالجة البيانات: $e');
     }
   }
 
@@ -129,7 +108,8 @@ class OrdersRemoteDataSourceImpl
           return data.map((json) => OrderModel.fromJson(json)).toList();
         } else {
           final error = json.decode(response.body);
-          throw ServerException(message: error['message'] ?? 'حدث خطأ في الخادم');
+          throw ServerException(
+              message: error['message'] ?? 'حدث خطأ في الخادم');
         }
       },
     );
@@ -185,10 +165,12 @@ class OrdersRemoteDataSourceImpl
         if (jsonResponse['success'] == true) {
           return jsonResponse['data'];
         }
-        throw ServerException(message: jsonResponse['message'] ?? 'فشل في إضافة الطلب');
+        throw ServerException(
+            message: jsonResponse['message'] ?? 'فشل في إضافة الطلب');
       }
 
-      throw ServerException(message: 'فشل في إضافة الطلب: ${response.statusCode}');
+      throw ServerException(
+          message: 'فشل في إضافة الطلب: ${response.statusCode}');
     } catch (e) {
       throw ServerException(message: 'حدث خطأ أثناء إضافة الطلب');
     }
@@ -216,7 +198,8 @@ class OrdersRemoteDataSourceImpl
 
       final jsonResponse = json.decode(response.body);
       if (jsonResponse['success'] != true) {
-        throw ServerException(message: jsonResponse['message'] ?? 'فشل في حذف الطلب');
+        throw ServerException(
+            message: jsonResponse['message'] ?? 'فشل في حذف الطلب');
       }
     } catch (e) {
       throw ServerException(message: 'حدث خطأ أثناء حذف الطلب');
@@ -259,7 +242,8 @@ class OrdersRemoteDataSourceImpl
             'انتهت صلاحية الجلسة  ، يرجى إعادة تسجيل الدخول');
       } else {
         final error = json.decode(response.body);
-        throw ServerException(message: error['message'] ?? 'فشل في تحميل تفاصيل الطلب');
+        throw ServerException(
+            message: error['message'] ?? 'فشل في تحميل تفاصيل الطلب');
       }
     } catch (e) {
       throw ServerException(message: 'حدث خطأ غير متوقع: $e');
@@ -290,7 +274,8 @@ class OrdersRemoteDataSourceImpl
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = json.decode(response.body);
         if (jsonResponse['success'] != true) {
-          throw ServerException(message: jsonResponse['message'] ?? 'فشل في قبول العرض');
+          throw ServerException(
+              message: jsonResponse['message'] ?? 'فشل في قبول العرض');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException(
@@ -328,7 +313,8 @@ class OrdersRemoteDataSourceImpl
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = json.decode(response.body);
         if (jsonResponse['success'] != true) {
-          throw ServerException(message: jsonResponse['message'] ?? 'فشل في قبول العرض');
+          throw ServerException(
+              message: jsonResponse['message'] ?? 'فشل في قبول العرض');
         }
       } else if (response.statusCode == 401) {
         throw UnauthorizedException(

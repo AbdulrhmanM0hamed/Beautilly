@@ -1,3 +1,5 @@
+import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
+import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../../../../../core/utils/constant/font_manger.dart';
@@ -50,6 +52,12 @@ class FavoriteShopCard extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(16),
             onTap: () {
+              Navigator.push(
+                context,
+                PageRoutes.fadeScale(
+                  page: SalonProfileView(salonId: shop.id),
+                ),
+              );
               // التنقل إلى صفحة المتجر
             },
             child: Column(
@@ -126,7 +134,7 @@ class FavoriteShopCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                
+
                 // معلومات المتجر
                 Expanded(
                   child: Padding(
@@ -267,4 +275,4 @@ class FavoriteShopCard extends StatelessWidget {
       ),
     );
   }
-} 
+}

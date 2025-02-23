@@ -112,12 +112,20 @@ class DiscountServiceModel extends DiscountService {
   });
 
   factory DiscountServiceModel.fromJson(Map<String, dynamic> json) {
-    return DiscountServiceModel(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
-      description: json['description'],
-      price: json['price'],
-    );
+    try {
+     
+      
+      final service = DiscountServiceModel(
+        id: json['id'] ?? 0,
+        name: json['name'] ?? '',
+        type: json['type'] ?? '',
+        description: json['description'] ?? '',
+        price: json['price']?.toString() ?? '0',
+      );
+      return service;
+    } catch (e, stackTrace) {
+   
+      rethrow;
+    }
   }
 } 

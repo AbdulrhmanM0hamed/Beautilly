@@ -40,9 +40,12 @@ class _SpecialViewListViewState extends State<SpecialViewListView> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: state.discounts.length,
-              itemBuilder: (context, index) => OfferCard(
-                discount: state.discounts[index],
-              ),
+              itemBuilder: (context, index) {
+                print('🎴 Building offer card for index: $index');
+                return OfferCard(
+                  discount: state.discounts[index],
+                );
+              },
             ),
           );
         }

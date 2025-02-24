@@ -1,6 +1,6 @@
 import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/core/utils/shimmer/service_card_shimmer.dart';
-import 'package:beautilly/features/Home/domain/entities/service.dart';
+import 'package:beautilly/features/Home/domain/entities/service_entity.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_state.dart';
 import 'package:flutter/material.dart';
@@ -28,8 +28,7 @@ class _ServicesGridViewState extends State<ServicesGridView> {
   @override
   void initState() {
     super.initState();
-    // تحميل الخدمات عند بداية تحميل الـ widget
-    context.read<ServicesCubit>().getServices();
+    context.read<ServicesCubit>().loadServices();
   }
 
   @override

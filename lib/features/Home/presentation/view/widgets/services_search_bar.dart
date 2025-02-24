@@ -33,13 +33,13 @@ class _ServicesSearchBarState extends State<ServicesSearchBar> {
     if (query.isNotEmpty) {
       context.read<ServicesCubit>().searchServices(query);
     } else {
-      context.read<ServicesCubit>().getServices();
+      context.read<ServicesCubit>().loadServices();
     }
   }
 
   void _clearSearch() {
     _searchController.clear();
-    context.read<ServicesCubit>().getServices();
+    context.read<ServicesCubit>().loadServices();
   }
 
   @override

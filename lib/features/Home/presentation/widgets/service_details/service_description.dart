@@ -1,6 +1,6 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/features/Home/domain/entities/service.dart';
+import 'package:beautilly/features/Home/domain/entities/service_entity.dart';
 import 'package:flutter/material.dart';
 
 class ServiceDescription extends StatelessWidget {

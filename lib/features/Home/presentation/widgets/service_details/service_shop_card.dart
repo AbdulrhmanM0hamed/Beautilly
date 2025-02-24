@@ -1,13 +1,13 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
-import 'package:beautilly/features/Home/domain/entities/service.dart';
+import 'package:beautilly/features/Home/domain/entities/service_entity.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ServiceShopCard extends StatelessWidget {
-  final ShopEntity shop;
+  final ServiceShopEntity shop;
 
   const ServiceShopCard({
     super.key,

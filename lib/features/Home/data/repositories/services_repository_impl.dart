@@ -3,9 +3,10 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/services/network/network_info.dart';
-import '../../domain/entities/service.dart';
+import '../../domain/entities/service_entity.dart';
 import '../../domain/repositories/services_repository.dart';
 import '../datasources/services_remote_datasource.dart';
+import '../models/service_model.dart';
 
 class ServicesRepositoryImpl implements ServicesRepository {
   final ServicesRemoteDataSource remoteDataSource;
@@ -17,7 +18,7 @@ class ServicesRepositoryImpl implements ServicesRepository {
   });
 
   @override
-  Future<Either<Failure, List<ServiceEntity>>> getServices() async {
+  Future<Either<Failure, ServicesResponse>> getServices({int page = 1}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
@@ -25,8 +26,8 @@ class ServicesRepositoryImpl implements ServicesRepository {
     }
 
     try {
-      final services = await remoteDataSource.getServices();
-      return Right(services);
+      final result = await remoteDataSource.getServices(page: page);
+      return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {

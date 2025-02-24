@@ -25,7 +25,7 @@ class HomeViewBody extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () async {
         await Future.wait([
-          context.read<ServicesCubit>().getServices(),
+          context.read<ServicesCubit>().loadServices(),
           context.read<StatisticsCubit>().getStatistics(),
           context.read<PremiumShopsCubit>().loadPremiumShops(),
           context.read<DiscountsCubit>().loadDiscounts(),

@@ -95,12 +95,9 @@ import 'package:beautilly/features/notifications/domain/usecases/get_notificatio
 import 'package:beautilly/features/notifications/domain/usecases/mark_notification_as_read.dart';
 import 'package:beautilly/features/notifications/presentation/cubit/notifications_cubit.dart';
 
-
 final sl = GetIt.instance;
 
 Future<void> init() async {
-
-
   //! Core Services
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
@@ -109,8 +106,6 @@ Future<void> init() async {
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(Connectivity()));
   sl.registerLazySingleton(() => SharedPreferencesService(sharedPreferences));
   sl.registerLazySingleton(() => GlobalKey<NavigatorState>());
-
-
 
   //! Auth Feature
   // Data Sources
@@ -123,17 +118,16 @@ Future<void> init() async {
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(sl(), sl(), sl<NetworkInfo>() ),
+    () => AuthRepositoryImpl(sl(), sl(), sl<NetworkInfo>()),
   );
 
   // Cubits
   sl.registerFactory(() => AuthCubit(sl(), sl()));
-  sl.registerFactory<LocationCubit>(() => LocationCubit(sl<LocationRepository>()));
+  sl.registerFactory<LocationCubit>(
+      () => LocationCubit(sl<LocationRepository>()));
   sl.registerFactory<ForgotPasswordCubit>(() => ForgotPasswordCubit(sl()));
 
-
 //--------------------------------------------------------------------
-
 
   //! Profile Feature
   // Data Sources
@@ -155,12 +149,10 @@ Future<void> init() async {
 
   // Cubits
   sl.registerLazySingleton(() => ProfileCubit(repository: sl()));
-  sl.registerLazySingleton(() => ProfileImageCubit(sl<ProfileRepository>(), sl<ProfileCubit>()));
-
-
+  sl.registerLazySingleton(
+      () => ProfileImageCubit(sl<ProfileRepository>(), sl<ProfileCubit>()));
 
 //--------------------------------------------------------------------
-
 
   //! User Statistics Feature
   // Data Sources
@@ -190,9 +182,7 @@ Future<void> init() async {
     ),
   );
 
-
 //--------------------------------------------------------------------
-
 
   //! Favorites Feature
   // Data Sources
@@ -232,10 +222,7 @@ Future<void> init() async {
     ),
   );
 
-
-
 //--------------------------------------------------------------------
-
 
   //! Orders Feature
   // Data Sources
@@ -271,12 +258,7 @@ Future<void> init() async {
   sl.registerFactory(() => OrderDetailsCubit(sl()));
   sl.registerFactory(() => CancelOfferCubit(cancelOfferUseCase: sl()));
 
-
-
 //--------------------------------------------------------------------
-
-
-
 
   //! Reservations Feature
   // Data Sources
@@ -324,12 +306,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => GetServices(sl()));
 
   // Cubits
-  sl.registerFactory(() => ServicesCubit(sl<ServicesRepository>()));
-
+  sl.registerFactory(() => ServicesCubit(repository: sl<ServicesRepository>()));
 
 //--------------------------------------------------------------------
-
-
 
   //! Premium Shops Feature
   // Data Sources
@@ -355,13 +334,7 @@ Future<void> init() async {
   // Cubits
   sl.registerFactory(() => PremiumShopsCubit(getPremiumShopsUseCase: sl()));
 
-
-
-
 //--------------------------------------------------------------------
-
-
-
 
   //! Discounts Feature
   // Data Sources
@@ -387,12 +360,7 @@ Future<void> init() async {
   // Cubits
   sl.registerFactory(() => DiscountsCubit(repository: sl()));
 
-
-
 //--------------------------------------------------------------------
-
-
-
 
   //! Salon Profile Feature
   // Data Sources
@@ -413,13 +381,15 @@ Future<void> init() async {
   );
 
   // Use Cases
-  sl.registerLazySingleton(() => GetSalonProfileUseCase(sl<SalonProfileRepository>()));
+  sl.registerLazySingleton(
+      () => GetSalonProfileUseCase(sl<SalonProfileRepository>()));
   sl.registerLazySingleton(() => AddShopRatingUseCase(sl()));
   sl.registerLazySingleton(() => DeleteShopRatingUseCase(sl()));
 
   // Cubits
   sl.registerFactory<SalonProfileCubit>(
-    () => SalonProfileCubit(getSalonProfileUseCase: sl<GetSalonProfileUseCase>()),
+    () =>
+        SalonProfileCubit(getSalonProfileUseCase: sl<GetSalonProfileUseCase>()),
   );
 
   sl.registerFactory(() => RatingCubit(
@@ -427,12 +397,7 @@ Future<void> init() async {
         deleteShopRatingUseCase: sl(),
       ));
 
-
 //--------------------------------------------------------------------
-
-
-
-
 
   //! Booking Feature
   // Data Sources
@@ -454,13 +419,7 @@ Future<void> init() async {
   // Cubits
   sl.registerFactory(() => BookingCubit(repository: sl()));
 
-
-
-
-
 //--------------------------------------------------------------------
-
-
 
   //! Search Feature
   // Data Sources
@@ -484,11 +443,6 @@ Future<void> init() async {
 
 //--------------------------------------------------------------------
 
-
-
-
-
-
   //! Statistics Feature
   // Repositories
   sl.registerFactory<StatisticsRepository>(
@@ -505,13 +459,7 @@ Future<void> init() async {
     () => StatisticsCubit(sl<StatisticsRepository>()),
   );
 
-
-
-
 //--------------------------------------------------------------------
-
-
-
 
   //! Location Feature
   // Repositories
@@ -524,11 +472,11 @@ Future<void> init() async {
 
   // Notification Service
   sl.registerLazySingleton(() => NotificationService(
-    authRepository: sl(),
-    cacheService: sl(),
-    navigatorKey: sl(),
-    database: FirebaseDatabase.instance,
-  ));
+        authRepository: sl(),
+        cacheService: sl(),
+        navigatorKey: sl(),
+        database: FirebaseDatabase.instance,
+      ));
 
   // Notifications Feature
   // Data sources
@@ -559,9 +507,7 @@ Future<void> init() async {
       markAsRead: sl(),
     ),
   );
-
 }
-
 
 //--------------------------------------------------------------------
 

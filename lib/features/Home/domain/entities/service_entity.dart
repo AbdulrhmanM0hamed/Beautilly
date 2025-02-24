@@ -3,32 +3,50 @@ import 'package:equatable/equatable.dart';
 class ServiceEntity extends Equatable {
   final int id;
   final String name;
-  final String? description;
   final String type;
-  final CategoryEntity category;
+  final String description;
   final String image;
-  final List<ShopEntity> shops;
+  final List<ServiceShopEntity> shops;
 
   const ServiceEntity({
     required this.id,
     required this.name,
-    this.description,
     required this.type,
-    required this.category,
+    required this.description,
     required this.image,
     required this.shops,
   });
 
   @override
-  List<Object?> get props => [
-        id,
-        name,
-        description,
-        type,
-        category,
-        image,
-        shops,
-      ];
+  List<Object?> get props => [id, name, type, description, image, shops];
+}
+
+class ServiceShopEntity extends Equatable {
+  final int id;
+  final String name;
+  final String cityName;
+  final String stateName;
+  final String mainImageUrl;
+  final double? avgRating;
+  final int loversCount;
+  final String price;
+
+
+
+  const ServiceShopEntity({
+    required this.id,
+    required this.name,
+    required this.cityName,
+    required this.stateName,
+    required this.mainImageUrl,
+    required this.avgRating,
+    required this.loversCount,
+    required this.price,
+
+  });
+
+  @override
+  List<Object?> get props => [id, name, cityName, stateName, mainImageUrl];
 }
 
 class CategoryEntity extends Equatable {

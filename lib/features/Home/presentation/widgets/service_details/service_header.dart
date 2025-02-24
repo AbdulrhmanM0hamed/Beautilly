@@ -1,5 +1,5 @@
 
-import 'package:beautilly/features/Home/domain/entities/service.dart';
+import 'package:beautilly/features/Home/domain/entities/service_entity.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

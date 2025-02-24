@@ -16,9 +16,9 @@ class ServiceShopsCubit extends Cubit<ServiceShopsState> {
       
       result.fold(
         (failure) => emit(ServiceShopsError(message: failure.message)),
-        (services) {
+        (response) {
           // نجد الخدمة التي تحتوي على هذه المتاجر
-          final service = services.firstWhere(
+          final service = response.services.firstWhere(
             (service) => service.shops.any((shop) => shopIds.contains(shop.id))
           );
           

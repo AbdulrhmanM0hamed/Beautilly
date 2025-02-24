@@ -2,7 +2,7 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../../domain/entities/service.dart';
+import '../../domain/entities/service_entity.dart';
 import '../widgets/service_details/service_shop_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:beautilly/core/utils/common/image_viewer.dart';

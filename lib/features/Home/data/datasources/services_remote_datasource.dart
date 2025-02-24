@@ -8,7 +8,7 @@ import '../../../../features/auth/domain/repositories/auth_repository.dart';
 import '../models/service_model.dart';
 
 abstract class ServicesRemoteDataSource {
-  Future<List<ServiceModel>> getServices();
+  Future<ServicesResponse> getServices({int page = 1});
   Future<List<ServiceModel>> searchServices(String query);
 }
 
@@ -26,40 +26,50 @@ class ServicesRemoteDataSourceImpl
   });
 
   @override
-  Future<List<ServiceModel>> getServices() async {
+  Future<ServicesResponse> getServices({int page = 1}) async {
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
-        final sessionCookie = await cacheService.getSessionCookie();
+        try {
+          final sessionCookie = await cacheService.getSessionCookie();
+          
+          final queryParameters = {
+            'page': page.toString(),
+          };
 
-        final response = await client.get(
-          Uri.parse(ApiEndpoints.services),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json',
-            'x-api-key': ApiEndpoints.api_key,
-            if (sessionCookie != null) 'Cookie': sessionCookie,
-          },
-        );
+          final uri = Uri.parse(ApiEndpoints.services).replace(
+            queryParameters: queryParameters,
+          );
+          
+          final response = await client.get(
+            uri,
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Accept': 'application/json',
+              'x-api-key': ApiEndpoints.api_key,
+              if (sessionCookie != null) 'Cookie': sessionCookie,
+            },
+          );
 
-        if (response.statusCode == 200) {
-          final decodedData = json.decode(response.body);
-
-          if (decodedData['status'] == 'success') {
-            final List<dynamic> data = decodedData['data'];
-            try {
-              final services =
-                  data.map((json) => ServiceModel.fromJson(json)).toList();
-              return services;
-            } catch (e, stackTrace) {
-              throw ServerException(message: 'خطأ في معالجة البيانات: $e');
+          if (response.statusCode == 200) {
+            final decodedData = json.decode(response.body);
+            
+            if (decodedData['status'] == 'success' && decodedData['data'] != null) {
+              return ServicesResponse.fromJson(decodedData);
+            } else {
+              throw ServerException(
+                message: decodedData['message'] ?? 'فشل في تحميل الخدمات'
+              );
             }
           } else {
             throw ServerException(message: 'فشل في تحميل الخدمات');
           }
-        } else {
-          throw ServerException(message: 'فشل في تحميل الخدمات');
+        } catch (e) {
+          print('Error in getServices: $e'); // للتشخيص
+          throw ServerException(
+            message: 'حدث خطأ في تحميل الخدمات، يرجى المحاولة مرة أخرى'
+          );
         }
       },
     );

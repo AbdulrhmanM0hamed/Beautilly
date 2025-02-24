@@ -112,4 +112,38 @@ class ShopModel extends Shop {
       name: json['name'],
     );
   }
-} 
+}
+
+class OrdersResponseModel extends OrdersResponse {
+  const OrdersResponseModel({
+    required super.orders,
+    required super.pagination,
+  });
+
+  factory OrdersResponseModel.fromJson(Map<String, dynamic> json) {
+    return OrdersResponseModel(
+      orders: (json['data'] as List)
+          .map((order) => OrderModel.fromJson(order))
+          .toList(),
+      pagination: OrderPaginationModel.fromJson(json['pagination']),
+    );
+  }
+}
+
+class OrderPaginationModel extends OrderPagination {
+  const OrderPaginationModel({
+    required super.currentPage,
+    required super.lastPage,
+    required super.perPage,
+    required super.total,
+  });
+
+  factory OrderPaginationModel.fromJson(Map<String, dynamic> json) {
+    return OrderPaginationModel(
+      currentPage: json['current_page'],
+      lastPage: json['last_page'],
+      perPage: json['per_page'],
+      total: json['total'],
+    );
+  }
+}

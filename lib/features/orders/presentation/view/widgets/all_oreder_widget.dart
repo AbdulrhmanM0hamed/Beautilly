@@ -16,17 +16,37 @@ class AllOrdersWidget extends StatefulWidget {
 }
 
 class _AllOrdersWidgetState extends State<AllOrdersWidget> {
+  final ScrollController _scrollController = ScrollController();
+  int _currentPage = 1;
+
   @override
   void initState() {
     super.initState();
-    context.read<OrdersCubit>().loadAllOrders();
+    _scrollController.addListener(_onScroll);
+    context.read<OrdersCubit>().loadAllOrders(page: _currentPage);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+      final ordersCubit = context.read<OrdersCubit>();
+      if (ordersCubit.canLoadMoreAllOrders) {
+        _currentPage++;
+        ordersCubit.loadAllOrders(page: _currentPage);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OrdersCubit, OrdersState>(
       builder: (context, state) {
-        if (state is OrdersLoading) {
+        if (state is OrdersLoading && _currentPage == 1) {
           final size = MediaQuery.of(context).size;
           return GridView.builder(
             padding: const EdgeInsets.all(16),
@@ -36,32 +56,83 @@ class _AllOrdersWidgetState extends State<AllOrdersWidget> {
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
             ),
-            itemCount: 6, // عدد الكروت في حالة التحميل
+            itemCount: 6,
             itemBuilder: (context, index) => const OrderCardShimmer(),
           );
         }
 
         if (state is AllOrdersSuccess) {
           if (state.orders.isEmpty) {
-            return const Center(child: Text('لا توجد طلبات'));
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.design_services_outlined,
+                    size: 64,
+                    color: Colors.grey[400],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'لا توجد طلبات',
+                    style: getMediumStyle(
+                      color: Colors.grey[600]!,
+                      fontSize: FontSize.size16,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                  ),
+                ],
+              ),
+            );
           }
 
-          return GridView.builder(
-            padding: const EdgeInsets.all(16),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: _getCrossAxisCount(MediaQuery.of(context).size.width),
-              childAspectRatio: _getChildAspectRatio(MediaQuery.of(context).size.width),
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-            ),
-            itemCount: state.orders.length,
-            itemBuilder: (context, index) {
-              final order = state.orders[index];
-              return OrderCard(
-                order: order,
-                isMyRequest: false,
-              );
+          return RefreshIndicator(
+            onRefresh: () async {
+              _currentPage = 1;
+              await context.read<OrdersCubit>().loadAllOrders(page: 1);
             },
+            child: Stack(
+              children: [
+                GridView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: _getCrossAxisCount(MediaQuery.of(context).size.width),
+                    childAspectRatio: _getChildAspectRatio(MediaQuery.of(context).size.width),
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                  itemCount: state.orders.length + (context.read<OrdersCubit>().canLoadMoreAllOrders ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == state.orders.length) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: CircularProgressIndicator(color: AppColors.primary),
+                        ),
+                      );
+                    }
+                    return OrderCard(
+                      order: state.orders[index],
+                      isMyRequest: false,
+                    );
+                  },
+                ),
+                if (state is OrdersLoading && _currentPage > 1)
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      color: Colors.black.withOpacity(0.1),
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Center(
+                        child: CircularProgressIndicator(color: AppColors.primary),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           );
         }
 
@@ -88,7 +159,8 @@ class _AllOrdersWidgetState extends State<AllOrdersWidget> {
                 const SizedBox(height: 24),
                 ElevatedButton.icon(
                   onPressed: () {
-                    context.read<OrdersCubit>().loadAllOrders();
+                    _currentPage = 1;
+                    context.read<OrdersCubit>().loadAllOrders(page: 1);
                   },
                   icon: const Icon(Icons.refresh),
                   label: const Text('إعادة المحاولة'),

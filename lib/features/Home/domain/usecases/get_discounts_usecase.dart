@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecase/usecase.dart';
-import '../entities/discount.dart';
 import '../repositories/discounts_repository.dart';
 import '../../data/models/discount_model.dart';
 

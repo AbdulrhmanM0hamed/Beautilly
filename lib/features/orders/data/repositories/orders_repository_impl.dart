@@ -19,7 +19,7 @@ class OrdersRepositoryImpl implements OrdersRepository {
   });
 
   @override
-  Future<Either<Failure, List<OrderEntity>>> getMyOrders() async {
+  Future<Either<Failure, OrdersResponse>> getMyOrders({int page = 1}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
@@ -27,18 +27,10 @@ class OrdersRepositoryImpl implements OrdersRepository {
     }
 
     try {
-      final orders = await remoteDataSource.getMyOrders();
-      return Right(orders);
-    } on UnauthorizedException catch (e) {
-      return Left(AuthFailure(message: e.message));
+      final result = await remoteDataSource.getMyOrders(page: page);
+      return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
-    } on SocketException {
-      return const Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
-    } catch (e) {
-      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
@@ -57,7 +49,7 @@ class OrdersRepositoryImpl implements OrdersRepository {
   // }
 
   @override
-  Future<Either<Failure, List<OrderEntity>>> getAllOrders() async {
+  Future<Either<Failure, OrdersResponse>> getAllOrders({int page = 1}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
@@ -65,18 +57,10 @@ class OrdersRepositoryImpl implements OrdersRepository {
     }
 
     try {
-      final orders = await remoteDataSource.getAllOrders();
-      return Right(orders);
-    } on UnauthorizedException catch (e) {
-      return Left(AuthFailure(message: e.message));
+      final result = await remoteDataSource.getAllOrders(page: page);
+      return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
-    } on SocketException {
-      return const Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
-    } catch (e) {
-      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 

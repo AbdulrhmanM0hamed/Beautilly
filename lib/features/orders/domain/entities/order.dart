@@ -113,4 +113,34 @@ class Shop extends Equatable {
 
   @override
   List<Object?> get props => [id, name];
+}
+
+class OrdersResponse extends Equatable {
+  final List<OrderEntity> orders;
+  final OrderPagination pagination;
+
+  const OrdersResponse({
+    required this.orders,
+    required this.pagination,
+  });
+
+  @override
+  List<Object?> get props => [orders, pagination];
+}
+
+class OrderPagination extends Equatable {
+  final int currentPage;
+  final int lastPage;
+  final int perPage;
+  final int total;
+
+  const OrderPagination({
+    required this.currentPage,
+    required this.lastPage,
+    required this.perPage,
+    required this.total,
+  });
+
+  @override
+  List<Object?> get props => [currentPage, lastPage, perPage, total];
 } 

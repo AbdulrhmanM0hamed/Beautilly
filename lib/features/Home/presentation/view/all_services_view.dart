@@ -82,7 +82,7 @@ class _AllServicesViewBodyState extends State<AllServicesViewBody> {
               child: BlocBuilder<ServicesCubit, ServicesState>(
                 builder: (context, state) {
                   if (state is ServicesLoading && !state.isLoadingMore) {
-                    return const ServicesGridShimmer();
+                    return const AllServicesGridShimmer();
                   }
                   if (state is ServicesError) {
                     return Center(child: Text(state.message));

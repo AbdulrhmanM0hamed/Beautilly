@@ -6,65 +6,118 @@ import 'orders_state.dart';
 
 class OrdersCubit extends Cubit<OrdersState> {
   final GetMyOrders getMyOrders;
-  //final GetMyReservations getMyReservations;
   final GetAllOrders getAllOrders;
   
-  List<OrderEntity>? _myOrders;    // تغيير النوع
-  List<OrderEntity>? _allOrders;   // تغيير النوع
+  // تخزين بيانات الصفحات
+  OrdersResponse? _myOrdersResponse;
+  OrdersResponse? _allOrdersResponse;
+  
+  // حالة التحميل للصفحات التالية
+  bool _isLoadingMoreMyOrders = false;
+  bool _isLoadingMoreAllOrders = false;
 
   OrdersCubit({
     required this.getMyOrders,
- //   required this.getMyReservations,
     required this.getAllOrders,
   }) : super(OrdersInitial());
 
-  Future<void> loadMyOrders() async {
-    if (_myOrders != null) {
-      emit(MyOrdersSuccess(_myOrders!));
+  Future<void> loadMyOrders({int page = 1}) async {
+    if (page == 1) {
+      if (_myOrdersResponse != null) {
+        emit(MyOrdersSuccess(_myOrdersResponse!.orders, _myOrdersResponse!.pagination));
+      } else {
+        emit(OrdersLoading());
+      }
     } else {
-      emit(OrdersLoading());
+      _isLoadingMoreMyOrders = true;
     }
 
-    final result = await getMyOrders();
+    final result = await getMyOrders(page: page);
     result.fold(
-      (failure) => emit(OrdersError(failure.message)),
-      (orders) {
-        _myOrders = orders;
-        emit(MyOrdersSuccess(orders));
+      (failure) {
+        _isLoadingMoreMyOrders = false;
+        emit(OrdersError(failure.message));
+      },
+      (ordersResponse) {
+        _isLoadingMoreMyOrders = false;
+        if (page == 1) {
+          _myOrdersResponse = ordersResponse;
+        } else {
+          _myOrdersResponse = OrdersResponse(
+            orders: [..._myOrdersResponse!.orders, ...ordersResponse.orders],
+            pagination: ordersResponse.pagination,
+          );
+        }
+        emit(MyOrdersSuccess(_myOrdersResponse!.orders, _myOrdersResponse!.pagination));
       },
     );
   }
 
-  Future<void> loadAllOrders() async {
-    if (_allOrders != null) {
-      emit(AllOrdersSuccess(_allOrders!));
+  Future<void> loadAllOrders({int page = 1}) async {
+    if (page == 1) {
+      if (_allOrdersResponse != null) {
+        emit(AllOrdersSuccess(_allOrdersResponse!.orders, _allOrdersResponse!.pagination));
+      } else {
+        emit(OrdersLoading());
+      }
     } else {
-      emit(OrdersLoading());
+      _isLoadingMoreAllOrders = true;
     }
 
-    final result = await getAllOrders();
+    final result = await getAllOrders(page: page);
     result.fold(
-      (failure) => emit(OrdersError(failure.message)),
-      (orders) {
-        _allOrders = orders;
-        emit(AllOrdersSuccess(orders));
+      (failure) {
+        _isLoadingMoreAllOrders = false;
+        emit(OrdersError(failure.message));
+      },
+      (ordersResponse) {
+        _isLoadingMoreAllOrders = false;
+        if (page == 1) {
+          _allOrdersResponse = ordersResponse;
+        } else {
+          _allOrdersResponse = OrdersResponse(
+            orders: [..._allOrdersResponse!.orders, ...ordersResponse.orders],
+            pagination: ordersResponse.pagination,
+          );
+        }
+        emit(AllOrdersSuccess(_allOrdersResponse!.orders, _allOrdersResponse!.pagination));
       },
     );
   }
 
-  // تحديث الكاش عند حذف طلب
+  bool get canLoadMoreMyOrders {
+    return _myOrdersResponse != null &&
+        _myOrdersResponse!.pagination.currentPage < _myOrdersResponse!.pagination.lastPage &&
+        !_isLoadingMoreMyOrders;
+  }
+
+  bool get canLoadMoreAllOrders {
+    return _allOrdersResponse != null &&
+        _allOrdersResponse!.pagination.currentPage < _allOrdersResponse!.pagination.lastPage &&
+        !_isLoadingMoreAllOrders;
+  }
+
   void removeOrderFromCache(int orderId) {
-    if (_myOrders != null) {
-      _myOrders!.removeWhere((order) => order.id == orderId);
+    if (_myOrdersResponse != null) {
+      final updatedOrders = _myOrdersResponse!.orders.where((order) => order.id != orderId).toList();
+      _myOrdersResponse = OrdersResponse(
+        orders: updatedOrders,
+        pagination: _myOrdersResponse!.pagination,
+      );
     }
-    if (_allOrders != null) {
-      _allOrders!.removeWhere((order) => order.id == orderId);
+    if (_allOrdersResponse != null) {
+      final updatedOrders = _allOrdersResponse!.orders.where((order) => order.id != orderId).toList();
+      _allOrdersResponse = OrdersResponse(
+        orders: updatedOrders,
+        pagination: _allOrdersResponse!.pagination,
+      );
     }
   }
 
-  // مسح الكاش عند تسجيل الخروج أو عند الحاجة
   void clearCache() {
-    _myOrders = null;
-    _allOrders = null;
+    _myOrdersResponse = null;
+    _allOrdersResponse = null;
+    _isLoadingMoreMyOrders = false;
+    _isLoadingMoreAllOrders = false;
   }
 } 

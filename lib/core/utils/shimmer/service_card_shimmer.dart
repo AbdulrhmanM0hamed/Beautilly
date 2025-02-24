@@ -177,6 +177,27 @@ class ServicesGridShimmer extends StatelessWidget {
     );
   }
 }
+class AllServicesGridShimmer extends StatelessWidget {
+  const AllServicesGridShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final dimensions = ResponsiveCardSizes.getServiceGridDimensions(context);
+
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: dimensions.crossAxisCount,
+        childAspectRatio: dimensions.childAspectRatio,
+        crossAxisSpacing: dimensions.spacing,
+        mainAxisSpacing: dimensions.spacing,
+      ),
+      itemCount: 30,
+      itemBuilder: (context, index) => const ServiceCardShimmer(),
+    );
+  }
+}
 
 // Shimmer للـ BeautyServiceCard
 class BeautyServiceCardShimmer extends StatelessWidget {

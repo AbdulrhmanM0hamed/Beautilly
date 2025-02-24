@@ -12,9 +12,9 @@ import '../models/order_request_model.dart';
 import '../models/order_details_model.dart';
 
 abstract class OrdersRemoteDataSource {
-  Future<List<OrderModel>> getMyOrders();
+  Future<OrdersResponseModel> getMyOrders({int page = 1});
+  Future<OrdersResponseModel> getAllOrders({int page = 1});
   // Future<List<OrderModel>> getMyReservations();
-  Future<List<OrderModel>> getAllOrders();
   Future<Map<String, dynamic>> addOrder(OrderRequestModel order);
   Future<void> deleteOrder(int orderId);
   Future<OrderDetailsModel> getOrderDetails(int orderId);
@@ -36,80 +36,63 @@ class OrdersRemoteDataSourceImpl
   });
 
   @override
-  Future<List<OrderModel>> getMyOrders() async {
+  Future<OrdersResponseModel> getMyOrders({int page = 1}) async {
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
-
+        final queryParameters = {'page': page.toString()};
+        
+        final uri = Uri.parse(ApiEndpoints.myOrders).replace(queryParameters: queryParameters);
+        
         final response = await client.get(
-          Uri.parse(ApiEndpoints.myOrders),
+          uri,
           headers: {
             'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
             'Accept': 'application/json',
+            'x-api-key': ApiEndpoints.api_key,
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
         );
 
         if (response.statusCode == 200) {
-          return _parseOrdersResponse(response);
+          final decodedData = json.decode(response.body);
+          return OrdersResponseModel.fromJson(decodedData);
         } else {
-          final error = json.decode(response.body);
-          throw ServerException(
-              message: error['message'] ?? 'فشل في تحميل الطلبات');
+          throw ServerException(message: 'فشل في تحميل الطلبات');
         }
       },
     );
   }
 
-  List<OrderModel> _parseOrdersResponse(http.Response response) {
-    try {
-      final jsonResponse = json.decode(response.body);
-
-      if (jsonResponse['success'] == true) {
-        final ordersData = jsonResponse['data'] as List;
-
-        final orders = ordersData.map((order) {
-          return OrderModel.fromJson(order);
-        }).toList();
-
-        return orders;
-      } else {
-        throw ServerException(
-            message: jsonResponse['message'] ?? 'حدث خطأ في تحميل الطلبات');
-      }
-    } catch (e, stackTrace) {
-      throw ServerException(message: 'حدث خطأ في معالجة البيانات: $e');
-    }
-  }
-
   @override
-  Future<List<OrderModel>> getAllOrders() async {
+  Future<OrdersResponseModel> getAllOrders({int page = 1}) async {
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
+        final queryParameters = {'page': page.toString()};
+        
+        final uri = Uri.parse(ApiEndpoints.allOrders).replace(queryParameters: queryParameters);
+        
         final response = await client.get(
-          Uri.parse(ApiEndpoints.allOrders),
+          uri,
           headers: {
             'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
             'Accept': 'application/json',
+            'x-api-key': ApiEndpoints.api_key,
             'Content-Type': 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
         );
 
         if (response.statusCode == 200) {
-          final List<dynamic> data = json.decode(response.body)['data'];
-          return data.map((json) => OrderModel.fromJson(json)).toList();
+          final decodedData = json.decode(response.body);
+          return OrdersResponseModel.fromJson(decodedData);
         } else {
-          final error = json.decode(response.body);
-          throw ServerException(
-              message: error['message'] ?? 'حدث خطأ في الخادم');
+          throw ServerException(message: 'فشل في تحميل الطلبات');
         }
       },
     );

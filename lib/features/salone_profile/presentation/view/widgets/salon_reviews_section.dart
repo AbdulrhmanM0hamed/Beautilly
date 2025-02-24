@@ -341,7 +341,7 @@ class SalonReviewsSection extends StatelessWidget {
                   ],
                 ),
               ),
-              Spacer(),
+           const    Spacer(),
               if (hasRated)
                 TextButton.icon(
                   onPressed: () => _showDeleteRatingDialog(context),

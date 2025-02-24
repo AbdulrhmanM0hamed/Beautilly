@@ -8,7 +8,7 @@ class GetAllOrders {
 
   GetAllOrders(this.repository);
 
-  Future<Either<Failure, List<OrderEntity>>> call() async {
-    return await repository.getAllOrders();
+  Future<Either<Failure, OrdersResponse>> call({int page = 1}) async {
+    return await repository.getAllOrders(page: page);
   }
 } 

@@ -146,7 +146,7 @@ class OrderDetailsView extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ImageViewer(
-                                imageUrl: orderDetails.images.large,
+                                imageUrl: orderDetails.images.main,
                               ),
                             ),
                           );
@@ -158,7 +158,7 @@ class OrderDetailsView extends StatelessWidget {
                               fit: StackFit.expand,
                               children: [
                                 CachedNetworkImage(
-                                  imageUrl: orderDetails.images.large,
+                                  imageUrl: orderDetails.images.main,
                                   fit: BoxFit.cover,
                                 ),
                                 Container(
@@ -192,7 +192,7 @@ class OrderDetailsView extends StatelessWidget {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(25),
                                   child: CachedNetworkImage(
-                                    imageUrl: orderDetails.customer.images.medium,
+                                    imageUrl: orderDetails.customer.images.main,
                                     width: 45,  // تصغير حجم الصورة
                                     height: 45,
                                     fit: BoxFit.cover,
@@ -516,7 +516,7 @@ class OrderDetailsView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(25),
                             child: CachedNetworkImage(
                               imageUrl:
-                                  (offer.shop as ShopWithDetails).images.medium,
+                                  (offer.shop as ShopWithDetails).images.main,
                               width: 50,
                               height: 50,
                               fit: BoxFit.cover,

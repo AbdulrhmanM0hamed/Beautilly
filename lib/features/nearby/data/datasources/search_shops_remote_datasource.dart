@@ -18,7 +18,8 @@ class SearchShopsResponse {
   });
 
   SearchShopsResponse.fromJson(Map<String, dynamic> json)
-      : shops = List<SearchShopModel>.from(json['shops'].map((x) => SearchShopModel.fromJson(x))),
+      : shops = List<SearchShopModel>.from(
+            json['shops'].map((x) => SearchShopModel.fromJson(x))),
         pagination = PaginationModel.fromJson(json['pagination']);
 }
 
@@ -47,6 +48,7 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
   }) async {
     try {
       final token = await cacheService.getToken();
+      final session = await cacheService.getSessionCookie();
 
       final url = ApiEndpoints.filterShops(
         type: type,
@@ -59,26 +61,45 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
         headers: {
           'Accept': 'application/json',
           if (token != null) 'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+          'Cookie': session ?? '',
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(
+        const Duration(seconds: 10),
+        onTimeout: () {
+          throw TimeoutException('Request timed out');
+        },
+      );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+
         if (data['success'] == true) {
-          return SearchShopsResponse.fromJson(data['data']);
+          final responseData = data['data'] as Map<String, dynamic>;
+          final result = SearchShopsResponse(
+            shops: List<SearchShopModel>.from(
+                responseData['shops'].map((x) => SearchShopModel.fromJson(x))),
+            pagination: PaginationModel.fromJson(responseData['pagination']),
+          );
+
+          return result;
         }
-        throw ServerException(message:  data['message'] ?? 'حدث خطأ في الخادم');
+
+        final errorMessage = data['message'] ?? 'حدث خطأ في الخادم';
+        throw ServerException(message: errorMessage);
       } else if (response.statusCode == 401) {
-        throw UnauthorizedException( 'يرجى تسجيل الدخول');
+        throw UnauthorizedException('يرجى تسجيل الدخول');
       } else {
         throw ServerException(message: 'حدث خطأ في الخادم');
       }
-    } on SocketException {
-      throw  ServerException(message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت');
-    } on TimeoutException {
-      throw  ServerException(message: 'انتهت مهلة الاتصال، يرجى المحاولة مرة أخرى');
+    } on SocketException catch (e) {
+      throw ServerException(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت');
+    } on TimeoutException catch (e) {
+      throw ServerException(
+          message: 'انتهت مهلة الاتصال، يرجى المحاولة مرة أخرى');
     } catch (e) {
-      throw  ServerException(message: 'حدث خطأ غير متوقع');
+      throw ServerException(message: 'حدث خطأ غير متوقع: $e');
     }
   }
 }

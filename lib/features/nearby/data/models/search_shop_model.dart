@@ -14,16 +14,18 @@ class SearchShopModel extends SearchShop {
   });
 
   factory SearchShopModel.fromJson(Map<String, dynamic> json) {
+    
+    
     return SearchShopModel(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
-      typeName: json['type_name'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      type: json['type'] ?? '',
+      typeName: json['type_name'] ?? '',
       rating: (json['rating'] ?? 0).toDouble(),
       location: LocationModel.fromJson(json['location']),
       mainImage: MainImageModel.fromJson(json['main_image']),
-      latitude: json['location']?['latitude']?.toDouble(),
-      longitude: json['location']?['longitude']?.toDouble(),
+      latitude: json['location']?['latitude']?.toDouble() ?? 0,
+      longitude: json['location']?['longitude']?.toDouble() ?? 0,
     );
   }
 }
@@ -37,9 +39,9 @@ class LocationModel extends Location {
 
   factory LocationModel.fromJson(Map<String, dynamic> json) {
     return LocationModel(
-      mapUrl: json['map_url'],
-      latitude: json['latitude']?.toDouble(),
-      longitude: json['longitude']?.toDouble(),
+      mapUrl: json['map_url'] ?? '',
+      latitude: json['latitude']?.toDouble() ?? 0,
+      longitude: json['longitude']?.toDouble() ?? 0,
     );
   }
 }
@@ -53,9 +55,9 @@ class MainImageModel extends MainImage {
 
   factory MainImageModel.fromJson(Map<String, dynamic> json) {
     return MainImageModel(
-      original: json['original'],
-      thumb: json['thumb'],
-      medium: json['medium'],
+      original: json['original'] ?? '',
+      thumb: json['thumb'] ?? '',
+      medium: json['medium'] ?? '',
     );
   }
 }
@@ -71,7 +73,7 @@ class ShopServiceModel extends ShopService {
 
   factory ShopServiceModel.fromJson(Map<String, dynamic> json) {
     return ShopServiceModel(
-      id: json['id'],
+      id: json['id'] ?? 0,
       name: json['name'] ?? '',
       description: json['description'] ?? '',
       type: json['type'] ?? '',

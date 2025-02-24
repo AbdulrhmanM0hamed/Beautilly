@@ -43,7 +43,7 @@ class NearbyServiceCard extends StatelessWidget {
                   borderRadius:
                       const BorderRadius.horizontal(right: Radius.circular(8)),
                   child: CachedNetworkImage(
-                    imageUrl: shop.mainImage.medium,
+                    imageUrl: shop.mainImage.original,
                     width: 120,
                     height: 120,
                     fit: BoxFit.cover,

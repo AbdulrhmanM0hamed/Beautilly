@@ -66,7 +66,6 @@ class ServicesRemoteDataSourceImpl
             throw ServerException(message: 'فشل في تحميل الخدمات');
           }
         } catch (e) {
-          print('Error in getServices: $e'); // للتشخيص
           throw ServerException(
             message: 'حدث خطأ في تحميل الخدمات، يرجى المحاولة مرة أخرى'
           );

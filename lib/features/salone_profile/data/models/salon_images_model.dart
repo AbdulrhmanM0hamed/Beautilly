@@ -19,10 +19,10 @@ class SalonImagesModel extends SalonImages {
 
   Map<String, dynamic> toJson() {
     return {
-      'main': main,
-      'main_thumb': mainThumb,
-      'main_medium': mainMedium,
-      'gallery': gallery,
+      'main': main ?? '',
+      'main_thumb': mainThumb ?? '',
+      'main_medium': mainMedium ?? '',
+      'gallery': gallery ?? [],
     };
   }
 } 

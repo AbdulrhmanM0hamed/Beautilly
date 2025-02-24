@@ -79,11 +79,11 @@ class FormValidators {
     value = value.replaceAll(RegExp(r'[\s\-\(\)]'), '');
     
     // التحقق من صيغة رقم الهاتف السعودي
-    final saudiPhoneRegex = RegExp(r'^(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$');
+    // final saudiPhoneRegex = RegExp(r'^(05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$');
     
-    if (!saudiPhoneRegex.hasMatch(value)) {
-      return 'يرجى إدخال رقم هاتف سعودي صحيح';
-    }
+    // if (!saudiPhoneRegex.hasMatch(value)) {
+    //   return 'يرجى إدخال رقم هاتف سعودي صحيح';
+    // }
 
     return null;
   }

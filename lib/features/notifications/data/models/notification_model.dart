@@ -1,27 +1,27 @@
 import 'package:beautilly/features/notifications/domain/entities/notification.dart';
 
-class NotificationModel extends NotificationEntity {
+class NotificationModel {
+  final String id;
+  final String type;
+  final NotificationData data;
+  final DateTime? readAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
   NotificationModel({
-    required String id,
-    required String type,
-    required NotificationDataModel data,
-    DateTime? readAt,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-  }) : super(
-          id: id,
-          type: type,
-          data: data,
-          readAt: readAt,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-        );
+    required this.id,
+    required this.type,
+    required this.data,
+    this.readAt,
+    required this.createdAt,
+    required this.updatedAt,
+  });
 
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
       id: json['id'],
       type: json['type'],
-      data: NotificationDataModel.fromJson(json['data']),
+      data: NotificationData.fromJson(json['data']),
       readAt: json['read_at'] != null ? DateTime.parse(json['read_at']) : null,
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
@@ -29,30 +29,75 @@ class NotificationModel extends NotificationEntity {
   }
 }
 
-class NotificationDataModel extends NotificationData {
-  NotificationDataModel({
-    required String message,
-    int? reservationId,
-    required String status,
-    required DateTime timestamp,
-    required bool read,
-    required String fcmToken,
-  }) : super(
-          message: message,
-          reservationId: reservationId,
-          status: status,
-          timestamp: timestamp,
-          read: read,
-          fcmToken: fcmToken,
-        );
+class NotificationData {
+  final String message;
+  final int reservationId;
+  final String status;
+  final DateTime timestamp;
+  final bool read;
+  final String? fcmToken;
 
-  factory NotificationDataModel.fromJson(Map<String, dynamic> json) {
-    return NotificationDataModel(
+  NotificationData({
+    required this.message,
+    required this.reservationId,
+    required this.status,
+    required this.timestamp,
+    required this.read,
+    this.fcmToken,
+  });
+
+  factory NotificationData.fromJson(Map<String, dynamic> json) {
+    return NotificationData(
       message: json['message'],
       reservationId: json['reservation_id'],
-      status: json['status'] ?? '',
+      status: json['status'],
       timestamp: DateTime.parse(json['timestamp']),
       read: json['read'] ?? false,
+      fcmToken: json['fcm_token'],
+    );
+  }
+}
+
+class NotificationPagination {
+  final int currentPage;
+  final int lastPage;
+  final int perPage;
+  final int total;
+
+  NotificationPagination({
+    required this.currentPage,
+    required this.lastPage,
+    required this.perPage,
+    required this.total,
+  });
+
+  factory NotificationPagination.fromJson(Map<String, dynamic> json) {
+    return NotificationPagination(
+      currentPage: json['current_page'],
+      lastPage: json['last_page'],
+      perPage: json['per_page'],
+      total: json['total'],
+    );
+  }
+}
+
+class NotificationsResponse {
+  final List<NotificationModel> notifications;
+  final NotificationPagination pagination;
+  final String? fcmToken;
+
+  NotificationsResponse({
+    required this.notifications,
+    required this.pagination,
+    this.fcmToken,
+  });
+
+  factory NotificationsResponse.fromJson(Map<String, dynamic> json) {
+    return NotificationsResponse(
+      notifications: (json['notifications'] as List)
+          .map((notification) => NotificationModel.fromJson(notification))
+          .toList(),
+      pagination: NotificationPagination.fromJson(json['pagination']),
       fcmToken: json['fcm_token'],
     );
   }

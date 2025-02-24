@@ -17,9 +17,9 @@ class WorkingHourModel extends WorkingHour {
 
   Map<String, dynamic> toJson() {
     return {
-      'day': day,
-      'opening_time': openingTime,
-      'closing_time': closingTime,
+      'day': day ?? '',
+      'opening_time': openingTime ?? '',
+      'closing_time': closingTime ?? '',
     };
   }
 } 

@@ -12,23 +12,23 @@ class ServiceModel extends Service {
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
-      id: json['id'],
-      name: json['name'],
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
       description: json['description'] ?? '',
-      type: json['type'],
-      price: json['price'],
+      type: json['type'] ?? '',
+      price: json['price'] ?? 0,
       image: json['image'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'type': type,
-      'price': price,
-      'image': image,
+      'id': id ?? '',
+      'name': name ?? '',
+      'description': description ?? '',
+      'type': type ?? '',
+      'price': price ?? 0,
+      'image': image ?? '',
     };
   }
 }

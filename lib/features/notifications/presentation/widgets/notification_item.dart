@@ -1,9 +1,11 @@
+import 'package:beautilly/core/utils/constant/font_manger.dart';
+import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/notification.dart';
 import '../cubit/notifications_cubit.dart';
 
-class NotificationItem extends StatelessWidget {
+class NotificationItem extends StatefulWidget {
   final NotificationEntity notification;
 
   const NotificationItem({
@@ -12,52 +14,81 @@ class NotificationItem extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<NotificationItem> createState() => _NotificationItemState();
+}
+
+class _NotificationItemState extends State<NotificationItem> {
+  @override
+  void initState() {
+    super.initState();
+    // تحديث حالة الإشعار إلى "مقروء" عند عرضه لأول مرة
+    if (!widget.notification.data.read) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context
+            .read<NotificationsCubit>()
+            .markNotificationAsRead(widget.notification.id);
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: notification.data.read
+        side: widget.notification.data.read
             ? BorderSide.none
-            : BorderSide(color: Theme.of(context).primaryColor, width: 1),
+            : BorderSide(
+                color: Theme.of(context).primaryColor.withOpacity(0.3),
+                width: 1),
       ),
       child: InkWell(
         onTap: () {
-          if (!notification.data.read) {
-            context.read<NotificationsCubit>().markNotificationAsRead(notification.id);
-          }
-          if (notification.data.reservationId != null) {
-            Navigator.pushNamed(
-              context,
-              '/reservation/${notification.data.reservationId}',
-            );
+          if (!widget.notification.data.read) {
+            context
+                .read<NotificationsCubit>()
+                .markNotificationAsRead(widget.notification.id);
           }
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  _buildNotificationIcon(),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      notification.data.message,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: notification.data.read ? FontWeight.normal : FontWeight.bold,
+              _buildNotificationIcon(),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.notification.data.message,
+                      style: getMediumStyle(
+                        fontSize: 15,
+                        fontFamily: FontConstant.cairo,
                       ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _getTimeAgo(notification.data.timestamp),
-                style: Theme.of(context).textTheme.bodySmall,
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        if (widget.notification.type
+                            .contains('ReservationStatusUpdated'))
+                          _buildStatusChip(),
+                        const Spacer(),
+                        Text(
+                          _getTimeAgo(widget.notification.data.timestamp),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.grey[600],
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -69,39 +100,121 @@ class NotificationItem extends StatelessWidget {
   Widget _buildNotificationIcon() {
     IconData iconData;
     Color iconColor;
+    String label;
 
-    switch (notification.type) {
+    switch (widget.notification.type) {
       case 'App\\Notifications\\ReservationStatusUpdated':
-        iconData = Icons.calendar_today;
-        iconColor = Colors.blue;
+        iconData = Icons.event_available;
+        iconColor = _getStatusColor(widget.notification.data.status);
+        label = 'حجز';
         break;
-      case 'App\\Notifications\\OfferSubmittedNotification':
+      case 'App\\Notifications\\DiscountCreatedNotification':
         iconData = Icons.local_offer;
-        iconColor = Colors.green;
+        iconColor = Colors.purple;
+        label = 'عرض';
         break;
       default:
         iconData = Icons.notifications;
-        iconColor = Colors.grey;
+        iconColor = Colors.blue;
+        label = 'تنبيه';
     }
 
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: iconColor.withOpacity(0.1),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(iconData, color: iconColor),
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: iconColor.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(iconData, color: iconColor, size: 24),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 12,
+            color: iconColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
+  }
+
+  Widget _buildStatusChip() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: _getStatusColor(widget.notification.data.status).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: _getStatusColor(widget.notification.data.status),
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            _getStatusText(widget.notification.data.status),
+            style: TextStyle(
+              fontSize: 12,
+              color: _getStatusColor(widget.notification.data.status),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return Colors.green;
+      case 'confirmed':
+        return Colors.blue;
+      case 'pending':
+        return Colors.orange;
+      case 'canceled':
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  String _getStatusText(String status) {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return 'مكتمل';
+      case 'confirmed':
+        return 'تم التأكيد';
+      case 'pending':
+        return 'قيد الانتظار';
+      case 'cancelled':
+        return 'ملغى';
+      default:
+        return status;
+    }
   }
 
   String _getTimeAgo(DateTime dateTime) {
     final difference = DateTime.now().difference(dateTime);
-    if (difference.inDays > 0) {
-      return 'منذ ${difference.inDays} يوم';
+
+    if (difference.inDays > 30) {
+      return '${(difference.inDays / 30).floor()} شهر';
+    } else if (difference.inDays > 0) {
+      return '${difference.inDays} يوم';
     } else if (difference.inHours > 0) {
-      return 'منذ ${difference.inHours} ساعة';
+      return '${difference.inHours} ساعة';
     } else if (difference.inMinutes > 0) {
-      return 'منذ ${difference.inMinutes} دقيقة';
+      return '${difference.inMinutes} دقيقة';
     } else {
       return 'الآن';
     }

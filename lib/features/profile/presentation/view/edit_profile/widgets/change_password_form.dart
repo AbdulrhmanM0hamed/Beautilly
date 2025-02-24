@@ -31,7 +31,6 @@ class ChangePasswordForm extends StatelessWidget {
           hint: 'أدخل كلمة المرور الحالية',
           prefixIcon: Icons.lock_outline,
           isPassword: true,
-          validator: FormValidators.validatePassword,
           onChanged: (_) {
             context.findAncestorStateOfType<FormState>()?.validate();
           },

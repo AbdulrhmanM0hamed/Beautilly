@@ -16,7 +16,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   });
 
   @override
-  Future<Either<Failure, List<NotificationEntity>>> getNotifications() async {
+  Future<Either<Failure, NotificationsResponseEntity>> getNotifications({int page = 1}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت'
@@ -24,8 +24,32 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
     }
 
     try {
-      final notifications = await remoteDataSource.getNotifications();
-      return Right(notifications);
+      final response = await remoteDataSource.getNotifications(page: page);
+      return Right(NotificationsResponseEntity(
+        notifications: response.notifications.map((notification) => 
+          NotificationEntity(
+            id: notification.id,
+            type: notification.type,
+            data: NotificationDataEntity(
+              message: notification.data.message,
+              reservationId: notification.data.reservationId,
+              status: notification.data.status,
+              timestamp: notification.data.timestamp,
+              read: notification.data.read,
+            ),
+            readAt: notification.readAt,
+            createdAt: notification.createdAt,
+            updatedAt: notification.updatedAt,
+          )
+        ).toList(),
+        pagination: PaginationEntity(
+          currentPage: response.pagination.currentPage,
+          lastPage: response.pagination.lastPage,
+          perPage: response.pagination.perPage,
+          total: response.pagination.total,
+        ),
+        fcmToken: response.fcmToken,
+      ));
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {

@@ -114,7 +114,7 @@ Widget _buildNotificationButton(BuildContext context) {
             page: BlocProvider(
               create: (context) =>
                   sl<NotificationsCubit>()..loadNotifications(),
-              child: const NotificationsPage(),
+              child:  NotificationsPage(),
             ),
           ),
         );

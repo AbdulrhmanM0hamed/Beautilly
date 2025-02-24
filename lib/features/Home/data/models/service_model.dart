@@ -31,9 +31,9 @@ class ServiceModel extends ServiceEntity {
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
     return ServiceModel(
-      id: json['id'],
-      name: json['name'],
-      type: json['type'],
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      type: json['type'] ?? '',
       description: json['description'] ?? '',
       image: json['image'] ?? '',
       shops: (json['shops'] as List)
@@ -44,11 +44,11 @@ class ServiceModel extends ServiceEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'type': type,
-      'description': description,
-      'image': image,
+      'id': id ?? '',
+      'name': name ?? '',
+      'type': type ?? '',
+      'description': description ?? '',
+      'image': image ?? '',
       'shops':
           shops.map((shop) => (shop as ServiceShopModel).toJson()).toList(),
     };
@@ -69,24 +69,24 @@ class ServiceShopModel extends ServiceShopEntity {
 
   factory ServiceShopModel.fromJson(Map<String, dynamic> json) {
     return ServiceShopModel(
-      id: json['id'],
-      name: json['name'],
-      cityName: json['city_name'],
-      stateName: json['state_name'],
-      mainImageUrl: json['main_shop_image_url'],
-      avgRating: json['avg_rating']?.toDouble(),
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      cityName: json['city_name'] ?? '',
+      stateName: json['state_name'] ?? '',
+      mainImageUrl: json['main_shop_image_url'] ?? '',
+      avgRating: json['avg_rating']?.toDouble() ?? 0,
       loversCount: json['lovers_count'] ?? 0,
-      price: json['price'],
+      price: json['price'] ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'city_name': cityName,
-      'state_name': stateName,
-      'main_shop_image_url': mainImageUrl,
+      'id': id ?? '',
+      'name': name ?? '',
+      'city_name': cityName ?? '',
+      'state_name': stateName ?? '',
+      'main_shop_image_url': mainImageUrl ?? '',
     };
   }
 }
@@ -104,22 +104,22 @@ class CategoryModel extends CategoryEntity {
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      type: json['type'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      type: json['type'] ?? '',
+      createdAt: DateTime.parse(json['created_at'] ?? ''),
+      updatedAt: DateTime.parse(json['updated_at'] ?? ''),
       isActive: json['is_active'] == 1,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'type': type,
+      'id': id ?? '',
+      'name': name ?? '',
+      'description': description ?? '',
+      'type': type ?? '',
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
       'is_active': isActive ? 1 : 0,
@@ -142,14 +142,14 @@ class ShopModel extends ShopEntity {
 
   factory ShopModel.fromJson(Map<String, dynamic> json) {
     return ShopModel(
-      id: json['id'],
-      name: json['name'],
-      price: json['price'],
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      price: json['price'] ?? 0,
       loversCount: json['lovers_count'] ?? 0,
       cityName: json['city_name'] ?? '',
       stateName: json['state_name'] ?? '',
       mainImageUrl: json['main_shop_image_url'] ?? '',
-      avgRating: json['avg_rating']?.toDouble(),
+      avgRating: json['avg_rating']?.toDouble() ?? 0,
       services: json['services'] != null
           ? (json['services'] as List)
               .map((service) => ServicePivotModel.fromJson(service))
@@ -160,14 +160,14 @@ class ShopModel extends ShopEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'price': price,
-      'lovers_count': loversCount,
-      'city_name': cityName,
-      'state_name': stateName,
-      'main_shop_image_url': mainImageUrl,
-      'avg_rating': avgRating,
+      'id': id ?? '',
+      'name': name ?? '',
+      'price': price ?? 0,
+      'lovers_count': loversCount ?? 0,
+      'city_name': cityName ?? '',
+      'state_name': stateName ?? '',
+      'main_shop_image_url': mainImageUrl ?? '',
+      'avg_rating': avgRating ?? 0,
       'services': services
           .map((service) => (service as ServicePivotModel).toJson())
           .toList(),
@@ -184,17 +184,17 @@ class ServicePivotModel extends ServicePivot {
 
   factory ServicePivotModel.fromJson(Map<String, dynamic> json) {
     return ServicePivotModel(
-      id: json['id'],
-      name: json['name'],
-      price: json['pivot']['price'],
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      price: json['pivot']['price'] ?? 0,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'price': price,
+      'id': id ?? ''  ,
+      'name': name ?? '',
+      'price': price ?? 0,
     };
   }
 }

@@ -9,8 +9,8 @@ class RatingRequestModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'rating': rating,
-      'comment': comment,
+      'rating': rating ?? 0,
+      'comment': comment ?? '',
     };
   }
 } 

@@ -10,8 +10,8 @@ class StaffModel extends Staff {
 
   factory StaffModel.fromJson(Map<String, dynamic> json) {
     return StaffModel(
-      id: json['id'],
-      name: json['name'],
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
       role: json['role'] ?? '',
       image: json['image'] ?? '',
     );
@@ -19,10 +19,10 @@ class StaffModel extends Staff {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'role': role,
-      'image': image,
+      'id': id ?? ''  ,
+      'name': name ?? '',
+      'role': role ?? '',
+      'image': image ?? '',
     };
   }
 } 

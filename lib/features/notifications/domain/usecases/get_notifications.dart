@@ -8,8 +8,7 @@ class GetNotificationsUseCase {
 
   GetNotificationsUseCase(this.repository);
 
-  @override
-  Future<Either<Failure, List<NotificationEntity>>> call() {
-    return repository.getNotifications();
+  Future<Either<Failure, NotificationsResponseEntity>> call({int page = 1}) {
+    return repository.getNotifications(page: page);
   }
 } 

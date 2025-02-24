@@ -139,7 +139,8 @@ class SalonReviewsSection extends StatelessWidget {
                               onPressed: state is RatingLoading
                                   ? null
                                   : () {
-                                      if (formKey.currentState?.validate() ?? false) {
+                                      if (formKey.currentState?.validate() ??
+                                          false) {
                                         if (selectedRating < 1) {
                                           CustomSnackbar.showError(
                                             context: context,
@@ -150,7 +151,8 @@ class SalonReviewsSection extends StatelessWidget {
                                         context.read<RatingCubit>().addRating(
                                               shopId: salonId,
                                               rating: selectedRating,
-                                              comment: commentController.text.trim(),
+                                              comment:
+                                                  commentController.text.trim(),
                                             );
                                       }
                                     },
@@ -341,7 +343,7 @@ class SalonReviewsSection extends StatelessWidget {
                   ],
                 ),
               ),
-           const    Spacer(),
+              const Spacer(),
               if (hasRated)
                 TextButton.icon(
                   onPressed: () => _showDeleteRatingDialog(context),
@@ -506,6 +508,15 @@ class SalonReviewsSection extends StatelessWidget {
                                   fontFamily: FontConstant.cairo,
                                 ),
                               ),
+                              if (isUserRating)
+                                Text(
+                                  '  (أنت)',
+                                  style: getSemiBoldStyle(
+                                    color: AppColors.grey,
+                                    fontSize: FontSize.size16,
+                                    fontFamily: FontConstant.cairo,
+                                  ),
+                                ),
                               const Spacer(),
                               Row(
                                 children: List.generate(5, (index) {
@@ -518,16 +529,6 @@ class SalonReviewsSection extends StatelessWidget {
                                   );
                                 }),
                               ),
-                              if (isUserRating)
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.delete_outline,
-                                    color: Colors.red,
-                                    size: 20,
-                                  ),
-                                  onPressed: () =>
-                                      _showDeleteRatingDialog(context),
-                                ),
                             ],
                           ),
                           Text(

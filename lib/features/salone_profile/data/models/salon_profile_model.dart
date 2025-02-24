@@ -56,15 +56,15 @@ class SalonProfileModel extends SalonProfile {
       );
 
       return SalonProfileModel(
-        id: json['id'],
-        name: json['name'],
-        type: json['type'],
-        description: json['description'],
+        id: json['id']  ?? "",
+        name: json['name'] ?? '',
+        type: json['type'] ?? '',
+        description: json['description'] ?? '',
         address: json['address'] ?? '',
         phone: json['phone'] ?? '',
         email: json['email'] ?? '',
         googleMapsUrl: json['google_maps_url'] ?? '',
-        fakeAverageRating: (json['fake_average_rating'] ?? 0).toDouble(),
+        fakeAverageRating: (json['fake_average_rating'] ?? 0).toDouble() ?? 0 ,
         isActive: json['is_active'] == 1 || json['is_active'] == true,
         location: location,
         workingHours: workingHours,
@@ -82,15 +82,15 @@ class SalonProfileModel extends SalonProfile {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'type': type,
-      'description': description,
-      'address': address,
-      'phone': phone,
-      'email': email,
-      'google_maps_url': googleMapsUrl,
-      'fake_average_rating': fakeAverageRating,
+      'id': id ?? '',
+      'name': name ?? '',
+      'type': type ?? '',
+      'description': description ?? '',
+      'address': address ?? '',
+      'phone': phone ?? '',
+      'email': email ?? '',
+      'google_maps_url': googleMapsUrl ?? '',
+      'fake_average_rating': fakeAverageRating ?? 0 ,
       'is_active': isActive ? 1 : 0,
       'location': (location as LocationModel).toJson(),
       'working_hours': workingHours

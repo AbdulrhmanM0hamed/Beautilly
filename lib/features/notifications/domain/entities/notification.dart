@@ -1,14 +1,14 @@
 import 'package:equatable/equatable.dart';
 
-class NotificationEntity extends Equatable {
+class NotificationEntity {
   final String id;
   final String type;
-  final NotificationData data;
+  final NotificationDataEntity data;
   final DateTime? readAt;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  const NotificationEntity({
+  NotificationEntity({
     required this.id,
     required this.type,
     required this.data,
@@ -16,28 +16,46 @@ class NotificationEntity extends Equatable {
     required this.createdAt,
     required this.updatedAt,
   });
-
-  @override
-  List<Object?> get props => [id, type, data, readAt, createdAt, updatedAt];
 }
 
-class NotificationData extends Equatable {
+class NotificationDataEntity {
   final String message;
-  final int? reservationId;
+  final int reservationId;
   final String status;
   final DateTime timestamp;
   final bool read;
-  final String fcmToken;
 
-  const NotificationData({
+  NotificationDataEntity({
     required this.message,
-    this.reservationId,
+    required this.reservationId,
     required this.status,
     required this.timestamp,
     required this.read,
-    required this.fcmToken,
   });
+}
 
-  @override
-  List<Object?> get props => [message, reservationId, status, timestamp, read, fcmToken];
+class PaginationEntity {
+  final int currentPage;
+  final int lastPage;
+  final int perPage;
+  final int total;
+
+  PaginationEntity({
+    required this.currentPage,
+    required this.lastPage,
+    required this.perPage,
+    required this.total,
+  });
+}
+
+class NotificationsResponseEntity {
+  final List<NotificationEntity> notifications;
+  final PaginationEntity pagination;
+  final String? fcmToken;
+
+  NotificationsResponseEntity({
+    required this.notifications,
+    required this.pagination,
+    this.fcmToken,
+  });
 } 

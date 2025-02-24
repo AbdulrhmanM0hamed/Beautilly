@@ -94,7 +94,7 @@ class ProfileMenuSection extends StatelessWidget {
                         Navigator.push(
                           context,
                           PageRoutes.fadeScale(
-                            page: const NotificationsPage(),
+                            page:  NotificationsPage(),
                           ),
                         );
                       },

@@ -5,23 +5,20 @@ class EmptyNotificationsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const  Center(
+    return const Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Text(
             'لا توجد إشعارات',
-           
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8),
           Text(
             'ستظهر هنا جميع إشعاراتك',
-          
           ),
         ],
       ),
     );
   }
-} 
+}

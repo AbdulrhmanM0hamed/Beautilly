@@ -45,7 +45,7 @@ class ApiEndpoints {
 
   // الإشعارات
   static const String notifications =
-      '$baseUrl/notifications?status=unread?api_key=$api_key'; // قائمة الإشعارات
+      '$baseUrl/notifications?api_key=$api_key'; // قائمة الإشعارات
   static const String markNotificationRead =
       '$baseUrl/notifications/read/?api_key=$api_key'; // تحديد إشعار كمقروء
   static const String refreshToken = '$baseUrl/auth/refresh';

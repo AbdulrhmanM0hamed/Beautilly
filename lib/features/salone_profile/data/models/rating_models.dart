@@ -9,7 +9,7 @@ class RatingsSummaryModel extends RatingsSummary {
 
   factory RatingsSummaryModel.fromJson(Map<String, dynamic> json) {
     return RatingsSummaryModel(
-      average: (json['average'] ?? 0).toDouble(),
+      average: (json['average'] ?? 0).toDouble() ?? 0,
       count: json['count'] ?? 0,
       ratings: (json['ratings'] as List?)
           ?.map((e) => RatingModel.fromJson(e))
@@ -19,8 +19,8 @@ class RatingsSummaryModel extends RatingsSummary {
 
   Map<String, dynamic> toJson() {
     return {
-      'average': average,
-      'count': count,
+      'average': average ?? 0,
+      'count': count ?? 0,
       'ratings': (ratings as List<RatingModel>)
           .map((e) => e.toJson())
           .toList(),
@@ -39,21 +39,21 @@ class RatingModel extends Rating {
 
   factory RatingModel.fromJson(Map<String, dynamic> json) {
     return RatingModel(
-      id: json['id'],
-      rating: json['rating'],
-      comment: json['comment'],
+      id: json['id'] ?? '',
+      rating: json['rating'] ?? 0,
+      comment: json['comment'] ?? '',
       user: UserModel.fromJson(json['user']),
-      createdAt: json['created_at'],
+      createdAt: json['created_at'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'rating': rating,
-      'comment': comment,
+      'id': id ?? '',
+      'rating': rating ?? 0,
+      'comment': comment ?? '',
       'user': (user as UserModel).toJson(),
-      'created_at': createdAt,
+      'created_at': createdAt ?? '',
     };
   }
 }
@@ -67,17 +67,17 @@ class UserModel extends User {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'],
+      id: json['id'] ?? '',
       name: json['name'] ?? '',
-      avatar: json['avatar'],
+      avatar: json['avatar'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'name': name,
-      'avatar': avatar,
+      'id': id ?? '',
+      'name': name ?? '',
+      'avatar': avatar ?? '',
     };
   }
 } 

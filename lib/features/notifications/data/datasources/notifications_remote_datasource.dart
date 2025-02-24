@@ -8,11 +8,13 @@ import 'package:beautilly/features/notifications/data/models/notification_model.
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
 
 abstract class NotificationsRemoteDataSource {
-  Future<List<NotificationModel>> getNotifications();
+  Future<NotificationsResponse> getNotifications({int page = 1});
   Future<void> markAsRead(String notificationId);
 }
 
-class NotificationsRemoteDataSourceImpl with TokenRefreshMixin implements NotificationsRemoteDataSource {
+class NotificationsRemoteDataSourceImpl
+    with TokenRefreshMixin
+    implements NotificationsRemoteDataSource {
   final http.Client client;
   final CacheService cacheService;
   final AuthRepository authRepository;
@@ -24,52 +26,48 @@ class NotificationsRemoteDataSourceImpl with TokenRefreshMixin implements Notifi
   });
 
   @override
-  Future<List<NotificationModel>> getNotifications() async {
+  Future<NotificationsResponse> getNotifications({int page = 1}) async {
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
-        final sessionCookie = await cacheService.getSessionCookie();
-        
-        print('🔍 Notifications Request:');
-        print('Token: $token');  // نطبع جزء من التوكن للتحقق
-        print('Cookie: $sessionCookie');
+        try {
+          final sessionCookie = await cacheService.getSessionCookie();
 
-        final response = await client.get(
-          Uri.parse(ApiEndpoints.notifications),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
-            'Accept': 'application/json',
-            if (sessionCookie != null) 'Cookie': sessionCookie,
-          },
-        );
+          final response = await client.get(
+            Uri.parse(ApiEndpoints.notifications),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'x-api-key': ApiEndpoints.api_key,
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              if (sessionCookie != null) 'Cookie': sessionCookie,
+            },
+          );
 
-        print('📄 Response Status: ${response.statusCode}');
-        print('Response Body: ${response.body}');
+          final responseBody =
+              utf8.decode(response.bodyBytes); // لمعالجة الأحرف العربية
 
-        if (response.statusCode == 200) {
-          final jsonResponse = json.decode(response.body);
-          if (jsonResponse['success'] == true) {
-            final notifications = jsonResponse['notifications'] as List;
-            return notifications
-                .map((notification) => NotificationModel.fromJson(notification))
-                .toList();
+          if (response.statusCode == 200) {
+            final jsonResponse = json.decode(responseBody);
+            if (jsonResponse['success'] == true) {
+              return NotificationsResponse.fromJson(jsonResponse);
+            } else {
+              throw ServerException(
+                  message: jsonResponse['message'] ?? 'فشل في تحميل الإشعارات');
+            }
+          } else if (response.statusCode == 401) {
+            throw UnauthorizedException('يرجى تسجيل الدخول مرة أخرى');
+          } else {
+            throw ServerException(message: 'فشل في تحميل الإشعارات');
           }
-        } else if (response.statusCode == 401) {
-          print('❌ Token validation failed');
-          // نحاول تجديد التوكن
-          final newToken = await authRepository.refreshToken();
-          if (newToken.isRight()) {
-            print('✅ Token refreshed, retrying request');
-            return getNotifications();  // نعيد المحاولة بالتوكن الجديد
+        } catch (e, stackTrace) {
+          if (e is UnauthorizedException) {
+            rethrow;
           }
+          throw ServerException(
+              message: 'حدث خطأ في تحميل الإشعارات، يرجى المحاولة مرة أخرى');
         }
-        
-        final error = json.decode(response.body);
-        throw ServerException(
-          message: error['message'] ?? 'فشل في تحميل الإشعارات'
-        );
       },
     );
   }
@@ -81,9 +79,10 @@ class NotificationsRemoteDataSourceImpl with TokenRefreshMixin implements Notifi
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
-        
+
         final response = await client.post(
-          Uri.parse('${ApiEndpoints.baseUrl}/notifications/$notificationId/read'),
+          Uri.parse(
+              '${ApiEndpoints.baseUrl}/notifications/$notificationId/read'),
           headers: {
             'Authorization': 'Bearer $token',
             'x-api-key': ApiEndpoints.api_key,
@@ -96,8 +95,7 @@ class NotificationsRemoteDataSourceImpl with TokenRefreshMixin implements Notifi
         if (response.statusCode != 200) {
           final error = json.decode(response.body);
           throw ServerException(
-            message: error['message'] ?? 'فشل في تحديث حالة الإشعار'
-          );
+              message: error['message'] ?? 'فشل في تحديث حالة الإشعار');
         }
       },
     );

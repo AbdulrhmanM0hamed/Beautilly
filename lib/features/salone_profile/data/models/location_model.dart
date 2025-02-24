@@ -15,17 +15,17 @@ class LocationModel extends Location {
     }
 
     return LocationModel(
-      city: getLocationName(json['city']),
-      state: getLocationName(json['state']),
+      city: getLocationName(json['city'] ?? ''),
+      state: getLocationName(json['state'] ?? ''),
       country: json['country'] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'city': city,
-      'state': state,
-      'country': country,
+      'city': city ?? '',
+      'state': state ?? '',
+      'country': country ?? '',
     };
   }
 } 

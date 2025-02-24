@@ -21,7 +21,7 @@ import 'package:firebase_database/firebase_database.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  print('📱 Background message received: ${message.messageId}');
+//  print('📱 Background message received: ${message.messageId}');
   await NotificationService.handleBackgroundMessage(message);
 }
 

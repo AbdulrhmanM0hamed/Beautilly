@@ -66,6 +66,12 @@ class _EditProfileViewState extends State<EditProfileView> {
     }
   }
 
+  void _setLoading(bool value) {
+    if (mounted) {
+      setState(() => _isLoading = value);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
@@ -105,7 +111,10 @@ class _EditProfileViewState extends State<EditProfileView> {
 
         // استخدام البيانات المحملة أو البيانات الأصلية
         final profile = (state is ProfileLoaded) ? state.profile : widget.profile;
-        final controller = EditProfileController(profile);
+        final controller = EditProfileController(
+          profile,
+          onLoadingChanged: _setLoading,
+        );
 
         return Scaffold(
           appBar: const CustomAppBar(
@@ -140,7 +149,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         child: CustomButton(
                           onPressed: state is! ProfileLoading
                               ? () {
-                                  setState(() => _isLoading = true);
+                                  _setLoading(true);
                                   controller.updateProfile(context);
                                 }
                               : null,

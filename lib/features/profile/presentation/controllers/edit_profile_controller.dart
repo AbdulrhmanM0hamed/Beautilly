@@ -14,8 +14,12 @@ class EditProfileController {
   late final TextEditingController currentPasswordController;
   late final TextEditingController newPasswordController;
   late final TextEditingController confirmPasswordController;
+  final void Function(bool) onLoadingChanged;
 
-  EditProfileController(this.profile) {
+  EditProfileController(
+    this.profile, {
+    required this.onLoadingChanged,
+  }) {
     _initializeControllers();
   }
 
@@ -62,6 +66,7 @@ class EditProfileController {
     final hasPasswordChanges = newPassword.isNotEmpty || confirmPassword.isNotEmpty;
 
     if (!hasBasicChanges && !hasPasswordChanges) {
+      onLoadingChanged(false);
       CustomSnackbar.showError(
         context: context,
         message: 'لم يتم إجراء أي تغييرات',

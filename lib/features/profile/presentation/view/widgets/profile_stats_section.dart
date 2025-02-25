@@ -130,26 +130,27 @@ class _LoadingStats extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildLoadingCard(),
+          _buildLoadingCard(context),
           _VerticalDivider(),
-          _buildLoadingCard(),
+          _buildLoadingCard(context),
           _VerticalDivider(),
-          _buildLoadingCard(),
+          _buildLoadingCard(context),
         ],
       ),
     );
   }
 
-  Widget _buildLoadingCard() {
+  Widget _buildLoadingCard(BuildContext context) {
+       final isDark = Theme.of(context).brightness == Brightness.dark;
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? Colors.grey[800] : Colors.white,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.1),
+              color: isDark ? Colors.grey[800]!.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 4,
               offset: const Offset(0, 2),
@@ -162,7 +163,7 @@ class _LoadingStats extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: isDark ? Colors.grey[200] : Colors.grey[800],
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
@@ -171,7 +172,7 @@ class _LoadingStats extends StatelessWidget {
               width: 30,
               height: 20,
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: isDark ? Colors.grey[200] : Colors.grey[800],
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -180,7 +181,7 @@ class _LoadingStats extends StatelessWidget {
               width: 50,
               height: 12,
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: isDark ? Colors.grey[200] : Colors.grey[800],
                 borderRadius: BorderRadius.circular(4),
               ),
             ),

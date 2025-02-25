@@ -1,4 +1,3 @@
-import 'package:beautilly/features/notifications/domain/entities/notification.dart';
 
 class NotificationModel {
   final String id;

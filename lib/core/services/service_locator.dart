@@ -33,6 +33,7 @@ import 'package:beautilly/features/orders/data/repositories/orders_repository_im
 import 'package:beautilly/features/orders/domain/repositories/orders_repository.dart';
 import 'package:beautilly/features/orders/domain/usecases/get_my_orders.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_state.dart';
 import 'package:beautilly/features/profile/presentation/cubit/user_statistics_cubit.dart';
 import 'package:beautilly/features/salone_profile/data/datasources/salon_profile_remote_data_source.dart';
 import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
@@ -94,6 +95,7 @@ import 'package:beautilly/features/notifications/domain/repositories/notificatio
 import 'package:beautilly/features/notifications/domain/usecases/get_notifications.dart';
 import 'package:beautilly/features/notifications/domain/usecases/mark_notification_as_read.dart';
 import 'package:beautilly/features/notifications/presentation/cubit/notifications_cubit.dart';
+import '../../features/profile/presentation/controllers/edit_profile_controller.dart';
 
 final sl = GetIt.instance;
 
@@ -122,7 +124,7 @@ Future<void> init() async {
   );
 
   // Cubits
-  sl.registerFactory(() => AuthCubit(sl(), sl()));
+  sl.registerFactory(() => AuthCubit(sl(), sl(), sl()));
   sl.registerFactory<LocationCubit>(
       () => LocationCubit(sl<LocationRepository>()));
   sl.registerFactory<ForgotPasswordCubit>(() => ForgotPasswordCubit(sl()));
@@ -148,9 +150,8 @@ Future<void> init() async {
   );
 
   // Cubits
-  sl.registerLazySingleton(() => ProfileCubit(repository: sl()));
-  sl.registerLazySingleton(
-      () => ProfileImageCubit(sl<ProfileRepository>(), sl<ProfileCubit>()));
+  sl.registerFactory(() => ProfileCubit(repository: sl()));
+  sl.registerFactory(() => ProfileImageCubit(repository: sl()));
 
 //--------------------------------------------------------------------
 

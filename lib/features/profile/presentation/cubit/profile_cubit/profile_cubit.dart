@@ -1,17 +1,17 @@
 import 'package:beautilly/features/profile/data/models/profile_model.dart';
+import 'package:beautilly/features/splash/view/splash_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/features/profile/domain/repositories/profile_repository.dart';
 import 'profile_state.dart';
 import 'dart:io';
+import 'package:get_it/get_it.dart';
+import 'package:flutter/material.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepository repository;
-  ProfileModel? _profile; // تخزين آخر بيانات
+  ProfileModel? _profile;
 
-  ProfileCubit({required this.repository}) : super(ProfileInitial()) {
-    // لا نحتاج إلى تحميل البيانات عند إنشاء الـ cubit
-    // loadProfile();
-  }
+  ProfileCubit({required this.repository}) : super(ProfileInitial());
 
   ProfileModel? get currentProfile => _profile;
 
@@ -20,33 +20,27 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     try {
       emit(ProfileLoading());
+
       final result = await repository.getProfile();
-      if (isClosed) return;
+
+      if (isClosed) {
+        return;
+      }
 
       result.fold(
         (failure) {
           emit(ProfileError(failure.message));
-          // في حالة الفشل، نعيد المحاولة بعد ثانية واحدة
-          Future.delayed(const Duration(seconds: 1), () {
-            if (!isClosed) loadProfile();
-          });
         },
         (profile) {
-          if (profile.name != null && profile.name.isNotEmpty) {
-            _profile = profile;
-            emit(ProfileLoaded(profile));
-          } else {
-            emit(ProfileError('بيانات الملف الشخصي غير صالحة'));
-          }
+          _profile = profile;
+          emit(ProfileLoaded(profile));
         },
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+   
+
       if (!isClosed) {
-        emit(ProfileError(e.toString()));
-        // في حالة الخطأ، نعيد المحاولة بعد ثانية واحدة
-        Future.delayed(const Duration(seconds: 1), () {
-          if (!isClosed) loadProfile();
-        });
+        emit(ProfileError('حدث خطأ في تحميل البيانات'));
       }
     }
   }
@@ -55,6 +49,24 @@ class ProfileCubit extends Cubit<ProfileState> {
     _profile = null;
     if (!isClosed) {
       emit(ProfileInitial());
+    }
+  }
+
+  // دالة مساعدة للتنقل الآمن
+  void _navigateToSplash() {
+    try {
+      final context = GetIt.I<GlobalKey<NavigatorState>>().currentContext;
+      if (context != null && context.mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              SplashView.routeName,
+              (route) => false,
+            );
+          }
+        });
+      }
+    } catch (e) {
     }
   }
 
@@ -74,22 +86,26 @@ class ProfileCubit extends Cubit<ProfileState> {
         phone: phone,
       );
 
+      if (isClosed) return;
+
       result.fold(
         (failure) {
           emit(ProfileError(failure.message));
-          // إعادة تحميل البيانات بعد الخطأ
           loadProfile();
         },
         (profile) {
           _profile = profile;
           emit(const ProfileSuccess('تم تحديث البيانات بنجاح'));
+          
+          // استخدام التنقل الآمن
+          Future.delayed(const Duration(seconds: 2), _navigateToSplash);
+          
           emit(ProfileLoaded(profile));
         },
       );
     } catch (e) {
       if (!isClosed) {
         emit(ProfileError(e.toString()));
-        // إعادة تحميل البيانات بعد الخطأ
         loadProfile();
       }
     }
@@ -111,23 +127,26 @@ class ProfileCubit extends Cubit<ProfileState> {
         confirmPassword: confirmPassword,
       );
 
+      if (isClosed) return;
+
       result.fold(
         (failure) {
           emit(ProfileError(failure.message));
-          // إعادة تحميل البيانات بعد الخطأ لإظهار الحالة الصحيحة
-          loadProfile();
         },
         (message) {
+
           emit(ProfileSuccess(message));
-          // إعادة تحميل البيانات بعد النجاح
-          loadProfile();
+          
+          // نتأكد من أن الـ cubit لم يتم إغلاقه
+          if (!isClosed) {
+            // استخدام التنقل الآمن بعد النجاح فقط
+            Future.delayed(const Duration(seconds: 2), _navigateToSplash);
+          }
         },
       );
     } catch (e) {
       if (!isClosed) {
-        emit(ProfileError(e.toString()));
-        // إعادة تحميل البيانات بعد الخطأ
-        loadProfile();
+        emit(ProfileError('حدث خطأ في تغيير كلمة المرور'));
       }
     }
   }
@@ -151,7 +170,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     required int cityId,
     required int stateId,
   }) async {
-    if (isClosed) return;
+    if (isClosed) {
+      return;
+    }
+
 
     try {
       emit(ProfileLoading());
@@ -168,6 +190,15 @@ class ProfileCubit extends Cubit<ProfileState> {
         (profile) {
           _profile = profile;
           emit(const ProfileSuccess('تم تحديث العنوان بنجاح'));
+          Future.delayed(const Duration(seconds: 2), () {
+            // إعادة فتح التطبيق من Splash
+            Navigator.of(GetIt.I<GlobalKey<NavigatorState>>().currentContext!)
+                .pushNamedAndRemoveUntil(
+              SplashView.routeName,
+              (route) => false,
+            );
+          });
+
           emit(ProfileLoaded(profile));
         },
       );

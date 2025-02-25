@@ -13,92 +13,113 @@ import 'package:flutter_svg/svg.dart';
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/features/notifications/presentation/cubit/notifications_cubit.dart';
 
-class WelcomeTextWidget extends StatelessWidget {
+class WelcomeTextWidget extends StatefulWidget {
   const WelcomeTextWidget({super.key});
 
   @override
+  State<WelcomeTextWidget> createState() => _WelcomeTextWidgetState();
+}
+
+class _WelcomeTextWidgetState extends State<WelcomeTextWidget> {
+  @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      builder: (context, state) {
-        String userName = 'مستخدم';
-        String? userImage;
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ProfileCubit, ProfileState>(
+          listenWhen: (previous, current) => current is ProfileLoaded,
+          listener: (context, state) {
+            if (state is ProfileLoaded) {
+              setState(() {}); // تحديث الواجهة
+            }
+          },
+        ),
+      ],
+      child: BlocBuilder<ProfileCubit, ProfileState>(
+        buildWhen: (previous, current) {
+          return current is ProfileLoaded || current is ProfileLoading;
+        },
+        builder: (context, state) {
+          
+          String userName = 'مستخدم';
+          String? userImage;
 
-        if (state is ProfileLoaded) {
-          userName = state.profile.name;
-          userImage = state.profile.image;
-        }
+          if (state is ProfileLoaded) {
+            userName = state.profile.name;
+            userImage = state.profile.image;
+          }
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 25,
-                backgroundColor: AppColors.primary.withOpacity(0.1),
-                child: userImage != null
-                    ? ClipOval(
-                        child: CachedNetworkImage(
-                          imageUrl: userImage,
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => const Center(
-                            child: SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: AppColors.primary,
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  child: userImage != null
+                      ? ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl: userImage,
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) => const Center(
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: AppColors.primary,
+                                ),
                               ),
                             ),
+                            errorWidget: (context, url, error) => const Icon(
+                              Icons.person,
+                              color: AppColors.primary,
+                              size: 30,
+                            ),
                           ),
-                          errorWidget: (context, url, error) => const Icon(
-                            Icons.person,
-                            color: AppColors.primary,
-                            size: 30,
-                          ),
+                        )
+                      : const Icon(
+                          Icons.person,
+                          color: AppColors.primary,
+                          size: 30,
                         ),
-                      )
-                    : const Icon(
-                        Icons.person,
-                        color: AppColors.primary,
-                        size: 30,
-                      ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'مرحباً بك',
-                          style: getBoldStyle(
-                            color: AppColors.grey,
-                            fontSize: FontSize.size16,
-                            fontFamily: FontConstant.cairo,
-                          ),
-                        ),
-                        const Spacer(),
-                        _buildNotificationButton(context)
-                      ],
-                    ),
-                    Text(
-                      userName,
-                      style: getBoldStyle(
-                        fontSize: FontSize.size18,
-                        fontFamily: FontConstant.cairo,
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'مرحباً بك',
+                            style: getBoldStyle(
+                              color: AppColors.grey,
+                              fontSize: FontSize.size16,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                          const Spacer(),
+                          _buildNotificationButton(context)
+                        ],
+                      ),
+                      Text(
+                        userName,
+                        style: getBoldStyle(
+                          fontSize: FontSize.size18,
+                          fontFamily: FontConstant.cairo,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

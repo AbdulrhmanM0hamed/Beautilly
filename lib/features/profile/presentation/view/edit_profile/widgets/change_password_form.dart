@@ -42,7 +42,15 @@ class ChangePasswordForm extends StatelessWidget {
           hint: 'أدخل كلمة المرور الجديدة',
           prefixIcon: Icons.lock_outline,
           isPassword: true,
-          validator: FormValidators.validatePassword,
+          validator: (value) {
+            if (currentPasswordController.text.isNotEmpty) {
+              if (value == null || value.isEmpty) {
+                return 'يجب إدخال كلمة المرور الجديدة';
+              }
+              return FormValidators.validatePassword(value);
+            }
+            return null;
+          },
           onChanged: (_) {
             context.findAncestorStateOfType<FormState>()?.validate();
           },
@@ -54,10 +62,18 @@ class ChangePasswordForm extends StatelessWidget {
           hint: 'أعد إدخال كلمة المرور الجديدة',
           prefixIcon: Icons.lock_outline,
           isPassword: true,
-          validator: (value) => FormValidators.validateConfirmPassword(
-            value,
-            newPasswordController.text,
-          ),
+          validator: (value) {
+            if (currentPasswordController.text.isNotEmpty) {
+              if (value == null || value.isEmpty) {
+                return 'يجب تأكيد كلمة المرور الجديدة';
+              }
+              return FormValidators.validateConfirmPassword(
+                value,
+                newPasswordController.text,
+              );
+            }
+            return null;
+          },
           onChanged: (_) {
             context.findAncestorStateOfType<FormState>()?.validate();
           },

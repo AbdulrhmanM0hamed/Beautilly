@@ -1,4 +1,7 @@
+import 'package:beautilly/features/profile/presentation/controllers/edit_profile_controller.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../../domain/usecases/logout.dart';
@@ -8,8 +11,9 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepository authRepository;
   final CacheService _cacheService;
   final Logout _logout;
+  final ProfileCubit _profileCubit;
 
-  AuthCubit(this.authRepository, this._cacheService)
+  AuthCubit(this.authRepository, this._cacheService, this._profileCubit)
       : _logout = Logout(authRepository),
         super(AuthInitial());
 
@@ -71,24 +75,20 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> logout() async {
-    emit(AuthLoading());
-    
     try {
-      final result = await _logout();
-      
+      emit(AuthLoading());
+      final result = await _logout.call();
+
       result.fold(
         (failure) => emit(AuthError(failure.message)),
-        (_) {
-          // تأكد من مسح الـ cache
-          _cacheService.clearCache();
+        (success) {
+          GetIt.I<EditProfileController>().clearControllers();
+          GetIt.I<ProfileCubit>().clearProfile();
           emit(AuthInitial());
         },
       );
     } catch (e) {
-      print('Error in AuthCubit.logout: $e');
-      // حتى في حالة الخطأ، نقوم بمسح الـ cache والخروج
-      await _cacheService.clearCache();
-      emit(AuthInitial());
+      emit(AuthError(e.toString()));
     }
   }
 

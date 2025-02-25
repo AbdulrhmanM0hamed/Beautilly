@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/get_notifications.dart';
 import '../../domain/usecases/mark_notification_as_read.dart';
-import '../../domain/entities/notification.dart';
 import 'notifications_state.dart';
 
 class NotificationsCubit extends Cubit<NotificationsState> {

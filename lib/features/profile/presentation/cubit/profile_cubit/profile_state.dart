@@ -32,11 +32,11 @@ class ProfileError extends ProfileState {
 
 class ProfileValidationError extends ProfileState {
   final String message;
-  final dynamic validationErrors;
+  final Map<String, List<String>> validationErrors;
 
   const ProfileValidationError({
     required this.message,
-    this.validationErrors,
+    required this.validationErrors,
   });
 
   @override
@@ -51,3 +51,7 @@ class ProfileSuccess extends ProfileState {
   @override
   List<Object?> get props => [message];
 }
+
+class ProfileUpdating extends ProfileState {}
+
+class ProfileEmpty extends ProfileState {}

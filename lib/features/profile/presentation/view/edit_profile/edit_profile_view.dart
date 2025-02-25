@@ -23,129 +23,159 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
-  late EditProfileController controller;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    controller = EditProfileController(widget.profile);
     print("🔹 الحساب الحالي: ${widget.profile.email}");
     _loadInitialData();
   }
 
   Future<void> _loadInitialData() async {
-    await Future.delayed(const Duration(milliseconds: 900));
-    if (mounted) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
+    if (!mounted) return;
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
+    try {
+      final cubit = context.read<ProfileCubit>();
+      print("📥 حالة الـ cubit الحالية: ${cubit.state}");
+
+      // تحميل البيانات مباشرة
+      await cubit.loadProfile();
+      print("📥 تم طلب تحميل البيانات");
+
+      if (!mounted) return;
+
+      // التحقق من الحالة
+      final currentState = cubit.state;
+      print("📥 الحالة الحالية: $currentState");
+
+      if (currentState is ProfileLoaded) {
+        setState(() => _isLoading = false);
+      } else if (currentState is ProfileError) {
+        CustomSnackbar.showError(
+          context: context,
+          message: currentState.message,
+        );
+        Navigator.pop(context);
+      } else {
+        print("⚠️ حالة غير متوقعة: $currentState");
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print("❌ خطأ في _loadInitialData: $e");
+      if (mounted) {
+        CustomSnackbar.showError(
+          context: context,
+          message: 'حدث خطأ في تحميل البيانات',
+        );
+        Navigator.pop(context);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(
-        appBar: CustomAppBar(
-          title: 'تعديل المعلومات الشخصية',
-        ),
-        body: Center(
-          child: CustomProgressIndcator(
-            color: AppColors.primary,
-          ),
-        ),
-      );
-    }
-
-    return BlocProvider.value(
-      value: sl<ProfileCubit>(),
-      child: BlocConsumer<ProfileCubit, ProfileState>(
-        listenWhen: (previous, current) =>
-            current is ProfileSuccess || current is ProfileError,
-        listener: (context, state) {
-          print("📢 الحساب: ${widget.profile.email}, الحالة الجديدة: $state");
-          if (state is ProfileSuccess) {
-            CustomSnackbar.showSuccess(
-              context: context,
-              message: state.message,
-            );
-            print("✅ تحديث ناجح للحساب: ${widget.profile.email}, الرسالة: ${state.message}");
-            if (state.message.contains('كلمة المرور')) {
-              controller.clearPasswordFields();
+    return BlocConsumer<ProfileCubit, ProfileState>(
+      listener: (context, state) {
+        print("👂 تغيرت الحالة إلى: $state");
+        
+        if (state is ProfileSuccess) {
+          CustomSnackbar.showSuccess(
+            context: context,
+            message: state.message,
+          );
+        } else if (state is ProfileError) {
+          Future.microtask(() {
+            if (mounted && context.mounted) {
+              CustomSnackbar.showError(
+                context: context,
+                message: state.message,
+              );
             }
-          } else if (state is ProfileError) {
-            CustomSnackbar.showError(
-              context: context,
-              message: state.message,
-            );
-            print("❌ خطأ في الحساب: ${widget.profile.email}, الخطأ: ${state.message}");
-          }
-        },
-        builder: (context, state) {
-          print("🔄 إعادة بناء UI للحساب: ${widget.profile.email}, الحالة: $state");
-          return Scaffold(
-            appBar: const CustomAppBar(
+          });
+          setState(() => _isLoading = false);
+        }
+      },
+      builder: (context, state) {
+        print("🔄 إعادة بناء UI للحساب: ${widget.profile.email}, الحالة: $state");
+
+        if (state is ProfileInitial || _isLoading || state is ProfileLoading) {
+          return const Scaffold(
+            appBar: CustomAppBar(
               title: 'تعديل المعلومات الشخصية',
             ),
-            body: Stack(
-              children: [
-                SingleChildScrollView(
-                  padding: const EdgeInsets.all(16),
-                  child: Form(
-                    key: controller.formKey,
-                    child: Column(
-                      children: [
-                        EditProfileForm(
-                          profile: widget.profile,
-                          nameController: controller.nameController,
-                          emailController: controller.emailController,
-                          phoneController: controller.phoneController,
-                        ),
-                        const SizedBox(height: 16),
-                        ChangePasswordForm(
-                          currentPasswordController:
-                              controller.currentPasswordController,
-                          newPasswordController:
-                              controller.newPasswordController,
-                          confirmPasswordController:
-                              controller.confirmPasswordController,
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: double.infinity,
-                          child: CustomButton(
-                            onPressed: state is! ProfileLoading
-                                ? () {
-                                    print("📝 بدء تحديث الحساب: ${widget.profile.email}");
-                                    controller.updateProfile(context);
-                                    
-                                  }
-                                : null,
-                            text: 'حفظ التغييرات',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                if (state is ProfileLoading)
-                  const Center(
-                    child: CustomProgressIndcator(
-                      color: AppColors.primary,
-                    ),
-                  ),
-              ],
+            body: Center(
+              child: CustomProgressIndcator(
+                color: AppColors.primary,
+              ),
             ),
           );
-        },
-      ),
+        }
+
+        // استخدام البيانات المحملة أو البيانات الأصلية
+        final profile = (state is ProfileLoaded) ? state.profile : widget.profile;
+        final controller = EditProfileController(profile);
+
+        return Scaffold(
+          appBar: const CustomAppBar(
+            title: 'تعديل المعلومات الشخصية',
+          ),
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    children: [
+                      EditProfileForm(
+                        profile: profile,
+                        nameController: controller.nameController,
+                        emailController: controller.emailController,
+                        phoneController: controller.phoneController,
+                      ),
+                      const SizedBox(height: 16),
+                      ChangePasswordForm(
+                        currentPasswordController:
+                            controller.currentPasswordController,
+                        newPasswordController:
+                            controller.newPasswordController,
+                        confirmPasswordController:
+                            controller.confirmPasswordController,
+                      ),
+                      const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: CustomButton(
+                          onPressed: state is! ProfileLoading
+                              ? () {
+                                  print("📝 بدء تحديث الحساب: ${profile.email}");
+                                  setState(() => _isLoading = true);
+                                  controller.updateProfile(context);
+                                }
+                              : null,
+                          text: 'حفظ التغييرات',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (state is ProfileLoading)
+                const Center(
+                  child: CustomProgressIndcator(
+                    color: AppColors.primary,
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

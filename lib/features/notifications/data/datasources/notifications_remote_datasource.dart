@@ -10,6 +10,7 @@ import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart
 abstract class NotificationsRemoteDataSource {
   Future<NotificationsResponse> getNotifications({int page = 1});
   Future<void> markAsRead(String notificationId);
+  Future<NotificationModel> getNotificationDetails(String id);
 }
 
 class NotificationsRemoteDataSourceImpl
@@ -27,49 +28,47 @@ class NotificationsRemoteDataSourceImpl
 
   @override
   Future<NotificationsResponse> getNotifications({int page = 1}) async {
-    return withTokenRefresh(
-      authRepository: authRepository,
-      cacheService: cacheService,
-      request: (token) async {
-        try {
-          final sessionCookie = await cacheService.getSessionCookie();
+    try {
+      print('🔍 جاري جلب الإشعارات...');
+      print('📄 الصفحة: $page');
 
-          final response = await client.get(
-            Uri.parse(ApiEndpoints.notifications),
-            headers: {
-              'Authorization': 'Bearer $token',
-              'x-api-key': ApiEndpoints.api_key,
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-              if (sessionCookie != null) 'Cookie': sessionCookie,
-            },
-          );
+      final token = await cacheService.getToken();
+      final sessionCookie = await cacheService.getSessionCookie();
+      
+      print('🔑 Token: $token');
+      print('🍪 Session Cookie: $sessionCookie');
 
-          final responseBody =
-              utf8.decode(response.bodyBytes); // لمعالجة الأحرف العربية
+      final response = await client.get(
+        Uri.parse(ApiEndpoints.notifications),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'x-api-key': ApiEndpoints.api_key,
+          'Accept': 'application/json',
+          if (sessionCookie != null) 'Cookie': sessionCookie,
+        },
+      );
 
-          if (response.statusCode == 200) {
-            final jsonResponse = json.decode(responseBody);
-            if (jsonResponse['success'] == true) {
-              return NotificationsResponse.fromJson(jsonResponse);
-            } else {
-              throw ServerException(
-                  message: jsonResponse['message'] ?? 'فشل في تحميل الإشعارات');
-            }
-          } else if (response.statusCode == 401) {
-            throw UnauthorizedException('يرجى تسجيل الدخول مرة أخرى');
-          } else {
-            throw ServerException(message: 'فشل في تحميل الإشعارات');
-          }
-        } catch (e, stackTrace) {
-          if (e is UnauthorizedException) {
-            rethrow;
-          }
-          throw ServerException(
-              message: 'حدث خطأ في تحميل الإشعارات، يرجى المحاولة مرة أخرى');
-        }
-      },
-    );
+      print('📥 Response Status: ${response.statusCode}');
+      print('📄 Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        print('✅ تم جلب الإشعارات بنجاح');
+        return NotificationsResponse.fromJson(jsonResponse);
+      } else {
+        print('❌ خطأ في استجابة الخادم: ${response.statusCode}');
+        throw ServerException(
+          message: json.decode(response.body)['message'] ?? 
+            'حدث خطأ في تحميل الإشعارات',
+        );
+      }
+    } catch (e, stackTrace) {
+      print('❌ خطأ غير متوقع: $e');
+      print('📚 Stack trace: $stackTrace');
+      throw ServerException(
+        message: 'حدث خطأ في تحميل الإشعارات، يرجى المحاولة مرة أخرى',
+      );
+    }
   }
 
   @override
@@ -78,26 +77,66 @@ class NotificationsRemoteDataSourceImpl
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
-        final sessionCookie = await cacheService.getSessionCookie();
+        try {
+          final response = await client.post(
+            Uri.parse('${ApiEndpoints.baseUrl}/notifications/$notificationId/read'),
+            headers: await _getHeaders(),
+          );
 
-        final response = await client.post(
-          Uri.parse(
-              '${ApiEndpoints.baseUrl}/notifications/$notificationId/read'),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            if (sessionCookie != null) 'Cookie': sessionCookie,
-          },
-        );
-
-        if (response.statusCode != 200) {
-          final error = json.decode(response.body);
+          if (response.statusCode != 200) {
+            final error = json.decode(response.body);
+            throw ServerException(
+              message: error['message'] ?? 'فشل في تحديث حالة الإشعار',
+            );
+          }
+        } catch (e) {
           throw ServerException(
-              message: error['message'] ?? 'فشل في تحديث حالة الإشعار');
+            message: 'حدث خطأ في تحديث حالة الإشعار',
+          );
         }
       },
     );
+  }
+
+  @override
+  Future<NotificationModel> getNotificationDetails(String id) async {
+    try {
+      final response = await client.get(
+        Uri.parse(ApiEndpoints.getNotificationPath(id)),
+        headers: await _getHeaders(),
+      );
+
+      if (response.statusCode == 200) {
+        return NotificationModel.fromJson(
+          json.decode(response.body)['data'],
+        );
+      } else {
+        throw ServerException(
+          message: json.decode(response.body)['message'] ?? 'حدث خطأ في الخادم',
+        );
+      }
+    } catch (e) {
+      throw ServerException(
+        message: 'حدث خطأ في الاتصال بالخادم',
+      );
+    }
+  }
+
+  Future<Map<String, String>> _getHeaders() async {
+    final token = await withTokenRefresh(
+      authRepository: authRepository,
+      cacheService: cacheService,
+      request: (token) async {
+        return {'Authorization': 'Bearer $token'};
+      },
+    );
+    final sessionCookie = await cacheService.getSessionCookie();
+    return {
+      'Authorization': 'Bearer $token',
+      'x-api-key': ApiEndpoints.api_key,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      if (sessionCookie != null) 'Cookie': sessionCookie,
+    };
   }
 }

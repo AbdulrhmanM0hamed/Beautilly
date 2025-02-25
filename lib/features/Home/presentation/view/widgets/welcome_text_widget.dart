@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/features/notifications/presentation/cubit/notifications_cubit.dart';
+import 'package:beautilly/core/services/notification/notification_service.dart';
 
 class WelcomeTextWidget extends StatefulWidget {
   const WelcomeTextWidget({super.key});
@@ -133,39 +134,71 @@ Widget _buildNotificationButton(BuildContext context) {
           context,
           PageRoutes.fadeScale(
             page: BlocProvider(
-              create: (context) =>
-                  sl<NotificationsCubit>()..loadNotifications(),
+              create: (context) => sl<NotificationsCubit>()..loadNotifications(),
               child:  NotificationsPage(),
             ),
           ),
-        );
+        ).then((_) {
+          // تصفير العداد عند العودة من صفحة الإشعارات
+          sl<NotificationService>().markAllAsRead();
+        });
       },
       borderRadius: BorderRadius.circular(20),
-      child: Container(
-        width: 33,
-        height: 33,
-        decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.15),
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.006),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+      child: Stack(
+        children: [
+          Container(
+            width: 33,
+            height: 33,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.15),
+              shape: BoxShape.circle,
             ),
-          ],
-        ),
-        child: Center(
-          child: SvgPicture.asset(
-            AppAssets.notificationIcon,
-            height: 30,
-            width: 30,
-            colorFilter: const ColorFilter.mode(
-              AppColors.primary,
-              BlendMode.srcIn,
+            child: Center(
+              child: SvgPicture.asset(
+                AppAssets.notificationIcon,
+                height: 30,
+                width: 30,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcIn,
+                ),
+              ),
             ),
           ),
-        ),
+          // عداد الإشعارات
+          StreamBuilder<int>(
+            stream: sl<NotificationService>().unreadCount,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data == 0) {
+                return const SizedBox();
+              }
+              return Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  constraints: const BoxConstraints(
+                    minWidth: 16,
+                    minHeight: 16,
+                  ),
+                  child: Text(
+                    snapshot.data! > 99 ? '99+' : '${snapshot.data}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     ),
   );

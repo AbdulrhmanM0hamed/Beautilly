@@ -335,8 +335,8 @@ class MyOrdersWidget extends StatelessWidget {
   }
 
   double _getChildAspectRatio(double width) {
-    if (width >= 1200) return 0.95;   // Desktop
-    if (width >= 800) return 0.80;    // Tablet
+    if (width >= 1000) return 0.98;   // Desktop
+    if (width >= 800) return 0.70;    // Tablet
     if (width > 600) return 0.75;     // Large Tablet
     if (width >= 400) return 0.65;    // Small Tablet
     return 0.60;                      // Mobile
@@ -483,10 +483,10 @@ class AllOrdersWidget extends StatelessWidget {
   }
 
   double _getChildAspectRatio(double width) {
-    if (width >= 1200) return 0.95;   // Desktop
-    if (width >= 800) return 0.80;    // Tablet
+    if (width >= 1000) return 0.95;   // Desktop
+    if (width >= 800) return 0.75;    // Tablet
     if (width > 600) return 0.75;     // Large Tablet
-    if (width >= 400) return 0.65;    // Small Tablet
+    if (width >= 400) return 0.60;    // Small Tablet
     return 0.60;                      // Mobile
   }
 }

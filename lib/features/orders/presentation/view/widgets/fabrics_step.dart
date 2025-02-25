@@ -48,7 +48,9 @@ class FabricsStep extends StatelessWidget {
             itemBuilder: (context, index) {
               final fabric = fabrics[index];
               return Card(
-                color: Theme.of(context).cardColor,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.grey[850]
+                    : Colors.white,
                 elevation: 2,
                 margin: const EdgeInsets.symmetric(vertical: 4),
                 child: ListTile(
@@ -61,11 +63,12 @@ class FabricsStep extends StatelessWidget {
                   title: Text(
                     fabric.type,
                     style: getBoldStyle(
-                        fontFamily: FontConstant.cairo,
-                        fontSize: 14,
-                        color: Theme.of(context).brightness == Brightness.light
-                            ? AppColors.black
-                            : AppColors.white),
+                      fontFamily: FontConstant.cairo,
+                      fontSize: 14,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black,
+                    ),
                   ),
                   trailing: GestureDetector(
                     onTap: () {
@@ -73,6 +76,7 @@ class FabricsStep extends StatelessWidget {
                     },
                     child: SvgPicture.asset(
                       "assets/icons/trash.svg",
+                 
                     ),
                   ),
                 ),

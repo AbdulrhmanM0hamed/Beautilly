@@ -54,51 +54,51 @@ class NearbyServiceCard extends StatelessWidget {
                         const Icon(Icons.error),
                   ),
                 ),
-                Positioned(
-                  bottom: 10,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppColors.white,
-                      borderRadius: const BorderRadius.horizontal(
-                        left: Radius.circular(16),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset(
-                          AppAssets.Location,
-                          colorFilter: const ColorFilter.mode(
-                            AppColors.accent,
-                            BlendMode.srcIn,
-                          ),
-                          width: 12,
-                          height: 12,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '1.2 كم',
-                          style: getBoldStyle(
-                            color: AppColors.accent,
-                            fontSize: FontSize.size12,
-                            fontFamily: FontConstant.cairo,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // Positioned(
+                //   bottom: 10,
+                //   child: Container(
+                //     padding: const EdgeInsets.symmetric(
+                //       horizontal: 8,
+                //       vertical: 4,
+                //     ),
+                //     decoration: BoxDecoration(
+                //       color: AppColors.white,
+                //       borderRadius: const BorderRadius.horizontal(
+                //         left: Radius.circular(16),
+                //       ),
+                //       boxShadow: [
+                //         BoxShadow(
+                //           color: Colors.black.withOpacity(0.1),
+                //           blurRadius: 4,
+                //           offset: const Offset(0, 2),
+                //         ),
+                //       ],
+                //     ),
+                //     child: Row(
+                //       mainAxisSize: MainAxisSize.min,
+                //       children: [
+                //         SvgPicture.asset(
+                //           AppAssets.Location,
+                //           colorFilter: const ColorFilter.mode(
+                //             AppColors.accent,
+                //             BlendMode.srcIn,
+                //           ),
+                //           width: 12,
+                //           height: 12,
+                //         ),
+                //         const SizedBox(width: 4),
+                //         Text(
+                //           '1.2 كم',
+                //           style: getBoldStyle(
+                //             color: AppColors.accent,
+                //             fontSize: FontSize.size12,
+                //             fontFamily: FontConstant.cairo,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ],
             ),
             Expanded(

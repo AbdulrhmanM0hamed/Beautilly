@@ -19,13 +19,11 @@ class NotificationsLoadingMore extends NotificationsState {
 
 class NotificationsLoaded extends NotificationsState {
   final List<NotificationEntity> notifications;
-  final PaginationEntity pagination;
-  final String? fcmToken;
+  final int unreadCount;
 
   NotificationsLoaded({
     required this.notifications,
-    required this.pagination,
-    this.fcmToken,
+    required this.unreadCount,
   });
 }
 

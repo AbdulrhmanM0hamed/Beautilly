@@ -44,11 +44,19 @@ class ApiEndpoints {
   static const String unfollow = '$baseUrl/unfollow?api_key=$api_key';
 
   // الإشعارات
-  static const String notifications =
-      '$baseUrl/notifications?api_key=$api_key'; // قائمة الإشعارات
-  static const String markNotificationRead =
-      '$baseUrl/notifications/read/?api_key=$api_key'; // تحديد إشعار كمقروء
+  static const String notifications = '$baseUrl/notifications?api_key=$api_key'; // قائمة الإشعارات
+  static const String notificationDetails = '$baseUrl/notifications/{id}?api_key=$api_key'; // تفاصيل إشعار محدد
+  static const String markNotificationRead = '$baseUrl/notifications/{id}/read?api_key=$api_key'; // تحديد إشعار كمقروء
   static const String refreshToken = '$baseUrl/auth/refresh';
+  // دالة مساعدة لتكوين مسار الإشعار
+  static String getNotificationPath(String id) {
+    return notificationDetails.replaceAll('{id}', id);
+  }
+
+  // دالة مساعدة لتكوين مسار تحديد الإشعار كمقروء
+  static String getMarkNotificationReadPath(String id) {
+    return '$baseUrl/notifications/$id/read?api_key=$api_key';
+  }
 
   // الباقات والاشتراكات
   static const String packages =

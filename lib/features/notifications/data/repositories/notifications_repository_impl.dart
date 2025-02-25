@@ -30,25 +30,16 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
           NotificationEntity(
             id: notification.id,
             type: notification.type,
-            data: NotificationDataEntity(
-              message: notification.data.message,
-              reservationId: notification.data.reservationId,
-              status: notification.data.status,
-              timestamp: notification.data.timestamp,
-              read: notification.data.read,
-            ),
-            readAt: notification.readAt,
-            createdAt: notification.createdAt,
-            updatedAt: notification.updatedAt,
+            message: notification.message,
+            reservationId: notification.reservationId,
+            orderId: notification.orderId,
+            read: notification.read,
+            readAt: notification.readAt != null ? DateTime.parse(notification.readAt!) : null,
+            createdAt: DateTime.parse(notification.createdAt),
+            status: notification.status,
           )
         ).toList(),
-        pagination: PaginationEntity(
-          currentPage: response.pagination.currentPage,
-          lastPage: response.pagination.lastPage,
-          perPage: response.pagination.perPage,
-          total: response.pagination.total,
-        ),
-        fcmToken: response.fcmToken,
+        unreadCount: response.unreadCount,
       ));
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));

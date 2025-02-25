@@ -22,13 +22,13 @@ class _NotificationItemState extends State<NotificationItem> {
   void initState() {
     super.initState();
     // تحديث حالة الإشعار إلى "مقروء" عند عرضه لأول مرة
-    if (!widget.notification.data.read) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        context
-            .read<NotificationsCubit>()
-            .markNotificationAsRead(widget.notification.id);
-      });
-    }
+    // if (!widget.notification.data.read) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     context
+    //         .read<NotificationsCubit>()
+    //         .markNotificationAsRead(widget.notification.id);
+    //   });
+    // }
   }
 
   @override
@@ -38,7 +38,7 @@ class _NotificationItemState extends State<NotificationItem> {
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: widget.notification.data.read
+        side: widget.notification.read
             ? BorderSide.none
             : BorderSide(
                 color: Theme.of(context).primaryColor.withOpacity(0.3),
@@ -46,11 +46,11 @@ class _NotificationItemState extends State<NotificationItem> {
       ),
       child: InkWell(
         onTap: () {
-          if (!widget.notification.data.read) {
-            context
-                .read<NotificationsCubit>()
-                .markNotificationAsRead(widget.notification.id);
-          }
+          // if (!widget.notification.data.read) {
+          //   context
+          //       .read<NotificationsCubit>()
+          //       .markNotificationAsRead(widget.notification.id);
+          // }
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
@@ -65,7 +65,7 @@ class _NotificationItemState extends State<NotificationItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.notification.data.message,
+                      widget.notification.message,
                       style: getMediumStyle(
                         fontSize: 15,
                         fontFamily: FontConstant.cairo,
@@ -79,7 +79,7 @@ class _NotificationItemState extends State<NotificationItem> {
                           _buildStatusChip(),
                         const Spacer(),
                         Text(
-                          _getTimeAgo(widget.notification.data.timestamp),
+                          _getTimeAgo(widget.notification.createdAt),
                           style:
                               Theme.of(context).textTheme.bodySmall?.copyWith(
                                     color: Colors.grey[600],
@@ -105,7 +105,7 @@ class _NotificationItemState extends State<NotificationItem> {
     switch (widget.notification.type) {
       case 'App\\Notifications\\ReservationStatusUpdated':
         iconData = Icons.event_available;
-        iconColor = _getStatusColor(widget.notification.data.status);
+        iconColor = _getStatusColor(widget.notification.status);
         label = 'حجز';
         break;
       case 'App\\Notifications\\DiscountCreatedNotification':
@@ -146,7 +146,7 @@ class _NotificationItemState extends State<NotificationItem> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: _getStatusColor(widget.notification.data.status).withOpacity(0.1),
+        color: _getStatusColor(widget.notification.status).withOpacity(0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -156,16 +156,16 @@ class _NotificationItemState extends State<NotificationItem> {
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: _getStatusColor(widget.notification.data.status),
+              color: _getStatusColor(widget.notification.status),
               shape: BoxShape.circle,
             ),
           ),
           const SizedBox(width: 6),
           Text(
-            _getStatusText(widget.notification.data.status),
+            _getStatusText(widget.notification.status),
             style: TextStyle(
               fontSize: 12,
-              color: _getStatusColor(widget.notification.data.status),
+              color: _getStatusColor(widget.notification.status),
               fontWeight: FontWeight.w500,
             ),
           ),

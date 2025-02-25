@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:beautilly/core/utils/constant/api_endpoints.dart';
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
@@ -23,6 +24,11 @@ class NotificationService {
   StreamSubscription? _reservationNotificationsSubscription;
   StreamSubscription? _userNotificationsSubscription;
   final AuthRepository authRepository;
+
+  // إضافة متغير لعدد الإشعارات
+  final StreamController<int> _unreadCountController = StreamController<int>.broadcast();
+  Stream<int> get unreadCount => _unreadCountController.stream;
+  int _currentUnreadCount = 0;
 
   NotificationService({
     required this.navigatorKey,
@@ -61,11 +67,13 @@ class NotificationService {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setInt(_lastLoginKey, loginTime);
 
+        // إضافة تحديث العداد عند بدء التطبيق
+        await _updateUnreadCount();
+        
+        // تحديث العداد عند استلام إشعار جديد
         FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-          //print('📬 Received foreground message:');
-          //print('Data: ${message.data}');
-          //print('Notification: ${message.notification?.title}');
           _handleMessage(message, userId);
+          _incrementUnreadCount();
         });
 
         // الاستماع للإشعارات
@@ -284,6 +292,7 @@ class NotificationService {
   Future<void> dispose() async {
     await _reservationNotificationsSubscription?.cancel();
     await _userNotificationsSubscription?.cancel();
+    _unreadCountController.close();
   }
 
   Future<void> _listenToNotifications() async {
@@ -325,5 +334,37 @@ class NotificationService {
     } catch (e) {
       //print('❌ Error refreshing token: $e');
     }
+  }
+
+  void _incrementUnreadCount() {
+    _currentUnreadCount++;
+    _unreadCountController.add(_currentUnreadCount);
+  }
+
+  Future<void> _updateUnreadCount() async {
+    try {
+      final token = await _cacheService.getToken();
+      final response = await http.get(
+        Uri.parse('${ApiEndpoints.notifications}/unread-count'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final count = json.decode(response.body)['count'] as int;
+        _currentUnreadCount = count;
+        _unreadCountController.add(count);
+      }
+    } catch (e) {
+      print('❌ Error updating unread count: $e');
+    }
+  }
+
+  // تصفير العداد عند قراءة كل الإشعارات
+  void markAllAsRead() {
+    _currentUnreadCount = 0;
+    _unreadCountController.add(0);
   }
 }

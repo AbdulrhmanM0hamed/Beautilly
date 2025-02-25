@@ -1,4 +1,3 @@
-import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
@@ -28,7 +27,6 @@ class _EditProfileViewState extends State<EditProfileView> {
   @override
   void initState() {
     super.initState();
-    print("🔹 الحساب الحالي: ${widget.profile.email}");
     _loadInitialData();
   }
 
@@ -37,17 +35,14 @@ class _EditProfileViewState extends State<EditProfileView> {
 
     try {
       final cubit = context.read<ProfileCubit>();
-      print("📥 حالة الـ cubit الحالية: ${cubit.state}");
 
       // تحميل البيانات مباشرة
       await cubit.loadProfile();
-      print("📥 تم طلب تحميل البيانات");
 
       if (!mounted) return;
 
       // التحقق من الحالة
       final currentState = cubit.state;
-      print("📥 الحالة الحالية: $currentState");
 
       if (currentState is ProfileLoaded) {
         setState(() => _isLoading = false);
@@ -58,11 +53,9 @@ class _EditProfileViewState extends State<EditProfileView> {
         );
         Navigator.pop(context);
       } else {
-        print("⚠️ حالة غير متوقعة: $currentState");
         Navigator.pop(context);
       }
     } catch (e) {
-      print("❌ خطأ في _loadInitialData: $e");
       if (mounted) {
         CustomSnackbar.showError(
           context: context,
@@ -77,7 +70,6 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
-        print("👂 تغيرت الحالة إلى: $state");
         
         if (state is ProfileSuccess) {
           CustomSnackbar.showSuccess(
@@ -97,7 +89,6 @@ class _EditProfileViewState extends State<EditProfileView> {
         }
       },
       builder: (context, state) {
-        print("🔄 إعادة بناء UI للحساب: ${widget.profile.email}, الحالة: $state");
 
         if (state is ProfileInitial || _isLoading || state is ProfileLoading) {
           return const Scaffold(
@@ -149,7 +140,6 @@ class _EditProfileViewState extends State<EditProfileView> {
                         child: CustomButton(
                           onPressed: state is! ProfileLoading
                               ? () {
-                                  print("📝 بدء تحديث الحساب: ${profile.email}");
                                   setState(() => _isLoading = true);
                                   controller.updateProfile(context);
                                 }

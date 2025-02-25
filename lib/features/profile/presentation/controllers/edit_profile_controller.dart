@@ -151,7 +151,6 @@ class EditProfileController {
   }
 
   void _showSuccessMessage(BuildContext context) {
-    print('🔄 Showing success message for user: ${profile.email}');
     CustomSnackbar.showSuccess(
       context: context,
       message: 'تم تحديث البيانات بنجاح',

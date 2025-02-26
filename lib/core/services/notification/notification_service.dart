@@ -179,24 +179,24 @@ class NotificationService {
         if (event.snapshot.exists) {
           final data = Map<String, dynamic>.from(event.snapshot.value as Map);
           
-          print('📦 New offer notification: $data'); // للتأكد من وصول البيانات
+          // التحقق من أن الإشعار للمستخدم الحالي
+          final notificationUserId = data['user_id']?.toString() ?? userId.toString();
           
-          // عرض الإشعار
-          _showLocalNotification(
-            title: data['title'] ?? 'عرض جديد',
-            body: data['body'] ?? '',  // استخدام body مباشرة للعروض
-            payload: '/orders/${data["order_id"]}',
-          );
+          if (notificationUserId == userId.toString()) {
+            print('📦 New offer notification for user $userId: $data');
+            
+            _showLocalNotification(
+              title: data['title'] ?? 'عرض جديد',
+              body: data['body'] ?? '',
+              payload: '/orders/${data["order_id"]}',
+            );
 
-          // تحديث العداد
-          _incrementUnreadCount();
-          
-          // تحديث حالة القراءة
-          await event.snapshot.ref.update({'read': true});
+            _incrementUnreadCount();
+            await event.snapshot.ref.update({'read': true});
+          }
         }
       } catch (e) {
         print('❌ Error processing offer notification: $e');
-        print('Data received: ${event.snapshot.value}');
       }
     });
 

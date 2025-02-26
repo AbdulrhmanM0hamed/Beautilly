@@ -1,6 +1,6 @@
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
-import 'package:beautilly/features/nearby/presentation/view/widgets/location_permission_dialog.dart';
+import 'package:beautilly/core/utils/widgets/location_permission_dialog.dart';
 import 'package:beautilly/features/nearby/presentation/view/widgets/discover_bottom_sheet.dart';
 import 'package:beautilly/features/nearby/presentation/view/widgets/discover_filter_chips.dart';
 import 'package:beautilly/features/nearby/presentation/view/widgets/discover_location_button.dart';
@@ -38,10 +38,10 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const LocationPermissionDialog(),
-    ).then((_) {
-      _getCurrentLocation();
-    });
+      builder: (context) => LocationPermissionDialog(
+        onGranted: _getCurrentLocation,
+      ),
+    );
   }
 
   void _getCurrentLocation() async {
@@ -120,6 +120,30 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
         ),
       ),
     );
+  }
+
+  void _handleLocationTap() async {
+    final permission = await Geolocator.checkPermission();
+    
+    if (permission == LocationPermission.denied) {
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => LocationPermissionDialog(
+            onGranted: () {
+              
+              // تنفيذ ما نريد بعد الموافقة على الإذن
+              _getCurrentLocation();
+            },
+          ),
+        );
+      }
+    } else if (permission == LocationPermission.deniedForever) {
+      // فتح إعدادات التطبيق
+      await Geolocator.openAppSettings();
+    } else {
+      _getCurrentLocation();
+    }
   }
 
   @override

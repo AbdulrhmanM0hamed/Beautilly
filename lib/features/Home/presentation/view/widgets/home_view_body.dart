@@ -5,6 +5,8 @@ import 'package:beautilly/features/Home/presentation/cubit/discounts_cubit/disco
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/statistics_cubit/statistics_cubit.dart';
+import 'package:beautilly/features/Home/presentation/view/all_fashion_houses_view.dart';
+import 'package:beautilly/features/Home/presentation/view/all_premium_salons_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/services_grid_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/special_view_list_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/welcome_text_widget.dart';
@@ -111,12 +113,51 @@ class HomeViewBody extends StatelessWidget {
                 const SizedBox(height: 16.0),
                 const ServicesGridView(maxItems: 4),
                 const SizedBox(height: 22.0),
-                Text(
-                  'أشهر صالونات التجميل',
-                  style: getBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size16,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'أشهر صالونات التجميل',
+                      style: getBoldStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size16,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          PageRoutes.fadeScale(
+                            page: const AllPremiumSalonsView(),
+                          ),
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'عرض المزيد',
+                            style: getMediumStyle(
+                              fontFamily: FontConstant.cairo,
+                              fontSize: FontSize.size14,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 14,
+                            color: AppColors.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16.0),
                 const PopularSalonsListView(),
@@ -130,12 +171,52 @@ class HomeViewBody extends StatelessWidget {
                 // const SizedBox(height: 16.0),
                 //   const MostSearchInterest(),
                 //   const SizedBox(height: 20.0),
-                Text(
-                  'دور الأزياء والتفصيل',
-                  style: getBoldStyle(
-                    fontFamily: FontConstant.cairo,
-                    fontSize: FontSize.size16,
-                  ),
+             
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'دور الأزياء والتفصيل',
+                      style: getBoldStyle(
+                        fontFamily: FontConstant.cairo,
+                        fontSize: FontSize.size16,
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          PageRoutes.fadeScale(
+                            page: const AllFashionHousesView(),
+                          ),
+                        );
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'عرض المزيد',
+                            style: getMediumStyle(
+                              fontFamily: FontConstant.cairo,
+                              fontSize: FontSize.size14,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 14,
+                            color: AppColors.primary,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16.0),
                 const FashionHousesListView(),

@@ -48,10 +48,10 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
         if (state is PremiumShopsLoaded) {
           return SizedBox(
             height: isDesktop
-                ? 330
+                ? 320
                 : isTablet
-                    ? 290
-                    : 260,
+                    ? 280
+                    : 250,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: state.shops.length,

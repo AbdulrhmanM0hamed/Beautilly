@@ -163,7 +163,7 @@ class _LoadingStats extends StatelessWidget {
               width: 24,
               height: 24,
               decoration: BoxDecoration(
-                color: isDark ? Colors.grey[200] : Colors.grey[800],
+                color: isDark ?  Colors.grey[800] : Colors.grey[200],
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
@@ -172,7 +172,7 @@ class _LoadingStats extends StatelessWidget {
               width: 30,
               height: 20,
               decoration: BoxDecoration(
-                color: isDark ? Colors.grey[200] : Colors.grey[800],
+                color: isDark ? Colors.grey[800] : Colors.grey[200],
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -181,7 +181,7 @@ class _LoadingStats extends StatelessWidget {
               width: 50,
               height: 12,
               decoration: BoxDecoration(
-                color: isDark ? Colors.grey[200] : Colors.grey[800],
+                color: isDark ? Colors.grey[800] : Colors.grey[200],
                 borderRadius: BorderRadius.circular(4),
               ),
             ),

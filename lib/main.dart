@@ -34,6 +34,8 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   // تهيئة Firebase Database
   FirebaseDatabase.instance.setPersistenceEnabled(true);
+
+  
   if (kDebugMode) {
     FirebaseDatabase.instance.setLoggingEnabled(true);
   }

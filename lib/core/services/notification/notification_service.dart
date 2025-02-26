@@ -166,42 +166,33 @@ class NotificationService {
   }
 
   void _listenToUserNotifications(int userId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final lastLogin = prefs.getInt(_lastLoginKey) ?? 0;
+    final lastLogin = await SharedPreferences.getInstance()
+        .then((prefs) => prefs.getInt(_lastLoginKey) ?? 0);
     
-    // الاستماع لإشعارات العروض
     _userNotificationsSubscription = _database
         .ref('notifications/users')
         .child(userId.toString())
         .orderByChild('timestamp')
-        .startAfter(lastLogin)  // فقط الإشعارات الجديدة بعد آخر تسجيل دخول
+        .startAfter(lastLogin)
         .onChildAdded
         .listen((event) async {
       try {
-        if (event.snapshot.exists) {
+        if (event.snapshot.value != null) {
           final data = Map<String, dynamic>.from(event.snapshot.value as Map);
-          final timestamp = data['timestamp'] as int;
           
-          // التحقق من أن الإشعار للمستخدم الحالي وجديد
-          final notificationUserId = data['user_id']?.toString() ?? userId.toString();
-          final lastTimestamp = int.tryParse(
-            await _cacheService.getLastNotificationTimestamp() ?? '0'
-          ) ?? 0;
-          
-          if (notificationUserId == userId.toString() && timestamp > lastTimestamp) {
+          if (data['order_id'] != null) {
             _showLocalNotification(
               title: data['title'] ?? 'عرض جديد',
               body: data['body'] ?? '',
               payload: '/orders/${data["order_id"]}',
             );
-
+            
             _incrementUnreadCount();
             await event.snapshot.ref.update({'read': true});
-            await _cacheService.saveLastNotificationTimestamp(timestamp.toString());
           }
         }
       } catch (e) {
-   //     print('❌ Error processing offer notification: $e');
+        //print('❌ Error processing offer notification: $e');
       }
     });
 

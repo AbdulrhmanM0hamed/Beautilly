@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:beautilly/core/error/exceptions.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
-import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/constant/api_endpoints.dart';
 import 'package:beautilly/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:dartz/dartz.dart';

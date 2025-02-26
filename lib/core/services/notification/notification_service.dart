@@ -173,18 +173,22 @@ class NotificationService {
     _userNotificationsSubscription = _database
         .ref('notifications/users')
         .child(userId.toString())
+        .orderByChild('timestamp')
+        .startAfter(lastLogin)  // فقط الإشعارات الجديدة بعد آخر تسجيل دخول
         .onChildAdded
         .listen((event) async {
       try {
         if (event.snapshot.exists) {
           final data = Map<String, dynamic>.from(event.snapshot.value as Map);
+          final timestamp = data['timestamp'] as int;
           
-          // التحقق من أن الإشعار للمستخدم الحالي
+          // التحقق من أن الإشعار للمستخدم الحالي وجديد
           final notificationUserId = data['user_id']?.toString() ?? userId.toString();
+          final lastTimestamp = int.tryParse(
+            await _cacheService.getLastNotificationTimestamp() ?? '0'
+          ) ?? 0;
           
-          if (notificationUserId == userId.toString()) {
-            print('📦 New offer notification for user $userId: $data');
-            
+          if (notificationUserId == userId.toString() && timestamp > lastTimestamp) {
             _showLocalNotification(
               title: data['title'] ?? 'عرض جديد',
               body: data['body'] ?? '',
@@ -193,10 +197,11 @@ class NotificationService {
 
             _incrementUnreadCount();
             await event.snapshot.ref.update({'read': true});
+            await _cacheService.saveLastNotificationTimestamp(timestamp.toString());
           }
         }
       } catch (e) {
-        print('❌ Error processing offer notification: $e');
+   //     print('❌ Error processing offer notification: $e');
       }
     });
 
@@ -222,7 +227,7 @@ class NotificationService {
           }
         }
       } catch (e) {
-        print('❌ Error processing reservation notification: $e');
+     //   print('❌ Error processing reservation notification: $e');
       }
     });
   }

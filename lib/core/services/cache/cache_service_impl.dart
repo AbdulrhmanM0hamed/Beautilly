@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'cache_service.dart';
 
 class CacheServiceImpl implements CacheService {
-  
   final SharedPreferences _prefs;
   static const String _tokenKey = 'token';
   static const String _userKey = 'user';
@@ -27,7 +26,7 @@ class CacheServiceImpl implements CacheService {
     try {
       await _prefs.setString(_userKey, jsonEncode(user));
     } catch (e) {
-      print('❌ Error saving user: $e');
+      //  print('❌ Error saving user: $e');
     }
   }
 
@@ -51,7 +50,7 @@ class CacheServiceImpl implements CacheService {
     await _prefs.remove(_sessionCookieKey);
     await _prefs.remove(_userKey);
     await _prefs.remove(_lastNotificationKey);
-    
+
     if (!(await getRememberMe())) {
       await clearLoginCredentials();
     }
@@ -72,26 +71,26 @@ class CacheServiceImpl implements CacheService {
     try {
       final userStr = _prefs.getString(_userKey);
       if (userStr == null) {
-        print('🔍 No user data found in cache');
+        //print('🔍 No user data found in cache');
         return null;
       }
 
       final userData = jsonDecode(userStr) as Map<String, dynamic>;
       final userId = userData['id'] as int?;
-      
-      print('📱 Retrieved user ID from cache: $userId');
+
+      //print('📱 Retrieved user ID from cache: $userId');
       return userId;
     } catch (e) {
-      print('❌ Error getting user ID: $e');
+      //print('❌ Error getting user ID: $e');
       return null;
     }
   }
-  
+
   @override
   Future<String?> getRefreshToken() async {
     return _prefs.getString(_refreshTokenKey);
   }
-  
+
   @override
   Future<void> saveRefreshToken(String token) async {
     await _prefs.setString(_refreshTokenKey, token);
@@ -111,7 +110,7 @@ class CacheServiceImpl implements CacheService {
   Future<Map<String, String>?> getLoginCredentials() async {
     final email = _prefs.getString(_emailKey);
     final password = _prefs.getString(_passwordKey);
-    
+
     if (email != null && password != null) {
       return {
         'email': email,

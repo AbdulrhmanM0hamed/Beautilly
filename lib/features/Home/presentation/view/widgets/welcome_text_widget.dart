@@ -167,7 +167,7 @@ Widget _buildNotificationButton(BuildContext context) {
             initialData: sl<NotificationService>().currentUnreadCount,
             builder: (context, snapshot) {
               final count = snapshot.data ?? 0;
-              print('🏷️ Badge count: $count');
+            //  print('🏷️ Badge count: $count');
               
               if (count == 0) return const SizedBox.shrink();
               

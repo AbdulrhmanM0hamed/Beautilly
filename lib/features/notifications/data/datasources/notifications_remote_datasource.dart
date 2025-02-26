@@ -29,14 +29,14 @@ class NotificationsRemoteDataSourceImpl
   @override
   Future<NotificationsResponse> getNotifications({int page = 1}) async {
     try {
-      print('🔍 جاري جلب الإشعارات...');
-      print('📄 الصفحة: $page');
+      //     print('🔍 جاري جلب الإشعارات...');
+      //     print('📄 الصفحة: $page');
 
       final token = await cacheService.getToken();
       final sessionCookie = await cacheService.getSessionCookie();
-      
-      print('🔑 Token: $token');
-      print('🍪 Session Cookie: $sessionCookie');
+
+      //    print('🔑 Token: $token');
+      //     print('🍪 Session Cookie: $sessionCookie');
 
       final response = await client.get(
         Uri.parse(ApiEndpoints.notifications),
@@ -48,23 +48,23 @@ class NotificationsRemoteDataSourceImpl
         },
       );
 
-      print('📥 Response Status: ${response.statusCode}');
-      print('📄 Response Body: ${response.body}');
+      //    print('📥 Response Status: ${response.statusCode}');
+      //  print('📄 Response Body: ${response.body}');
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
-        print('✅ تم جلب الإشعارات بنجاح');
+        //    print('✅ تم جلب الإشعارات بنجاح');
         return NotificationsResponse.fromJson(jsonResponse);
       } else {
-        print('❌ خطأ في استجابة الخادم: ${response.statusCode}');
+        //    print('❌ خطأ في استجابة الخادم: ${response.statusCode}');
         throw ServerException(
-          message: json.decode(response.body)['message'] ?? 
-            'حدث خطأ في تحميل الإشعارات',
+          message: json.decode(response.body)['message'] ??
+              'حدث خطأ في تحميل الإشعارات',
         );
       }
     } catch (e, stackTrace) {
-      print('❌ خطأ غير متوقع: $e');
-      print('📚 Stack trace: $stackTrace');
+      // print('❌ خطأ غير متوقع: $e');
+      // print('📚 Stack trace: $stackTrace');
       throw ServerException(
         message: 'حدث خطأ في تحميل الإشعارات، يرجى المحاولة مرة أخرى',
       );
@@ -79,7 +79,8 @@ class NotificationsRemoteDataSourceImpl
       request: (token) async {
         try {
           final response = await client.post(
-            Uri.parse('${ApiEndpoints.baseUrl}/notifications/$notificationId/read'),
+            Uri.parse(
+                '${ApiEndpoints.baseUrl}/notifications/$notificationId/read'),
             headers: await _getHeaders(),
           );
 

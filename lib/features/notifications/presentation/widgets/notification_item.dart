@@ -1,9 +1,13 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/features/orders/domain/entities/order_details.dart';
+import 'package:beautilly/features/orders/presentation/cubit/order_details_cubit/order_details_state.dart';
+import 'package:beautilly/features/orders/presentation/view/order_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/notification.dart';
 import '../cubit/notifications_cubit.dart';
+import 'package:beautilly/features/orders/presentation/cubit/order_details_cubit/order_details_cubit.dart';
 
 class NotificationItem extends StatefulWidget {
   final NotificationEntity notification;
@@ -45,12 +49,28 @@ class _NotificationItemState extends State<NotificationItem> {
                 width: 1),
       ),
       child: InkWell(
-        onTap: () {
-          // if (!widget.notification.data.read) {
-          //   context
-          //       .read<NotificationsCubit>()
-          //       .markNotificationAsRead(widget.notification.id);
-          // }
+        onTap: () async {
+          if (widget.notification.orderId != null) {
+            // جلب تفاصيل الطلب أولاً
+            await context
+                .read<OrderDetailsCubit>()
+                .getOrderDetails(widget.notification.orderId!);
+
+            if (context.mounted) {
+              final state = context.read<OrderDetailsCubit>().state;
+              if (state is OrderDetailsSuccess) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OrderDetailsView(
+                      orderDetails: state.orderDetails,
+                      isMyOrder: true,
+                    ),
+                  ),
+                );
+              }
+            }
+          }
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(

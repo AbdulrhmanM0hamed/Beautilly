@@ -180,7 +180,7 @@ class NotificationService {
         if (event.snapshot.value != null) {
           final data = Map<String, dynamic>.from(event.snapshot.value as Map);
           
-          if (data['order_id'] != null) {
+          if (data['order_id'] != null && data['read'] == false) {  // التحقق من حالة القراءة
             _showLocalNotification(
               title: data['title'] ?? 'عرض جديد',
               body: data['body'] ?? '',
@@ -188,37 +188,10 @@ class NotificationService {
             );
             
             _incrementUnreadCount();
-            await event.snapshot.ref.update({'read': true});
           }
         }
       } catch (e) {
         //print('❌ Error processing offer notification: $e');
-      }
-    });
-
-    // الاستماع لإشعارات الحجوزات
-    _database
-        .ref('notifications')
-        .child(userId.toString())
-        .onChildAdded
-        .listen((event) async {
-      try {
-        if (event.snapshot.exists && event.snapshot.value != null) {
-          final data = Map<String, dynamic>.from(event.snapshot.value as Map);
-          
-          if (data['read'] == false) {
-            _showLocalNotification(
-              title: 'تحديث حالة الحجز',
-              body: data['message'] ?? '',
-              payload: '/reservation/${data["reservation_id"]}',
-            );
-            
-            _incrementUnreadCount();
-            await event.snapshot.ref.update({'read': true});
-          }
-        }
-      } catch (e) {
-     //   print('❌ Error processing reservation notification: $e');
       }
     });
   }
@@ -381,6 +354,13 @@ class NotificationService {
     }
   }
 
+  void _decrementUnreadCount() {
+    if (_unreadCountController?.isClosed == false) {
+      _currentUnreadCount--;
+      _unreadCountController?.add(_currentUnreadCount);
+    }
+  }
+
   Future<void> _updateUnreadCount(int userId) async {
     try {
       final snapshot = await _database
@@ -413,7 +393,56 @@ class NotificationService {
       final userId = _cacheService.getUserId();
       if (userId == null) return;
 
-      final ref = _database.ref('notifications').child(userId.toString());
+      // تحديث إشعارات الحجوزات
+      final reservationsRef = _database.ref('notifications').child(userId.toString());
+      final reservationsSnapshot = await reservationsRef.get();
+      
+      // تحديث إشعارات عروض الطلبات
+      final offersRef = _database.ref('notifications/users').child(userId.toString());
+      final offersSnapshot = await offersRef.get();
+
+      final updates = <String, dynamic>{};
+
+      // تحديث إشعارات الحجوزات
+      if (reservationsSnapshot.exists) {
+        final data = Map<String, dynamic>.from(reservationsSnapshot.value as Map);
+        data.forEach((key, value) {
+          if (value is Map && value['read'] == false) {
+            updates['$key/read'] = true;
+          }
+        });
+        if (updates.isNotEmpty) {
+          await reservationsRef.update(updates);
+        }
+      }
+
+      // تحديث إشعارات عروض الطلبات
+      if (offersSnapshot.exists) {
+        final data = Map<String, dynamic>.from(offersSnapshot.value as Map);
+        data.forEach((key, value) {
+          if (value is Map && value['read'] == false) {
+            updates['$key/read'] = true;
+          }
+        });
+        if (updates.isNotEmpty) {
+          await offersRef.update(updates);
+        }
+      }
+
+      // تصفير العداد
+      if (_unreadCountController?.isClosed == false) {
+        _currentUnreadCount = 0;
+        _unreadCountController?.add(0);
+      }
+    } catch (e) {
+      //print('❌ Error marking notifications as read: $e');
+    }
+  }
+
+  // دالة جديدة لتحديث حالة القراءة عند فتح صفحة الإشعارات
+  Future<void> markNotificationsAsRead(int userId) async {
+    try {
+      final ref = _database.ref('notifications/users').child(userId.toString());
       final snapshot = await ref.get();
       
       if (snapshot.exists) {
@@ -435,7 +464,7 @@ class NotificationService {
         }
       }
     } catch (e) {
-   //   print('❌ Error marking notifications as read: $e');
+      //print('❌ Error marking notifications as read: $e');
     }
   }
 }

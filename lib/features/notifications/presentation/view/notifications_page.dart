@@ -32,6 +32,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   Future<void> _markNotificationsAsRead() async {
     // استخدام الدالة المحدثة من NotificationService
     await GetIt.I<NotificationService>().markAllAsRead();
+    
   }
 
   @override

@@ -63,7 +63,7 @@ class DiscountServiceModel extends DiscountService {
         price: json['price']?.toString() ?? '0',
       );
       return service;
-    } catch (e, stackTrace) {
+    } catch (e) {
    
       rethrow;
     }

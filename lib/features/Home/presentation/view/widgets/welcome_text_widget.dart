@@ -135,64 +135,66 @@ Widget _buildNotificationButton(BuildContext context) {
           PageRoutes.fadeScale(
             page: BlocProvider(
               create: (context) => sl<NotificationsCubit>()..loadNotifications(),
-              child:  NotificationsPage(),
+              child: NotificationsPage(),
             ),
           ),
         ).then((_) {
-          // تصفير العداد عند العودة من صفحة الإشعارات
           sl<NotificationService>().markAllAsRead();
         });
       },
       borderRadius: BorderRadius.circular(20),
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
           Container(
             width: 33,
             height: 33,
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: Center(
-              child: SvgPicture.asset(
-                AppAssets.notificationIcon,
-                height: 30,
-                width: 30,
-                colorFilter: const ColorFilter.mode(
-                  AppColors.primary,
-                  BlendMode.srcIn,
-                ),
+            child: SvgPicture.asset(
+              AppAssets.notificationIcon,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primary,
+                BlendMode.srcIn,
               ),
             ),
           ),
-          // عداد الإشعارات
           StreamBuilder<int>(
             stream: sl<NotificationService>().unreadCount,
+            initialData: sl<NotificationService>().currentUnreadCount,
             builder: (context, snapshot) {
-              if (!snapshot.hasData || snapshot.data == 0) {
-                return const SizedBox();
-              }
+              final count = snapshot.data ?? 0;
+              print('🏷️ Badge count: $count');
+              
+              if (count == 0) return const SizedBox.shrink();
+              
               return Positioned(
-                right: 0,
-                top: 0,
+                top: -5,
+                right: -5,
                 child: Container(
-                  padding: const EdgeInsets.all(4),
+                  constraints: const BoxConstraints(
+                    minWidth: 18,
+                    minHeight: 18,
+                  ),
                   decoration: const BoxDecoration(
                     color: Colors.red,
                     shape: BoxShape.circle,
                   ),
-                  constraints: const BoxConstraints(
-                    minWidth: 16,
-                    minHeight: 16,
-                  ),
-                  child: Text(
-                    snapshot.data! > 99 ? '99+' : '${snapshot.data}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: Text(
+                        count > 99 ? '99+' : count.toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ),
               );

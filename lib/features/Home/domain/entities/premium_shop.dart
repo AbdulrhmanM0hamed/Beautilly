@@ -11,6 +11,7 @@ class PremiumShop {
   final double? avgRating;
   final List<PremiumShopService> services;
   final UserInteraction? userInteraction;
+  final PaginationPremiumShopsEntity? pagination;
 
   const PremiumShop({
     required this.id,
@@ -23,6 +24,7 @@ class PremiumShop {
     this.avgRating,
     required this.services,
     this.userInteraction,
+    this.pagination,
   });
 }
 
@@ -35,5 +37,19 @@ class PremiumShopService {
     required this.id,
     required this.name,
     required this.price,
+  });
+}
+
+class PaginationPremiumShopsEntity {
+  final int currentPage;
+  final int lastPage;
+  final int perPage;
+  final int total;
+
+  const PaginationPremiumShopsEntity({
+    required this.currentPage,
+    required this.lastPage,
+    required this.perPage,
+    required this.total,
   });
 } 

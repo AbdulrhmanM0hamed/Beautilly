@@ -1,6 +1,5 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../../../../core/usecase/usecase.dart';
 import '../entities/premium_shop.dart';
 import '../repositories/premium_shops_repository.dart';
 
@@ -9,8 +8,7 @@ class GetPremiumShopsUseCase {
 
   GetPremiumShopsUseCase(this.repository);
 
-  @override
-  Future<Either<Failure, List<PremiumShop>>> call(NoParams params) {
-    return repository.getPremiumShops();
+  Future<Either<Failure, List<PremiumShop>>> call(int page) {
+    return repository.getPremiumShops(page: page);
   }
 } 

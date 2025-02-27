@@ -14,6 +14,7 @@ class PremiumShopModel extends PremiumShop {
     super.avgRating,
     required super.services,
     super.userInteraction,
+    super.pagination,
   });
 
   factory PremiumShopModel.fromJson(Map<String, dynamic> json) {
@@ -25,12 +26,20 @@ class PremiumShopModel extends PremiumShop {
       cityName: json['city_name'] ?? '',
       stateName: json['state_name'] ?? '',
       mainImageUrl: json['main_shop_image_url'] ?? '',
-      avgRating: json['avg_rating']?.toDouble()?? '',
+      avgRating: json['avg_rating']?.toDouble() ?? 0.0,
       services: (json['services'] as List)
-          .map((service) => PremiumShopServiceModel.fromJson(service) )
-          .toList() ,
+          .map((service) => PremiumShopServiceModel.fromJson(service))
+          .toList(),
       userInteraction: json['user_interactions'] != null 
           ? UserInteractionModel.fromJson(json['user_interactions'])
+          : null,
+      pagination: json['pagination'] != null 
+          ? PaginationPremiumShopsEntity(
+              currentPage: json['pagination']['current_page'],
+              lastPage: json['pagination']['last_page'],
+              perPage: json['pagination']['per_page'],
+              total: json['pagination']['total'],
+            )
           : null,
     );
   }

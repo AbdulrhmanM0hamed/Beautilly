@@ -15,7 +15,8 @@ import '../../../../../core/utils/responsive/app_responsive.dart';
 import '../../../../../core/utils/shimmer/service_card_shimmer.dart';
 
 class FashionHousesListView extends StatelessWidget {
-  const FashionHousesListView({super.key});
+  final int limit;
+  const FashionHousesListView({super.key, this.limit = 5});
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +36,10 @@ class FashionHousesListView extends StatelessWidget {
           return const SizedBox.shrink();
         }
         if (state is PremiumShopsLoaded) {
-          final fashionHouses =
-              state.shops.where((shop) => shop.type == 'tailor').toList();
+          final fashionHouses = state.shops
+              .where((shop) => shop.type == 'tailor')
+              .take(limit)
+              .toList();
 
           if (fashionHouses.isEmpty) {
             return const SizedBox.shrink();

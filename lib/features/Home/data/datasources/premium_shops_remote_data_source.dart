@@ -8,10 +8,12 @@ import '../../../../features/auth/domain/repositories/auth_repository.dart';
 import '../models/premium_shop_model.dart';
 
 abstract class PremiumShopsRemoteDataSource {
-  Future<List<PremiumShopModel>> getPremiumShops();
+  Future<List<PremiumShopModel>> getPremiumShops({required int page});
 }
 
-class PremiumShopsRemoteDataSourceImpl with TokenRefreshMixin implements PremiumShopsRemoteDataSource {
+class PremiumShopsRemoteDataSourceImpl
+    with TokenRefreshMixin
+    implements PremiumShopsRemoteDataSource {
   final http.Client client;
   final CacheService cacheService;
   final AuthRepository authRepository;
@@ -23,15 +25,15 @@ class PremiumShopsRemoteDataSourceImpl with TokenRefreshMixin implements Premium
   });
 
   @override
-  Future<List<PremiumShopModel>> getPremiumShops() async {
+  Future<List<PremiumShopModel>> getPremiumShops({required int page}) async {
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
         final sessionCookie = await cacheService.getSessionCookie();
-        
+
         final response = await client.get(
-          Uri.parse(ApiEndpoints.premiumShops),
+          Uri.parse('${ApiEndpoints.premiumShops}?page=$page'),
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
@@ -44,13 +46,19 @@ class PremiumShopsRemoteDataSourceImpl with TokenRefreshMixin implements Premium
           final decodedData = json.decode(response.body);
           if (decodedData['success']) {
             final List<dynamic> shops = decodedData['data']['shops'];
-            return shops.map((json) => PremiumShopModel.fromJson(json)).toList();
-          } else {
-            throw ServerException(message: decodedData['message'] ?? 'فشل في تحميل المتاجر المميزة');
+            final pagination = decodedData['data']['pagination'];
+            return shops
+                .map((json) => PremiumShopModel.fromJson({
+                      ...json,
+                      'pagination': pagination,
+                    }))
+                .toList();
           }
-        } else {
-          throw ServerException(message: 'فشل في تحميل المتاجر المميزة');
+          throw ServerException(
+              message:
+                  decodedData['message'] ?? 'فشل في تحميل المتاجر المميزة');
         }
+        throw ServerException(message: 'فشل في تحميل المتاجر المميزة');
       },
     );
   }

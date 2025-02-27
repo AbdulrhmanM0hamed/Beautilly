@@ -17,7 +17,7 @@ class PremiumShopsRepositoryImpl implements PremiumShopsRepository {
   }) : _remoteDataSource = remoteDataSource;
 
   @override
-  Future<Either<Failure, List<PremiumShop>>> getPremiumShops() async {
+  Future<Either<Failure, List<PremiumShop>>> getPremiumShops({required int page}) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
@@ -25,12 +25,12 @@ class PremiumShopsRepositoryImpl implements PremiumShopsRepository {
     }
 
     try {
-      final result = await _remoteDataSource.getPremiumShops();
+      final result = await _remoteDataSource.getPremiumShops(page: page);
       return Right(result);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return  const Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {

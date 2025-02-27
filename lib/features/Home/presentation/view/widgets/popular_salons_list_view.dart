@@ -8,7 +8,6 @@ import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_c
 import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../../cubit/premium_shops_cubit/premium_shops_state.dart';
 import 'shared/beauty_service_card.dart';
@@ -16,7 +15,8 @@ import '../../../../../core/utils/responsive/app_responsive.dart';
 import '../../../../../core/utils/shimmer/service_card_shimmer.dart';
 
 class PopularSalonsListView extends StatefulWidget {
-  const PopularSalonsListView({super.key});
+  final int limit;
+  const PopularSalonsListView({super.key, this.limit = 5});
 
   @override
   State<PopularSalonsListView> createState() => _PopularSalonsListViewState();
@@ -49,7 +49,10 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
         }
 
         if (state is PremiumShopsLoaded) {
-          final salons = state.shops.where((shop) => shop.type == 'salon').toList();
+          final salons = state.shops
+              .where((shop) => shop.type == 'salon')
+              .take(widget.limit)
+              .toList();
           
           if (salons.isEmpty) {
             return const SizedBox.shrink();

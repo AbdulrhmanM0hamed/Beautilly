@@ -5,8 +5,6 @@ import 'package:beautilly/features/Home/presentation/cubit/discounts_cubit/disco
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/statistics_cubit/statistics_cubit.dart';
-import 'package:beautilly/features/Home/presentation/view/all_fashion_houses_view.dart';
-import 'package:beautilly/features/Home/presentation/view/all_premium_salons_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/services_grid_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/special_view_list_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/welcome_text_widget.dart';
@@ -14,8 +12,7 @@ import 'package:beautilly/features/Home/presentation/view/widgets/popular_salons
 import 'package:beautilly/features/Home/presentation/view/widgets/fashion_houses_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/statistics_section.dart';
-import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
-import 'package:beautilly/features/Home/presentation/view/all_services_view.dart';
+
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 

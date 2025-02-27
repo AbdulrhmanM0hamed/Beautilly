@@ -26,7 +26,6 @@ class DiscountsRemoteDataSourceImpl
 
   @override
   Future<DiscountsResponse> getDiscounts({int page = 1}) async {
-    print('📱 Fetching discounts for page: $page');
 
     return withTokenRefresh(
       authRepository: authRepository,

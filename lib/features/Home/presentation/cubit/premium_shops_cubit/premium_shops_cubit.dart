@@ -10,16 +10,20 @@ class PremiumShopsCubit extends Cubit<PremiumShopsState> {
     required this.getPremiumShopsUseCase,
   }) : super(PremiumShopsInitial());
 
-  Future<void> loadPremiumShops() async {
-    emit(PremiumShopsLoading());
+  Future<void> loadPremiumShops({int page = 1, bool isLoadingMore = false}) async {
+    if (!isLoadingMore) {
+      emit(PremiumShopsLoading());
+    }
 
-    final result = await getPremiumShopsUseCase(const NoParams());
-
-    emit(
-      result.fold(
-        (failure) => PremiumShopsError(failure.message),
-        (shops) => PremiumShopsLoaded(shops),
-      ),
+    final result = await getPremiumShopsUseCase(page);
+    
+    result.fold(
+      (failure) {
+        emit(PremiumShopsError(failure.message));
+      },
+      (shops) {
+        emit(PremiumShopsLoaded(shops));
+      },
     );
   }
 } 

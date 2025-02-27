@@ -9,6 +9,7 @@ class ProfileModel extends Equatable {
   final CityModel city;
   final StateModel state;
   final String? image;
+  final RoleModel role;
 
   const ProfileModel({
     required this.id,
@@ -19,6 +20,7 @@ class ProfileModel extends Equatable {
     required this.city,
     required this.state,
     this.image,
+    required this.role,
   });
 
   Map<String, dynamic> toJson() {
@@ -44,6 +46,7 @@ class ProfileModel extends Equatable {
       city: CityModel.fromJson(json['city']),
       state: StateModel.fromJson(json['state']),
       image: json['avatar_url'],
+      role: RoleModel.fromJson(json['role']),
     );
   }
 
@@ -78,7 +81,32 @@ class CityModel extends Equatable {
 
   @override
   List<Object?> get props => [id, name];
+
 }
+
+
+class RoleModel extends Equatable {
+  final int id;
+  final String name;
+
+  const RoleModel({
+    required this.id,
+    required this.name,
+  });
+
+  factory RoleModel.fromJson(Map<String, dynamic> json) {
+    return RoleModel(
+      id: json['id'],
+      name: json['name'],
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, name];
+}
+  
+
+
 
 class StateModel extends Equatable {
   final int id;

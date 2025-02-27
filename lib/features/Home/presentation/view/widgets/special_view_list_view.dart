@@ -63,6 +63,10 @@ class _SpecialViewListViewState extends State<SpecialViewListView> {
         }
 
         if (state is DiscountsLoaded) {
+          if (state.discounts.isEmpty) {
+            return const SizedBox.shrink();
+          }
+
           return SizedBox(
             height: 180,
             child: ListView.builder(
@@ -83,7 +87,7 @@ class _SpecialViewListViewState extends State<SpecialViewListView> {
           );
         }
 
-        return const SizedBox();
+        return const SizedBox.shrink();
       },
     );
   }

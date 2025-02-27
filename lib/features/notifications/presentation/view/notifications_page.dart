@@ -9,10 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/notifications_cubit.dart';
 import '../widgets/notification_list.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:get_it/get_it.dart';
-import 'package:get_it/get_it.dart';
-
 class NotificationsPage extends StatefulWidget {
   @override
   State<NotificationsPage> createState() => _NotificationsPageState();

@@ -3,6 +3,7 @@ import 'package:beautilly/core/utils/shimmer/service_card_shimmer.dart';
 import 'package:beautilly/features/Home/domain/entities/service_entity.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_state.dart';
+import 'package:beautilly/features/Home/presentation/view/all_services_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -42,39 +43,87 @@ class _ServicesGridViewState extends State<ServicesGridView> {
         }
 
         if (state is ServicesError) {
-          return Center(
-            child: Text(state.message),
-          );
+          return const SizedBox.shrink();
         }
 
         if (state is ServicesLoaded) {
           if (state.services.isEmpty) {
-            return const Center(
-              child: Text('لا توجد نتائج'),
-            );
+            return const SizedBox.shrink();
           }
 
           final services = state.services.take(widget.maxItems).toList();
-          return SizedBox(
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: dimensions.crossAxisCount,
-                childAspectRatio: dimensions.childAspectRatio,
-                crossAxisSpacing: dimensions.spacing,
-                mainAxisSpacing: dimensions.spacing,
+          return Column(
+            children: [
+              // العنوان وزر عرض المزيد
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'ما الذي تريدين أن تفعليه؟',
+                    style: getBoldStyle(
+                      fontFamily: FontConstant.cairo,
+                      fontSize: FontSize.size16,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        PageRoutes.fadeScale(
+                          page: const AllServicesView(),
+                        ),
+                      );
+                    },
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'عرض المزيد',
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size14,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 14,
+                          color: AppColors.primary,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              itemCount: services.length,
-              itemBuilder: (context, index) => ServiceCard(
-                service: services[index],
-                dimensions: dimensions,
+              const SizedBox(height: 16.0),
+              // الخدمات
+              GridView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: dimensions.crossAxisCount,
+                  childAspectRatio: dimensions.childAspectRatio,
+                  crossAxisSpacing: dimensions.spacing,
+                  mainAxisSpacing: dimensions.spacing,
+                ),
+                itemCount: services.length,
+                itemBuilder: (context, index) => ServiceCard(
+                  service: services[index],
+                  dimensions: dimensions,
+                ),
               ),
-            ),
+              const SizedBox(height: 4.0),
+            ],
           );
         }
 
-        return const SizedBox();
+        return const SizedBox.shrink();
       },
     );
   }

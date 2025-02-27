@@ -237,7 +237,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
               ),
               const SizedBox(width: 4),
               Text(
-                '${profile.city.name}، ${profile.state.name}',
+                '${profile.city?.name}، ${profile.state?.name}',
                 style: getMediumStyle(
                   color: AppColors.grey,
                   fontSize: FontSize.size14,

@@ -46,41 +46,67 @@ class ProfileRemoteDataSourceImpl
     required this.authRepository,
   });
 
-  @override
+     @override
   Future<ProfileModel> getProfile() async {
+    print('🔵 [getProfile] بدء استدعاء البيانات');
+
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
+        print('🟢 [getProfile] تم جلب التوكن: $token');
+
         final sessionCookie = await cacheService.getSessionCookie();
+        print('🟠 [getProfile] تم جلب الكوكيز: $sessionCookie');
 
-        final response = await client.get(
-          Uri.parse(ApiEndpoints.profile),
-          headers: {
-            'Authorization': 'Bearer $token',
-            'Accept': 'application/json',
-            'x-api-key': ApiEndpoints.api_key,
-            if (sessionCookie != null) 'Cookie': sessionCookie,
-          },
-        );
+        try {
+          final response = await client.get(
+            Uri.parse(ApiEndpoints.profile),
+            headers: {
+              'Authorization': 'Bearer $token',
+              'Accept': 'application/json',
+              'x-api-key': ApiEndpoints.api_key,
+              if (sessionCookie != null) 'Cookie': sessionCookie,
+            },
+          );
 
-        if (response.statusCode == 200) {
-          final jsonResponse = json.decode(response.body);
-          if (jsonResponse['success'] == true) {
-            final profile = ProfileModel.fromJson(jsonResponse['data']);
-            return profile;
+          print('🔵 [getProfile] تم استلام الاستجابة، الحالة: ${response.statusCode}');
+          print('🟢 [getProfile] الاستجابة الكاملة: ${response.body}');
+
+          if (response.statusCode == 200) {
+            final jsonResponse = json.decode(response.body);
+            print('🟠 [getProfile] تم فك تشفير JSON: $jsonResponse');
+
+            if (jsonResponse['success'] == true) {
+              final data = jsonResponse['data'];
+              
+              if (data == null) {
+                print('❌ [getProfile] البيانات المستلمة هي null!');
+                throw ServerException(message: 'بيانات الملف الشخصي غير متوفرة');
+              }
+
+              final profile = ProfileModel.fromJson(data);
+              print('✅ [getProfile] تم إنشاء كائن ProfileModel بنجاح');
+              return profile;
+            } else {
+              print('❌ [getProfile] خطأ في الاستجابة: ${jsonResponse['message']}');
+              throw ServerException(
+                message: jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
+              );
+            }
           } else {
-            throw ServerException(
-              message:
-                  jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
-            );
+            print('❌ [getProfile] استجابة غير متوقعة، الحالة: ${response.statusCode}');
+            throw ServerException(message: 'فشل في تحميل بيانات الملف الشخصي');
           }
-        } else {
-          throw ServerException(message: 'فشل في تحميل بيانات الملف الشخصي');
+        } catch (e) {
+          print('🚨 [getProfile] حدث خطأ غير متوقع: $e');
+          throw ServerException(message: 'حدث خطأ غير متوقع أثناء جلب بيانات الملف الشخصي');
         }
       },
     );
   }
+
+
 
   @override
   Future<String> updateAvatar(File image) async {

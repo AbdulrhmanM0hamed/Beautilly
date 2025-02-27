@@ -14,6 +14,8 @@ import '../../../../../core/utils/navigation/custom_page_route.dart';
 import 'package:beautilly/features/profile/presentation/view/edit_address/edit_address_view.dart';
 import 'package:beautilly/features/profile/presentation/cubit/favorites_cubit/favorites_cubit.dart';
 import 'package:beautilly/features/profile/presentation/view/favorites/favorites_view.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:beautilly/features/profile/presentation/view/dashboard_webview.dart';
 
 class ProfileMenuSection extends StatelessWidget {
   const ProfileMenuSection({super.key});
@@ -45,16 +47,81 @@ class ProfileMenuSection extends StatelessWidget {
 
         if (state is ProfileLoaded) {
           final profile = state.profile;
-          // التحقق من وجود البيانات
           if (profile.name == null || profile.name!.isEmpty) {
-            context.read<ProfileCubit>().loadProfile(); // إعادة تحميل البيانات
+            context.read<ProfileCubit>().loadProfile();
             return const Center(child: CircularProgressIndicator());
+          }
+
+          final bool isNotClient = profile.role?.name != 'client';
+          String userType = '';
+          if (isNotClient) {
+            switch (profile.role?.name) {
+              case 'salon_manager':
+                userType = 'مدير صالون';
+                break;
+              case 'tailor_manager':
+                userType = 'مدير دار أزياء';
+                break;
+              case 'super_admin':
+                userType = 'مدير نظام';
+                break;
+              default:
+                userType = profile.role?.name ?? '';
+            }
           }
 
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (isNotClient) ...[
+                  Container(
+                    margin: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'أنت مسجل كـ $userType',
+                          style: getMediumStyle(
+                            fontFamily: FontConstant.cairo,
+                            fontSize: FontSize.size16,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        FilledButton.icon(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const DashboardWebView(),
+                              ),
+                            );
+                          },
+                          style: FilledButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            minimumSize: const Size(double.infinity, 45),
+                          ),
+                          icon: const Icon(Icons.dashboard_outlined),
+                          label: Text(
+                            'الذهاب إلى لوحة التحكم',
+                            style: getMediumStyle(
+                              fontFamily: FontConstant.cairo,
+                              fontSize: FontSize.size14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                ],
                 _buildMenuGroup(
                   title: "إعدادات الحساب",
                   items: [

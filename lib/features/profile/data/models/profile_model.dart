@@ -6,10 +6,10 @@ class ProfileModel extends Equatable {
   final String email;
   final String? phone;
   final String? emailVerifiedAt;
-  final CityModel city;
-  final StateModel state;
+  final CityModel? city;
+  final StateModel? state;
   final String? image;
-  final RoleModel role;
+  final RoleModel? role;
 
   const ProfileModel({
     required this.id,
@@ -26,29 +26,28 @@ class ProfileModel extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
-      'email': email,
-      'phone': phone,
-      'email_verified_at': emailVerifiedAt,
-      'city': city,
-      'state': state,
-      'image': image,
+      'name': name ?? '',
+      'email': email ?? '',
+      'phone': phone ?? '',
+      'email_verified_at': emailVerifiedAt ?? '',
+      'city': city ?? '',
+      'state': state ?? '',
+      'image': image ?? '',
     };
   }
-
-  factory ProfileModel.fromJson(Map<String, dynamic> json) {
-    return ProfileModel(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      phone: json['phone'],
-      emailVerifiedAt: json['email_verified_at'],
-      city: CityModel.fromJson(json['city']),
-      state: StateModel.fromJson(json['state']),
-      image: json['avatar_url'],
-      role: RoleModel.fromJson(json['role']),
-    );
-  }
+factory ProfileModel.fromJson(Map<String, dynamic> json) {
+  return ProfileModel(
+    id: json['id'],
+    name: json['name'] ?? '',
+    email: json['email'] ?? '',
+    phone: json['phone'] ?? '',
+    emailVerifiedAt: json['email_verified_at'] ?? '',
+    city: json['city'] != null ? CityModel.fromJson(json['city']) : CityModel(id: 0, name: ''),
+    state: json['state'] != null ? StateModel.fromJson(json['state']) : StateModel(id: 0, name: ''),
+    image: json['avatar_url'] ?? '',
+    role: json['role'] != null ? RoleModel.fromJson(json['role']) :RoleModel(id: 0, name: ''),
+  );
+}
 
   @override
   List<Object?> get props => [
@@ -74,8 +73,8 @@ class CityModel extends Equatable {
 
   factory CityModel.fromJson(Map<String, dynamic> json) {
     return CityModel(
-      id: json['id'],
-      name: json['name'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
     );
   }
 
@@ -96,8 +95,8 @@ class RoleModel extends Equatable {
 
   factory RoleModel.fromJson(Map<String, dynamic> json) {
     return RoleModel(
-      id: json['id'],
-      name: json['name'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
     );
   }
 
@@ -119,8 +118,8 @@ class StateModel extends Equatable {
 
   factory StateModel.fromJson(Map<String, dynamic> json) {
     return StateModel(
-      id: json['id'],
-      name: json['name'],
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
     );
   }
 

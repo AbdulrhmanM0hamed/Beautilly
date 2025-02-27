@@ -25,14 +25,15 @@ class EditAddressController extends ChangeNotifier {
 
   void _initAddress() {
     selectedState = StateModell(
-      id: profile.state.id,
-      name: profile.state.name,
+      id: profile.state?.id ?? 0,
+      name: profile.state?.name ?? '',
     );
 
     selectedCity = CityModell(
-        id: profile.city.id,
-        name: profile.city.name,
-        stateId: profile.state.id);
+      id: profile.city?.id ?? 0,
+      name: profile.city?.name ?? '',
+      stateId: profile.state?.id ?? 0,
+    );
   }
 
   Future<void> _loadStates() async {

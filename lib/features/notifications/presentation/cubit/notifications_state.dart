@@ -37,4 +37,10 @@ class NotificationMarkedAsRead extends NotificationsState {
   final String notificationId;
 
   NotificationMarkedAsRead(this.notificationId);
+}
+
+class NotificationsDeleted extends NotificationsState {
+  final String message;
+
+  NotificationsDeleted(this.message);
 } 

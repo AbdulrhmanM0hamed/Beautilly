@@ -63,6 +63,7 @@ class AppAssets {
   static const String tfsel = '$_iconsPath/tfsel.svg';
   static const String notificationIcon = '$_iconsPath/notification-icon.svg';
   static const String searchIcon = '$_iconsPath/search-normal.svg';
+  static const String deleteIcon = '$_iconsPath/trash.svg';
 
   // Bottom Navigation Icons
   static const String homeIconBottom = '$_iconsPath/Home.svg';

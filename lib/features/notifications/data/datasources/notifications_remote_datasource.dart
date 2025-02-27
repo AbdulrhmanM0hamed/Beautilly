@@ -10,7 +10,7 @@ import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart
 abstract class NotificationsRemoteDataSource {
   Future<NotificationsResponse> getNotifications({int page = 1});
   Future<void> markAsRead(String notificationId);
-  Future<NotificationModel> getNotificationDetails(String id);
+  Future<void> DeleteNorifications();
 }
 
 class NotificationsRemoteDataSourceImpl
@@ -100,25 +100,27 @@ class NotificationsRemoteDataSourceImpl
   }
 
   @override
-  Future<NotificationModel> getNotificationDetails(String id) async {
+  Future<void> DeleteNorifications() async {
     try {
-      final response = await client.get(
-        Uri.parse(ApiEndpoints.getNotificationPath(id)),
-        headers: await _getHeaders(),
+      final headers = await _getHeaders();
+
+      final url = Uri.parse(ApiEndpoints.notificationsDelete);
+
+      final response = await client.delete(
+        url,
+        headers: headers,
       );
 
-      if (response.statusCode == 200) {
-        return NotificationModel.fromJson(
-          json.decode(response.body)['data'],
-        );
-      } else {
+      if (response.statusCode != 200) {
+        final errorMessage =
+            json.decode(response.body)['message'] ?? 'حدث خطأ في حذف الإشعارات';
         throw ServerException(
-          message: json.decode(response.body)['message'] ?? 'حدث خطأ في الخادم',
+          message: errorMessage,
         );
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
       throw ServerException(
-        message: 'حدث خطأ في الاتصال بالخادم',
+        message: 'حدث خطأ في حذف الإشعارات',
       );
     }
   }
@@ -127,10 +129,9 @@ class NotificationsRemoteDataSourceImpl
     final token = await withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
-      request: (token) async {
-        return {'Authorization': 'Bearer $token'};
-      },
+      request: (token) async => token,
     );
+
     final sessionCookie = await cacheService.getSessionCookie();
     return {
       'Authorization': 'Bearer $token',

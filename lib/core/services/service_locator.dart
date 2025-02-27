@@ -501,6 +501,7 @@ Future<void> init() async {
   sl.registerFactory(
     () => NotificationsCubit(
       getNotifications: sl(),
+      repository: sl(),
     ),
   );
 }

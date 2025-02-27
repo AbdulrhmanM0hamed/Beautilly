@@ -69,4 +69,24 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
       ));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> DeleteNorifications() async {
+    if (!await networkInfo.isConnected) {
+      return const Left(NetworkFailure(
+        message: 'لا يوجد اتصال بالإنترنت'
+      ));
+    }
+
+    try {
+      await remoteDataSource.DeleteNorifications();
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return const Left(ServerFailure(
+        message: 'حدث خطأ في حذف الإشعارات'
+      ));
+    }
+  }
 } 

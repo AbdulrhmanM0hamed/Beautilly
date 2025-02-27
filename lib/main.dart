@@ -4,7 +4,6 @@ import 'package:beautilly/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 import 'core/utils/helper/on_genrated_routes.dart';
 import 'core/utils/theme/app_theme.dart';
 import 'core/services/service_locator.dart' as di;

@@ -37,8 +37,6 @@ class ProfileCubit extends Cubit<ProfileState> {
         },
       );
     } catch (e, stackTrace) {
-   
-
       if (!isClosed) {
         emit(ProfileError('حدث خطأ في تحميل البيانات'));
       }
@@ -67,6 +65,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         });
       }
     } catch (e) {
+      debugPrint('Error navigating to splash: $e');
     }
   }
 
@@ -96,10 +95,10 @@ class ProfileCubit extends Cubit<ProfileState> {
         (profile) {
           _profile = profile;
           emit(const ProfileSuccess('تم تحديث البيانات بنجاح'));
-          
+
           // استخدام التنقل الآمن
           Future.delayed(const Duration(seconds: 2), _navigateToSplash);
-          
+
           emit(ProfileLoaded(profile));
         },
       );
@@ -134,9 +133,8 @@ class ProfileCubit extends Cubit<ProfileState> {
           emit(ProfileError(failure.message));
         },
         (message) {
-
           emit(ProfileSuccess(message));
-          
+
           // نتأكد من أن الـ cubit لم يتم إغلاقه
           if (!isClosed) {
             // استخدام التنقل الآمن بعد النجاح فقط
@@ -173,7 +171,6 @@ class ProfileCubit extends Cubit<ProfileState> {
     if (isClosed) {
       return;
     }
-
 
     try {
       emit(ProfileLoading());

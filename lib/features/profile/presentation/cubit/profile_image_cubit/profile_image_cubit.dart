@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
+import 'package:beautilly/features/splash/view/splash_view.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/repositories/profile_repository.dart';
 import 'profile_image_state.dart';
@@ -30,12 +32,31 @@ class ProfileImageCubit extends Cubit<ProfileImageState> {
           if (!GetIt.I<ProfileCubit>().isClosed) {
             GetIt.I<ProfileCubit>().loadProfile();
           }
+          Future.delayed(const Duration(seconds: 2), _navigateToSplash);
         },
       );
     } catch (e) {
       if (!isClosed) {
-        emit(ProfileImageError('حدث خطأ في تحديث الصورة'));
+        emit(const ProfileImageError('حدث خطأ في تحديث الصورة'));
       }
+    }
+  }
+
+  void _navigateToSplash() {
+    try {
+      final context = GetIt.I<GlobalKey<NavigatorState>>().currentContext;
+      if (context != null && context.mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (context.mounted) {
+            Navigator.of(context).pushNamedAndRemoveUntil(
+              SplashView.routeName,
+              (route) => false,
+            );
+          }
+        });
+      }
+    } catch (e) {
+      debugPrint('Error navigating to splash: $e');
     }
   }
 
@@ -51,7 +72,7 @@ class ProfileImageCubit extends Cubit<ProfileImageState> {
       }
     } catch (e) {
       if (!isClosed) {
-        emit(ProfileImageError('حدث خطأ في اختيار الصورة'));
+        emit(const ProfileImageError('حدث خطأ في اختيار الصورة'));
       }
     }
   }

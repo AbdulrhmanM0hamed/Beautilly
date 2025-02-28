@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/utils/theme/app_colors.dart';
@@ -21,7 +22,6 @@ class AddOrderView extends StatefulWidget {
   @override
   State<AddOrderView> createState() => _AddOrderViewState();
 }
-
 
 class _AddOrderViewState extends State<AddOrderView> {
   final _formKey = GlobalKey<FormState>();
@@ -114,10 +114,30 @@ class _AddOrderViewState extends State<AddOrderView> {
                     type: StepperType.horizontal,
                     currentStep: _currentStep,
                     onStepContinue: () {
-                      if (_currentStep < 2) {
-                        setState(() => _currentStep++);
-                      } else {
-                        _submitForm();
+                      if (_currentStep == 0) {  // خطوة المقاسات
+                        if (_formKey.currentState!.validate()) {
+                          setState(() => _currentStep++);
+                        }
+                      } 
+                      else if (_currentStep == 1) {  // خطوة القماش
+                        if (_fabrics.isNotEmpty || selectedType != null) {
+                          setState(() => _currentStep++);
+                        } else {
+                          CustomSnackbar.showError(
+                            context: context,
+                            message: 'يرجى إضافة القماش أو اختيار نوعه',
+                          );
+                        }
+                      }
+                      else if (_currentStep == 2) {  // خطوة الصور
+                        if (_selectedImage != null) {
+                          _submitForm();
+                        } else {
+                          CustomSnackbar.showError(
+                            context: context,
+                            message: 'يرجى إضافة صورة التصميم',
+                          );
+                        }
                       }
                     },
                     onStepCancel: () {

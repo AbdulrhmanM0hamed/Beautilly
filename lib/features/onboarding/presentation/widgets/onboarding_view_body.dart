@@ -1,3 +1,4 @@
+import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/onboarding/data/models/onboarding_model.dart';
 import 'page_view_item.dart';
 import 'custom_smooth_page_indicator.dart';
+import 'package:get_it/get_it.dart';
+import 'package:beautilly/core/services/cache/cache_service.dart';
 
 class OnboardingViewBody extends StatefulWidget {
   const OnboardingViewBody({super.key});
@@ -18,6 +21,14 @@ class OnboardingViewBody extends StatefulWidget {
 class _OnboardingViewBodyState extends State<OnboardingViewBody> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+
+  void _finishOnboarding() async {
+    // حفظ أن المستخدم قد رأى الـ onboarding
+    await sl<CacheService>().setIsFirstTime(false);
+
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, SigninView.routeName);
+  }
 
   @override
   void dispose() {
@@ -72,9 +83,7 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                       curve: Curves.easeIn,
                     );
                   } else {
-                    Navigator.pushReplacementNamed(
-                        context, SigninView.routeName);
-                    // Navigate to login/register screen
+                    _finishOnboarding();
                   }
                 },
               ),
@@ -91,8 +100,15 @@ class _OnboardingViewBodyState extends State<OnboardingViewBody> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {
-                      // Navigate to login screen
+                    onPressed: () async {
+                      // حفظ أن المستخدم قد رأى الـ onboarding عند الضغط على "سجل الآن"
+                      await sl<CacheService>().setIsFirstTime(false);
+
+                      if (!mounted) return;
+                      Navigator.pushReplacementNamed(
+                        context,
+                        SigninView.routeName,
+                      );
                     },
                     child: Text(
                       'سجل الآن',

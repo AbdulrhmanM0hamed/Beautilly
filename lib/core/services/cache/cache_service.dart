@@ -21,4 +21,6 @@ abstract class CacheService {
   Future<void> saveLastNotificationTimestamp(String timestamp);
   Future<bool> getDarkMode();
   Future<void> setDarkMode(bool isDark);
+  Future<bool> getIsFirstTime();
+  Future<void> setIsFirstTime(bool isFirstTime);
 } 

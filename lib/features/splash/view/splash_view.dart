@@ -3,6 +3,7 @@ import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/features/Home/presentation/view/home_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:provider/provider.dart';
+import 'package:beautilly/features/onboarding/presentation/view/onboarding_view.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -37,19 +38,30 @@ class _SplashViewState extends State<SplashView>
 
     // التحقق من حالة تسجيل الدخول بعد انتهاء الانيميشن
     Future.delayed(const Duration(seconds: 3), () {
-      _checkLoginStatus();
+      _checkAppState();
     });
   }
 
-  Future<void> _checkLoginStatus() async {
+  Future<void> _checkAppState() async {
+    if (!mounted) return;
+    
     final cacheService = context.read<CacheService>();
+    
+    // التحقق من حالة التطبيق
+    final isFirstTime = await cacheService.getIsFirstTime();
     final token = await cacheService.getToken();
 
-    if (mounted) {
-      Navigator.pushReplacementNamed(
-        context,
-        token != null ? HomeView.routeName : SigninView.routeName,
-      );
+    if (!mounted) return;
+
+    if (isFirstTime) {
+      // أول مرة يفتح التطبيق - عرض شاشة الـ onboarding
+      Navigator.pushReplacementNamed(context, OnboardingView.routeName);
+    } else if (token != null) {
+      // مسجل دخول - الذهاب للرئيسية
+      Navigator.pushReplacementNamed(context, HomeView.routeName);
+    } else {
+      // غير مسجل - الذهاب لتسجيل الدخول
+      Navigator.pushReplacementNamed(context, SigninView.routeName);
     }
   }
 

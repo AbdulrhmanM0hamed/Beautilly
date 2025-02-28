@@ -14,6 +14,7 @@ class CacheServiceImpl implements CacheService {
   static const String _userIdKey = 'user_id';
   static const String _lastNotificationKey = 'last_notification_timestamp';
   static const String _darkModeKey = 'dark_mode';
+  static const String _isFirstTimeKey = 'is_first_time';
 
   CacheServiceImpl(this._prefs);
 
@@ -167,5 +168,15 @@ class CacheServiceImpl implements CacheService {
   @override
   Future<void> setDarkMode(bool isDark) async {
     await _prefs.setBool(_darkModeKey, isDark);
+  }
+
+  @override
+  Future<bool> getIsFirstTime() async {
+    return _prefs.getBool(_isFirstTimeKey) ?? true;
+  }
+
+  @override
+  Future<void> setIsFirstTime(bool isFirstTime) async {
+    await _prefs.setBool(_isFirstTimeKey, isFirstTime);
   }
 }

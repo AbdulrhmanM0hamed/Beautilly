@@ -1,5 +1,6 @@
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/core/utils/widgets/location_permission_dialog.dart';
 import 'package:beautilly/features/nearby/presentation/view/widgets/discover_bottom_sheet.dart';
 import 'package:beautilly/features/nearby/presentation/view/widgets/discover_filter_chips.dart';
@@ -44,7 +45,71 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
     );
   }
 
-  void _getCurrentLocation() async {
+  Future<Position?> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // التحقق من تفعيل خدمة الموقع
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // عرض رسالة للمستخدم لتفعيل خدمة الموقع
+      if (mounted) {
+        CustomSnackbar.showError(
+          context: context,
+          message: 'يرجى تفعيل خدمة تحديد الموقع',
+        );
+      }
+      return null;
+    }
+
+    // التحقق من الأذونات
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      // طلب الإذن من المستخدم
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // المستخدم رفض منح الإذن
+        if (mounted) {
+          CustomSnackbar.showError(
+            context: context,
+            message: 'يرجى السماح للتطبيق بالوصول إلى موقعك',
+          );
+        }
+        return null;
+      }
+    }
+
+    // التحقق من الرفض الدائم
+    if (permission == LocationPermission.deniedForever) {
+      // المستخدم رفض منح الإذن بشكل دائم
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('إعدادات الموقع'),
+            content: const Text(
+              'لم يتم منح إذن الوصول إلى الموقع. يرجى تفعيل الإذن من إعدادات التطبيق.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('إلغاء'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Geolocator.openAppSettings();
+                },
+                child: const Text('فتح الإعدادات'),
+              ),
+            ],
+          ),
+        );
+      }
+      return null;
+    }
+
+    // محاولة الحصول على الموقع
     try {
       final position = await Geolocator.getCurrentPosition();
       setState(() {
@@ -72,8 +137,17 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
         );
         setState(() {});
       }
+      return position;
     } catch (e) {
-      debugPrint('Error getting location: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('حدث خطأ في تحديد موقعك'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+      return null;
     }
   }
 
@@ -124,14 +198,13 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
 
   void _handleLocationTap() async {
     final permission = await Geolocator.checkPermission();
-    
+
     if (permission == LocationPermission.denied) {
       if (context.mounted) {
         showDialog(
           context: context,
           builder: (context) => LocationPermissionDialog(
             onGranted: () {
-              
               // تنفيذ ما نريد بعد الموافقة على الإذن
               _getCurrentLocation();
             },
@@ -154,7 +227,8 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           onMapCreated: _onMapCreated,
           initialCameraPosition: CameraPosition(
             target: _currentPosition != null
-                ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
+                ? LatLng(
+                    _currentPosition!.latitude, _currentPosition!.longitude)
                 : _center,
             zoom: 14.0,
             tilt: 0.0,
@@ -218,30 +292,33 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
             child: DiscoverLocationButton(
               mapController: mapController!,
               center: _currentPosition != null
-                  ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
+                  ? LatLng(
+                      _currentPosition!.latitude, _currentPosition!.longitude)
                   : _center,
               onLocationPressed: () async {
-                final position = await Geolocator.getCurrentPosition();
-                setState(() {
-                  _currentPosition = position;
-                  _markers.clear();
-                  _markers.add(
-                    Marker(
-                      markerId: const MarkerId('current_location'),
-                      position: LatLng(position.latitude, position.longitude),
-                      infoWindow: const InfoWindow(title: 'موقعك الحالي'),
+                final position = await _getCurrentLocation();
+                if (position != null) {
+                  setState(() {
+                    _currentPosition = position;
+                    _markers.clear();
+                    _markers.add(
+                      Marker(
+                        markerId: const MarkerId('current_location'),
+                        position: LatLng(position.latitude, position.longitude),
+                        infoWindow: const InfoWindow(title: 'موقعك الحالي'),
+                      ),
+                    );
+                  });
+
+                  mapController?.animateCamera(
+                    CameraUpdate.newCameraPosition(
+                      CameraPosition(
+                        target: LatLng(position.latitude, position.longitude),
+                        zoom: 15,
+                      ),
                     ),
                   );
-                });
-
-                mapController?.animateCamera(
-                  CameraUpdate.newCameraPosition(
-                    CameraPosition(
-                      target: LatLng(position.latitude, position.longitude),
-                      zoom: 15,
-                    ),
-                  ),
-                );
+                }
               },
             ),
           ),

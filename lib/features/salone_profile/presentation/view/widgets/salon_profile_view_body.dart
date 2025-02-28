@@ -118,7 +118,7 @@ class SalonProfileViewBody extends StatelessWidget {
                                             : Icons.favorite_border,
                                         color: isFavorite
                                             ? Colors.red
-                                            : AppColors.black,
+                                            : AppColors.grey.withOpacity(0.7),
                                       ),
                               ),
                             );

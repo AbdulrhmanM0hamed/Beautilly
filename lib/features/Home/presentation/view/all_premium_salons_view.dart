@@ -9,7 +9,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/utils/responsive/app_responsive.dart';
 import 'widgets/premium_salon_grid_card.dart';
-import 'package:get_it/get_it.dart';
 
 class AllPremiumSalonsView extends StatefulWidget {
   const AllPremiumSalonsView({super.key});

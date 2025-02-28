@@ -9,6 +9,7 @@ import '../../../../core/utils/constant/api_endpoints.dart';
 import '../../../../features/auth/domain/repositories/auth_repository.dart';
 import '../models/profile_model.dart';
 import '../models/change_password_model.dart';
+import 'package:path/path.dart' as path;
 
 abstract class ProfileRemoteDataSource {
   Future<ProfileModel> getProfile();
@@ -46,18 +47,13 @@ class ProfileRemoteDataSourceImpl
     required this.authRepository,
   });
 
-     @override
+  @override
   Future<ProfileModel> getProfile() async {
-    print('🔵 [getProfile] بدء استدعاء البيانات');
-
     return withTokenRefresh(
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
-        print('🟢 [getProfile] تم جلب التوكن: $token');
-
         final sessionCookie = await cacheService.getSessionCookie();
-        print('🟠 [getProfile] تم جلب الكوكيز: $sessionCookie');
 
         try {
           final response = await client.get(
@@ -70,43 +66,35 @@ class ProfileRemoteDataSourceImpl
             },
           );
 
-          print('🔵 [getProfile] تم استلام الاستجابة، الحالة: ${response.statusCode}');
-          print('🟢 [getProfile] الاستجابة الكاملة: ${response.body}');
-
           if (response.statusCode == 200) {
             final jsonResponse = json.decode(response.body);
-            print('🟠 [getProfile] تم فك تشفير JSON: $jsonResponse');
 
             if (jsonResponse['success'] == true) {
               final data = jsonResponse['data'];
-              
+
               if (data == null) {
-                print('❌ [getProfile] البيانات المستلمة هي null!');
-                throw ServerException(message: 'بيانات الملف الشخصي غير متوفرة');
+                throw ServerException(
+                    message: 'بيانات الملف الشخصي غير متوفرة');
               }
 
               final profile = ProfileModel.fromJson(data);
-              print('✅ [getProfile] تم إنشاء كائن ProfileModel بنجاح');
               return profile;
             } else {
-              print('❌ [getProfile] خطأ في الاستجابة: ${jsonResponse['message']}');
               throw ServerException(
-                message: jsonResponse['message'] ?? 'فشل في تحميل بيانات الملف الشخصي',
+                message: jsonResponse['message'] ??
+                    'فشل في تحميل بيانات الملف الشخصي',
               );
             }
           } else {
-            print('❌ [getProfile] استجابة غير متوقعة، الحالة: ${response.statusCode}');
             throw ServerException(message: 'فشل في تحميل بيانات الملف الشخصي');
           }
         } catch (e) {
-          print('🚨 [getProfile] حدث خطأ غير متوقع: $e');
-          throw ServerException(message: 'حدث خطأ غير متوقع أثناء جلب بيانات الملف الشخصي');
+          throw ServerException(
+              message: 'حدث خطأ غير متوقع أثناء جلب بيانات الملف الشخصي');
         }
       },
     );
   }
-
-
 
   @override
   Future<String> updateAvatar(File image) async {
@@ -115,7 +103,7 @@ class ProfileRemoteDataSourceImpl
         'POST',
         Uri.parse('${ApiEndpoints.baseUrl}/user/profile'),
       );
-      // إضافة الهيدرز بدون Content-Type
+
       final token = await cacheService.getToken();
       final sessionCookie = await cacheService.getSessionCookie();
       request.headers.addAll({
@@ -124,16 +112,20 @@ class ProfileRemoteDataSourceImpl
         'x-api-key': ApiEndpoints.api_key,
         if (sessionCookie != null) 'Cookie': sessionCookie,
       });
-      // إضافة api_key كـ field
+
       request.fields['api_key'] = ApiEndpoints.api_key;
-      // إضافة الصورة
+
+      // إضافة الصورة المضغوطة
+      final imageBytes = await image.readAsBytes();
       request.files.add(
-        await http.MultipartFile.fromPath(
-          'avatar_url', // تغيير اسم الحقل ليتطابق مع الباك إند
-          image.path,
-          contentType: MediaType('image', '*'), // السماح بأي نوع صورة
+        http.MultipartFile.fromBytes(
+          'avatar_url',
+          imageBytes,
+          filename: path.basename(image.path),
+          contentType: MediaType('image', '*'),
         ),
       );
+
       final response = await http.Response.fromStream(await request.send());
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);
@@ -142,8 +134,7 @@ class ProfileRemoteDataSourceImpl
         }
       }
 
-      throw ServerException(
-          message: 'فشل في رفع الصورة: ${response.statusCode}');
+      throw ServerException(message: 'فشل في رفع الصورة: ${response.statusCode}');
     } catch (e) {
       throw ServerException(message: 'حدث خطأ أثناء رفع الصورة');
     }

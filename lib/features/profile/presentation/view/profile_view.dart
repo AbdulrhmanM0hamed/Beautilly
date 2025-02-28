@@ -3,6 +3,7 @@ import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:beautilly/features/auth/presentation/cubit/auth_state.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_image_cubit/profile_image_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/features/profile/presentation/view/widgets/profile_view_body.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +22,12 @@ class ProfileView extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => sl<AuthCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<ProfileCubit>()..loadProfile(),
+        ),
+        BlocProvider(
+          create: (context) => sl<ProfileImageCubit>(),
         ),
       ],
       child: BlocListener<AuthCubit, AuthState>(

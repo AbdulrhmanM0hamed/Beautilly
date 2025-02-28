@@ -4,7 +4,6 @@ import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/common/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../../../core/utils/theme/app_colors.dart';
 import '../../data/models/order_request_model.dart';
 import '../cubit/add_order_cubit/add_order_cubit.dart';
@@ -51,15 +50,10 @@ class _AddOrderViewState extends State<AddOrderView> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      setState(() {
-        _selectedImage = File(pickedFile.path);
-      });
-    }
+  void _pickImage(File image) {
+    setState(() {
+      _selectedImage = image;
+    });
   }
 
   void _addFabric() {

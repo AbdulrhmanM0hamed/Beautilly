@@ -10,6 +10,7 @@ import '../../../../core/services/cache/cache_service.dart';
 import '../models/order_model.dart';
 import '../models/order_request_model.dart';
 import '../models/order_details_model.dart';
+import 'package:path/path.dart' as path;
 
 abstract class OrdersRemoteDataSource {
   Future<OrdersResponseModel> getMyOrders({int page = 1});
@@ -126,17 +127,22 @@ class OrdersRemoteDataSourceImpl
         'api_key': ApiEndpoints.api_key,
       });
 
-      // إضافة مصفوفة الأقمشة بالطريقة الصحيحة
+      // إضافة مصفوفة الأقمشة
       for (var i = 0; i < order.fabrics.length; i++) {
         request.fields['fabrics[$i][type]'] = order.fabrics[i].type;
         request.fields['fabrics[$i][color]'] = order.fabrics[i].color;
       }
 
-      // إضافة الصورة
+      // إضافة الصورة المضغوطة
+      final imageFile = File(order.imagePath);
+      final imageBytes = await imageFile.readAsBytes();
+      final imageLength = await imageFile.length();
+      
       request.files.add(
-        await http.MultipartFile.fromPath(
+        http.MultipartFile.fromBytes(
           'image',
-          order.imagePath,
+          imageBytes,
+          filename: path.basename(order.imagePath),
           contentType: MediaType('image', '*'),
         ),
       );

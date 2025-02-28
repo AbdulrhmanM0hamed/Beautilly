@@ -10,13 +10,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-
-
 class NotificationService {
   static const String _lastNotificationKey = 'last_notification_timestamp';
   static const String _lastLoginKey = 'last_login_timestamp';
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
   final CacheService _cacheService;
   final FirebaseDatabase _database;
   final GlobalKey<NavigatorState> navigatorKey;
@@ -42,17 +41,17 @@ class NotificationService {
     required CacheService cacheService,
     required FirebaseDatabase database,
     required this.authRepository,
-  }) : _cacheService = cacheService,
-       _database = database;
+  })  : _cacheService = cacheService,
+        _database = database;
 
   Future<void> init() async {
     try {
       // إلغاء الاشتراكات القديمة
       await dispose();
-      
+
       // إنشاء controller جديد
       _unreadCountController = StreamController<int>.broadcast();
-      
+
       await _initLocalNotifications();
       await _setupFCM();
 
@@ -61,12 +60,13 @@ class NotificationService {
         await _setupUserNotifications(userId);
       }
     } catch (e) {
-    //  print('❌ Error initializing notifications: $e');
+      //  print('❌ Error initializing notifications: $e');
     }
   }
 
   Future<void> _initLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -87,23 +87,27 @@ class NotificationService {
     );
 
     // إعداد قناة الإشعارات لنظام Android
-    await _localNotifications.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(
-      const AndroidNotificationChannel(
-        'high_importance_channel',
-        'High Importance Notifications',
-        description: 'This channel is used for important notifications.',
-        importance: Importance.high,
-        playSound: true,
-        enableVibration: true,
-        showBadge: true,
-      ),
-    );
+    await _localNotifications
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(
+          const AndroidNotificationChannel(
+            'high_importance_channel',
+            'High Importance Notifications',
+            description: 'This channel is used for important notifications.',
+            importance: Importance.high,
+            playSound: true,
+            enableVibration: true,
+            showBadge: true,
+          ),
+        );
   }
 
   Future<void> _setupFCM() async {
     final settings = await _messaging.requestPermission(
-      alert: true, badge: true, sound: true,
+      alert: true,
+      badge: true,
+      sound: true,
     );
 
     final token = await _messaging.getToken();
@@ -120,7 +124,7 @@ class NotificationService {
 
     // تحديث العداد الأولي
     await _updateUnreadCount(userId);
-    
+
     // الاستماع للإشعارات من FCM
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       _handleMessage(message, userId);
@@ -142,7 +146,7 @@ class NotificationService {
           final data = Map<String, dynamic>.from(event.snapshot.value as Map);
           if (data['read'] == false) {
             _incrementUnreadCount();
-            
+
             _showLocalNotification(
               title: data['title'] ?? 'إشعار جديد',
               body: data['message'] ?? '',
@@ -151,7 +155,7 @@ class NotificationService {
           }
         }
       } catch (e) {
-     //   print('❌ Error processing new notification: $e');
+        //   print('❌ Error processing new notification: $e');
       }
     });
 
@@ -161,14 +165,14 @@ class NotificationService {
         .child(userId.toString())
         .onChildChanged
         .listen((event) {
-      _updateUnreadCount(userId);  // تحديث العداد عند تغيير حالة أي إشعار
+      _updateUnreadCount(userId); // تحديث العداد عند تغيير حالة أي إشعار
     });
   }
 
   void _listenToUserNotifications(int userId) async {
     final lastLogin = await SharedPreferences.getInstance()
         .then((prefs) => prefs.getInt(_lastLoginKey) ?? 0);
-    
+
     _userNotificationsSubscription = _database
         .ref('notifications/users')
         .child(userId.toString())
@@ -179,14 +183,15 @@ class NotificationService {
       try {
         if (event.snapshot.value != null) {
           final data = Map<String, dynamic>.from(event.snapshot.value as Map);
-          
-          if (data['order_id'] != null && data['read'] == false) {  // التحقق من حالة القراءة
+
+          if (data['order_id'] != null && data['read'] == false) {
+            // التحقق من حالة القراءة
             _showLocalNotification(
               title: data['title'] ?? 'عرض جديد',
               body: data['body'] ?? '',
               payload: '/orders/${data["order_id"]}',
             );
-            
+
             _incrementUnreadCount();
           }
         }
@@ -199,7 +204,7 @@ class NotificationService {
   void _listenToReservationNotifications(int userId) async {
     final lastLogin = await SharedPreferences.getInstance()
         .then((prefs) => prefs.getInt(_lastLoginKey) ?? 0);
-    
+
     _reservationNotificationsSubscription = _database
         .ref('notifications')
         .child(userId.toString())
@@ -210,7 +215,7 @@ class NotificationService {
       try {
         if (event.snapshot.value != null) {
           final data = Map<String, dynamic>.from(event.snapshot.value as Map);
-          
+
           if (data['read'] == false && data['type'] == 'reservation') {
             _showLocalNotification(
               title: 'تحديث حالة الحجز',
@@ -220,7 +225,7 @@ class NotificationService {
           }
         }
       } catch (e) {
-    //    print('❌ Error processing reservation notification: $e');
+        //    print('❌ Error processing reservation notification: $e');
       }
     });
   }
@@ -310,7 +315,7 @@ class NotificationService {
     try {
       final token = await _cacheService.getToken();
       final sessionCookie = await _cacheService.getSessionCookie();
-      
+
       //print('🔍 Notifications Request Headers:');
       //print('Token: $token');
       //print('x-api-key: ${ApiEndpoints.api_key}');
@@ -363,15 +368,13 @@ class NotificationService {
 
   Future<void> _updateUnreadCount(int userId) async {
     try {
-      final snapshot = await _database
-          .ref('notifications')
-          .child(userId.toString())
-          .get();
+      final snapshot =
+          await _database.ref('notifications').child(userId.toString()).get();
 
       if (snapshot.exists) {
         final data = Map<String, dynamic>.from(snapshot.value as Map);
         int count = 0;
-        
+
         data.forEach((key, value) {
           if (value is Map && value['read'] == false) {
             count++;
@@ -384,7 +387,7 @@ class NotificationService {
         }
       }
     } catch (e) {
-   //   print('❌ Error updating unread count: $e');
+      //   print('❌ Error updating unread count: $e');
     }
   }
 
@@ -394,18 +397,21 @@ class NotificationService {
       if (userId == null) return;
 
       // تحديث إشعارات الحجوزات
-      final reservationsRef = _database.ref('notifications').child(userId.toString());
+      final reservationsRef =
+          _database.ref('notifications').child(userId.toString());
       final reservationsSnapshot = await reservationsRef.get();
-      
+
       // تحديث إشعارات عروض الطلبات
-      final offersRef = _database.ref('notifications/users').child(userId.toString());
+      final offersRef =
+          _database.ref('notifications/users').child(userId.toString());
       final offersSnapshot = await offersRef.get();
 
       final updates = <String, dynamic>{};
 
       // تحديث إشعارات الحجوزات
       if (reservationsSnapshot.exists) {
-        final data = Map<String, dynamic>.from(reservationsSnapshot.value as Map);
+        final data =
+            Map<String, dynamic>.from(reservationsSnapshot.value as Map);
         data.forEach((key, value) {
           if (value is Map && value['read'] == false) {
             updates['$key/read'] = true;
@@ -444,17 +450,17 @@ class NotificationService {
     try {
       final ref = _database.ref('notifications/users').child(userId.toString());
       final snapshot = await ref.get();
-      
+
       if (snapshot.exists) {
         final updates = <String, dynamic>{};
         final data = Map<String, dynamic>.from(snapshot.value as Map);
-        
+
         data.forEach((key, value) {
           if (value is Map && value['read'] == false) {
             updates['$key/read'] = true;
           }
         });
-        
+
         if (updates.isNotEmpty) {
           await ref.update(updates);
           if (_unreadCountController?.isClosed == false) {

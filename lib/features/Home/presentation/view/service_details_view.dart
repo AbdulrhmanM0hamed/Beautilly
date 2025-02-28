@@ -18,7 +18,8 @@ class ServiceDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dimensions = ResponsiveCardSizes.getServiceDetailsGridDimensions(context);
+    final dimensions =
+        ResponsiveCardSizes.getServiceDetailsGridDimensions(context);
 
     return Scaffold(
       body: CustomScrollView(
@@ -98,8 +99,9 @@ class ServiceDetailsView extends StatelessWidget {
                     fontFamily: FontConstant.cairo,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 32),
                 MasonryGridView.count(
+                  padding: EdgeInsets.zero,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: dimensions.crossAxisCount,

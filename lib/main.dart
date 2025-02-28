@@ -19,6 +19,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'core/cubits/theme/theme_cubit.dart';
 import 'core/cubits/theme/theme_state.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -47,6 +48,14 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
   await di.init();
   await di.sl<NotificationService>().init();
+
+  // تحميل متغيرات البيئة
+  try {
+    await dotenv.load(fileName: ".env");
+  } catch (e) {
+    // في حالة عدم وجود الملف، نستخدم القيم الافتراضية
+    debugPrint('⚠️ .env file not found, using default values');
+  }
 
   runApp(
     MultiProvider(

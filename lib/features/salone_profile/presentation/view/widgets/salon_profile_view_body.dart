@@ -69,7 +69,8 @@ class SalonProfileViewBody extends StatelessWidget {
                     left: 16,
                     child: Row(
                       children: [
-                        BlocConsumer<ToggleFavoritesCubit, ToggleFavoritesState>(
+                        BlocConsumer<ToggleFavoritesCubit,
+                            ToggleFavoritesState>(
                           listener: (context, state) {
                             if (state is ToggleFavoritesError) {
                               CustomSnackbar.showError(
@@ -79,21 +80,28 @@ class SalonProfileViewBody extends StatelessWidget {
                             }
                           },
                           builder: (context, state) {
-                            final bool isLoading = state is ToggleFavoritesLoading;
-                            final bool isFavorite = state is ToggleFavoritesSuccess 
-                                ? state.isFavorite 
-                                : profile.userInteraction.hasLiked;
+                            final bool isLoading =
+                                state is ToggleFavoritesLoading;
+                            final bool isFavorite =
+                                state is ToggleFavoritesSuccess
+                                    ? state.isFavorite
+                                    : profile.userInteraction.hasLiked;
 
                             return CircleAvatar(
-                              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                              backgroundColor:
+                                  Theme.of(context).scaffoldBackgroundColor,
                               child: IconButton(
-                                onPressed: isLoading 
-                                    ? null 
+                                onPressed: isLoading
+                                    ? null
                                     : () {
                                         if (isFavorite) {
-                                          context.read<ToggleFavoritesCubit>().removeFromFavorites(profile.id);
+                                          context
+                                              .read<ToggleFavoritesCubit>()
+                                              .removeFromFavorites(profile.id);
                                         } else {
-                                          context.read<ToggleFavoritesCubit>().addToFavorites(profile.id);
+                                          context
+                                              .read<ToggleFavoritesCubit>()
+                                              .addToFavorites(profile.id);
                                         }
                                       },
                                 icon: isLoading
@@ -105,21 +113,25 @@ class SalonProfileViewBody extends StatelessWidget {
                                         ),
                                       )
                                     : Icon(
-                                        isFavorite ? Icons.favorite : Icons.favorite_border,
-                                        color: isFavorite ? Colors.red : AppColors.secondary,
+                                        isFavorite
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        color: isFavorite
+                                            ? Colors.red
+                                            : AppColors.black,
                                       ),
                               ),
                             );
                           },
                         ),
                         const SizedBox(width: 8),
-                        CircleAvatar(
-                          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                          child: SvgPicture.asset(
-                            AppAssets.map,
-                            color: AppColors.secondary,
-                          ),
-                        ),
+                        // CircleAvatar(
+                        //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                        //   child: SvgPicture.asset(
+                        //     AppAssets.map,
+                        //     color: AppColors.secondary,
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

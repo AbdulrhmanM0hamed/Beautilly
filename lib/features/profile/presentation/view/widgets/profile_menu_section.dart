@@ -17,6 +17,8 @@ import 'package:beautilly/features/profile/presentation/view/favorites/favorites
 import 'package:beautilly/features/profile/presentation/view/dashboard_webview.dart';
 import 'package:beautilly/core/cubits/theme/theme_cubit.dart';
 import 'package:beautilly/core/cubits/theme/theme_state.dart';
+import 'package:beautilly/features/profile/presentation/view/terms_and_privacy_view.dart';
+import 'package:beautilly/features/profile/presentation/view/help_center_view.dart';
 
 class ProfileMenuSection extends StatelessWidget {
   const ProfileMenuSection({super.key});
@@ -206,12 +208,26 @@ class ProfileMenuSection extends StatelessWidget {
                     MenuItem(
                       icon: Icons.help_outline,
                       title: "مركز المساعدة",
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRoutes.fadeScale(
+                            page: const HelpCenterView(),
+                          ),
+                        );
+                      },
                     ),
                     MenuItem(
                       icon: Icons.policy_outlined,
                       title: "الشروط والأحكام",
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRoutes.fadeScale(
+                            page: const TermsAndPrivacyView(),
+                          ),
+                        );
+                      },
                     ),
                     MenuItem(
                       icon: Icons.logout,

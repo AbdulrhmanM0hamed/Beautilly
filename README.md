@@ -18,4 +18,8 @@ samples, guidance on mobile development, and a full API reference.
 ## Environment Setup
 
 1. Copy `.env.example` to `.env`
-2. Update the values in `.env` with your actual configuration
+2. Update the values in `.env` with your actual configuration:
+   ```
+   BASE_URL=https://api.example.com
+   API_KEY=your_actual_api_key
+   ```

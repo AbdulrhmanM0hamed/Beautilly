@@ -50,12 +50,7 @@ void main() async {
   await di.sl<NotificationService>().init();
 
   // تحميل متغيرات البيئة
-  try {
-    await dotenv.load(fileName: ".env");
-  } catch (e) {
-    // في حالة عدم وجود الملف، نستخدم القيم الافتراضية
-    debugPrint('⚠️ .env file not found, using default values');
-  }
+  await dotenv.load(fileName: ".env");
 
   runApp(
     MultiProvider(

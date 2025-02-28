@@ -6,6 +6,7 @@ import '../../domain/entities/service_entity.dart';
 import '../widgets/service_details/service_shop_card.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:beautilly/core/utils/common/image_viewer.dart';
+import 'package:beautilly/core/utils/responsive/responsive_card_sizes.dart';
 
 class ServiceDetailsView extends StatelessWidget {
   final ServiceEntity service;
@@ -17,11 +18,14 @@ class ServiceDetailsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = ResponsiveCardSizes.getServiceDetailsGridDimensions(context);
+
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
             expandedHeight: 300,
+            pinned: true,
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
@@ -39,18 +43,21 @@ class ServiceDetailsView extends StatelessWidget {
                 ),
               ),
             ),
-            pinned: true,
+            title: Text(
+              service.name,
+              style: getBoldStyle(
+                fontSize: FontSize.size18,
+                fontFamily: FontConstant.cairo,
+                color: Colors.white,
+              ),
+            ),
             flexibleSpace: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ImageViewer(
-                      imageUrl: service.image,
-                    ),
-                  ),
-                );
-              },
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ImageViewer(imageUrl: service.image),
+                ),
+              ),
               child: FlexibleSpaceBar(
                 background: Hero(
                   tag: 'service_${service.id}',
@@ -67,7 +74,7 @@ class ServiceDetailsView extends StatelessWidget {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.transparent,
+                              Colors.black.withOpacity(0.3),
                               Colors.black.withOpacity(0.7),
                             ],
                           ),
@@ -79,52 +86,32 @@ class ServiceDetailsView extends StatelessWidget {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // وصف الخدمة
-                  Text(
-                    service.description ?? '',
-                    style: getRegularStyle(
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                      fontSize: FontSize.size14,
-                      fontFamily: FontConstant.cairo,
-                    ),
+          SliverPadding(
+            padding: EdgeInsets.all(dimensions.padding),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                const SizedBox(height: 24),
+                Text(
+                  'المتاجر التي تقدم هذه الخدمة',
+                  style: getBoldStyle(
+                    fontSize: FontSize.size16,
+                    fontFamily: FontConstant.cairo,
                   ),
-                  const SizedBox(height: 24),
-                  // عنوان المتاجر
-                  Text(
-                    'المتاجر التي تقدم هذه الخدمة',
-                    style: getBoldStyle(
-                      color: Theme.of(context).textTheme.titleLarge?.color,
-                      fontSize: FontSize.size16,
-                      fontFamily: FontConstant.cairo,
-                    ),
+                ),
+                const SizedBox(height: 16),
+                MasonryGridView.count(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  crossAxisCount: dimensions.crossAxisCount,
+                  mainAxisSpacing: dimensions.mainAxisSpacing,
+                  crossAxisSpacing: dimensions.crossAxisSpacing,
+                  itemCount: service.shops.length,
+                  itemBuilder: (context, index) => ServiceShopCard(
+                    shop: service.shops[index],
+                    dimensions: dimensions,
                   ),
-                  const SizedBox(height: 16),
-                  // قائمة المتاجر
-                  if (service.shops.isEmpty)
-                    const Center(
-                      child: Text('لا توجد متاجر متاحة حالياً'),
-                    )
-                  else
-                    MasonryGridView.count(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      itemCount: service.shops.length,
-                      itemBuilder: (context, index) => ServiceShopCard(
-                        shop: service.shops[index],
-                      ),
-                    ),
-                ],
-              ),
+                ),
+              ]),
             ),
           ),
         ],

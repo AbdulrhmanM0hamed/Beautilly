@@ -363,6 +363,59 @@ class ResponsiveCardSizes {
       );
     }
   }
+
+  static ServiceDetailsGridDimensions getServiceDetailsGridDimensions(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isTablet = size.width >= AppResponsive.mobileBreakpoint;
+    final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
+
+    if (isDesktop) {
+      return ServiceDetailsGridDimensions(
+        crossAxisCount: 3,
+        childAspectRatio: 0.85,
+        mainAxisSpacing: 24,
+        crossAxisSpacing: 24,
+        padding: 24,
+        imageHeight: 200,
+        titleSize: FontSize.size18,
+        subtitleSize: FontSize.size14,
+        ratingSize: FontSize.size14,
+        iconSize: 24,
+        borderRadius: 16,
+        chipHeight: 32,
+      );
+    } else if (isTablet) {
+      return ServiceDetailsGridDimensions(
+        crossAxisCount: 2,
+        childAspectRatio: 0.8,
+        mainAxisSpacing: 20,
+        crossAxisSpacing: 20,
+        padding: 20,
+        imageHeight: 180,
+        titleSize: FontSize.size16,
+        subtitleSize: FontSize.size14,
+        ratingSize: FontSize.size12,
+        iconSize: 22,
+        borderRadius: 14,
+        chipHeight: 28,
+      );
+    } else {
+      return ServiceDetailsGridDimensions(
+        crossAxisCount: 2,
+        childAspectRatio: 0.75,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        padding: 16,
+        imageHeight: 160,
+        titleSize: FontSize.size14,
+        subtitleSize: FontSize.size12,
+        ratingSize: FontSize.size12,
+        iconSize: 20,
+        borderRadius: 12,
+        chipHeight: 24,
+      );
+    }
+  }
 }
 
 class CardDimensions {
@@ -540,5 +593,35 @@ class ServiceShopGridDimensions {
     required this.padding,
     required this.titleSize,
     required this.iconSize,
+  });
+}
+
+class ServiceDetailsGridDimensions {
+  final int crossAxisCount;
+  final double childAspectRatio;
+  final double mainAxisSpacing;
+  final double crossAxisSpacing;
+  final double padding;
+  final double imageHeight;
+  final double titleSize;
+  final double subtitleSize;
+  final double ratingSize;
+  final double iconSize;
+  final double borderRadius;
+  final double chipHeight;
+
+  const ServiceDetailsGridDimensions({
+    required this.crossAxisCount,
+    required this.childAspectRatio,
+    required this.mainAxisSpacing,
+    required this.crossAxisSpacing,
+    required this.padding,
+    required this.imageHeight,
+    required this.titleSize,
+    required this.subtitleSize,
+    required this.ratingSize,
+    required this.iconSize,
+    required this.borderRadius,
+    required this.chipHeight,
   });
 }

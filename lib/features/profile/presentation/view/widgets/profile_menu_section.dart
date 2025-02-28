@@ -110,7 +110,8 @@ class ProfileMenuSection extends StatelessWidget {
                             backgroundColor: AppColors.primary,
                             minimumSize: const Size(double.infinity, 45),
                           ),
-                          icon: const Icon(Icons.dashboard_outlined),
+                          icon: const Icon(Icons.dashboard_outlined,
+                              color: Colors.white),
                           label: Text(
                             'الذهاب إلى لوحة التحكم',
                             style: getMediumStyle(

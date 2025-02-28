@@ -27,6 +27,7 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
   late TabController _tabController;
   late OrdersCubit _ordersCubit;
   late DeleteOrderCubit _deleteOrderCubit;
+  bool _isFirstLoad = true;
 
   @override
   void initState() {
@@ -35,13 +36,12 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
     _ordersCubit = sl<OrdersCubit>();
     _deleteOrderCubit = sl<DeleteOrderCubit>();
 
-    // تحميل كلا القائمتين مبدئياً
-    _ordersCubit.loadMyOrders();
-    _ordersCubit.loadAllOrders();
+    // تحميل البيانات الأولية
+    _loadInitialData();
 
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
-        // تحديث البيانات في الخلفية فقط
+        // تحديث البيانات عند تغيير التاب
         if (_tabController.index == 0) {
           _ordersCubit.loadMyOrders();
         } else {
@@ -49,6 +49,12 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
         }
       }
     });
+  }
+
+  Future<void> _loadInitialData() async {
+    // تحميل البيانات الأولية للتاب الأول فقط
+    await _ordersCubit.loadMyOrders();
+    _isFirstLoad = false;
   }
 
   @override
@@ -72,7 +78,6 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
             title: 'طلبات التفصيل',
             bottom: TabBar(
               controller: _tabController,
-              // إزالة onTap لمنع التداخل
               tabs: const [
                 Tab(text: 'طلباتي'),
                 Tab(text: 'طلبات المستخدمين'),
@@ -103,11 +108,33 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
             },
             child: TabBarView(
               controller: _tabController,
-              // منع السحب للتنقل بين التابس
-          //    physics: const NeverScrollableScrollPhysics(),
-              children: const [
-                MyOrdersWidget(),
-                AllOrdersWidget(),
+              children: [
+                // طلباتي
+                BlocBuilder<OrdersCubit, OrdersState>(
+                  builder: (context, state) {
+                    if (state is OrdersLoading) {
+                      return const Center(
+                        child: CustomProgressIndcator(
+                          color: AppColors.primary,
+                        ),
+                      );
+                    }
+                    return const MyOrdersWidget();
+                  },
+                ),
+                // طلبات المستخدمين
+                BlocBuilder<OrdersCubit, OrdersState>(
+                  builder: (context, state) {
+                    if (state is OrdersLoading) {
+                      return const Center(
+                        child: CustomProgressIndcator(
+                          color: AppColors.primary,
+                        ),
+                      );
+                    }
+                    return const AllOrdersWidget();
+                  },
+                ),
               ],
             ),
           ),
@@ -122,12 +149,15 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
               }
             },
             backgroundColor: AppColors.primary,
-            icon: const Icon(Icons.add),
+            icon: const Icon(
+              Icons.add,
+              color: AppColors.white,
+            ),
             label: Text(
               'إضافة طلب تفصيل',
               style: getMediumStyle(
                 fontFamily: FontConstant.cairo,
-                color: Colors.white,
+                color: AppColors.white,
                 fontSize: FontSize.size14,
               ),
             ),
@@ -329,17 +359,17 @@ class MyOrdersWidget extends StatelessWidget {
   }
 
   int _getCrossAxisCount(double width) {
-    if (width >= 1200) return 4;      // Desktop
-    if (width >= 800) return 3;       // Tablet
-    return 2;                         // Mobile
+    if (width >= 1200) return 4; // Desktop
+    if (width >= 800) return 3; // Tablet
+    return 2; // Mobile
   }
 
   double _getChildAspectRatio(double width) {
-    if (width >= 1000) return 0.98;   // Desktop
-    if (width >= 800) return 0.70;    // Tablet
-    if (width > 600) return 0.75;     // Large Tablet
-    if (width >= 400) return 0.65;    // Small Tablet
-    return 0.60;                      // Mobile
+    if (width >= 1000) return 0.98; // Desktop
+    if (width >= 800) return 0.70; // Tablet
+    if (width > 600) return 0.75; // Large Tablet
+    if (width >= 400) return 0.65; // Small Tablet
+    return 0.60; // Mobile
   }
 }
 
@@ -477,16 +507,16 @@ class AllOrdersWidget extends StatelessWidget {
   }
 
   int _getCrossAxisCount(double width) {
-    if (width >= 1200) return 4;      // Desktop
-    if (width >= 800) return 3;       // Tablet
-    return 2;                         // Mobile
+    if (width >= 1200) return 4; // Desktop
+    if (width >= 800) return 3; // Tablet
+    return 2; // Mobile
   }
 
   double _getChildAspectRatio(double width) {
-    if (width >= 1000) return 0.95;   // Desktop
-    if (width >= 800) return 0.75;    // Tablet
-    if (width > 600) return 0.75;     // Large Tablet
-    if (width >= 400) return 0.60;    // Small Tablet
-    return 0.60;                      // Mobile
+    if (width >= 1000) return 0.95; // Desktop
+    if (width >= 800) return 0.75; // Tablet
+    if (width > 600) return 0.75; // Large Tablet
+    if (width >= 400) return 0.60; // Small Tablet
+    return 0.60; // Mobile
   }
 }

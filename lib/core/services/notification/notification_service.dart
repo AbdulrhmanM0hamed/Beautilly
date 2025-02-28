@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:beautilly/core/utils/constant/api_endpoints.dart';
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

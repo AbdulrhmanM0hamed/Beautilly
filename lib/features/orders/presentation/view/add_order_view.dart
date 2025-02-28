@@ -114,12 +114,13 @@ class _AddOrderViewState extends State<AddOrderView> {
                     type: StepperType.horizontal,
                     currentStep: _currentStep,
                     onStepContinue: () {
-                      if (_currentStep == 0) {  // خطوة المقاسات
+                      if (_currentStep == 0) {
+                        // خطوة المقاسات
                         if (_formKey.currentState!.validate()) {
                           setState(() => _currentStep++);
                         }
-                      } 
-                      else if (_currentStep == 1) {  // خطوة القماش
+                      } else if (_currentStep == 1) {
+                        // خطوة القماش
                         if (_fabrics.isNotEmpty || selectedType != null) {
                           setState(() => _currentStep++);
                         } else {
@@ -128,8 +129,8 @@ class _AddOrderViewState extends State<AddOrderView> {
                             message: 'يرجى إضافة القماش أو اختيار نوعه',
                           );
                         }
-                      }
-                      else if (_currentStep == 2) {  // خطوة الصور
+                      } else if (_currentStep == 2) {
+                        // خطوة الصور
                         if (_selectedImage != null) {
                           _submitForm();
                         } else {

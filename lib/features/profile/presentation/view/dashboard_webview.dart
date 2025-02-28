@@ -1,8 +1,7 @@
 import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:beautilly/core/utils/constant/font_manger.dart';
-import 'package:beautilly/core/utils/constant/styles_manger.dart';
+
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 
 class DashboardWebView extends StatefulWidget {

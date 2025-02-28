@@ -1,6 +1,5 @@
 import 'package:beautilly/core/utils/common/arrow_back_widget.dart';
 import 'package:beautilly/core/utils/common/image_viewer.dart';
-import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_gallery_grid.dart';
@@ -15,7 +14,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubit/favorites_cubit/toggle_favorites_cubit.dart';
 import '../../cubit/favorites_cubit/toggle_favorites_state.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
-import 'package:flutter_svg/svg.dart';
 
 class SalonProfileViewBody extends StatelessWidget {
   final SalonProfile profile;

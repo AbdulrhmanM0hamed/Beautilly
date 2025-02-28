@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/notification.dart';
-import '../cubit/notifications_cubit.dart';
+
 import 'notification_item.dart';
 
 class NotificationList extends StatelessWidget {
@@ -23,4 +22,4 @@ class NotificationList extends StatelessWidget {
       },
     );
   }
-} 
+}

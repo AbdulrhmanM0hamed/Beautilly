@@ -1,12 +1,10 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
-import 'package:beautilly/features/orders/domain/entities/order_details.dart';
 import 'package:beautilly/features/orders/presentation/cubit/order_details_cubit/order_details_state.dart';
 import 'package:beautilly/features/orders/presentation/view/order_details_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/notification.dart';
-import '../cubit/notifications_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/order_details_cubit/order_details_cubit.dart';
 
 class NotificationItem extends StatefulWidget {

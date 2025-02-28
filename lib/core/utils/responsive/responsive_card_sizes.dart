@@ -284,9 +284,9 @@ class ResponsiveCardSizes {
 
     if (isDesktop) {
       return OrderCardDimensions(
-        width: size.width * 0.28,        // زيادة العرض قليلاً
-        height: size.height * 0.35,      // زيادة الارتفاع
-        imageHeight: size.height * 0.18,  // زيادة ارتفاع الصورة
+        width: size.width * 0.28, // زيادة العرض قليلاً
+        height: size.height * 0.35, // زيادة الارتفاع
+        imageHeight: size.height * 0.18, // زيادة ارتفاع الصورة
         padding: 12,
         spacing: 8,
         titleSize: 14,
@@ -298,8 +298,8 @@ class ResponsiveCardSizes {
       );
     } else if (isTablet) {
       return OrderCardDimensions(
-        width: size.width * 0.38,        // زيادة العرض
-        height: size.height * 0.32,      // زيادة الارتفاع
+        width: size.width * 0.38, // زيادة العرض
+        height: size.height * 0.32, // زيادة الارتفاع
         imageHeight: size.height * 0.16,
         padding: 10,
         spacing: 8,
@@ -364,13 +364,14 @@ class ResponsiveCardSizes {
     }
   }
 
-  static ServiceDetailsGridDimensions getServiceDetailsGridDimensions(BuildContext context) {
+  static ServiceDetailsGridDimensions getServiceDetailsGridDimensions(
+      BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isTablet = size.width >= AppResponsive.mobileBreakpoint;
     final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
 
     if (isDesktop) {
-      return ServiceDetailsGridDimensions(
+      return const ServiceDetailsGridDimensions(
         crossAxisCount: 3,
         childAspectRatio: 0.85,
         mainAxisSpacing: 24,
@@ -385,7 +386,7 @@ class ResponsiveCardSizes {
         chipHeight: 32,
       );
     } else if (isTablet) {
-      return ServiceDetailsGridDimensions(
+      return const ServiceDetailsGridDimensions(
         crossAxisCount: 2,
         childAspectRatio: 0.8,
         mainAxisSpacing: 20,
@@ -400,7 +401,7 @@ class ResponsiveCardSizes {
         chipHeight: 28,
       );
     } else {
-      return ServiceDetailsGridDimensions(
+      return const ServiceDetailsGridDimensions(
         crossAxisCount: 2,
         childAspectRatio: 0.75,
         mainAxisSpacing: 16,

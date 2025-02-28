@@ -8,6 +8,8 @@ class SearchShop {
   final MainImage mainImage;
   final double? latitude;
   final double? longitude;
+  final City city;
+  final State state;
 
   const SearchShop({
     required this.id,
@@ -17,6 +19,8 @@ class SearchShop {
     required this.rating,
     required this.location,
     required this.mainImage,
+    required this.city,
+    required this.state,
     this.latitude,
     this.longitude,
   });
@@ -85,5 +89,25 @@ class Pagination {
     required this.lastPage,
     required this.perPage,
     required this.total,
+  });
+}
+
+class City {
+  final int id;
+  final String name;
+
+  const City({
+    required this.id,
+    required this.name,
+  });
+}
+
+class State {
+  final int id;
+  final String name;
+
+  const State({
+    required this.id,
+    required this.name,
   });
 } 

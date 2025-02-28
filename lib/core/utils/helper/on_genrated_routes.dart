@@ -5,6 +5,7 @@ import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signup_view.dart';
 import 'package:beautilly/features/onboarding/presentation/view/onboarding_view.dart';
 import 'package:beautilly/features/orders/presentation/view/add_order_view.dart';
+import 'package:beautilly/features/profile/presentation/view/terms_and_privacy_view.dart';
 import 'package:beautilly/features/splash/view/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +16,10 @@ Route<dynamic> onGenratedRoutes(RouteSettings settings) {
     case SplashView.routeName:
       return MaterialPageRoute(
         builder: (context) => const SplashView(),
+      );
+    case TermsAndPrivacyView.routeName:
+      return MaterialPageRoute(
+        builder: (context) => const TermsAndPrivacyView(),
       );
     case OnboardingView.routeName:
       return MaterialPageRoute(

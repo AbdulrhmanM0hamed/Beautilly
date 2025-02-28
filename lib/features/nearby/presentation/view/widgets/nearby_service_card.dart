@@ -171,24 +171,55 @@ class NearbyServiceCard extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        shop.typeName,
-                        style: getMediumStyle(
-                          color: AppColors.primary,
-                          fontSize: FontSize.size10,
-                          fontFamily: FontConstant.cairo,
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          AppAssets.Location,
+                          colorFilter: const ColorFilter.mode(
+                            AppColors.grey,
+                            BlendMode.srcIn,
+                          ),
+                          width: 12,
+                          height: 12,
                         ),
-                      ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            '${shop.city.name} - ${shop.state.name}',
+                            style: getRegularStyle(
+                              color: AppColors.grey,
+                              fontSize: FontSize.size12,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                shop.typeName,
+                                style: getMediumStyle(
+                                  color: AppColors.primary,
+                                  fontSize: FontSize.size10,
+                                  fontFamily: FontConstant.cairo,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
+                    const SizedBox(height: 4),
                   ],
                 ),
               ),

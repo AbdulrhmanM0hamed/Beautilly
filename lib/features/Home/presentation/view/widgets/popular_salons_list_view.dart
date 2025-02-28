@@ -109,7 +109,7 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
               ),
               const SizedBox(height: 16.0),
               SizedBox(
-                height: isDesktop ? 300 : isTablet ? 280 : 250,
+                height: isDesktop ? 330 : isTablet ? 280 : 250,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: salons.length,

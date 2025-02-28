@@ -64,7 +64,8 @@ class ServiceCardShimmer extends StatelessWidget {
                             width: 14,
                             height: 14,
                             decoration: BoxDecoration(
-                              color: isDark ? Colors.grey[700] : Colors.grey[300],
+                              color:
+                                  isDark ? Colors.grey[700] : Colors.grey[300],
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -73,7 +74,8 @@ class ServiceCardShimmer extends StatelessWidget {
                             width: 30,
                             height: 12,
                             decoration: BoxDecoration(
-                              color: isDark ? Colors.grey[700] : Colors.grey[300],
+                              color:
+                                  isDark ? Colors.grey[700] : Colors.grey[300],
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -101,7 +103,8 @@ class ServiceCardShimmer extends StatelessWidget {
                             width: 14,
                             height: 14,
                             decoration: BoxDecoration(
-                              color: isDark ? Colors.grey[700] : Colors.grey[300],
+                              color:
+                                  isDark ? Colors.grey[700] : Colors.grey[300],
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -110,7 +113,8 @@ class ServiceCardShimmer extends StatelessWidget {
                             width: 40,
                             height: 12,
                             decoration: BoxDecoration(
-                              color: isDark ? Colors.grey[700] : Colors.grey[300],
+                              color:
+                                  isDark ? Colors.grey[700] : Colors.grey[300],
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -177,6 +181,7 @@ class ServicesGridShimmer extends StatelessWidget {
     );
   }
 }
+
 class AllServicesGridShimmer extends StatelessWidget {
   const AllServicesGridShimmer({super.key});
 
@@ -184,17 +189,20 @@ class AllServicesGridShimmer extends StatelessWidget {
   Widget build(BuildContext context) {
     final dimensions = ResponsiveCardSizes.getServiceGridDimensions(context);
 
-    return GridView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: dimensions.crossAxisCount,
-        childAspectRatio: dimensions.childAspectRatio,
-        crossAxisSpacing: dimensions.spacing,
-        mainAxisSpacing: dimensions.spacing,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GridView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: dimensions.crossAxisCount,
+          childAspectRatio: dimensions.childAspectRatio,
+          crossAxisSpacing: dimensions.spacing,
+          mainAxisSpacing: dimensions.spacing,
+        ),
+        itemCount: 30,
+        itemBuilder: (context, index) => const ServiceCardShimmer(),
       ),
-      itemCount: 30,
-      itemBuilder: (context, index) => const ServiceCardShimmer(),
     );
   }
 }
@@ -205,7 +213,8 @@ class BeautyServiceCardShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dimensions = ResponsiveCardSizes.getBeautyServiceCardDimensions(context);
+    final dimensions =
+        ResponsiveCardSizes.getBeautyServiceCardDimensions(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -224,7 +233,8 @@ class BeautyServiceCardShimmer extends StatelessWidget {
             Stack(
               children: [
                 ClipRRect(
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(12)),
                   child: Container(
                     height: dimensions.imageHeight,
                     width: double.infinity,
@@ -330,7 +340,7 @@ class BeautyServiceCardShimmer extends StatelessWidget {
                       3,
                       (index) => Padding(
                         padding: EdgeInsetsDirectional.only(
-                          end: index < 2 ? 8 : 0,  // لا padding للعنصر الأخير
+                          end: index < 2 ? 8 : 0, // لا padding للعنصر الأخير
                         ),
                         child: Container(
                           width: 60,

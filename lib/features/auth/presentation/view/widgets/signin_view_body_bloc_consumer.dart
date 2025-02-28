@@ -18,6 +18,7 @@ import 'package:beautilly/features/auth/presentation/view/widgets/dont_have_acco
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/core/services/service_locator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SigninViewBodyBlocConsumer extends StatefulWidget {
   const SigninViewBodyBlocConsumer({super.key});
@@ -44,7 +45,7 @@ class _SigninViewBodyBlocConsumerState
   Future<void> _loadSavedCredentials() async {
     final cacheService = sl<CacheService>();
     _rememberMe = await cacheService.getRememberMe();
-    
+
     if (_rememberMe) {
       final credentials = await cacheService.getLoginCredentials();
       if (credentials != null) {
@@ -52,6 +53,18 @@ class _SigninViewBodyBlocConsumerState
           _emailController.text = credentials['email']!;
           _passwordController.text = credentials['password']!;
         });
+      }
+    }
+  }
+
+  Future<void> _launchProviderSignup() async {
+    final Uri url = Uri.parse('https://dallik.com/app/signup?type=provider');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        CustomSnackbar.showError(
+          context: context,
+          message: 'لا يمكن فتح الرابط',
+        );
       }
     }
   }
@@ -73,20 +86,21 @@ class _SigninViewBodyBlocConsumerState
               } else {
                 await sl<CacheService>().clearLoginCredentials();
               }
-              
+
               // إعادة تهيئة ProfileCubit وتحميل البيانات الجديدة
               sl.unregister<ProfileCubit>();
-              sl.registerFactory<ProfileCubit>(() => ProfileCubit(repository: sl()));
-              
+              sl.registerFactory<ProfileCubit>(
+                  () => ProfileCubit(repository: sl()));
+
               final profileCubit = sl<ProfileCubit>();
               if (!profileCubit.isClosed) {
                 await profileCubit.loadProfile();
               }
 
               if (!context.mounted) return;
-              
+
               Navigator.pushReplacementNamed(context, HomeView.routeName);
-              
+
               CustomSnackbar.showSuccess(
                 context: context,
                 message: state.message,
@@ -198,8 +212,57 @@ class _SigninViewBodyBlocConsumerState
                               ? 'جاري التحميل...'
                               : AppStrings.login,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 24),
                         const DontHaveAccount(),
+                        const SizedBox(height: 32),
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.primary.withOpacity(0.3),
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: _launchProviderSignup,
+                              borderRadius: BorderRadius.circular(12),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.store_outlined,
+                                      color: AppColors.primary,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'انضم كمقدم خدمة',
+                                      style: getMediumStyle(
+                                        color: AppColors.primary,
+                                        fontSize: FontSize.size14,
+                                        fontFamily: FontConstant.cairo,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    const Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: AppColors.primary,
+                                      size: 14,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
                       ],
                     ),
                   ),

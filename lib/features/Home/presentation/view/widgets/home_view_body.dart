@@ -13,7 +13,6 @@ import 'package:beautilly/features/Home/presentation/view/widgets/fashion_houses
 import 'package:flutter/material.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/statistics_section.dart';
 
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeViewBody extends StatelessWidget {
@@ -58,12 +57,12 @@ class HomeViewBody extends StatelessWidget {
                 const SizedBox(height: 16.0),
                 const SpecialViewListView(),
                 const SizedBox(height: 16.0),
-                const StatisticsSection(),
-                const SizedBox(height: 16.0),
                 const ServicesGridView(maxItems: 4),
                 const SizedBox(height: 16.0),
                 const PopularSalonsListView(),
                 const FashionHousesListView(),
+                const SizedBox(height: 12.0),
+                const StatisticsSection(),
               ],
             ),
           ),

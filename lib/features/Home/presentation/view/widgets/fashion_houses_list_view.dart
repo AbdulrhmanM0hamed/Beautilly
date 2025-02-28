@@ -99,7 +99,7 @@ class FashionHousesListView extends StatelessWidget {
                     ? 330
                     : isTablet
                         ? 280
-                        : 260,
+                        : 250,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: fashionHouses.length,

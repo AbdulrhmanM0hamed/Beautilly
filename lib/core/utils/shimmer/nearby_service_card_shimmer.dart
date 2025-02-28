@@ -43,60 +43,77 @@ class NearbyServiceCardShimmer extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // العنوان
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    // اسم المتجر
+                    Container(
+                      width: 150,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: baseColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    
+                    // التقييم وزر الموقع
+                    Row(
                       children: [
+                        // التقييم
                         Container(
-                          width: 150,
-                          height: 16,
+                          width: 60,
+                          height: 12,
                           decoration: BoxDecoration(
                             color: baseColor,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Container(
-                              width: 100,
-                              height: 12,
-                              decoration: BoxDecoration(
-                                color: baseColor,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            const Spacer(),
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: baseColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                            ),
-                          ],
+                        const Spacer(),
+                        // زر الموقع
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: baseColor,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
 
-                    // التقييم والمسافة
+                    // الموقع ونوع المتجر
                     Row(
                       children: [
+                        // أيقونة الموقع والعنوان
                         Container(
-                          width: 50,
+                          width: 12,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: baseColor,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Container(
+                          width: 80,
+                          height: 12,
+                          decoration: BoxDecoration(
+                            color: baseColor,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        const Spacer(),
+                        // نوع المتجر
+                        Container(
+                          width: 70,
                           height: 20,
                           decoration: BoxDecoration(
                             color: baseColor,
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                       ],
                     ),
-
-                    // نوع المتجر
                   ],
                 ),
               ),

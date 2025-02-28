@@ -9,13 +9,13 @@ class SearchShopModel extends SearchShop {
     required super.rating,
     required super.location,
     required super.mainImage,
+    required super.city,
+    required super.state,
     super.latitude,
     super.longitude,
   });
 
   factory SearchShopModel.fromJson(Map<String, dynamic> json) {
-    
-    
     return SearchShopModel(
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
@@ -24,6 +24,8 @@ class SearchShopModel extends SearchShop {
       rating: (json['rating'] ?? 0).toDouble(),
       location: LocationModel.fromJson(json['location']),
       mainImage: MainImageModel.fromJson(json['main_image']),
+      city: CityModel.fromJson(json['city'] ?? {}),
+      state: StateModel.fromJson(json['state'] ?? {}),
       latitude: json['location']?['latitude']?.toDouble() ?? 0,
       longitude: json['location']?['longitude']?.toDouble() ?? 0,
     );
@@ -112,6 +114,34 @@ class PaginationModel extends Pagination {
       lastPage: json['last_page'] ?? 1,
       perPage: json['per_page'] ?? 10,
       total: json['total'] ?? 0,
+    );
+  }
+}
+
+class CityModel extends City {
+  const CityModel({
+    required super.id,
+    required super.name,
+  });
+
+  factory CityModel.fromJson(Map<String, dynamic> json) {
+    return CityModel(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+    );
+  }
+}
+
+class StateModel extends State {
+  const StateModel({
+    required super.id,
+    required super.name,
+  });
+
+  factory StateModel.fromJson(Map<String, dynamic> json) {
+    return StateModel(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
     );
   }
 }

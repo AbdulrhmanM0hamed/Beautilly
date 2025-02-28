@@ -13,6 +13,7 @@ class CacheServiceImpl implements CacheService {
   static const String _passwordKey = 'saved_password';
   static const String _userIdKey = 'user_id';
   static const String _lastNotificationKey = 'last_notification_timestamp';
+  static const String _darkModeKey = 'dark_mode';
 
   CacheServiceImpl(this._prefs);
 
@@ -156,5 +157,15 @@ class CacheServiceImpl implements CacheService {
   @override
   Future<void> saveLastNotificationTimestamp(String timestamp) async {
     await _prefs.setString(_lastNotificationKey, timestamp);
+  }
+
+  @override
+  Future<bool> getDarkMode() async {
+    return _prefs.getBool(_darkModeKey) ?? false;
+  }
+
+  @override
+  Future<void> setDarkMode(bool isDark) async {
+    await _prefs.setBool(_darkModeKey, isDark);
   }
 }

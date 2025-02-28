@@ -17,6 +17,8 @@ import 'core/services/cache/cache_service_impl.dart';
 import 'package:beautilly/core/services/notification/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'core/cubits/theme/theme_cubit.dart';
+import 'core/cubits/theme/theme_state.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -53,9 +55,12 @@ void main() async {
           create: (_) => CacheServiceImpl(prefs),
         ),
       ],
-      child: DevicePreview(
-        enabled: !kReleaseMode,
-        builder: (context) => const MyApp(),
+      child: BlocProvider(
+        create: (_) => ThemeCubit(),
+        child: DevicePreview(
+          enabled: !kReleaseMode,
+          builder: (context) => const MyApp(),
+        ),
       ),
     ),
   );
@@ -72,25 +77,34 @@ class MyApp extends StatelessWidget {
           create: (context) => di.sl<ProfileCubit>()..loadProfile(),
         ),
       ],
-      child: MaterialApp(
-        useInheritedMediaQuery: true,
-        navigatorKey: di.sl<GlobalKey<NavigatorState>>(),
-        locale: DevicePreview.locale(context),
-        builder: DevicePreview.appBuilder,
-        debugShowCheckedModeBanner: false,
-        title: 'دلالاك',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        supportedLocales: const [
-          Locale('ar'),
-        ],
-        localizationsDelegates: const [
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        onGenerateRoute: onGenratedRoutes,
-        initialRoute: SplashView.routeName,
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, state) {
+          final themeMode = state is ThemeChanged 
+              ? state.themeMode 
+              : ThemeMode.light;
+              
+          return MaterialApp(
+            useInheritedMediaQuery: true,
+            navigatorKey: di.sl<GlobalKey<NavigatorState>>(),
+            locale: DevicePreview.locale(context),
+            builder: DevicePreview.appBuilder,
+            debugShowCheckedModeBanner: false,
+            title: 'دلالاك',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: themeMode,
+            supportedLocales: const [
+              Locale('ar'),
+            ],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            onGenerateRoute: onGenratedRoutes,
+            initialRoute: SplashView.routeName,
+          );
+        },
       ),
     );
   }

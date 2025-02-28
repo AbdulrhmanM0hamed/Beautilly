@@ -19,4 +19,6 @@ abstract class CacheService {
   Future<void> saveUserId(String userId) ;
   Future<String?> getLastNotificationTimestamp();
   Future<void> saveLastNotificationTimestamp(String timestamp);
+  Future<bool> getDarkMode();
+  Future<void> setDarkMode(bool isDark);
 } 

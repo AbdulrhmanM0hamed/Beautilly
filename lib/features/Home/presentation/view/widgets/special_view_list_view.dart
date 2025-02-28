@@ -1,3 +1,4 @@
+import 'package:beautilly/core/utils/responsive/app_responsive.dart';
 import 'package:beautilly/core/utils/shimmer/offer_card_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,6 +50,9 @@ class _SpecialViewListViewState extends State<SpecialViewListView> {
 
   @override
   Widget build(BuildContext context) {
+       final size = MediaQuery.of(context).size;
+    final isTablet = size.width >= AppResponsive.mobileBreakpoint;
+    final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
     return BlocBuilder<DiscountsCubit, DiscountsState>(
       builder: (context, state) {
         if (state is DiscountsLoading && !_isLoadingMore) {
@@ -68,7 +72,7 @@ class _SpecialViewListViewState extends State<SpecialViewListView> {
           }
 
           return SizedBox(
-            height: 180,
+            height: isDesktop ? 230 : isTablet ? 180 : 160,
             child: ListView.builder(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,

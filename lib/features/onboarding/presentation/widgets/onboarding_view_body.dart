@@ -8,7 +8,6 @@ import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/onboarding/data/models/onboarding_model.dart';
 import 'page_view_item.dart';
 import 'custom_smooth_page_indicator.dart';
-import 'package:get_it/get_it.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
 
 class OnboardingViewBody extends StatefulWidget {

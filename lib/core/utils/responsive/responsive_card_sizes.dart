@@ -50,11 +50,11 @@ class ResponsiveCardSizes {
       // نسب خاصة للشاشات الكبيرة
       return OfferCardDimensions(
         width: size.width * 0.45, // عرض أصغر
-        height: size.height * 0.3, // ارتفاع أصغر
+        height: size.height * 0.35, // ارتفاع أصغر
         cutoutSize: size.width * 0.03, // دوائر جانبية أصغر
         horizontalPadding: size.width * 0.02,
         verticalPadding: size.height * 0.01,
-        titleSize: size.width * 0.025, // خط أصغر للعنوان
+        titleSize: size.width * 0.020, // خط أصغر للعنوان
         descriptionSize: size.width * 0.019, // خط أصغر للوصف
         borderRadius: BorderRadius.circular(20),
         discountCircleSize: size.width * 0.08, // دائرة خصم أصغر
@@ -65,11 +65,11 @@ class ResponsiveCardSizes {
       // نسب التابلت الحالية
       return OfferCardDimensions(
         width: size.width * 0.65,
-        height: size.height * 0.2,
+        height: size.height * 0.25,
         cutoutSize: size.width * 0.05,
         horizontalPadding: size.width * 0.04,
         verticalPadding: size.height * 0.015,
-        titleSize: size.width * 0.03,
+        titleSize: size.width * 0.021,
         descriptionSize: size.width * 0.028,
         borderRadius: BorderRadius.circular(16),
         discountCircleSize: size.width * 0.12,

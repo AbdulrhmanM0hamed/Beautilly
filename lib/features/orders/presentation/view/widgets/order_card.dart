@@ -149,7 +149,7 @@ class _OrderCardState extends State<OrderCard> {
               child: Center(
                 child: CustomProgressIndcator(
                   color: AppColors.primary,
-                  size: 30,
+                  size: 38,
                 ),
               ),
             ),

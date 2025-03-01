@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:beautilly/features/booking/domain/entities/available_time.dart';
 import 'package:http/http.dart' as http;
-import 'package:beautilly/features/booking/domain/entities/available_time.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../../../../core/utils/constant/api_endpoints.dart';

@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/notification.dart';
 import 'package:beautilly/features/orders/presentation/cubit/order_details_cubit/order_details_cubit.dart';
+import 'package:beautilly/core/services/service_locator.dart';
+import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
 
 class NotificationItem extends StatefulWidget {
   final NotificationEntity notification;
@@ -35,81 +38,108 @@ class _NotificationItemState extends State<NotificationItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-        side: widget.notification.read
-            ? BorderSide.none
-            : BorderSide(
-                color: Theme.of(context).primaryColor.withOpacity(0.3),
-                width: 1),
-      ),
-      child: InkWell(
-        onTap: () async {
-          if (widget.notification.orderId != null) {
-            // جلب تفاصيل الطلب أولاً
-            await context
-                .read<OrderDetailsCubit>()
-                .getOrderDetails(widget.notification.orderId!);
-
-            if (context.mounted) {
-              final state = context.read<OrderDetailsCubit>().state;
-              if (state is OrderDetailsSuccess) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => OrderDetailsView(
-                      orderDetails: state.orderDetails,
-                      isMyOrder: true,
-                    ),
+    return BlocProvider(
+      create: (context) => sl<OrderDetailsCubit>(),
+      child: Builder(
+        builder: (context) => BlocBuilder<OrderDetailsCubit, OrderDetailsState>(
+          builder: (context, state) {
+            return Stack(
+              children: [
+                Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    side: widget.notification.read
+                        ? BorderSide.none
+                        : BorderSide(
+                            color: Theme.of(context).primaryColor.withOpacity(0.3),
+                            width: 1),
                   ),
-                );
-              }
-            }
-          }
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildNotificationIcon(),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.notification.message,
-                      style: getMediumStyle(
-                        fontSize: 15,
-                        fontFamily: FontConstant.cairo,
+                  child: InkWell(
+                    onTap: () async {
+                      if (widget.notification.orderId != null) {
+                        await context
+                            .read<OrderDetailsCubit>()
+                            .getOrderDetails(widget.notification.orderId!);
+
+                        if (context.mounted) {
+                          final state = context.read<OrderDetailsCubit>().state;
+                          if (state is OrderDetailsSuccess) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderDetailsView(
+                                  orderDetails: state.orderDetails,
+                                  isMyOrder: true,
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      }
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildNotificationIcon(),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.notification.message,
+                                  style: getMediumStyle(
+                                    fontSize: 15,
+                                    fontFamily: FontConstant.cairo,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    if (widget.notification.type
+                                        .contains('ReservationStatusUpdated'))
+                                      _buildStatusChip(),
+                                    const Spacer(),
+                                    Text(
+                                      _getTimeAgo(widget.notification.createdAt),
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall?.copyWith(
+                                                color: Colors.grey[600],
+                                              ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        if (widget.notification.type
-                            .contains('ReservationStatusUpdated'))
-                          _buildStatusChip(),
-                        const Spacer(),
-                        Text(
-                          _getTimeAgo(widget.notification.createdAt),
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Colors.grey[600],
-                                  ),
-                        ),
-                      ],
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+                if (state is OrderDetailsLoading)
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Center(
+                        child: CustomProgressIndcator(
+                          color: AppColors.primary,
+                          size: 38,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            );
+          },
         ),
       ),
     );

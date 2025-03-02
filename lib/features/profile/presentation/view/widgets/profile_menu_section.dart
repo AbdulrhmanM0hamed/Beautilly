@@ -1,4 +1,5 @@
 import 'package:beautilly/core/services/service_locator.dart';
+import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/features/auth/presentation/cubit/auth_cubit.dart';
@@ -28,7 +29,10 @@ class ProfileMenuSection extends StatelessWidget {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         if (state is ProfileLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+              child: CustomProgressIndcator(
+            color: AppColors.primary,
+          ));
         }
 
         if (state is ProfileError) {
@@ -52,7 +56,10 @@ class ProfileMenuSection extends StatelessWidget {
           final profile = state.profile;
           if (profile.name == null || profile.name!.isEmpty) {
             context.read<ProfileCubit>().loadProfile();
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+                child: CustomProgressIndcator(
+              color: AppColors.primary,
+            ));
           }
 
           final bool isNotClient = profile.role?.name != 'client';
@@ -243,7 +250,11 @@ class ProfileMenuSection extends StatelessWidget {
           );
         }
 
-        return const Center(child: CircularProgressIndicator());
+        return const Center(
+          child: CustomProgressIndcator(
+            color: AppColors.primary,
+          ),
+        );
       },
     );
   }

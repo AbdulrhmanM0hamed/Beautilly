@@ -38,18 +38,15 @@ class HelpCenterView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-  
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          
-        ],
+        boxShadow: [],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.contact_support, color: AppColors.primary),
+              const Icon(Icons.contact_support, color: AppColors.primary),
               const SizedBox(width: 8),
               Text(
                 'تواصل معنا',
@@ -84,9 +81,7 @@ class HelpCenterView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-      
         borderRadius: BorderRadius.circular(12),
-        
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,9 +126,7 @@ class HelpCenterView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-   
         borderRadius: BorderRadius.circular(12),
-       
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -249,12 +242,14 @@ class HelpCenterView extends StatelessWidget {
   }
 
   Future<void> _launchAbdulrhmanLinkedIn() async {
-    final Uri url = Uri.parse('https://www.linkedin.com/in/abdulrhman-mohamed-/');
+    final Uri url =
+        Uri.parse('https://www.linkedin.com/in/abdulrhman-mohamed-/');
     _launchUrl(url);
   }
 
   Future<void> _launchAhmedLinkedIn() async {
-    final Uri url = Uri.parse('https://www.linkedin.com/in/%D8%A7%D8%AD%D9%85%D8%AF-%D9%85%D8%B5%D8%B7%D9%81%D9%8A-%D8%A7%D8%AD%D9%85%D8%AF-%D9%85%D8%B5%D8%B7%D9%81%D9%8A-86a5a5245/');
+    final Uri url = Uri.parse(
+        'https://www.linkedin.com/in/%D8%A7%D8%AD%D9%85%D8%AF-%D9%85%D8%B5%D8%B7%D9%81%D9%8A-%D8%A7%D8%AD%D9%85%D8%AF-%D9%85%D8%B5%D8%B7%D9%81%D9%8A-86a5a5245/');
     _launchUrl(url);
   }
 
@@ -296,16 +291,14 @@ class HelpCenterView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-     
         borderRadius: BorderRadius.circular(12),
-      
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.info_outline, color: AppColors.primary),
+              const Icon(Icons.info_outline, color: AppColors.primary),
               const SizedBox(width: 8),
               Text(
                 'معلومات التطبيق',

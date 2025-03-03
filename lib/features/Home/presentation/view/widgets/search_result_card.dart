@@ -2,6 +2,7 @@ import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import '../../../domain/entities/search_result.dart';
@@ -39,12 +40,12 @@ class SearchResultCard extends StatelessWidget {
                     ClipRRect(
                       borderRadius: const BorderRadius.horizontal(
                           right: Radius.circular(12)),
-                      child: Image.network(
-                        searchResult.mainShopImageUrl,
+                      child: CachedNetworkImage(
+                        imageUrl: searchResult.mainShopImageUrl,
                         width: 120,
                         height: 120,
                         fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Container(
+                        errorWidget: (context, error, stackTrace) => Container(
                           width: 120,
                           height: 120,
                           color: Colors.grey[300],

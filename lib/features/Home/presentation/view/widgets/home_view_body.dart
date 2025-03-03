@@ -36,100 +36,115 @@ class HomeViewBody extends StatelessWidget {
       color: AppColors.primary,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       child: SafeArea(
-        child: SingleChildScrollView(
+        child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 16.0,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const WelcomeTextWidget(),
-                const SizedBox(height: 4.0),
-                Container(
-                  height: 50,
-                  margin: const EdgeInsets.only(top: 16),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        blurRadius: 10,
-                        offset: const Offset(0, 0),
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (context) => BlocProvider(
-                            create: (context) => sl<SearchCubit>(),
-                            child: const SearchPage(),
-                          ),
-                        );
-                      },
+          slivers: [
+            SliverPadding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  const WelcomeTextWidget(),
+                  const SizedBox(height: 4.0),
+                  Container(
+                    height: 50,
+                    margin: const EdgeInsets.only(top: 16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).scaffoldBackgroundColor,
                       borderRadius: BorderRadius.circular(24),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: SvgPicture.asset(
-                                AppAssets.searchIcon,
-                                width: 30,
-                                height: 30,
-                                colorFilter: const ColorFilter.mode(
-                                  AppColors.primary,
-                                  BlendMode.srcIn,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 0),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => BlocProvider(
+                              create: (context) => sl<SearchCubit>(),
+                              child: const SearchPage(),
+                            ),
+                          );
+                        },
+                        borderRadius: BorderRadius.circular(24),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: SvgPicture.asset(
+                                  AppAssets.searchIcon,
+                                  width: 30,
+                                  height: 30,
+                                  colorFilter: const ColorFilter.mode(
+                                    AppColors.primary,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Text(
-                              ' ابحث عن صالون  او  دار ازياء ...',
-                              style: getMediumStyle(
-                                color: AppColors.grey,
-                                fontSize: FontSize.size14,
-                                fontFamily: FontConstant.cairo,
+                              Text(
+                                ' ابحث عن صالون  او  دار ازياء ...',
+                                style: getMediumStyle(
+                                  color: AppColors.grey,
+                                  fontSize: FontSize.size14,
+                                  fontFamily: FontConstant.cairo,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'ابدأ تجربة البحث عن الذى تريده, وسوف نقدم لك ما يناسبك',
-                    style: getMediumStyle(
+                  const SizedBox(height: 16.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'ابدأ تجربة البحث عن الذى تريده, وسوف نقدم لك ما يناسبك',
+                      style: getMediumStyle(
                         fontFamily: FontConstant.cairo,
                         fontSize: FontSize.size14,
-                        color: AppColors.textSecondary),
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16.0),
-                const SpecialViewListView(),
-                const SizedBox(height: 16.0),
-                const ServicesGridView(maxItems: 4),
-                const SizedBox(height: 16.0),
-                const PopularSalonsListView(),
-                const FashionHousesListView(),
-                const SizedBox(height: 12.0),
-                const StatisticsSection(),
-              ],
+                  const SizedBox(height: 4.0),
+                ]),
+              ),
             ),
-          ),
+            const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverToBoxAdapter(
+                  child: SpecialViewListView(),
+                )),
+            const SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              sliver: SliverToBoxAdapter(child: ServicesGridView(maxItems: 4)),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 16.0),
+            ),
+            const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                sliver: SliverToBoxAdapter(child: PopularSalonsListView())),
+            const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                sliver:
+                    const SliverToBoxAdapter(child: FashionHousesListView())),
+            const SliverPadding(
+              padding: EdgeInsets.only(right: 16.0 , left: 16, bottom:16  , top: 8),
+              sliver: SliverToBoxAdapter(child: StatisticsSection()),
+            ),
+          ],
         ),
       ),
     );

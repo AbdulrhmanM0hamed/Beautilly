@@ -4,14 +4,18 @@ import 'package:beautilly/core/services/network/network_info.dart';
 import 'package:beautilly/core/services/notification/notification_service.dart';
 import 'package:beautilly/features/Home/data/datasources/discounts_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/premium_shops_remote_data_source.dart';
+import 'package:beautilly/features/Home/data/datasources/search_remote_data_source.dart';
 import 'package:beautilly/features/Home/data/datasources/services_remote_datasource.dart';
 import 'package:beautilly/features/Home/data/repositories/premium_shops_repository_impl.dart';
+import 'package:beautilly/features/Home/data/repositories/search_repository_impl.dart';
 import 'package:beautilly/features/Home/data/repositories/services_repository_impl.dart';
 import 'package:beautilly/features/Home/domain/repositories/premium_shops_repository.dart';
+import 'package:beautilly/features/Home/domain/repositories/search_repository.dart';
 import 'package:beautilly/features/Home/domain/repositories/services_repository.dart';
 import 'package:beautilly/features/Home/domain/usecases/get_premium_shops_usecase.dart';
 import 'package:beautilly/features/Home/domain/usecases/get_services_usecase.dart';
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
+import 'package:beautilly/features/Home/presentation/cubit/search_cubit/search_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:beautilly/features/nearby/data/datasources/search_shops_remote_datasource.dart';
@@ -440,6 +444,26 @@ Future<void> init() async {
   sl.registerFactory(() => SearchShopsCubit(repository: sl()));
 
 //--------------------------------------------------------------------
+
+  // Search
+  sl.registerLazySingleton<SearchRemoteDataSource>(
+    () => SearchRemoteDataSourceImpl(
+      client: sl(),
+      cacheService: sl(),
+      authRepository: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<SearchRepository>(
+    () => SearchRepositoryImpl(
+      remoteDataSource: sl(),
+      networkInfo: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => SearchCubit(searchRepository: sl()),
+  );
 
   //! Statistics Feature
   // Repositories

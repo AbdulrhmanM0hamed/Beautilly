@@ -76,6 +76,7 @@ class ApiEndpoints {
   static String searchShops = '$baseUrl/shops/search';
   static String searchShopsByType({String? type, String? search}) =>
       '$baseUrl/shops/search?type=$type${search != null ? '&search=$search' : ''}&api_key=$api_key';
+      
 
   //================ الإشعارات ================//
   static String notifications = '$baseUrl/notifications?api_key=$api_key';

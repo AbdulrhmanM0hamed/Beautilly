@@ -2,6 +2,7 @@ import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/Home/presentation/cubit/search_cubit/search_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/home_view_body.dart';
 import 'package:beautilly/features/nearby/presentation/view/discover_view.dart';
@@ -72,7 +73,9 @@ class _HomeViewState extends State<HomeView> {
         BlocProvider(
           create: (context) => sl<DiscountsCubit>(),
         ),
-     
+        BlocProvider(
+          create: (context) => sl<SearchCubit>(),
+        ),
       ],
       child: BlocProvider(
         create: (context) {
@@ -132,7 +135,7 @@ class _HomeViewState extends State<HomeView> {
                   _buildNavItem(AppAssets.homeIconBottom, 'الرئيسية'),
                   _buildNavItem(AppAssets.Location, 'الأقرب'),
                   _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
-                  _buildNavItem(AppAssets.tfsel, 'طلبات'),
+                  _buildNavItem(AppAssets.tfsel, 'التفصيل'),
                   _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
                 ],
               ),
@@ -179,7 +182,7 @@ class _HomeViewState extends State<HomeView> {
         return 1;
       case 'الحجوزات':
         return 2;
-      case 'طلبات':
+      case 'التفصيل':
         return 3;
       case 'حسابي':
         return 4;

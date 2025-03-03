@@ -3,6 +3,7 @@ import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Home/presentation/cubit/discounts_cubit/discounts_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
+import 'package:beautilly/features/Home/presentation/cubit/search_cubit/search_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/statistics_cubit/statistics_cubit.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/services_grid_view.dart';
@@ -12,7 +13,10 @@ import 'package:beautilly/features/Home/presentation/view/widgets/popular_salons
 import 'package:beautilly/features/Home/presentation/view/widgets/fashion_houses_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/statistics_section.dart';
-
+import '../pages/search_page.dart';
+import 'package:beautilly/core/services/service_locator.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeViewBody extends StatelessWidget {
@@ -44,6 +48,66 @@ class HomeViewBody extends StatelessWidget {
               children: [
                 const WelcomeTextWidget(),
                 const SizedBox(height: 4.0),
+                Container(
+                  height: 50,
+                  margin: const EdgeInsets.only(top: 16),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        blurRadius: 10,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (context) => BlocProvider(
+                            create: (context) => sl<SearchCubit>(),
+                            child: const SearchPage(),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(24),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: SvgPicture.asset(
+                                AppAssets.searchIcon,
+                                width: 30,
+                                height: 30,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.primary,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              ' ابحث عن صالون  او  دار ازياء ...',
+                              style: getMediumStyle(
+                                color: AppColors.grey,
+                                fontSize: FontSize.size14,
+                                fontFamily: FontConstant.cairo,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(

@@ -127,7 +127,7 @@ class HomeViewBody extends StatelessWidget {
                   child: SpecialViewListView(),
                 )),
             const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 16.0 , vertical: 16),
               sliver: SliverToBoxAdapter(child: ServicesGridView(maxItems: 4)),
             ),
             const SliverToBoxAdapter(
@@ -139,7 +139,7 @@ class HomeViewBody extends StatelessWidget {
             const SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 sliver:
-                    const SliverToBoxAdapter(child: FashionHousesListView())),
+                     SliverToBoxAdapter(child: FashionHousesListView())),
             const SliverPadding(
               padding: EdgeInsets.only(right: 16.0 , left: 16, bottom:16  , top: 8),
               sliver: SliverToBoxAdapter(child: StatisticsSection()),

@@ -74,8 +74,12 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
       ],
       child: Builder(
         builder: (context) => Scaffold(
-          appBar: CustomAppBar(
-            title: 'طلبات التفصيل',
+          appBar: AppBar(
+            title: Text('طلبات التفصيل',
+                style: getBoldStyle(
+                  fontFamily: FontConstant.cairo,
+                  fontSize: 20,
+                )),
             bottom: TabBar(
               controller: _tabController,
               tabs: const [

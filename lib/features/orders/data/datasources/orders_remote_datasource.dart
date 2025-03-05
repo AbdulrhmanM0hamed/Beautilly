@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import '../../../../core/error/exceptions.dart';
@@ -117,6 +118,19 @@ class OrdersRemoteDataSourceImpl
         if (sessionCookie != null) 'Cookie': sessionCookie,
       });
 
+      // Validate fabrics data
+      if (order.fabrics.isEmpty) {
+        throw ServerException(message: 'يجب إضافة قماش واحد على الأقل');
+      }
+
+      // Validate colors format
+      for (var fabric in order.fabrics) {
+        if (!_isValidHexColor(fabric.color)) {
+          debugPrint('Invalid color format: ${fabric.color}');
+          throw ServerException(message: 'صيغة اللون غير صحيحة');
+        }
+      }
+
       // إضافة البيانات الأساسية
       request.fields.addAll({
         'height': order.height.toString(),
@@ -163,6 +177,12 @@ class OrdersRemoteDataSourceImpl
     } catch (e) {
       throw ServerException(message: 'حدث خطأ أثناء إضافة الطلب');
     }
+  }
+
+  bool _isValidHexColor(String color) {
+    return color.startsWith('#') && 
+           color.length == 7 && 
+           RegExp(r'^#[0-9A-F]{6}$').hasMatch(color.toUpperCase());
   }
 
   @override

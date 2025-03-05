@@ -188,27 +188,9 @@ class OrderDetailsView extends StatelessWidget {
                             // معلومات العميل
                             Row(
                               children: [
-                                // صورة العميل
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(25),
-                                  child: CachedNetworkImage(
-                                    imageUrl: orderDetails.customer.images.main,
-                                    width: 45,  // تصغير حجم الصورة
-                                    height: 45,
-                                    fit: BoxFit.cover,
-                                    placeholder: (context, url) => CircleAvatar(
-                                      radius: 22.5,  // نصف القطر يساوي نصف العرض
-                                      backgroundColor: AppColors.primary.withOpacity(0.1),
-                                      child: Text(
-                                        orderDetails.customer.name[0].toUpperCase(),
-                                        style: getBoldStyle(
-                                          color: AppColors.primary,
-                                          fontSize: FontSize.size16,  // تصغير حجم الحرف
-                                          fontFamily: FontConstant.cairo,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                _buildUserAvatar(
+                                  imageUrl: orderDetails.customer.images?.main,
+                                  name: orderDetails.customer.name,
                                 ),
                                 const SizedBox(width: 12),  // تقليل المسافة
                                 Expanded(
@@ -511,40 +493,9 @@ class OrderDetailsView extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          // صورة الصالون
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(25),
-                            child: CachedNetworkImage(
-                              imageUrl:
-                                  (offer.shop as ShopWithDetails).images.main,
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) => CircleAvatar(
-                                backgroundColor:
-                                    AppColors.primary.withOpacity(0.1),
-                                child: Text(
-                                  offer.shop.name[0].toUpperCase(),
-                                  style: getBoldStyle(
-                                    fontFamily: FontConstant.cairo,
-                                    color: AppColors.primary,
-                                    fontSize: FontSize.size16,
-                                  ),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => CircleAvatar(
-                                backgroundColor:
-                                    AppColors.primary.withOpacity(0.1),
-                                child: Text(
-                                  offer.shop.name[0].toUpperCase(),
-                                  style: getBoldStyle(
-                                    fontFamily: FontConstant.cairo,
-                                    color: AppColors.primary,
-                                    fontSize: FontSize.size16,
-                                  ),
-                                ),
-                              ),
-                            ),
+                          _buildShopAvatar(
+                            imageUrl: (offer.shop as ShopWithDetails).images?.main,
+                            name: offer.shop.name,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -799,6 +750,114 @@ class OrderDetailsView extends StatelessWidget {
             .cancelOffer(orderDetails.id, acceptedOffers.first.id);
       },
       text: 'إلغاء قبول العرض',
+    );
+  }
+
+  Widget _buildUserAvatar({
+    required String? imageUrl,
+    required String name,
+    double size = 45,
+  }) {
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.person,
+          color: AppColors.primary,
+          size: size * 0.6,
+        ),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size / 2),
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Container(
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.person,
+            color: AppColors.primary,
+            size: size * 0.6,
+          ),
+        ),
+        errorWidget: (context, url, error) => Container(
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.person,
+            color: AppColors.primary,
+            size: size * 0.6,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShopAvatar({
+    required String? imageUrl,
+    required String name,
+    double size = 50,
+  }) {
+    if (imageUrl == null || imageUrl.isEmpty) {
+      return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          color: AppColors.primary.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.store,
+          color: AppColors.primary,
+          size: size * 0.6,
+        ),
+      );
+    }
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size / 2),
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Container(
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.store,
+            color: AppColors.primary,
+            size: size * 0.6,
+          ),
+        ),
+        errorWidget: (context, url, error) => Container(
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.store,
+            color: AppColors.primary,
+            size: size * 0.6,
+          ),
+        ),
+      ),
     );
   }
 }

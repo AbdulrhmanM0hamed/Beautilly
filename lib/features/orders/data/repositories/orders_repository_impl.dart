@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:beautilly/core/services/network/network_info.dart';
 import 'package:beautilly/features/orders/domain/entities/order.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter/material.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/order_details.dart';
@@ -65,8 +66,7 @@ class OrdersRepositoryImpl implements OrdersRepository {
   }
 
   @override
-  Future<Either<Failure, Map<String, dynamic>>> addOrder(
-      OrderRequestModel order) async {
+  Future<Either<Failure, Map<String, dynamic>>> addOrder(OrderRequestModel order) async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
@@ -76,12 +76,22 @@ class OrdersRepositoryImpl implements OrdersRepository {
     try {
       final result = await remoteDataSource.addOrder(order);
       return Right(result);
+    } on ServerException catch (e) {
+      // تحسين رسائل الخطأ
+      if (e.message.contains('صورة')) {
+        return Left(ServerFailure(message: 'حجم الصورة كبير جداً، يرجى تقليل حجم الصورة'));
+      } else if (e.message.contains('قماش')) {
+        return Left(ServerFailure(message: 'يرجى التأكد من إدخال معلومات الأقمشة بشكل صحيح'));
+      }
+      return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return  const Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      // طباعة الخطأ للتتبع
+      debugPrint('Error in addOrder: $e');
+      return Left(ServerFailure(message: 'حدث خطأ: ${e.toString()}'));
     }
   }
 

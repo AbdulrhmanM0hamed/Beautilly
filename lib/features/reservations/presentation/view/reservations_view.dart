@@ -30,7 +30,7 @@ class ReservationsView extends StatelessWidget {
               'حجوزاتي',
               style: getBoldStyle(
                 color: Theme.of(context).textTheme.titleLarge?.color,
-                fontSize: FontSize.size18,
+                fontSize: FontSize.size20,
                 fontFamily: FontConstant.cairo,
               ),
             ),

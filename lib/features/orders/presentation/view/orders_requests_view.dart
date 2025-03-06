@@ -77,6 +77,9 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
           appBar: AppBar(
             title: Text('طلبات التفصيل',
                 style: getBoldStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.white
+                      : AppColors.black,
                   fontFamily: FontConstant.cairo,
                   fontSize: 20,
                 )),

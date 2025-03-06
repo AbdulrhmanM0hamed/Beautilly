@@ -1,3 +1,5 @@
+import 'package:beautilly/core/utils/common/custom_dialog_button.dart';
+import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import '../../../data/models/fabric_types.dart';
 import '../../../data/models/fabric_colors.dart';
@@ -15,7 +17,7 @@ class AddFabricDialog extends StatefulWidget {
 class _AddFabricDialogState extends State<AddFabricDialog> {
   String? selectedType;
   String? selectedColorName;
-  
+
   Widget _buildColorGrid() {
     return GridView.builder(
       shrinkWrap: true,
@@ -31,7 +33,7 @@ class _AddFabricDialogState extends State<AddFabricDialog> {
       itemBuilder: (context, index) {
         final colorName = FabricColors.colors.keys.elementAt(index);
         final color = FabricColors.colors.values.elementAt(index);
-        
+
         return Material(
           color: Colors.transparent,
           child: InkWell(
@@ -121,17 +123,19 @@ class _AddFabricDialogState extends State<AddFabricDialog> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                TextButton(
+                CustomDialogButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('إلغاء'),
+                  text: 'إلغاء',
+                  backgroundColor: Colors.grey[500],
+                  textColor: Colors.white,
                 ),
-                const SizedBox(width: 8),
-                TextButton(
+                const SizedBox(width: 10),
+                CustomDialogButton(
                   onPressed: () {
                     if (selectedType != null && selectedColorName != null) {
                       final color = FabricColors.colors[selectedColorName!]!;
                       final colorHex = FabricColors.colorToHex(color);
-                      
+
                       widget.onAdd(FabricModel(
                         type: selectedType!,
                         color: colorHex,
@@ -139,7 +143,9 @@ class _AddFabricDialogState extends State<AddFabricDialog> {
                       Navigator.pop(context);
                     }
                   },
-                  child: const Text('إضافة'),
+                  backgroundColor: AppColors.primary,
+                  textColor: Colors.white,
+                  text: 'إضافة',
                 ),
               ],
             ),

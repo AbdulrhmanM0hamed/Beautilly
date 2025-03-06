@@ -103,11 +103,15 @@ class OrdersRemoteDataSourceImpl
   @override
   Future<Map<String, dynamic>> addOrder(OrderRequestModel order) async {
     try {
-      var request = http.MultipartRequest(
-        'POST',
-        Uri.parse(ApiEndpoints.addMyOrder),
-      );
+      // التحقق من حجم الصورة
+      final imageFile = File(order.imagePath);
+      final imageBytes = await imageFile.readAsBytes();
+      if (imageBytes.length > 5 * 1024 * 1024) {
+        throw ServerException(message: 'حجم الصورة يجب أن يكون أقل من 5 ميجابايت');
+      }
 
+      var request = http.MultipartRequest('POST', Uri.parse(ApiEndpoints.addMyOrder));
+      
       // إضافة الهيدرز
       final token = await cacheService.getToken();
       final sessionCookie = await cacheService.getSessionCookie();
@@ -118,19 +122,6 @@ class OrdersRemoteDataSourceImpl
         if (sessionCookie != null) 'Cookie': sessionCookie,
       });
 
-      // Validate fabrics data
-      if (order.fabrics.isEmpty) {
-        throw ServerException(message: 'يجب إضافة قماش واحد على الأقل');
-      }
-
-      // Validate colors format
-      for (var fabric in order.fabrics) {
-        if (!_isValidHexColor(fabric.color)) {
-          debugPrint('Invalid color format: ${fabric.color}');
-          throw ServerException(message: 'صيغة اللون غير صحيحة');
-        }
-      }
-
       // إضافة البيانات الأساسية
       request.fields.addAll({
         'height': order.height.toString(),
@@ -138,51 +129,48 @@ class OrdersRemoteDataSourceImpl
         'size': order.size,
         'description': order.description,
         'execution_time': order.executionTime.toString(),
-        'api_key': ApiEndpoints.api_key,
       });
 
-      // إضافة مصفوفة الأقمشة
+      // إضافة الأقمشة بالطريقة الصحيحة
       for (var i = 0; i < order.fabrics.length; i++) {
         request.fields['fabrics[$i][type]'] = order.fabrics[i].type;
-        request.fields['fabrics[$i][color]'] = order.fabrics[i].color;
+        request.fields['fabrics[$i][color]'] = order.fabrics[i].color.replaceAll('#', '');
       }
 
-      // إضافة الصورة المضغوطة
-      final imageFile = File(order.imagePath);
-      final imageBytes = await imageFile.readAsBytes();
-      final imageLength = await imageFile.length();
-      
+      // إضافة الصورة
       request.files.add(
         http.MultipartFile.fromBytes(
           'image',
           imageBytes,
           filename: path.basename(order.imagePath),
-          contentType: MediaType('image', '*'),
+          contentType: MediaType('image', 'jpeg'),
         ),
       );
 
-      final response = await http.Response.fromStream(await request.send());
+      // طباعة البيانات للتأكد
+      debugPrint('Sending order data: ${request.fields}');
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      
+      debugPrint('Response status: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = json.decode(response.body);
         if (jsonResponse['success'] == true) {
           return jsonResponse['data'];
         }
-        throw ServerException(
-            message: jsonResponse['message'] ?? 'فشل في إضافة الطلب');
+        throw ServerException(message: jsonResponse['message'] ?? 'فشل في إضافة الطلب');
       }
 
-      throw ServerException(
-          message: 'فشل في إضافة الطلب: ${response.statusCode}');
+      final error = json.decode(response.body);
+      throw ServerException(message: error['message'] ?? 'فشل في إضافة الطلب');
     } catch (e) {
-      throw ServerException(message: 'حدث خطأ أثناء إضافة الطلب');
+      debugPrint('Error details in addOrder: $e');
+      if (e is ServerException) rethrow;
+      throw ServerException(message: 'حدث خطأ في إرسال البيانات: ${e.toString()}');
     }
-  }
-
-  bool _isValidHexColor(String color) {
-    return color.startsWith('#') && 
-           color.length == 7 && 
-           RegExp(r'^#[0-9A-F]{6}$').hasMatch(color.toUpperCase());
   }
 
   @override

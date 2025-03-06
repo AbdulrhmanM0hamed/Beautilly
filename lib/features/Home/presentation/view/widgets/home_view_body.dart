@@ -11,6 +11,9 @@ import 'package:beautilly/features/Home/presentation/view/widgets/special_view_l
 import 'package:beautilly/features/Home/presentation/view/widgets/welcome_text_widget.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/popular_salons_list_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/fashion_houses_list_view.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_state.dart';
+import 'package:beautilly/features/profile/presentation/view/edit_address/edit_address_view.dart';
 import 'package:flutter/material.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/statistics_section.dart';
 import '../pages/search_page.dart';
@@ -18,6 +21,7 @@ import 'package:beautilly/core/services/service_locator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'location_card.dart';
 
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key});
@@ -45,7 +49,9 @@ class HomeViewBody extends StatelessWidget {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   const WelcomeTextWidget(),
-                  const SizedBox(height: 4.0),
+                  const SizedBox(height: 16),
+                  const LocationCard(), // استخدام الـ widget الجديد
+                  
                   Container(
                     height: 50,
                     margin: const EdgeInsets.only(top: 16),

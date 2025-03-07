@@ -45,15 +45,26 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>نحتاج إلى موقعك لعرض الخدمات القريبة منك</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>نحتاج إلى موقعك لعرض الخدمات القريبة منك</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>نحتاج إلى موقعك لعرض الخدمات القريبة منك</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>نحتاج الوصول للصور لاختيار صورة التصميم</string>
+	<string>To allow the app to show nearby stores and enhance your shopping experience by suggesting available products and services in your area.</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>To allow the app to access your library so you can upload a profile picture and personalize your account.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>نحتاج الوصول للكاميرا لالتقاط صورة التصميم</string>
+	<string>To allow the app to take your profile picture, helping you personalize your account and improve your experience</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>To allow the app to show nearby stores and enhance your shopping experience by suggesting available products and services in your area.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>To allow the app to show nearby stores and enhance your shopping experience by suggesting available products and services in your area.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>To allow the app to access your photo library so you can upload a profile picture and personalize your account.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To allow the app to access your photo library so you can upload a profile picture and personalize your account.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 </dict>
 </plist>

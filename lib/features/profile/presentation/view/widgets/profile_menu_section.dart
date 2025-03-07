@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
@@ -243,6 +245,14 @@ class ProfileMenuSection extends StatelessWidget {
                       onTap: () => _handleLogout(context),
                       isDestructive: true,
                     ),
+                    if (Platform.isIOS) ...[
+                      MenuItem(
+                        icon: Icons.delete_outline,
+                        title: "حذف الحساب",
+                        onTap: () => _handleLogout(context),
+                        isDestructive: true,
+                      ),
+                    ],
                   ],
                 ),
               ],

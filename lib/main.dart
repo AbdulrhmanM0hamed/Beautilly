@@ -52,6 +52,8 @@ void main() async {
   // تحميل متغيرات البيئة
   await dotenv.load(fileName: ".env");
 
+  // runApp(MyApp());
+
   runApp(
     MultiProvider(
       providers: [
@@ -61,13 +63,16 @@ void main() async {
       ],
       child: BlocProvider(
         create: (_) => ThemeCubit(),
-        child: DevicePreview(
-          enabled: !kReleaseMode,
+        child: kReleaseMode
+            ? const MyApp() // في الوضع release، قم بعرض التطبيق مباشرةً
+            : DevicePreview(
+          enabled: false,
           builder: (context) => const MyApp(),
         ),
       ),
     ),
   );
+
 }
 
 class MyApp extends StatelessWidget {

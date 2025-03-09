@@ -16,11 +16,13 @@ abstract class CacheService {
   Future<void> clearLoginCredentials();
   Future<String?> getFCMToken();
   Future<void> saveFCMToken(String token);
-  Future<void> saveUserId(String userId) ;
+  Future<void> saveUserId(String userId);
   Future<String?> getLastNotificationTimestamp();
   Future<void> saveLastNotificationTimestamp(String timestamp);
   Future<bool> getDarkMode();
   Future<void> setDarkMode(bool isDark);
   Future<bool> getIsFirstTime();
   Future<void> setIsFirstTime(bool isFirstTime);
-} 
+  Future<void> setGuestMode(bool isGuest);
+  Future<bool> isGuestMode();
+}

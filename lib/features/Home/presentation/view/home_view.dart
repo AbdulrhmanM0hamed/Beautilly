@@ -89,7 +89,7 @@ class _HomeViewState extends State<HomeView> {
           } else {
             sl.unregister<ProfileCubit>();
             sl.registerFactory<ProfileCubit>(
-                () => ProfileCubit(repository: sl()));
+                () => ProfileCubit(cacheService: sl() ,repository: sl()));
             final newCubit = sl<ProfileCubit>();
             newCubit.loadProfile();
             return newCubit;

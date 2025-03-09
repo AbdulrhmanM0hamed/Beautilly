@@ -1,9 +1,11 @@
 import 'dart:io';
 
+import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:beautilly/features/notifications/presentation/view/notifications_page.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
@@ -28,242 +30,255 @@ class ProfileMenuSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
-      builder: (context, state) {
-        if (state is ProfileLoading) {
-          return const Center(
-              child: CustomProgressIndcator(
-            color: AppColors.primary,
-          ));
-        }
-
-        if (state is ProfileError) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(state.message),
-                ElevatedButton(
-                  onPressed: () {
-                    context.read<ProfileCubit>().loadProfile();
-                  },
-                  child: const Text('إعادة المحاولة'),
-                ),
-              ],
-            ),
-          );
-        }
-
-        if (state is ProfileLoaded) {
-          final profile = state.profile;
-          if (profile.name == null || profile.name!.isEmpty) {
-            context.read<ProfileCubit>().loadProfile();
-            return const Center(
-                child: CustomProgressIndcator(
-              color: AppColors.primary,
-            ));
-          }
-
-          final bool isNotClient = profile.role?.name != 'client';
-          String userType = '';
-          if (isNotClient) {
-            switch (profile.role?.name) {
-              case 'salon_manager':
-                userType = 'مدير صالون';
-                break;
-              case 'tailor_manager':
-                userType = 'مدير دار أزياء';
-                break;
-              case 'super_admin':
-                userType = 'مدير نظام';
-                break;
-              default:
-                userType = profile.role?.name ?? '';
+    return FutureBuilder<bool>(
+      future: sl<CacheService>().isGuestMode(),
+      builder: (context, snapshot) {
+        final bool isGuest = snapshot.data ?? false;
+        
+        return BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            if (state is ProfileLoading) {
+              return const Center(
+                  child: CustomProgressIndcator(
+                color: AppColors.primary,
+              ));
             }
-          }
 
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (isNotClient) ...[
-                  Container(
-                    margin: const EdgeInsets.all(16),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
+            if (state is ProfileError) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(state.message),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<ProfileCubit>().loadProfile();
+                      },
+                      child: const Text('إعادة المحاولة'),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'أنت مسجل كـ $userType',
-                          style: getMediumStyle(
-                            fontFamily: FontConstant.cairo,
-                            fontSize: FontSize.size16,
-                            color: AppColors.primary,
-                          ),
+                  ],
+                ),
+              );
+            }
+
+            if (state is ProfileLoaded) {
+              final profile = state.profile;
+              if (profile.name == null || profile.name.isEmpty) {
+                context.read<ProfileCubit>().loadProfile();
+                return const Center(
+                    child: CustomProgressIndcator(
+                  color: AppColors.primary,
+                ));
+              }
+
+              final bool isNotClient = profile.role?.name != 'client';
+              String userType = '';
+              if (isNotClient) {
+                switch (profile.role?.name) {
+                  case 'salon_manager':
+                    userType = 'مدير صالون';
+                    break;
+                  case 'tailor_manager':
+                    userType = 'مدير دار أزياء';
+                    break;
+                  case 'super_admin':
+                    userType = 'مدير نظام';
+                    break;
+                  default:
+                    userType = profile.role?.name ?? '';
+                }
+              }
+
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isNotClient) ...[
+                      Container(
+                        margin: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        const SizedBox(height: 12),
-                        FilledButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DashboardWebView(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'أنت مسجل كـ $userType',
+                              style: getMediumStyle(
+                                fontFamily: FontConstant.cairo,
+                                fontSize: FontSize.size16,
+                                color: AppColors.primary,
                               ),
-                            );
-                          },
-                          style: FilledButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            minimumSize: const Size(double.infinity, 45),
-                          ),
-                          icon: const Icon(Icons.dashboard_outlined,
-                              color: Colors.white),
-                          label: Text(
-                            'الذهاب إلى لوحة التحكم',
-                            style: getMediumStyle(
-                              fontFamily: FontConstant.cairo,
-                              fontSize: FontSize.size14,
-                              color: Colors.white,
                             ),
+                            const SizedBox(height: 12),
+                            FilledButton.icon(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const DashboardWebView(),
+                                  ),
+                                );
+                              },
+                              style: FilledButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                minimumSize: const Size(double.infinity, 45),
+                              ),
+                              icon: const Icon(Icons.dashboard_outlined,
+                                  color: Colors.white),
+                              label: Text(
+                                'الذهاب إلى لوحة التحكم',
+                                style: getMediumStyle(
+                                  fontFamily: FontConstant.cairo,
+                                  fontSize: FontSize.size14,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(),
+                    ],
+                    if (!isGuest)
+                    _buildMenuGroup(
+                      title: "إعدادات الحساب",
+                      items: [
+                        if (!isGuest) ...[
+                          MenuItem(
+                            icon: Icons.person_outline,
+                            title: "تعديل الملف الشخصي",
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageRoutes.fadeScale(
+                                  page: EditProfileView(profile: state.profile),
+                                ),
+                              );
+                            },
                           ),
+                          MenuItem(
+                            icon: Icons.location_on_outlined,
+                            title: "العنوان",
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageRoutes.fadeScale(
+                                  page: EditAddressView(profile: state.profile),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ],
+                    ),
+                    _buildMenuGroup(
+                      title: "المظهر",
+                      items: [
+                        MenuItem(
+                          icon: Icons.dark_mode_outlined,
+                          title: "المظهر الليلي",
+                          trailing: _buildThemeSwitch(context),
+                          onTap: () {},
                         ),
                       ],
                     ),
-                  ),
-                  const Divider(),
-                ],
-                _buildMenuGroup(
-                  title: "إعدادات الحساب",
-                  items: [
-                    MenuItem(
-                      icon: Icons.person_outline,
-                      title: "تعديل الملف الشخصي",
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRoutes.fadeScale(
-                            page: EditProfileView(profile: state.profile),
-                          ),
-                        );
-                      },
-                    ),
-                    MenuItem(
-                      icon: Icons.location_on_outlined,
-                      title: "العنوان",
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRoutes.fadeScale(
-                            page: EditAddressView(profile: state.profile),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                _buildMenuGroup(
-                  title: "المظهر",
-                  items: [
-                    MenuItem(
-                      icon: Icons.dark_mode_outlined,
-                      title: "المظهر الليلي",
-                      trailing: _buildThemeSwitch(context),
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-                _buildMenuGroup(
-                  title: "التفضيلات",
-                  items: [
-                    MenuItem(
-                      icon: Icons.notifications_outlined,
-                      title: "الإشعارات",
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRoutes.fadeScale(
-                            page: NotificationsPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    MenuItem(
-                      icon: Icons.favorite_border_outlined,
-                      title: "المفضلة",
-                      onTap: () {
-                        final favoritesCubit = sl<FavoritesCubit>();
-                        if (!favoritesCubit.isClosed) {
-                          favoritesCubit.loadFavorites();
-                        }
+                    if (!isGuest)
+                    _buildMenuGroup(
+                      title: "التفضيلات",
+                      items: [
+                        
+                        MenuItem(
+                          icon: Icons.notifications_outlined,
+                          title: "الإشعارات",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRoutes.fadeScale(
+                                page: NotificationsPage(),
+                              ),
+                            );
+                          },
+                        ),
+                        if (!isGuest)
+                          MenuItem(
+                            icon: Icons.favorite_border_outlined,
+                            title: "المفضلة",
+                            onTap: () {
+                              final favoritesCubit = sl<FavoritesCubit>();
+                              if (!favoritesCubit.isClosed) {
+                                favoritesCubit.loadFavorites();
+                              }
 
-                        Navigator.push(
-                          context,
-                          PageRoutes.fadeScale(
-                            page: BlocProvider.value(
-                              value: favoritesCubit,
-                              child: const FavoritesView(),
-                            ),
+                              Navigator.push(
+                                context,
+                                PageRoutes.fadeScale(
+                                  page: BlocProvider.value(
+                                    value: favoritesCubit,
+                                    child: const FavoritesView(),
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
+                      ],
+                    ),
+                    _buildMenuGroup(
+                      title: "الدعم",
+                      items: [
+                        MenuItem(
+                          icon: Icons.help_outline,
+                          title: "مركز المساعدة",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRoutes.fadeScale(
+                                page: const HelpCenterView(),
+                              ),
+                            );
+                          },
+                        ),
+                        MenuItem(
+                          icon: Icons.policy_outlined,
+                          title: "الشروط والأحكام",
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRoutes.fadeScale(
+                                page: const TermsAndPrivacyView(),
+                              ),
+                            );
+                          },
+                        ),
+                        MenuItem(
+                          icon: Icons.logout,
+                          title: "تسجيل الخروج",
+                          onTap: () => _handleLogout(context),
+                          isDestructive: true,
+                        ),
+                        if (Platform.isIOS) ...[
+                          MenuItem(
+                            icon: Icons.delete_outline,
+                            title: "حذف الحساب",
+                            onTap: () => _handleLogout(context),
+                            isDestructive: true,
+                          ),
+                        ],
+                      ],
                     ),
                   ],
                 ),
-                _buildMenuGroup(
-                  title: "الدعم",
-                  items: [
-                    MenuItem(
-                      icon: Icons.help_outline,
-                      title: "مركز المساعدة",
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRoutes.fadeScale(
-                            page: const HelpCenterView(),
-                          ),
-                        );
-                      },
-                    ),
-                    MenuItem(
-                      icon: Icons.policy_outlined,
-                      title: "الشروط والأحكام",
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRoutes.fadeScale(
-                            page: const TermsAndPrivacyView(),
-                          ),
-                        );
-                      },
-                    ),
-                    MenuItem(
-                      icon: Icons.logout,
-                      title: "تسجيل الخروج",
-                      onTap: () => _handleLogout(context),
-                      isDestructive: true,
-                    ),
-                    if (Platform.isIOS) ...[
-                      MenuItem(
-                        icon: Icons.delete_outline,
-                        title: "حذف الحساب",
-                        onTap: () => _handleLogout(context),
-                        isDestructive: true,
-                      ),
-                    ],
-                  ],
-                ),
-              ],
-            ),
-          );
-        }
+              );
+            }
 
-        return const Center(
-          child: CustomProgressIndcator(
-            color: AppColors.primary,
-          ),
+            return const Center(
+              child: CustomProgressIndcator(
+                color: AppColors.primary,
+              ),
+            );
+          },
         );
       },
     );
@@ -419,6 +434,13 @@ class ProfileMenuSection extends StatelessWidget {
       ),
       trailing: item.trailing ?? const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: item.onTap,
+    );
+  }
+
+  void _showGuestMessage(BuildContext context) {
+    CustomSnackbar.showError(
+      context: context,
+      message: 'هذه الخاصية غير متاحة للزائر، يرجى إنشاء حساب للوصول لجميع المميزات',
     );
   }
 }

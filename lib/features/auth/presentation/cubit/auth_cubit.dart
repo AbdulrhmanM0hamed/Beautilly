@@ -21,26 +21,19 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthLoading());
     
     try {
+      final isGuest = email == 'guest@gmail.com' && password == '123456789';
+      
       final result = await authRepository.login(email, password);
       
       result.fold(
         (failure) {
+          _cacheService.setGuestMode(false);
           emit(AuthError(failure.message));
         },
         (data) async {
+          await _cacheService.setGuestMode(isGuest);
           final token = data['token'] as String;
-
-          
-          // حفظ التوكن
           await _cacheService.saveToken(token);
-          
-          // التحقق من حفظ التوكن
-          final savedToken = await _cacheService.getToken();
-          
-          if (savedToken != token) {
-            emit(AuthError('خطأ في حفظ بيانات الجلسة'));
-            return;
-          }
           
           emit(AuthSuccess(
             user: data['user'],
@@ -50,6 +43,7 @@ class AuthCubit extends Cubit<AuthState> {
         },
       );
     } catch (e) {
+      await _cacheService.setGuestMode(false);
       emit(AuthError('حدث خطأ غير متوقع'));
     }
   }
@@ -81,9 +75,9 @@ class AuthCubit extends Cubit<AuthState> {
 
       result.fold(
         (failure) => emit(AuthError(failure.message)),
-        (success) {
-          GetIt.I<EditProfileController>().clearControllers();
-          GetIt.I<ProfileCubit>().clearProfile();
+        (success) async {
+          await _cacheService.setGuestMode(false);
+          _profileCubit.clearProfile();
           emit(AuthInitial());
         },
       );

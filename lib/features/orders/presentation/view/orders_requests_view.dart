@@ -1,10 +1,10 @@
 import 'package:beautilly/core/utils/animations/custom_progress_indcator.dart';
-import 'package:beautilly/core/utils/common/custom_app_bar.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/responsive/app_responsive.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
+import 'package:beautilly/features/orders/presentation/cubit/add_order_cubit/add_order_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/delete_order_cubit/delete_order_cubit.dart';
 import 'package:beautilly/features/orders/presentation/cubit/delete_order_cubit/delete_order_state.dart';
 import 'package:beautilly/features/orders/presentation/cubit/orders_cubit.dart';
@@ -14,6 +14,7 @@ import 'package:beautilly/features/orders/presentation/view/widgets/order_card.d
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/services/service_locator.dart';
+import 'package:beautilly/core/services/cache/cache_service.dart';
 
 class OrdersRequestsView extends StatefulWidget {
   const OrdersRequestsView({super.key});
@@ -145,33 +146,50 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
               ],
             ),
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () async {
-              final result = await Navigator.pushNamed(
-                context,
-                AddOrderView.routeName,
-              );
-              if (result == true && mounted) {
-                _ordersCubit.loadMyOrders();
-              }
-            },
-            backgroundColor: AppColors.primary,
-            icon: const Icon(
-              Icons.add,
-              color: AppColors.white,
-            ),
-            label: Text(
-              'إضافة طلب تفصيل',
-              style: getMediumStyle(
-                fontFamily: FontConstant.cairo,
-                color: AppColors.white,
-                fontSize: FontSize.size14,
-              ),
-            ),
-            elevation: 2,
-          ),
+          floatingActionButton: _buildFAB(context),
         ),
       ),
+    );
+  }
+
+  Widget _buildFAB(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: sl<CacheService>().isGuestMode(),
+      builder: (context, snapshot) {
+        final bool isGuest = snapshot.data ?? false;
+        
+        return FloatingActionButton.extended(
+          onPressed: () {
+            if (isGuest) {
+              CustomSnackbar.showError(
+                context: context,
+                message: 'يرجى تسجيل الدخول للتمكن من إضافة طلب تفصيل',
+              );
+              return;
+            }
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                  create: (context) => sl<AddOrderCubit>(),
+                  child: const AddOrderView(),
+                ),
+              ),
+            );
+          },
+          backgroundColor: AppColors.primary,
+          icon: const Icon(Icons.add, color: Colors.white),
+          label: Text(
+            'إضافة طلب تفصيل',
+            style: getMediumStyle(
+              color: Colors.white,
+              fontSize: FontSize.size14,
+              fontFamily: FontConstant.cairo,
+            ),
+          ),
+        );
+      },
     );
   }
 }

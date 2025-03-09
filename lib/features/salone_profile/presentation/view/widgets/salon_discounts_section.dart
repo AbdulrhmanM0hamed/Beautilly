@@ -8,6 +8,8 @@ import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/features/booking/presentation/cubit/booking_cubit.dart';
 import 'package:beautilly/features/booking/presentation/widgets/booking_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:beautilly/core/services/cache/cache_service.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 
 class SalonDiscountsSection extends StatelessWidget {
   final List<Discount> discounts;
@@ -19,17 +21,27 @@ class SalonDiscountsSection extends StatelessWidget {
     required this.shopId,
   });
 
-  void _showBookingDialog(BuildContext context, Discount discount) {
+  void _handleBooking(BuildContext context, Discount discount) async {
+    final bool isGuest = await sl<CacheService>().isGuestMode();
+
+    if (isGuest) {
+      CustomSnackbar.showError(
+        context: context,
+        message: 'يرجى تسجيل الدخول للتمكن من حجز العرض',
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       builder: (context) => BlocProvider(
         create: (context) => sl<BookingCubit>(),
         child: BookingDialog(
+          serviceDescription: discount.description,
           shopId: shopId,
           serviceId: discount.id,
           serviceName: discount.title,
           servicePrice: discount.pricing.finalPrice,
-          serviceDescription: _buildDiscountDescription(discount),
           isDiscount: true,
         ),
       ),
@@ -39,6 +51,44 @@ class SalonDiscountsSection extends StatelessWidget {
   String _buildDiscountDescription(Discount discount) {
     final services = discount.services.map((s) => s.name).join('، ');
     return 'خصم ${discount.discountValue}% على ${services}';
+  }
+
+  Widget _buildDiscountBadge(Discount discount) {
+    bool isPercentage = discount.discountType == 'percent';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 4,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            isPercentage 
+              ? '${discount.discountValue}%'
+              : '${discount.discountValue} ر.س',
+            style: getBoldStyle(
+              fontFamily: FontConstant.cairo,
+              fontSize: FontSize.size14,
+              color: Colors.white,
+            ),
+          ),
+          if (isPercentage)
+            const Text(
+              ' خصم',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 12,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -70,7 +120,7 @@ class SalonDiscountsSection extends StatelessWidget {
                 final daysLeft = validUntil.difference(DateTime.now()).inDays;
 
                 return InkWell(
-                  onTap: () => _showBookingDialog(context, discount),
+                  onTap: () => _handleBooking(context, discount),
                   borderRadius: BorderRadius.circular(20),
                   child: Container(
                     width: 280,
@@ -125,44 +175,17 @@ class SalonDiscountsSection extends StatelessWidget {
 
                         // المحتوى
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12 , vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 12),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // نسبة الخصم والسعر
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          discount.discountValue,
-                                          style: getBoldStyle(
-                                            fontFamily: FontConstant.cairo,
-                                            fontSize: FontSize.size14,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        const Text(
-                                          '% خصم',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  _buildDiscountBadge(discount),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
@@ -172,7 +195,8 @@ class SalonDiscountsSection extends StatelessWidget {
                                           fontFamily: FontConstant.cairo,
                                           fontSize: FontSize.size14,
                                           color: Colors.white.withOpacity(0.6),
-                                          decoration: TextDecoration.lineThrough,
+                                          decoration:
+                                              TextDecoration.lineThrough,
                                         ),
                                       ),
                                       Text(
@@ -246,7 +270,8 @@ class SalonDiscountsSection extends StatelessWidget {
                               const SizedBox(height: 12),
                               // الصف السفلي: الوقت المتبقي وزر الحجز
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
                                     padding: const EdgeInsets.symmetric(

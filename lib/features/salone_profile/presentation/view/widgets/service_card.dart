@@ -1,3 +1,4 @@
+import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/services/service_locator.dart';
+import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 
 class ServiceCard extends StatelessWidget {
   final Service service;
@@ -21,28 +24,28 @@ class ServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => _showBookingDialog(context),
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
-              spreadRadius: 0,
-              blurRadius: 2,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // صورة الخدمة
-            Hero(
-              tag: 'service_${service.id}',
-              child: Container(
+    return FutureBuilder<bool>(
+      future: sl<CacheService>().isGuestMode(),
+      builder: (context, snapshot) {
+        final bool isGuest = snapshot.data ?? false;
+        
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.08),
+                spreadRadius: 0,
+                blurRadius: 2,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              // صورة الخدمة
+              Container(
                 width: 100,
                 height: 120,
                 decoration: BoxDecoration(
@@ -77,90 +80,105 @@ class ServiceCard extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
-            const SizedBox(width: 16),
+              const SizedBox(width: 16),
 
-            // تفاصيل الخدمة
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    service.name,
-                    style: getBoldStyle(
-                      fontSize: FontSize.size16,
-                      fontFamily: FontConstant.cairo,
+              // تفاصيل الخدمة
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      service.name,
+                      style: getBoldStyle(
+                        fontSize: FontSize.size16,
+                        fontFamily: FontConstant.cairo,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${service.price} ر.س',
-                    style: getBoldStyle(
-                      fontSize: FontSize.size16,
-                      fontFamily: FontConstant.cairo,
-                      color: AppColors.primary,
+                    const SizedBox(height: 8),
+                    const SizedBox(height: 8),
+                    Text(
+                      '${service.price} ر.س',
+                      style: getBoldStyle(
+                        fontSize: FontSize.size16,
+                        fontFamily: FontConstant.cairo,
+                        color: AppColors.primary,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            // زر الحجز
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: InkWell(
-                onTap: () => _showBookingDialog(context),
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primary,
-                        AppColors.primary.withOpacity(0.8),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+              // زر الحجز
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => _handleBooking(context, isGuest),
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withOpacity(0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
                       ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.calendar_today_outlined,
-                        color: Colors.white,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        'حجز',
-                        style: getMediumStyle(
-                          color: Colors.white,
-                          fontSize: FontSize.size14,
-                          fontFamily: FontConstant.cairo,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.primary,
+                            AppColors.primary.withOpacity(0.8),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
-                    ],
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.calendar_today_outlined,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'حجز',
+                            style: getMediumStyle(
+                              color: Colors.white,
+                              fontSize: FontSize.size14,
+                              fontFamily: FontConstant.cairo,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
+  }
+
+  void _handleBooking(BuildContext context, bool isGuest) {
+    if (isGuest) {
+      CustomSnackbar.showError(
+        context: context,
+        message: 'يرجى تسجيل الدخول للتمكن من حجز الخدمات',
+      );
+      return;
+    }
+
+    _showBookingDialog(context);
   }
 
   void _showBookingDialog(BuildContext context) {

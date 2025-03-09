@@ -90,7 +90,7 @@ class _SigninViewBodyBlocConsumerState
               // إعادة تهيئة ProfileCubit وتحميل البيانات الجديدة
               sl.unregister<ProfileCubit>();
               sl.registerFactory<ProfileCubit>(
-                  () => ProfileCubit(repository: sl()));
+                  () => ProfileCubit(cacheService: sl<CacheService>(), repository: sl()));
 
               final profileCubit = sl<ProfileCubit>();
               if (!profileCubit.isClosed) {
@@ -214,7 +214,57 @@ class _SigninViewBodyBlocConsumerState
                         ),
                         const SizedBox(height: 24),
                         const DontHaveAccount(),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 24),
+                        // إضافة زر دخول كزائر
+                        Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: AppColors.primary.withOpacity(0.3),
+                              width: 1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: state is AuthLoading
+                                  ? null
+                                  : () {
+                                      context.read<AuthCubit>().login(
+                                            'guest@gmail.com',
+                                            '123456789',
+                                          );
+                                    },
+                              borderRadius: BorderRadius.circular(12),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.person_outline,
+                                      color: AppColors.primary,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      'دخول كزائر',
+                                      style: getMediumStyle(
+                                        color: AppColors.primary,
+                                        fontSize: FontSize.size14,
+                                        fontFamily: FontConstant.cairo,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(

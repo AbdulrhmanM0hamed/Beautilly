@@ -151,7 +151,7 @@ Future<void> init() async {
   );
 
   // Cubits
-  sl.registerFactory(() => ProfileCubit(repository: sl()));
+  sl.registerFactory(() => ProfileCubit(cacheService: sl(), repository: sl()));
   sl.registerFactory(() => ProfileImageCubit(repository: sl()));
 
 //--------------------------------------------------------------------

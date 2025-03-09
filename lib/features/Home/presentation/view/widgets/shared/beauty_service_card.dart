@@ -1,6 +1,7 @@
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
 import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_state.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +35,7 @@ class BeautyServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isGuest = context.read<ProfileCubit>().isGuestUser;
     final dimensions =
         ResponsiveCardSizes.getBeautyServiceCardDimensions(context);
 
@@ -73,55 +75,59 @@ class BeautyServiceCard extends StatelessWidget {
                 ),
               ),
               // Favorite Button
-              Positioned(
-                top: 8,
-                right: 8,
-                child: BlocBuilder<ToggleFavoritesCubit, ToggleFavoritesState>(
-                  builder: (context, state) {
-                    final bool isLoading = state is ToggleFavoritesLoading;
-                    final bool isFav = state is ToggleFavoritesSuccess
-                        ? state.isFavorite
-                        : isFavorite;
+              if (!isGuest)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child:
+                      BlocBuilder<ToggleFavoritesCubit, ToggleFavoritesState>(
+                    builder: (context, state) {
+                      final bool isLoading = state is ToggleFavoritesLoading;
+                      final bool isFav = state is ToggleFavoritesSuccess
+                          ? state.isFavorite
+                          : isFavorite;
 
-                    return GestureDetector(
-                      onTap: isLoading
-                          ? null
-                          : () {
-                              if (isFav) {
-                                context
-                                    .read<ToggleFavoritesCubit>()
-                                    .removeFromFavorites(shopId);
-                              } else {
-                                context
-                                    .read<ToggleFavoritesCubit>()
-                                    .addToFavorites(shopId);
-                              }
-                            },
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).scaffoldBackgroundColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: isLoading
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
+                      return GestureDetector(
+                        onTap: isLoading
+                            ? null
+                            : () {
+                                if (isFav) {
+                                  context
+                                      .read<ToggleFavoritesCubit>()
+                                      .removeFromFavorites(shopId);
+                                } else {
+                                  context
+                                      .read<ToggleFavoritesCubit>()
+                                      .addToFavorites(shopId);
+                                }
+                              },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: isLoading
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppColors.error,
+                                  ),
+                                )
+                              : Icon(
+                                  isFav
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
                                   color: AppColors.error,
+                                  size: 18,
                                 ),
-                              )
-                            : Icon(
-                                isFav ? Icons.favorite : Icons.favorite_border,
-                                color: AppColors.error,
-                                size: 18,
-                              ),
-                      ),
-                    );
-                  },
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
             ],
           ),
 
@@ -204,7 +210,6 @@ class BeautyServiceCard extends StatelessWidget {
                 if (tags != null && tags!.isNotEmpty) ...[
                   const SizedBox(height: 8),
                   SizedBox(
-                    
                     height: 30,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,

@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'cache_service.dart';
 
 class CacheServiceImpl implements CacheService {
+  static const String _guestModeKey = 'guest_mode';
   final SharedPreferences _prefs;
   static const String _tokenKey = 'token';
   static const String _userKey = 'user';
@@ -15,6 +16,7 @@ class CacheServiceImpl implements CacheService {
   static const String _lastNotificationKey = 'last_notification_timestamp';
   static const String _darkModeKey = 'dark_mode';
   static const String _isFirstTimeKey = 'is_first_time';
+  static const String _isGuestKey = 'is_guest_mode';
 
   CacheServiceImpl(this._prefs);
 
@@ -175,8 +177,18 @@ class CacheServiceImpl implements CacheService {
     return _prefs.getBool(_isFirstTimeKey) ?? true;
   }
 
-  @override
   Future<void> setIsFirstTime(bool isFirstTime) async {
     await _prefs.setBool(_isFirstTimeKey, isFirstTime);
   }
+
+  @override
+  Future<bool> isGuestMode() async {
+    return _prefs.getBool(_isGuestKey) ?? false;
+  }
+
+  @override
+  Future<void> setGuestMode(bool isGuest) async {
+    await _prefs.setBool(_isGuestKey, isGuest);
+  }
 }
+

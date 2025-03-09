@@ -1,3 +1,4 @@
+import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/features/profile/data/models/profile_model.dart';
 import 'package:beautilly/features/splash/view/splash_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,9 +10,24 @@ import 'package:flutter/material.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ProfileRepository repository;
+  final CacheService cacheService;
   ProfileModel? _profile;
+  bool _isGuest = false;
 
-  ProfileCubit({required this.repository}) : super(ProfileInitial());
+  ProfileCubit({
+    required this.repository,
+    required this.cacheService,
+  }) : super(ProfileInitial()) {
+    _initGuestStatus();
+  }
+
+  bool get isGuestUser => _isGuest;
+
+  Future<void> _initGuestStatus() async {
+    _isGuest = await cacheService.isGuestMode();
+    emit(ProfileInitial()); // إعادة تهيئة الحالة
+    loadProfile();
+  }
 
   ProfileModel? get currentProfile => _profile;
 
@@ -20,6 +36,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
     try {
       emit(ProfileLoading());
+      _isGuest = await cacheService.isGuestMode(); // تحديث حالة الزائر قبل تحميل الملف الشخصي
 
       final result = await repository.getProfile();
 
@@ -45,6 +62,8 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   void clearProfile() {
     _profile = null;
+    _isGuest = false;
+    cacheService.setGuestMode(false);
     if (!isClosed) {
       emit(ProfileInitial());
     }

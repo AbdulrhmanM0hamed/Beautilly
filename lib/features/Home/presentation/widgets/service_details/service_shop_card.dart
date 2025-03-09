@@ -150,6 +150,7 @@ class ServiceShopCard extends StatelessWidget {
                   children: [
                     // اسم المتجر
                     Text(
+                      
                       shop.name,
                       style: getBoldStyle(
                         fontSize: dimensions.titleSize,

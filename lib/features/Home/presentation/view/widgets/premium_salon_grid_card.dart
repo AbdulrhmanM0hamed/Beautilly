@@ -2,6 +2,7 @@ import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/navigation/custom_page_route.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/salone_profile/presentation/cubit/favorites_cubit/toggle_favorites_cubit.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/salone_profile_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -27,7 +28,7 @@ class PremiumSalonGridCard extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     final isTablet = size.width >= AppResponsive.mobileBreakpoint;
     final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
-
+    final bool isGuest = context.read<ProfileCubit>().isGuestUser;
     // تعديل الارتفاع للموبايل
     final double height = index % 3 == 0
         ? (isDesktop
@@ -97,6 +98,7 @@ class PremiumSalonGridCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Text(
+                        maxLines: 1,
                         salon.name,
                         style: getBoldStyle(
                           fontFamily: FontConstant.cairo,
@@ -161,60 +163,60 @@ class PremiumSalonGridCard extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (!isGuest)
+                  // زر المفضلة
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child:
+                        BlocBuilder<ToggleFavoritesCubit, ToggleFavoritesState>(
+                      builder: (context, state) {
+                        final bool isLoading = state is ToggleFavoritesLoading;
+                        final bool isFav = state is ToggleFavoritesSuccess
+                            ? state.isFavorite
+                            : salon.userInteraction?.hasLiked ?? false;
 
-                // زر المفضلة
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child:
-                      BlocBuilder<ToggleFavoritesCubit, ToggleFavoritesState>(
-                    builder: (context, state) {
-                      final bool isLoading = state is ToggleFavoritesLoading;
-                      final bool isFav = state is ToggleFavoritesSuccess
-                          ? state.isFavorite
-                          : salon.userInteraction?.hasLiked ?? false;
-
-                      return GestureDetector(
-                        onTap: isLoading
-                            ? null
-                            : () {
-                                if (isFav) {
-                                  context
-                                      .read<ToggleFavoritesCubit>()
-                                      .removeFromFavorites(salon.id);
-                                } else {
-                                  context
-                                      .read<ToggleFavoritesCubit>()
-                                      .addToFavorites(salon.id);
-                                }
-                              },
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: isLoading
-                              ? const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
+                        return GestureDetector(
+                          onTap: isLoading
+                              ? null
+                              : () {
+                                  if (isFav) {
+                                    context
+                                        .read<ToggleFavoritesCubit>()
+                                        .removeFromFavorites(salon.id);
+                                  } else {
+                                    context
+                                        .read<ToggleFavoritesCubit>()
+                                        .addToFavorites(salon.id);
+                                  }
+                                },
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: isLoading
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.error,
+                                    ),
+                                  )
+                                : Icon(
+                                    isFav
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
                                     color: AppColors.error,
+                                    size: 18,
                                   ),
-                                )
-                              : Icon(
-                                  isFav
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  color: AppColors.error,
-                                  size: 18,
-                                ),
-                        ),
-                      );
-                    },
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                ),
               ],
             ),
           ),

@@ -26,6 +26,7 @@ class ProfileHeader extends StatefulWidget {
 }
 
 class _ProfileHeaderState extends State<ProfileHeader> {
+  
   Future<File> compressImage(File file) async {
     final dir = await path_provider.getTemporaryDirectory();
     final targetPath =
@@ -54,6 +55,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
 
   @override
   Widget build(BuildContext context) {
+    
     return BlocConsumer<ProfileImageCubit, ProfileImageState>(
       listener: (context, state) {
         if (state is ProfileImageSuccess) {
@@ -110,7 +112,9 @@ class _ProfileHeaderState extends State<ProfileHeader> {
   }
 
   Widget _buildProfileInfo(BuildContext context, ProfileModel profile,
+  
       ProfileImageState imageState) {
+        final bool isGuest = context.read<ProfileCubit>().isGuestUser;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -163,45 +167,46 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                         ),
                 ),
               ),
-              Positioned(
-                bottom: 0,
-                right: 0,
-                child: GestureDetector(
-                  onTap: _pickAndUploadImage,
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: AppColors.primary,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                        width: 2,
+              if (!isGuest)
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: _pickAndUploadImage,
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                          width: 2,
+                        ),
                       ),
-                    ),
-                    child: imageState is ProfileImageLoading
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
+                      child: imageState is ProfileImageLoading
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.camera_alt,
+                              size: 16,
                               color: Colors.white,
                             ),
-                          )
-                        : const Icon(
-                            Icons.camera_alt,
-                            size: 16,
-                            color: Colors.white,
-                          ),
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: 16),
 
           // الاسم
           Text(
-            profile.name,
+            isGuest ? 'زائر' : profile.name,
             style: getBoldStyle(
               fontSize: FontSize.size20,
               fontFamily: FontConstant.cairo,
@@ -210,49 +215,52 @@ class _ProfileHeaderState extends State<ProfileHeader> {
           const SizedBox(height: 8),
 
           // البريد الإلكتروني
-          Text(
-            profile.email,
-            style: getMediumStyle(
-              color: AppColors.grey,
-              fontSize: FontSize.size14,
-              fontFamily: FontConstant.cairo,
-            ),
-          ),
-          const SizedBox(height: 4),
-
-          // رقم الهاتف
-          if (profile.phone != null)
+          if (!isGuest) ...[
             Text(
-              profile.phone!,
+              profile.email,
               style: getMediumStyle(
                 color: AppColors.grey,
                 fontSize: FontSize.size14,
                 fontFamily: FontConstant.cairo,
               ),
             ),
+            const SizedBox(height: 4),
 
-          const SizedBox(height: 4),
-
-          // الموقع
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.location_on_outlined,
-                size: 16,
-                color: AppColors.grey,
-              ),
-              const SizedBox(width: 4),
+            // رقم الهاتف
+            if (profile.phone != null)
               Text(
-                '${profile.city?.name}، ${profile.state?.name}',
+                profile.phone!,
                 style: getMediumStyle(
                   color: AppColors.grey,
                   fontSize: FontSize.size14,
                   fontFamily: FontConstant.cairo,
                 ),
               ),
-            ],
-          ),
+
+            const SizedBox(height: 4),
+
+            // الموقع
+            if (profile.city != null && profile.state != null)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.location_on_outlined,
+                    size: 16,
+                    color: AppColors.grey,
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${profile.city?.name}، ${profile.state?.name}',
+                    style: getMediumStyle(
+                      color: AppColors.grey,
+                      fontSize: FontSize.size14,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                  ),
+                ],
+              ),
+          ],
         ],
       ),
     );

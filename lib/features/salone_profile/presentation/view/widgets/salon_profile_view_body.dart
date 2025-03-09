@@ -1,6 +1,7 @@
 import 'package:beautilly/core/utils/common/arrow_back_widget.dart';
 import 'package:beautilly/core/utils/common/image_viewer.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/salone_profile/domain/entities/salon_profile.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_gallery_grid.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_info_card.dart';
@@ -25,6 +26,7 @@ class SalonProfileViewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isGuest = context.read<ProfileCubit>().isGuestUser;
     return Stack(
       children: [
         CustomScrollView(
@@ -67,61 +69,63 @@ class SalonProfileViewBody extends StatelessWidget {
                     left: 16,
                     child: Row(
                       children: [
-                        BlocConsumer<ToggleFavoritesCubit,
-                            ToggleFavoritesState>(
-                          listener: (context, state) {
-                            if (state is ToggleFavoritesError) {
-                              CustomSnackbar.showError(
-                                context: context,
-                                message: state.message,
-                              );
-                            }
-                          },
-                          builder: (context, state) {
-                            final bool isLoading =
-                                state is ToggleFavoritesLoading;
-                            final bool isFavorite =
-                                state is ToggleFavoritesSuccess
-                                    ? state.isFavorite
-                                    : profile.userInteraction.hasLiked;
+                        if (!isGuest)
+                          BlocConsumer<ToggleFavoritesCubit,
+                              ToggleFavoritesState>(
+                            listener: (context, state) {
+                              if (state is ToggleFavoritesError) {
+                                CustomSnackbar.showError(
+                                  context: context,
+                                  message: state.message,
+                                );
+                              }
+                            },
+                            builder: (context, state) {
+                              final bool isLoading =
+                                  state is ToggleFavoritesLoading;
+                              final bool isFavorite =
+                                  state is ToggleFavoritesSuccess
+                                      ? state.isFavorite
+                                      : profile.userInteraction.hasLiked;
 
-                            return CircleAvatar(
-                              backgroundColor:
-                                  Theme.of(context).scaffoldBackgroundColor,
-                              child: IconButton(
-                                onPressed: isLoading
-                                    ? null
-                                    : () {
-                                        if (isFavorite) {
-                                          context
-                                              .read<ToggleFavoritesCubit>()
-                                              .removeFromFavorites(profile.id);
-                                        } else {
-                                          context
-                                              .read<ToggleFavoritesCubit>()
-                                              .addToFavorites(profile.id);
-                                        }
-                                      },
-                                icon: isLoading
-                                    ? const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
+                              return CircleAvatar(
+                                backgroundColor:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                child: IconButton(
+                                  onPressed: isLoading
+                                      ? null
+                                      : () {
+                                          if (isFavorite) {
+                                            context
+                                                .read<ToggleFavoritesCubit>()
+                                                .removeFromFavorites(
+                                                    profile.id);
+                                          } else {
+                                            context
+                                                .read<ToggleFavoritesCubit>()
+                                                .addToFavorites(profile.id);
+                                          }
+                                        },
+                                  icon: isLoading
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : Icon(
+                                          isFavorite
+                                              ? Icons.favorite
+                                              : Icons.favorite_border,
+                                          color: isFavorite
+                                              ? Colors.red
+                                              : AppColors.grey.withOpacity(0.7),
                                         ),
-                                      )
-                                    : Icon(
-                                        isFavorite
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color: isFavorite
-                                            ? Colors.red
-                                            : AppColors.grey.withOpacity(0.7),
-                                      ),
-                              ),
-                            );
-                          },
-                        ),
+                                ),
+                              );
+                            },
+                          ),
                         const SizedBox(width: 8),
                         // CircleAvatar(
                         //   backgroundColor: Theme.of(context).scaffoldBackgroundColor,

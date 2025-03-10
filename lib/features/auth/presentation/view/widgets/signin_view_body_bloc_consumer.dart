@@ -71,7 +71,7 @@ class _SigninViewBodyBlocConsumerState
 
   @override
   Widget build(BuildContext context) {
-    final bool isGuest = context.read<ProfileCubit>().isGuestUser;
+   // final bool isGuest = context.read<ProfileCubit>().isGuestUser;
 
     return BlocProvider(
       create: (context) => sl<AuthCubit>(),
@@ -91,8 +91,8 @@ class _SigninViewBodyBlocConsumerState
 
               // إعادة تهيئة ProfileCubit وتحميل البيانات الجديدة
               sl.unregister<ProfileCubit>();
-              sl.registerFactory<ProfileCubit>(
-                  () => ProfileCubit(cacheService: sl<CacheService>(), repository: sl()));
+              sl.registerFactory<ProfileCubit>(() => ProfileCubit(
+                  cacheService: sl<CacheService>(), repository: sl()));
 
               final profileCubit = sl<ProfileCubit>();
               if (!profileCubit.isClosed) {
@@ -103,12 +103,10 @@ class _SigninViewBodyBlocConsumerState
 
               Navigator.pushReplacementNamed(context, HomeView.routeName);
 
-              if (!isGuest) {
-                CustomSnackbar.showSuccess(
-                  context: context,
-                  message: state.message,
-                );
-              }
+              CustomSnackbar.showSuccess(
+                context: context,
+                message: state.message,
+              );
             } catch (e) {
               if (!context.mounted) return;
               CustomSnackbar.showError(

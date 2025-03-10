@@ -3,9 +3,11 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Home/presentation/cubit/search_cubit/search_cubit.dart';
+import 'package:beautilly/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/home_view_body.dart';
 import 'package:beautilly/features/nearby/presentation/view/discover_view.dart';
+import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_state.dart';
 import 'package:beautilly/features/profile/presentation/view/profile_view.dart';
 import 'package:beautilly/features/orders/presentation/view/orders_requests_view.dart';
 import 'package:beautilly/features/reservations/presentation/view/reservations_view.dart';
@@ -19,6 +21,7 @@ import '../cubit/premium_shops_cubit/premium_shops_cubit.dart';
 import '../cubit/discounts_cubit/discounts_cubit.dart';
 import 'package:beautilly/core/utils/responsive/app_responsive.dart';
 import 'package:beautilly/core/utils/responsive/responsive_layout.dart';
+import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
 
 class HomeView extends StatefulWidget {
   static const String routeName = '/home';
@@ -32,13 +35,44 @@ class _HomeViewState extends State<HomeView> {
   int _currentIndex = 0;
   final _pageController = PageController();
 
-  final List<Widget> _pages = [
+  List<Widget> _getPages(bool isGuest) => [
     const KeepAlivePage(child: HomeViewBody()),
-    const KeepAlivePage(child: DiscoverView()),
-    const KeepAlivePage(child: ReservationsView()),
-    const KeepAlivePage(child: OrdersRequestsView()),
-    KeepAlivePage(child: ProfileView()),
+    if (!isGuest) ...[
+      const KeepAlivePage(child: DiscoverView()),
+      const KeepAlivePage(child: ReservationsView()),
+      const KeepAlivePage(child: OrdersRequestsView()),
+      KeepAlivePage(child: ProfileView()),
+    ],
   ];
+
+  Future<void> _handleGuestSignIn(BuildContext context) async {
+    try {
+      // تسجيل خروج Guest
+      await context.read<AuthCubit>().logout();
+
+      if (!context.mounted) return;
+
+      // مسح بيانات الملف الشخصي
+      if (!context.read<ProfileCubit>().isClosed) {
+        context.read<ProfileCubit>().clearProfile();
+      }
+
+      // التوجيه لصفحة تسجيل الدخول
+      await Navigator.pushNamedAndRemoveUntil(
+        context,
+        SigninView.routeName,
+        (route) => false,
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      // في حالة حدوث خطأ، التوجيه لصفحة تسجيل الدخول على أي حال
+      await Navigator.pushNamedAndRemoveUntil(
+        context,
+        SigninView.routeName,
+        (route) => false,
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -89,7 +123,7 @@ class _HomeViewState extends State<HomeView> {
           } else {
             sl.unregister<ProfileCubit>();
             sl.registerFactory<ProfileCubit>(
-                () => ProfileCubit(cacheService: sl() ,repository: sl()));
+                () => ProfileCubit(cacheService: sl(), repository: sl()));
             final newCubit = sl<ProfileCubit>();
             newCubit.loadProfile();
             return newCubit;
@@ -97,50 +131,65 @@ class _HomeViewState extends State<HomeView> {
 
           return cubit;
         },
-        child: Scaffold(
-          body: PageView(
-            controller: _pageController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: _pages,
-          ),
-          bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).scaffoldBackgroundColor,
-            ),
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
+        child: BlocBuilder<ProfileCubit, ProfileState>(
+          builder: (context, state) {
+            final bool isGuest = context.read<ProfileCubit>().isGuestUser;
+            final pages = _getPages(isGuest);
+            
+            return Scaffold(
+              body: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: pages,
               ),
-              child: BottomNavigationBar(
-                currentIndex: _currentIndex,
-                onTap: (index) {
-                  setState(() => _currentIndex = index);
-                  _pageController.jumpToPage(index);
-                },
-                type: BottomNavigationBarType.fixed,
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                selectedItemColor: AppColors.primary,
-                unselectedItemColor: AppColors.grey,
-                selectedLabelStyle: getMediumStyle(
-                  fontSize: FontSize.size12,
-                  fontFamily: FontConstant.cairo,
+              bottomNavigationBar: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).scaffoldBackgroundColor,
                 ),
-                unselectedLabelStyle: getMediumStyle(
-                  fontSize: FontSize.size12,
-                  fontFamily: FontConstant.cairo,
+                child: Theme(
+                  data: Theme.of(context).copyWith(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                  ),
+                  child: BottomNavigationBar(
+                    currentIndex: _currentIndex,
+                    onTap: (index) {
+                      if (!isGuest) {
+                        setState(() => _currentIndex = index);
+                        _pageController.jumpToPage(index);
+                      } else if (index == 1) {
+                        Navigator.pushReplacementNamed(context, SigninView.routeName);
+                      }
+                    },
+                    type: BottomNavigationBarType.fixed,
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    selectedItemColor: AppColors.primary,
+                    unselectedItemColor: AppColors.grey,
+                    selectedLabelStyle: getMediumStyle(
+                      fontSize: FontSize.size12,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                    unselectedLabelStyle: getMediumStyle(
+                      fontSize: FontSize.size12,
+                      fontFamily: FontConstant.cairo,
+                    ),
+                    items: [
+                      _buildNavItem(AppAssets.homeIconBottom, 'الرئيسية'),
+                      if (isGuest)
+                        _buildNavItem(AppAssets.profileIconBottom, 'تسجيل الدخول')
+                      else ...[
+                        _buildNavItem(AppAssets.Location, 'الأقرب'),
+                        _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
+                        _buildNavItem(AppAssets.tfsel, 'التفصيل'),
+                        _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
+                      ],
+                    ],
+                  ),
                 ),
-                items: [
-                  _buildNavItem(AppAssets.homeIconBottom, 'الرئيسية'),
-                  _buildNavItem(AppAssets.Location, 'الأقرب'),
-                  _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
-                  _buildNavItem(AppAssets.tfsel, 'التفصيل'),
-                  _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
-                ],
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

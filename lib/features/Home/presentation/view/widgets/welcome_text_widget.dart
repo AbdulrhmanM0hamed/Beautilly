@@ -126,6 +126,7 @@ class _WelcomeTextWidgetState extends State<WelcomeTextWidget> {
 }
 
 Widget _buildNotificationButton(BuildContext context) {
+  final bool isGuest = context.read<ProfileCubit>().isGuestUser;
   return Material(
     color: Colors.transparent,
     child: InkWell(
@@ -146,6 +147,7 @@ Widget _buildNotificationButton(BuildContext context) {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
+           if (!isGuest)
           Container(
             width: 33,
             height: 33,

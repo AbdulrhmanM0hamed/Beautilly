@@ -71,6 +71,8 @@ class _SigninViewBodyBlocConsumerState
 
   @override
   Widget build(BuildContext context) {
+    final bool isGuest = context.read<ProfileCubit>().isGuestUser;
+
     return BlocProvider(
       create: (context) => sl<AuthCubit>(),
       child: BlocConsumer<AuthCubit, AuthState>(
@@ -101,10 +103,12 @@ class _SigninViewBodyBlocConsumerState
 
               Navigator.pushReplacementNamed(context, HomeView.routeName);
 
-              CustomSnackbar.showSuccess(
-                context: context,
-                message: state.message,
-              );
+              if (!isGuest) {
+                CustomSnackbar.showSuccess(
+                  context: context,
+                  message: state.message,
+                );
+              }
             } catch (e) {
               if (!context.mounted) return;
               CustomSnackbar.showError(

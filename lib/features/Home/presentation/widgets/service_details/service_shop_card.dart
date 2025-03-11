@@ -58,6 +58,7 @@ class ServiceShopCard extends StatelessWidget {
                     ),
                     child: CachedNetworkImage(
                       height: dimensions.imageHeight,
+                      width: double.infinity,
                       imageUrl: shop.mainImageUrl,
                       fit: BoxFit.cover,
                       placeholder: (context, url) => _buildImagePlaceholder(),

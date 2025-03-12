@@ -176,7 +176,13 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
                   child: const AddOrderView(),
                 ),
               ),
-            );
+            ).then((result) {
+              if (result == true) {
+                // إذا تم إضافة الطلب بنجاح، قم بتحديث الطلبات
+                _ordersCubit.loadMyOrders();
+                _ordersCubit.loadAllOrders();
+              }
+            });
           },
           backgroundColor: AppColors.primary,
           icon: const Icon(Icons.add, color: Colors.white),

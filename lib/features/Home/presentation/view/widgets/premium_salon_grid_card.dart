@@ -29,6 +29,7 @@ class PremiumSalonGridCard extends StatelessWidget {
     final isTablet = size.width >= AppResponsive.mobileBreakpoint;
     final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
     final bool isGuest = context.read<ProfileCubit>().isGuestUser;
+    
     // تعديل الارتفاع للموبايل
     final double height = index % 3 == 0
         ? (isDesktop

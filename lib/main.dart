@@ -21,6 +21,7 @@ import 'core/cubits/theme/theme_cubit.dart';
 import 'core/cubits/theme/theme_state.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

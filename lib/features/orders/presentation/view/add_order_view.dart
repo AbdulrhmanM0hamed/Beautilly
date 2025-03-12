@@ -97,6 +97,7 @@ class _AddOrderViewState extends State<AddOrderView> {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         backgroundColor: Colors.green,
                         content: Text('تم إضافة الطلب بنجاح')));
+                     
                     Navigator.pop(context, true);
                   } else if (state is AddOrderError) {
                     ScaffoldMessenger.of(context).showSnackBar(

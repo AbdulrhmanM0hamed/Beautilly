@@ -70,5 +70,24 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
+	<key>GMSApiKey</key>
+	<string>AIzaSyA1Nov8gl35YoDqhfR7V54PPF4jeuzEmmY</string>
+	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
+	<dict>
+		<key>LocationAccuracy</key>
+		<string>نحتاج إلى موقعك الدقيق لعرض المتاجر القريبة منك</string>
+	</dict>
+	<key>NSLocationDefaultAccuracyReduced</key>
+	<true/>
+	<key>NSLocationUsageDescription</key>
+	<string>نحتاج إلى موقعك لعرض المتاجر القريبة منك وتقديم أفضل تجربة تسوق</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>نحتاج إلى موقعك لعرض المتاجر القريبة منك وتقديم أفضل تجربة تسوق</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>نحتاج إلى موقعك لعرض المتاجر القريبة منك وتقديم أفضل تجربة تسوق</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>نحتاج إلى موقعك لعرض المتاجر القريبة منك وتقديم أفضل تجربة تسوق</string>
 </dict>
 </plist>

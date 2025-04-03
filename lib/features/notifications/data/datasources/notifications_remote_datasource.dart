@@ -29,14 +29,14 @@ class NotificationsRemoteDataSourceImpl
   @override
   Future<NotificationsResponse> getNotifications({int page = 1}) async {
     try {
-      //     print('🔍 جاري جلب الإشعارات...');
-      //     print('📄 الصفحة: $page');
+          // print('🔍 جاري جلب الإشعارات...');
+          // print('📄 الصفحة: $page');
 
       final token = await cacheService.getToken();
       final sessionCookie = await cacheService.getSessionCookie();
 
-      //    print('🔑 Token: $token');
-      //     print('🍪 Session Cookie: $sessionCookie');
+        //  print('🔑 Token: $token');
+        //   print('🍪 Session Cookie: $sessionCookie');
 
       final response = await client.get(
         Uri.parse(ApiEndpoints.notifications),
@@ -56,7 +56,7 @@ class NotificationsRemoteDataSourceImpl
         //    print('✅ تم جلب الإشعارات بنجاح');
         return NotificationsResponse.fromJson(jsonResponse);
       } else {
-        //    print('❌ خطأ في استجابة الخادم: ${response.statusCode}');
+          //  print('❌ خطأ في استجابة الخادم: ${response.statusCode}');
         throw ServerException(
           message: json.decode(response.body)['message'] ??
               'حدث خطأ في تحميل الإشعارات',

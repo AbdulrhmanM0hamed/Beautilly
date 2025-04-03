@@ -248,8 +248,16 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
           scrollGesturesEnabled: true,
           zoomGesturesEnabled: true,
           trafficEnabled: true,
-          minMaxZoomPreference: const MinMaxZoomPreference(3, 20),
-          padding: EdgeInsets.zero,
+          liteModeEnabled: false,
+          onCameraIdle: () {
+            // Handle camera idle event if needed
+          },
+          onCameraMove: (CameraPosition position) {
+            // Handle camera move event if needed
+          },
+          onCameraMoveStarted: () {
+            // Handle camera move started event if needed
+          },
         ),
         if (_isMapLoading)
           Container(

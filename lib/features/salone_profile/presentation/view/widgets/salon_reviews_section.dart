@@ -5,7 +5,6 @@ import 'package:beautilly/core/utils/constant/font_manger.dart';
 import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
-import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/salone_profile/presentation/cubit/rating_cubit/rating_cubit.dart';
 import 'package:beautilly/features/salone_profile/presentation/cubit/rating_cubit/rating_state.dart';
 import 'package:flutter/material.dart';

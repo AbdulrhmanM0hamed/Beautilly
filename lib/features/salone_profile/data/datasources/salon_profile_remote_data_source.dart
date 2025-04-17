@@ -48,6 +48,7 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
 
         if (response.statusCode == 200) {
           final decodedJson = json.decode(response.body);
+          print(decodedJson);
           
           if (decodedJson['success'] == true && decodedJson['data'] != null) {
             try {

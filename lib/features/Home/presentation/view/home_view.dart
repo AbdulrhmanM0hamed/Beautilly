@@ -6,6 +6,7 @@ import 'package:beautilly/features/Home/presentation/cubit/search_cubit/search_c
 import 'package:beautilly/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/home_view_body.dart';
+import 'package:beautilly/features/nearby/presentation/cubit/search_shops_cubit.dart';
 import 'package:beautilly/features/nearby/presentation/view/discover_view.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_state.dart';
 import 'package:beautilly/features/profile/presentation/view/profile_view.dart';
@@ -109,6 +110,9 @@ class _HomeViewState extends State<HomeView> {
         ),
         BlocProvider(
           create: (context) => sl<SearchCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => sl<SearchShopsCubit>()..filterShops(),
         ),
       ],
       child: BlocProvider(

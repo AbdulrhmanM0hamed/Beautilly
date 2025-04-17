@@ -6,6 +6,7 @@ import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/p
 import 'package:beautilly/features/Home/presentation/cubit/search_cubit/search_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/statistics_cubit/statistics_cubit.dart';
+import 'package:beautilly/features/Home/presentation/view/widgets/category_cards.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/services_grid_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/special_view_list_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/welcome_text_widget.dart';
@@ -124,7 +125,9 @@ class HomeViewBody extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 4.0),
+                  const SizedBox(height: 8.0),
+                  // Add Category Cards
+                  const CategoryCards(),
                 ]),
               ),
             ),
@@ -143,14 +146,14 @@ class HomeViewBody extends StatelessWidget {
             const SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(child: PopularSalonsListView())),
-            const SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                sliver:
-                     SliverToBoxAdapter(child: FashionHousesListView())),
-            const SliverPadding(
-              padding: EdgeInsets.only(right: 16.0 , left: 16, bottom:16  , top: 8),
-              sliver: SliverToBoxAdapter(child: StatisticsSection()),
-            ),
+            // const SliverPadding(
+            //     padding: EdgeInsets.symmetric(horizontal: 16.0),
+            //     sliver:
+            //          SliverToBoxAdapter(child: FashionHousesListView())),
+            // const SliverPadding(
+            //   padding: EdgeInsets.only(right: 16.0 , left: 16, bottom:16  , top: 8),
+            //   sliver: SliverToBoxAdapter(child: StatisticsSection()),
+            // ),
           ],
         ),
       ),

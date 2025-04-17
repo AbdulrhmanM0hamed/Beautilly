@@ -64,7 +64,7 @@ class _PopularSalonsListViewState extends State<PopularSalonsListView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'أشهر صالونات التجميل',
+                    ' صالونات التجميل',
                     style: getBoldStyle(
                       fontFamily: FontConstant.cairo,
                       fontSize: FontSize.size16,

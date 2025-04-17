@@ -8,6 +8,7 @@ import 'package:beautilly/features/salone_profile/presentation/view/widgets/salo
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_services_section.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_team_section.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_reviews_section.dart';
+import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_map_section.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:beautilly/features/salone_profile/presentation/view/widgets/salon_discounts_section.dart';
@@ -161,6 +162,10 @@ class SalonProfileViewBody extends StatelessWidget {
                       description: profile.description ?? '',
                       location: profile.location,
                       workingHours: profile.workingHours,
+                    ),
+                    SalonMapSection(
+                      googleMapsUrl: profile.googleMapsUrl,
+                      location: profile.location,
                     ),
                     SalonDiscountsSection(
                       shopId: profile.id,

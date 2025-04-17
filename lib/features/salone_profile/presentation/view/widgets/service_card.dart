@@ -10,7 +10,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:beautilly/core/services/service_locator.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
-import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 
 class ServiceCard extends StatelessWidget {
   final Service service;

@@ -19,7 +19,7 @@ import 'package:beautilly/core/services/service_locator.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'location_card.dart';
+import 'location_search_form.dart';
 
 class HomeViewBody extends StatelessWidget {
   const HomeViewBody({super.key});
@@ -51,7 +51,7 @@ class HomeViewBody extends StatelessWidget {
                 delegate: SliverChildListDelegate([
                   const WelcomeTextWidget(),
                   const SizedBox(height: 16),
-                  const LocationCard(), // استخدام الـ widget الجديد
+                  const LocationSearchForm(),
                   
                   Container(
                     height: 50,

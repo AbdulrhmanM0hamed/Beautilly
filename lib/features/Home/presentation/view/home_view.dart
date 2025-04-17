@@ -38,7 +38,7 @@ class _HomeViewState extends State<HomeView> {
   List<Widget> _getPages(bool isGuest) => [
     const KeepAlivePage(child: HomeViewBody()),
     if (!isGuest) ...[
-      const KeepAlivePage(child: DiscoverView()),
+   //   const KeepAlivePage(child: DiscoverView()),
       const KeepAlivePage(child: ReservationsView()),
       const KeepAlivePage(child: OrdersRequestsView()),
       KeepAlivePage(child: ProfileView()),
@@ -179,7 +179,7 @@ class _HomeViewState extends State<HomeView> {
                       if (isGuest)
                         _buildNavItem(AppAssets.profileIconBottom, 'تسجيل الدخول')
                       else ...[
-                        _buildNavItem(AppAssets.Location, 'الأقرب'),
+                     //   _buildNavItem(AppAssets.Location, 'الأقرب'),
                         _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
                         _buildNavItem(AppAssets.tfsel, 'التفصيل'),
                         _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
@@ -227,14 +227,14 @@ class _HomeViewState extends State<HomeView> {
     switch (label) {
       case 'الرئيسية':
         return 0;
-      case 'الأقرب':
-        return 1;
+      // case 'الأقرب':
+      //   return 1;
       case 'الحجوزات':
-        return 2;
+        return 1;
       case 'التفصيل':
-        return 3;
+        return 2;
       case 'حسابي':
-        return 4;
+        return 3;
       default:
         return 0;
     }

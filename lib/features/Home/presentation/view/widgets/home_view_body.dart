@@ -128,15 +128,15 @@ class HomeViewBody extends StatelessWidget {
                 ]),
               ),
             ),
-            const SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                sliver: SliverToBoxAdapter(
-                  child: SpecialViewListView(),
-                )),
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0 , vertical: 16),
-              sliver: SliverToBoxAdapter(child: ServicesGridView(maxItems: 4)),
-            ),
+            // const SliverPadding(
+            //     padding: EdgeInsets.symmetric(horizontal: 16),
+            //     sliver: SliverToBoxAdapter(
+            //       child: SpecialViewListView(),
+            //     )),
+            // const SliverPadding(
+            //   padding: EdgeInsets.symmetric(horizontal: 16.0 , vertical: 16),
+            //   sliver: SliverToBoxAdapter(child: ServicesGridView(maxItems: 4)),
+            // ),
             const SliverToBoxAdapter(
               child: SizedBox(height: 16.0),
             ),

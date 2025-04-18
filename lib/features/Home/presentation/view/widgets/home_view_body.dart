@@ -54,65 +54,65 @@ class HomeViewBody extends StatelessWidget {
                   const SizedBox(height: 16),
                   const LocationSearchForm(),
                   
-                  Container(
-                    height: 50,
-                    margin: const EdgeInsets.only(top: 16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).scaffoldBackgroundColor,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
-                          blurRadius: 10,
-                          offset: const Offset(0, 0),
-                        ),
-                      ],
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) => BlocProvider(
-                              create: (context) => sl<SearchCubit>(),
-                              child: const SearchPage(),
-                            ),
-                          );
-                        },
-                        borderRadius: BorderRadius.circular(24),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: SvgPicture.asset(
-                                  AppAssets.searchIcon,
-                                  width: 30,
-                                  height: 30,
-                                  colorFilter: const ColorFilter.mode(
-                                    AppColors.primary,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                ' ابحث عن صالون  او  دار ازياء ...',
-                                style: getMediumStyle(
-                                  color: AppColors.grey,
-                                  fontSize: FontSize.size14,
-                                  fontFamily: FontConstant.cairo,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Container(
+                  //   height: 50,
+                  //   margin: const EdgeInsets.only(top: 16),
+                  //   decoration: BoxDecoration(
+                  //     color: Theme.of(context).scaffoldBackgroundColor,
+                  //     borderRadius: BorderRadius.circular(24),
+                  //     boxShadow: [
+                  //       BoxShadow(
+                  //         color: Colors.grey.withOpacity(0.2),
+                  //         blurRadius: 10,
+                  //         offset: const Offset(0, 0),
+                  //       ),
+                  //     ],
+                  //   ),
+                  //   child: Material(
+                  //     color: Colors.transparent,
+                  //     child: InkWell(
+                  //       onTap: () {
+                  //         showModalBottomSheet(
+                  //           context: context,
+                  //           isScrollControlled: true,
+                  //           backgroundColor: Colors.transparent,
+                  //           builder: (context) => BlocProvider(
+                  //             create: (context) => sl<SearchCubit>(),
+                  //             child: const SearchPage(),
+                  //           ),
+                  //         );
+                  //       },
+                  //       borderRadius: BorderRadius.circular(24),
+                  //       child: Padding(
+                  //         padding: const EdgeInsets.symmetric(horizontal: 16),
+                  //         child: Row(
+                  //           children: [
+                  //             Padding(
+                  //               padding: const EdgeInsets.all(10),
+                  //               child: SvgPicture.asset(
+                  //                 AppAssets.searchIcon,
+                  //                 width: 30,
+                  //                 height: 30,
+                  //                 colorFilter: const ColorFilter.mode(
+                  //                   AppColors.primary,
+                  //                   BlendMode.srcIn,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //             Text(
+                  //               ' ابحث عن صالون  او  دار ازياء ...',
+                  //               style: getMediumStyle(
+                  //                 color: AppColors.grey,
+                  //                 fontSize: FontSize.size14,
+                  //                 fontFamily: FontConstant.cairo,
+                  //               ),
+                  //             ),
+                  //           ],
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(height: 16.0),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -146,10 +146,10 @@ class HomeViewBody extends StatelessWidget {
             const SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(child: PopularSalonsListView())),
-            // const SliverPadding(
-            //     padding: EdgeInsets.symmetric(horizontal: 16.0),
-            //     sliver:
-            //          SliverToBoxAdapter(child: FashionHousesListView())),
+            const SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                sliver:
+                     SliverToBoxAdapter(child: FashionHousesListView())),
             // const SliverPadding(
             //   padding: EdgeInsets.only(right: 16.0 , left: 16, bottom:16  , top: 8),
             //   sliver: SliverToBoxAdapter(child: StatisticsSection()),

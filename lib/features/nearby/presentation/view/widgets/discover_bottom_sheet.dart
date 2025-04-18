@@ -28,6 +28,12 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
   bool _hasMoreData = true;
 
   @override
+  void dispose() {
+    // Limpiar cualquier recurso o suscripción pendiente aquí
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<SearchShopsCubit, SearchShopsState>(
       listener: (context, state) {
@@ -233,9 +239,11 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
     _currentPage++;
     await context.read<SearchShopsCubit>().loadMoreShops(page: _currentPage);
 
-    setState(() {
-      _isLoadingMore = false;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoadingMore = false;
+      });
+    }
   }
 
   String _getErrorMessage(String error) {

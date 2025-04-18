@@ -23,6 +23,7 @@ class SearchShopModel extends SearchShop {
       typeName: json['type_name'] ?? '',
       rating: (json['rating'] ?? 0).toDouble(),
       location: LocationModel.fromJson(json['location']),
+      
       mainImage: MainImageModel.fromJson(json['main_image']),
       city: CityModel.fromJson(json['city'] ?? {}),
       state: StateModel.fromJson(json['state'] ?? {}),

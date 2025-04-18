@@ -23,6 +23,7 @@ import '../cubit/discounts_cubit/discounts_cubit.dart';
 import 'package:beautilly/core/utils/responsive/app_responsive.dart';
 import 'package:beautilly/core/utils/responsive/responsive_layout.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
+import 'pages/search_page.dart';
 
 class HomeView extends StatefulWidget {
   static const String routeName = '/home';
@@ -45,6 +46,19 @@ class _HomeViewState extends State<HomeView> {
       KeepAlivePage(child: ProfileView()),
     ],
   ];
+
+  // Método para mostrar el bottom sheet de búsqueda
+  void _showSearchBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => BlocProvider(
+        create: (context) => sl<SearchCubit>(),
+        child: const SearchPage(),
+      ),
+    );
+  }
 
   Future<void> _handleGuestSignIn(BuildContext context) async {
     try {
@@ -146,49 +160,224 @@ class _HomeViewState extends State<HomeView> {
                 physics: const NeverScrollableScrollPhysics(),
                 children: pages,
               ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () => _showSearchBottomSheet(context),
+                backgroundColor: AppColors.primary,
+                elevation: 2,
+                child: SvgPicture.asset(
+                  AppAssets.searchIcon,
+                  width: 24,
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
               bottomNavigationBar: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 0,
+                      blurRadius: 10,
+                      offset: const Offset(0, -2),
+                    ),
+                  ],
                 ),
                 child: Theme(
                   data: Theme.of(context).copyWith(
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                   ),
-                  child: BottomNavigationBar(
-                    currentIndex: _currentIndex,
-                    onTap: (index) {
-                      if (!isGuest) {
-                        setState(() => _currentIndex = index);
-                        _pageController.jumpToPage(index);
-                      } else if (index == 1) {
-                        Navigator.pushReplacementNamed(context, SigninView.routeName);
-                      }
-                    },
-                    type: BottomNavigationBarType.fixed,
-                    backgroundColor: Colors.transparent,
+                  child: BottomAppBar(
+                    height: 60,
+                    padding: EdgeInsets.zero,
+                    notchMargin: 8,
                     elevation: 0,
-                    selectedItemColor: AppColors.primary,
-                    unselectedItemColor: AppColors.grey,
-                    selectedLabelStyle: getMediumStyle(
-                      fontSize: FontSize.size12,
-                      fontFamily: FontConstant.cairo,
-                    ),
-                    unselectedLabelStyle: getMediumStyle(
-                      fontSize: FontSize.size12,
-                      fontFamily: FontConstant.cairo,
-                    ),
-                    items: [
-                      _buildNavItem(AppAssets.homeIconBottom, 'الرئيسية'),
-                      if (isGuest)
-                        _buildNavItem(AppAssets.profileIconBottom, 'تسجيل الدخول')
-                      else ...[
-                     //   _buildNavItem(AppAssets.Location, 'الأقرب'),
-                        _buildNavItem(AppAssets.calendarIconBottom, 'الحجوزات'),
-                        _buildNavItem(AppAssets.tfsel, 'التفصيل'),
-                        _buildNavItem(AppAssets.profileIconBottom, 'حسابي'),
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    shape: const CircularNotchedRectangle(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        // Icono de inicio
+                        Expanded(
+                          child: InkWell(
+                            onTap: () {
+                              setState(() => _currentIndex = 0);
+                              _pageController.jumpToPage(0);
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SvgPicture.asset(
+                                  AppAssets.homeIconBottom,
+                                  colorFilter: ColorFilter.mode(
+                                    _currentIndex == 0
+                                        ? AppColors.primary
+                                        : AppColors.grey,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'الرئيسية',
+                                  style: getMediumStyle(
+                                    fontSize: FontSize.size12,
+                                    fontFamily: FontConstant.cairo,
+                                    color: _currentIndex == 0
+                                        ? AppColors.primary
+                                        : AppColors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      
+                        if (isGuest)
+                          // Icono de perfil para invitados
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.pushReplacementNamed(context, SigninView.routeName);
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.profileIconBottom,
+                                    colorFilter: const ColorFilter.mode(
+                                      AppColors.grey,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'تسجيل الدخول',
+                                    style: getMediumStyle(
+                                      fontSize: FontSize.size12,
+                                      fontFamily: FontConstant.cairo,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        else ...[
+                          // Icono de reservas
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                setState(() => _currentIndex = 1);
+                                _pageController.jumpToPage(1);
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.calendarIconBottom,
+                                    colorFilter: ColorFilter.mode(
+                                      _currentIndex == 1
+                                          ? AppColors.primary
+                                          : AppColors.grey,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'الحجوزات',
+                                    style: getMediumStyle(
+                                      fontSize: FontSize.size12,
+                                      fontFamily: FontConstant.cairo,
+                                      color: _currentIndex == 1
+                                          ? AppColors.primary
+                                          : AppColors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          
+                          // Espacio para el botón flotante
+                          const Spacer(),
+                          
+                          // Icono de detalles
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                setState(() => _currentIndex = 2);
+                                _pageController.jumpToPage(2);
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.tfsel,
+                                    colorFilter: ColorFilter.mode(
+                                      _currentIndex == 2
+                                          ? AppColors.primary
+                                          : AppColors.grey,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'التفصيل',
+                                    style: getMediumStyle(
+                                      fontSize: FontSize.size12,
+                                      fontFamily: FontConstant.cairo,
+                                      color: _currentIndex == 2
+                                          ? AppColors.primary
+                                          : AppColors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          
+                          // Icono de perfil
+                          Expanded(
+                            child: InkWell(
+                              onTap: () {
+                                setState(() => _currentIndex = 3);
+                                _pageController.jumpToPage(3);
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppAssets.profileIconBottom,
+                                    colorFilter: ColorFilter.mode(
+                                      _currentIndex == 3
+                                          ? AppColors.primary
+                                          : AppColors.grey,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    'حسابي',
+                                    style: getMediumStyle(
+                                      fontSize: FontSize.size12,
+                                      fontFamily: FontConstant.cairo,
+                                      color: _currentIndex == 3
+                                          ? AppColors.primary
+                                          : AppColors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -207,41 +396,6 @@ class _HomeViewState extends State<HomeView> {
   Widget _buildDesktopLayout() {
     // Implementation for desktop layout
     return _buildMobileLayout();
-  }
-
-  BottomNavigationBarItem _buildNavItem(String iconPath, String label) {
-    return BottomNavigationBarItem(
-      icon: Container(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: SvgPicture.asset(
-          iconPath,
-          colorFilter: ColorFilter.mode(
-            _currentIndex == _getIndexForLabel(label)
-                ? AppColors.primary
-                : AppColors.grey,
-            BlendMode.srcIn,
-          ),
-        ),
-      ),
-      label: label,
-    );
-  }
-
-  int _getIndexForLabel(String label) {
-    switch (label) {
-      case 'الرئيسية':
-        return 0;
-      // case 'الأقرب':
-      //   return 1;
-      case 'الحجوزات':
-        return 1;
-      case 'التفصيل':
-        return 2;
-      case 'حسابي':
-        return 3;
-      default:
-        return 0;
-    }
   }
 }
 

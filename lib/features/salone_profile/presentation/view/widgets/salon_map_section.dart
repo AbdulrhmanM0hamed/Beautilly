@@ -108,7 +108,7 @@ class SalonMapSection extends StatelessWidget {
                         fit: BoxFit.cover,
                       )
                     : const DecorationImage(
-                        image: AssetImage('assets/images/map_placeholder.png'),
+                        image: AssetImage('assets/images/map_placeholder.PNG'),
                         fit: BoxFit.cover,
                       ),
               ),

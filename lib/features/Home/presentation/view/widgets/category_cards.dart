@@ -33,7 +33,7 @@ class CategoryCards extends StatelessWidget {
               child: _buildCategoryCard(
                 context,
                 'صالونات التجميل',
-                'assets/images/salon.jpg',
+                'assets/images/salon.png',
                 ShopType.salon,
               ),
             ),
@@ -41,7 +41,7 @@ class CategoryCards extends StatelessWidget {
               child: _buildCategoryCard(
                 context,
                 'دور الأزياء',
-                'assets/images/tailor.jpg',
+                'assets/images/tailor.png',
                 ShopType.tailor,
               ),
             ),

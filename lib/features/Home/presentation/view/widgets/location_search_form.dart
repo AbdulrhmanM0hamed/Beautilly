@@ -233,7 +233,7 @@ class _LocationSearchFormState extends State<LocationSearchForm> {
                                 hintStyle: getMediumStyle(
                                   color: currentStateName.isEmpty 
                                       ? AppColors.grey
-                                      : AppColors.primary.withOpacity(0.7),
+                                      : AppColors.black.withOpacity(0.9),
                                   fontSize: FontSize.size14,
                                   fontFamily: FontConstant.cairo,
                                 ),

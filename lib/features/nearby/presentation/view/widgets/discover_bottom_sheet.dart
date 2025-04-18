@@ -182,6 +182,41 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                           _hasMoreData =
                               _currentPage < state.pagination.lastPage;
 
+                          if (state.shops.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.store_mall_directory_outlined,
+                                    size: 64,
+                                    color: AppColors.grey,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    'لا يوجد متاجر أو صالونات في هذه المنطقة',
+                                    textAlign: TextAlign.center,
+                                    style: getMediumStyle(
+                                      fontSize: FontSize.size16,
+                                      fontFamily: FontConstant.cairo,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'يمكنك تغيير موقعك أو تجربة البحث في منطقة أخرى',
+                                    textAlign: TextAlign.center,
+                                    style: getRegularStyle(
+                                      fontSize: FontSize.size14,
+                                      fontFamily: FontConstant.cairo,
+                                      color: AppColors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
                           return ListView.builder(
                             controller: scrollController,
                             padding: const EdgeInsets.all(16),

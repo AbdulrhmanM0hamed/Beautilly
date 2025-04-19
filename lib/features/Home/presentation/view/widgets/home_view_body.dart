@@ -3,22 +3,13 @@ import 'package:beautilly/core/utils/constant/styles_manger.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/features/Home/presentation/cubit/discounts_cubit/discounts_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/premium_shops_cubit/premium_shops_cubit.dart';
-import 'package:beautilly/features/Home/presentation/cubit/search_cubit/search_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/service_cubit/services_cubit.dart';
 import 'package:beautilly/features/Home/presentation/cubit/statistics_cubit/statistics_cubit.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/category_cards.dart';
-import 'package:beautilly/features/Home/presentation/view/widgets/services_grid_view.dart';
-import 'package:beautilly/features/Home/presentation/view/widgets/special_view_list_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/welcome_text_widget.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/popular_salons_list_view.dart';
 import 'package:beautilly/features/Home/presentation/view/widgets/fashion_houses_list_view.dart';
-
 import 'package:flutter/material.dart';
-import 'package:beautilly/features/Home/presentation/view/widgets/statistics_section.dart';
-import '../pages/search_page.dart';
-import 'package:beautilly/core/services/service_locator.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'location_search_form.dart';
 

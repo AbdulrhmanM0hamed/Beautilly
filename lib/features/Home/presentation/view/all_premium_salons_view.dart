@@ -72,7 +72,7 @@ class _AllPremiumSalonsViewState extends State<AllPremiumSalonsView> {
       create: (context) => sl<PremiumShopsCubit>()..loadPremiumShops(),
       child: Scaffold(
         appBar: const CustomAppBar(
-          title: 'أشهر صالونات التجميل',
+          title: ' صالونات التجميل',
         ),
         body: BlocBuilder<PremiumShopsCubit, PremiumShopsState>(
           builder: (context, state) {

@@ -17,7 +17,7 @@ class CategoryCards extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Text(
             'استكشف',
             style: getBoldStyle(
@@ -40,7 +40,7 @@ class CategoryCards extends StatelessWidget {
             Expanded(
               child: _buildCategoryCard(
                 context,
-                'دور الأزياء',
+                'تفصيل الأزياء',
                 'assets/images/tailor.png',
                 ShopType.tailor,
               ),

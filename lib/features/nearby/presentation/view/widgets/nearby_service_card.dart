@@ -151,19 +151,30 @@ class NearbyServiceCard extends StatelessWidget {
                               );
                             }
                           },
-                          child: Container(
-                            height: 40,
-                            width: 40,
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary.withOpacity(0.12),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: SvgPicture.asset(
-                              AppAssets.direction,
-                              colorFilter: const ColorFilter.mode(
-                                AppColors.primary,
-                                BlendMode.srcIn,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SalonProfileView(salonId: shop.id),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              height: 40,
+                              width: 40,
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: SvgPicture.asset(
+                                AppAssets.direction,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.primary,
+                                  BlendMode.srcIn,
+                                ),
                               ),
                             ),
                           ),

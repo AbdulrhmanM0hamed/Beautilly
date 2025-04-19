@@ -29,6 +29,7 @@ class SearchShopsCubit extends Cubit<SearchShopsState> {
       (failure) => emit(SearchShopsError(failure.message)),
       (response) {
         currentShops = response.shops;
+        if (isClosed) return;
         emit(SearchShopsLoaded(response.shops, response.pagination));
       },
     );

@@ -1,0 +1,2 @@
+E:/Advanced Flutter/beautilly - NewEdit/android/app/.cxx/RelWithDebInfo/193tb5y5/arm64-v8a/CMakeFiles/edit_cache.dir
+E:/Advanced Flutter/beautilly - NewEdit/android/app/.cxx/RelWithDebInfo/193tb5y5/arm64-v8a/CMakeFiles/rebuild_cache.dir

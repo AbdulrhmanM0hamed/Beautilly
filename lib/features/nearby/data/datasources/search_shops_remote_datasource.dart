@@ -72,7 +72,7 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print(data);
+      //  print(data);
 
         if (data['success'] == true) {
           final responseData = data['data'] as Map<String, dynamic>;

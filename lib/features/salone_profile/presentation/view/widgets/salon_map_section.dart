@@ -162,34 +162,34 @@ class SalonMapSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey.withOpacity(0.2)),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.location_on_outlined,
-                  color: AppColors.primary,
-                  size: 20,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    '${location.city}, ${location.state}',
-                    style: getRegularStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: FontSize.size14,
-                      fontFamily: FontConstant.cairo,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          //   decoration: BoxDecoration(
+          //     color: Theme.of(context).cardColor,
+          //     borderRadius: BorderRadius.circular(8),
+          //     border: Border.all(color: Colors.grey.withOpacity(0.2)),
+          //   ),
+          //   child: Row(
+          //     children: [
+          //       Icon(
+          //         Icons.location_on_outlined,
+          //         color: AppColors.primary,
+          //         size: 20,
+          //       ),
+          //       const SizedBox(width: 8),
+          //       Expanded(
+          //         child: Text(
+          //           '${location.city}, ${location.state}',
+          //           style: getRegularStyle(
+          //             color: AppColors.textPrimary,
+          //             fontSize: FontSize.size14,
+          //             fontFamily: FontConstant.cairo,
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

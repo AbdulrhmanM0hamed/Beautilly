@@ -19,9 +19,8 @@ class CategoryCards extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Text(
-            'استكشف',
+            'بحث',
             style: getBoldStyle(
-              color: AppColors.textPrimary,
               fontSize: FontSize.size16,
               fontFamily: FontConstant.cairo,
             ),
@@ -144,7 +143,7 @@ class CategoryCards extends StatelessWidget {
 
   void _showDiscoverBottomSheet(BuildContext context, ShopType shopType) {
     final ScrollController scrollController = ScrollController();
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -161,4 +160,4 @@ class CategoryCards extends StatelessWidget {
       },
     );
   }
-} 
+}

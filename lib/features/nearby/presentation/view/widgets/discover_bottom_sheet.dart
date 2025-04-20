@@ -26,6 +26,7 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
   bool _isLoadingMore = false;
   int _currentPage = 1;
   bool _hasMoreData = true;
+  bool _showHighRatedOnly = false;
 
   @override
   void dispose() {
@@ -105,22 +106,79 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                   ),
                 ),
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                  child: Row(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Column(
                     children: [
-                      Text(
-                        'الأقرب إليك',
-                        style: getBoldStyle(
-                          color: Theme.of(context).textTheme.bodyLarge?.color,
-                          fontSize: FontSize.size16,
-                          fontFamily: FontConstant.cairo,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                        
+                          Row(
+                            children: [
+                              ActionChip(
+                                backgroundColor: !_showHighRatedOnly 
+                                    ? AppColors.primary 
+                                    : Theme.of(context).scaffoldBackgroundColor,
+                                side: BorderSide(
+                                  color: !_showHighRatedOnly 
+                                      ? Colors.transparent 
+                                      : AppColors.grey.withOpacity(0.3),
+                                ),
+                                label: Text(
+                                  'الأقرب',
+                                  style: getMediumStyle(
+                                    color: !_showHighRatedOnly 
+                                        ? Colors.white 
+                                        : AppColors.textSecondary,
+                                    fontSize: FontSize.size14,
+                                    fontFamily: FontConstant.cairo,
+                                  ),
+                                ),
+                                onPressed: () => setState(() => _showHighRatedOnly = false),
+                              ),
+                              const SizedBox(width: 8),
+                              ActionChip(
+                                backgroundColor: _showHighRatedOnly 
+                                    ? AppColors.primary 
+                                    : Theme.of(context).scaffoldBackgroundColor,
+                                side: BorderSide(
+                                  color: _showHighRatedOnly 
+                                      ? Colors.transparent 
+                                      : AppColors.grey.withOpacity(0.3),
+                                ),
+                                label: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      size: 16,
+                                      color: _showHighRatedOnly 
+                                          ? Colors.white 
+                                          : const Color(0xFFFFB800),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      'الاكثر تقييماً',
+                                      style: getMediumStyle(
+                                        color: _showHighRatedOnly 
+                                            ? Colors.white 
+                                            : AppColors.textSecondary,
+                                        fontSize: FontSize.size14,
+                                        fontFamily: FontConstant.cairo,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                onPressed: () => setState(() => _showHighRatedOnly = true),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      const Spacer(),
                     ],
                   ),
                 ),
+               
                 Expanded(
                   child: NotificationListener<ScrollNotification>(
                     onNotification: (scrollInfo) {
@@ -182,34 +240,30 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                           _hasMoreData =
                               _currentPage < state.pagination.lastPage;
 
-                          if (state.shops.isEmpty) {
+                          final filteredShops = _showHighRatedOnly 
+                              ? state.shops.where((shop) => shop.rating >= 3).toList()
+                              : state.shops;
+
+                          if (filteredShops.isEmpty) {
                             return Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   const Icon(
-                                    Icons.store_mall_directory_outlined,
+                                    Icons.star_border_rounded,
                                     size: 64,
                                     color: AppColors.grey,
                                   ),
                                   const SizedBox(height: 16),
                                   Text(
-                                    'لا يوجد متاجر أو صالونات في هذه المنطقة',
+                                    _showHighRatedOnly 
+                                        ? 'لا توجد متاجر بتقييم 3 نجوم أو أعلى في هذه المنطقة'
+                                        : 'لا توجد متاجر في هذه المنطقة',
                                     textAlign: TextAlign.center,
                                     style: getMediumStyle(
                                       fontSize: FontSize.size16,
                                       fontFamily: FontConstant.cairo,
                                       color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    'يمكنك تغيير موقعك أو تجربة البحث في منطقة أخرى',
-                                    textAlign: TextAlign.center,
-                                    style: getRegularStyle(
-                                      fontSize: FontSize.size14,
-                                      fontFamily: FontConstant.cairo,
-                                      color: AppColors.grey,
                                     ),
                                   ),
                                 ],
@@ -221,9 +275,9 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                             controller: scrollController,
                             padding: const EdgeInsets.all(16),
                             itemCount:
-                                state.shops.length + (_hasMoreData ? 1 : 0),
+                                filteredShops.length + (_hasMoreData ? 1 : 0),
                             itemBuilder: (context, index) {
-                              if (index == state.shops.length) {
+                              if (index == filteredShops.length) {
                                 return _isLoadingMore
                                     ? const Padding(
                                         padding: EdgeInsets.only(bottom: 16),
@@ -235,7 +289,7 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: NearbyServiceCard(
-                                  shop: state.shops[index],
+                                  shop: filteredShops[index],
                                   onLocationTap: widget.onLocationSelect,
                                 ),
                               );

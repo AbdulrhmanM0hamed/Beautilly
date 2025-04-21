@@ -1,51 +1,64 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
+plugins {aneous
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'com.google.gms.google-services' 
+    id 'dev.flutter.flutter-gradle-plugin'
+}DS_Store
 .atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
-
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }te_working_dir/
+}
 # IntelliJ related
-*.iml
+def flutterRoot = localProperties.getProperty('flutter.sdk')
 *.ipr
 *.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1's launch configuration and tasks you configure in
+} VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}*/doc/api/
 **/ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
+def keystorePropertiesFile = rootProject.file("key.properties")l/
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-# Symbolication related
-app.*.symbols
+android {.pub/
+    namespace "com.dallik.beautilly"
+    compileSdkVersion flutter.compileSdkVersion
+    ndkVersion "25.1.8937393"
 
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
+    compileOptions {
+        coreLibraryDesugaringEnabled true# Obfuscation related
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }roid Studio will place build artifacts here
 /android/app/debug
-/android/app/profile
-/android/app/release
+    kotlinOptions {file
+        jvmTarget = '17'
+    }
 
-# Environment files
-.env
-.env.development
-.env.production
-*.env
+    sourceSets {
+        main.java.srcDirs += [development
+            'src/main/kotlin',.env.production
+            'src/main/java',
+        ]    }    defaultConfig {        applicationId "com.dallik.beautilly"        minSdkVersion 21        targetSdkVersion flutter.targetSdkVersion        versionCode flutterVersionCode.toInteger()        versionName flutterVersionName    }    signingConfigs {        release {            keyAlias keystoreProperties['keyAlias']            keyPassword keystoreProperties['keyPassword']            storeFile file(keystoreProperties['storeFile'])            storePassword keystoreProperties['storePassword']        }    }    buildTypes {        release {            signingConfig signingConfigs.release        }    }}flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+    
+    // إضافة Firebase BOM
+    implementation platform('com.google.firebase:firebase-bom:32.7.2')
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-messaging'
+}

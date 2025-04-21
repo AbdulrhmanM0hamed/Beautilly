@@ -1,0 +1,1 @@
+ E:\\Advanced\ Flutter\\beautilly\ -\ NewEdit\\.dart_tool\\flutter_build\\39568adf3c821993d5feab80ce07e834\\native_assets.json: 

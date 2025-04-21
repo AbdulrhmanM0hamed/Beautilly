@@ -157,8 +157,9 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
       future: sl<CacheService>().isGuestMode(),
       builder: (context, snapshot) {
         final bool isGuest = snapshot.data ?? false;
-        
+
         return FloatingActionButton.extended(
+          heroTag: null,
           onPressed: () {
             if (isGuest) {
               CustomSnackbar.showError(

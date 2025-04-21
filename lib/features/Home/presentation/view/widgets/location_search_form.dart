@@ -363,7 +363,6 @@ class _LocationSearchFormState extends State<LocationSearchForm> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                 
                 ],
               ),
             ),

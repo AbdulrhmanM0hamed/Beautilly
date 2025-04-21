@@ -62,6 +62,7 @@ flutter:
     - assets/map_style_light.json
     - assets/map_style_dark.json
     - .env
+    - shorebird.yaml
     
   fonts:
     - family: Cairo

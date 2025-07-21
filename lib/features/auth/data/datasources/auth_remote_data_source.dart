@@ -29,7 +29,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final response = await client.post(
         Uri.parse(ApiEndpoints.refreshToken),
         headers: {
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $refreshToken',

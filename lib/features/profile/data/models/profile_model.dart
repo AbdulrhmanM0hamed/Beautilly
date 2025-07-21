@@ -42,10 +42,10 @@ factory ProfileModel.fromJson(Map<String, dynamic> json) {
     email: json['email'] ?? '',
     phone: json['phone'] ?? '',
     emailVerifiedAt: json['email_verified_at'] ?? '',
-    city: json['city'] != null ? CityModel.fromJson(json['city']) : CityModel(id: 0, name: ''),
-    state: json['state'] != null ? StateModel.fromJson(json['state']) : StateModel(id: 0, name: ''),
+    city: json['city'] != null ? CityModel.fromJson(json['city']) : const CityModel(id: 0, name: ''),
+    state: json['state'] != null ? StateModel.fromJson(json['state']) : const StateModel(id: 0, name: ''),
     image: json['avatar_url'] ?? '',
-    role: json['role'] != null ? RoleModel.fromJson(json['role']) :RoleModel(id: 0, name: ''),
+    role: json['role'] != null ? RoleModel.fromJson(json['role']) : const RoleModel(id: 0, name: ''),
   );
 }
 

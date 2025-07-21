@@ -43,7 +43,7 @@ class OfferCard extends StatelessWidget {
                   image: CachedNetworkImageProvider(discount.shop.mainImageUrl),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
-                    Colors.black.withOpacity(0.4),
+                    Colors.black.withValues(alpha:0.4),
                     BlendMode.darken,
                   ),
                 ),
@@ -110,7 +110,7 @@ class OfferCard extends StatelessWidget {
                             Text(
                               discount.description,
                               style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withValues(alpha:0.8),
                                 fontSize: dimensions.descriptionSize,
                                 fontWeight: FontWeight.w500,
                                 fontFamily: FontConstant.cairo,

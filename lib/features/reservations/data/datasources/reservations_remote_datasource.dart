@@ -28,14 +28,14 @@ class ReservationsRemoteDataSourceImpl with TokenRefreshMixin implements Reserva
       authRepository: authRepository,
       cacheService: cacheService,
       request: (token) async {
-        print("the token is $token");
+       // print("the token is $token");
         final sessionCookie = await cacheService.getSessionCookie();
-        print("the session is $sessionCookie");
+     //   print("the session is $sessionCookie");
         final response = await client.get(
           Uri.parse(ApiEndpoints.myReservations),
           headers: {
             'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             'Accept': 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },

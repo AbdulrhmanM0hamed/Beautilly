@@ -6,10 +6,10 @@ class CustomCheckBox extends StatefulWidget {
   final ValueChanged<bool> onChanged;
 
   const CustomCheckBox({
-    Key? key,
+    super.key,
     this.initialValue = false,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   _CustomCheckBoxState createState() => _CustomCheckBoxState();
@@ -40,7 +40,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
           },
           side: BorderSide(
             width: 1,
-            color: AppColors.textPrimary.withOpacity(0.5),
+            color: AppColors.textPrimary.withValues(alpha:0.5),
           ),
           activeColor: AppColors.primary, // Color when checked
         ),

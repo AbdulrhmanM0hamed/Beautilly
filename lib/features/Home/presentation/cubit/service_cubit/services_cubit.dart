@@ -13,7 +13,7 @@ class ServicesCubit extends Cubit<ServicesState> {
   ServicesCubit({required this.repository}) : super(ServicesInitial());
 
   Future<void> loadServices() async {
-    emit(ServicesLoading());
+    emit( const ServicesLoading());
     _currentPage = 1;
     _currentServices = [];
     _isLoading = false;
@@ -37,7 +37,7 @@ class ServicesCubit extends Cubit<ServicesState> {
     if (_isLastPage || _isLoading) return;
     
     _isLoading = true;
-    emit(ServicesLoading(isLoadingMore: true));
+    emit( const ServicesLoading(isLoadingMore: true));
     
     final nextPage = _currentPage + 1;
     final result = await repository.getServices(page: nextPage);
@@ -66,7 +66,7 @@ class ServicesCubit extends Cubit<ServicesState> {
   }
 
   Future<void> searchServices(String query) async {
-    emit(ServicesLoading());
+    emit(const ServicesLoading());
     final result = await repository.searchServices(query);
     result.fold(
       (failure) => emit(ServicesError(failure.message)),

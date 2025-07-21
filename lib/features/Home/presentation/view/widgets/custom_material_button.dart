@@ -20,7 +20,7 @@ class CustomMaterialButton extends StatelessWidget {
       child: Container(
         height: dimensions.buttonHeight,
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.6),
+          color: AppColors.primary.withValues(alpha:0.6),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             bottomLeft: Radius.circular(20),

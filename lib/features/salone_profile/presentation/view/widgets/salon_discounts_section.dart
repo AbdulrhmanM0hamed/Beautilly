@@ -48,12 +48,12 @@ class SalonDiscountsSection extends StatelessWidget {
     );
   }
 
-  String _buildDiscountDescription(Discount discount) {
+  String buildDiscountDescription(Discount discount) {
     final services = discount.services.map((s) => s.name).join('، ');
-    return 'خصم ${discount.discountValue}% على ${services}';
+    return 'خصم ${discount.discountValue}% على $services';
   }
 
-  Widget _buildDiscountBadge(Discount discount) {
+  Widget buildDiscountBadge(Discount discount) {
     bool isPercentage = discount.discountType == 'percent';
 
     return Container(
@@ -62,7 +62,7 @@ class SalonDiscountsSection extends StatelessWidget {
         vertical: 4,
       ),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
+        color: Colors.white.withValues(alpha:0.2),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -130,8 +130,8 @@ class SalonDiscountsSection extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.success.withOpacity(.9),
-                          AppColors.success.withOpacity(.9),
+                          AppColors.success.withValues(alpha:.9),
+                          AppColors.success.withValues(alpha:.9),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -139,7 +139,7 @@ class SalonDiscountsSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.secondary.withOpacity(0.3),
+                          color: AppColors.secondary.withValues(alpha:0.3),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),
@@ -155,7 +155,7 @@ class SalonDiscountsSection extends StatelessWidget {
                             width: 100,
                             height: 100,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
+                              color: Colors.white.withValues(alpha:0.1),
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -167,7 +167,7 @@ class SalonDiscountsSection extends StatelessWidget {
                             width: 80,
                             height: 80,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
+                              color: Colors.white.withValues(alpha:0.1),
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -185,7 +185,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  _buildDiscountBadge(discount),
+                                  buildDiscountBadge(discount),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
@@ -194,7 +194,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                         style: TextStyle(
                                           fontFamily: FontConstant.cairo,
                                           fontSize: FontSize.size14,
-                                          color: Colors.white.withOpacity(0.6),
+                                          color: Colors.white.withValues(alpha:0.6),
                                           decoration:
                                               TextDecoration.lineThrough,
                                         ),
@@ -230,7 +230,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                   style: getMediumStyle(
                                     fontFamily: FontConstant.cairo,
                                     fontSize: FontSize.size12,
-                                    color: Colors.white.withOpacity(0.8),
+                                    color: Colors.white.withValues(alpha:0.8),
                                   ),
                                 ),
                                 ...discount.services.take(2).map(
@@ -263,7 +263,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                     style: getMediumStyle(
                                       fontFamily: FontConstant.cairo,
                                       fontSize: FontSize.size11,
-                                      color: Colors.white.withOpacity(0.7),
+                                      color: Colors.white.withValues(alpha:0.7),
                                     ),
                                   ),
                               ],
@@ -279,7 +279,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                       vertical: 4,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.15),
+                                      color: Colors.white.withValues(alpha:0.15),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Row(
@@ -311,7 +311,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                       gradient: LinearGradient(
                                         colors: [
                                           Colors.white,
-                                          Colors.white.withOpacity(0.9),
+                                          Colors.white.withValues(alpha:0.9),
                                         ],
                                         begin: Alignment.topLeft,
                                         end: Alignment.bottomRight,
@@ -319,7 +319,7 @@ class SalonDiscountsSection extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(20),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.1),
+                                          color: Colors.black.withValues(alpha:0.1),
                                           blurRadius: 4,
                                           offset: const Offset(0, 2),
                                         ),

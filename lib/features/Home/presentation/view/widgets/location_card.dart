@@ -32,15 +32,15 @@ class LocationCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.primary.withOpacity(0.15),
-                      AppColors.primary.withOpacity(0.05),
+                      AppColors.primary.withValues(alpha:0.15),
+                      AppColors.primary.withValues(alpha:0.05),
                     ],
                     begin: Alignment.centerRight,
                     end: Alignment.centerLeft,
                   ),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.1),
+                    color: AppColors.primary.withValues(alpha:0.1),
                     width: 1,
                   ),
                 ),
@@ -120,7 +120,7 @@ class LocationCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha:0.1),
         shape: BoxShape.circle,
       ),
       child: const Icon(

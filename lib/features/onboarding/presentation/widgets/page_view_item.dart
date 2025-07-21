@@ -29,8 +29,8 @@ class PageViewItem extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.black.withOpacity(0.12),
-              Colors.black.withOpacity(0.7),
+              Colors.black.withValues(alpha:0.12),
+              Colors.black.withValues(alpha:0.7),
             ],
             stops: const [0.5, 0.9],
           ),

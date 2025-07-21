@@ -122,11 +122,11 @@ class OfferWithDetails extends Offer {
     // ... باقي الحقول
   }) {
     return Offer(
-      price: price ?? this.price,
-      notes: notes ?? this.notes,
+      price: price ,
+      notes: notes ?? notes,
       status: status ?? this.status,
-      createdAt: createdAt ?? this.createdAt,
-      shop: shop ?? this.shop,
+      createdAt: createdAt ,
+      shop: shop ,
       
       id: id ?? this.id,
       // ... باقي الحقول

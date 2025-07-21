@@ -31,7 +31,7 @@ class NotificationsCubit extends Cubit<NotificationsState> {
   Future<void> deleteAllNotifications() async {
     emit(NotificationsLoading());
     
-    final result = await repository.DeleteNorifications();
+    final result = await repository.deleteNorifications();
     
     result.fold(
       (failure) => emit(NotificationsError(failure.message)),

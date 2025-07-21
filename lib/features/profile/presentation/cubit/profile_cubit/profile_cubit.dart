@@ -53,9 +53,9 @@ class ProfileCubit extends Cubit<ProfileState> {
           emit(ProfileLoaded(profile));
         },
       );
-    } catch (e, stackTrace) {
+    } catch (e) {
       if (!isClosed) {
-        emit(ProfileError('حدث خطأ في تحميل البيانات'));
+        emit(const ProfileError('حدث خطأ في تحميل البيانات'));
       }
     }
   }
@@ -163,7 +163,7 @@ class ProfileCubit extends Cubit<ProfileState> {
       );
     } catch (e) {
       if (!isClosed) {
-        emit(ProfileError('حدث خطأ في تغيير كلمة المرور'));
+        emit(const ProfileError('حدث خطأ في تغيير كلمة المرور'));
       }
     }
   }

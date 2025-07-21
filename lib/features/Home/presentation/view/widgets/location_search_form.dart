@@ -158,15 +158,15 @@ class _LocationSearchFormState extends State<LocationSearchForm> {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  AppColors.primary.withOpacity(0.15),
-                  AppColors.primary.withOpacity(0.05),
+                  AppColors.primary.withValues(alpha:0.15),
+                  AppColors.primary.withValues(alpha:0.05),
                 ],
                 begin: Alignment.centerRight,
                 end: Alignment.centerLeft,
               ),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.primary.withOpacity(0.1),
+                color: AppColors.primary.withValues(alpha:0.1),
                 width: 1,
               ),
             ),
@@ -180,7 +180,7 @@ class _LocationSearchFormState extends State<LocationSearchForm> {
                       Container(
                         padding: const EdgeInsets.all(8),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha:0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -233,7 +233,7 @@ class _LocationSearchFormState extends State<LocationSearchForm> {
                                 hintStyle: getMediumStyle(
                                   color: currentStateName.isEmpty 
                                       ? AppColors.grey
-                                      : AppColors.black.withOpacity(0.9),
+                                      : AppColors.black.withValues(alpha:0.9),
                                   fontSize: FontSize.size14,
                                   fontFamily: FontConstant.cairo,
                                 ),
@@ -251,8 +251,8 @@ class _LocationSearchFormState extends State<LocationSearchForm> {
                                   borderRadius: BorderRadius.circular(8),
                                   borderSide: BorderSide(
                                     color: currentStateName.isEmpty
-                                        ? AppColors.grey.withOpacity(0.3)
-                                        : AppColors.primary.withOpacity(0.3),
+                                        ? AppColors.grey.withValues(alpha:0.3)
+                                        : AppColors.primary.withValues(alpha:0.3),
                                   ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
@@ -277,7 +277,7 @@ class _LocationSearchFormState extends State<LocationSearchForm> {
                                 borderRadius: BorderRadius.circular(8),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withOpacity(0.1),
+                                    color: Colors.black.withValues(alpha:0.1),
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
                                   ),
@@ -351,7 +351,7 @@ class _LocationSearchFormState extends State<LocationSearchForm> {
                       if (_isLoading)
                         Positioned.fill(
                           child: Container(
-                            color: Colors.white.withOpacity(0.6),
+                            color: Colors.white.withValues(alpha:0.6),
                             child: const Center(
                               child: CircularProgressIndicator(
                                 color: AppColors.primary,

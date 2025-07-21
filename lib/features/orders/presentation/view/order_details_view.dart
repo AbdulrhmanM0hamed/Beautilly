@@ -124,7 +124,7 @@ class OrderDetailsView extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: 0.5),
                             shape: BoxShape.circle,
                           ),
                           child: IconButton(
@@ -168,7 +168,7 @@ class OrderDetailsView extends StatelessWidget {
                                       end: Alignment.bottomCenter,
                                       colors: [
                                         Colors.transparent,
-                                        Colors.black.withOpacity(0.7),
+                                        Colors.black.withValues(alpha: 0.7),
                                       ],
                                     ),
                                   ),
@@ -189,7 +189,7 @@ class OrderDetailsView extends StatelessWidget {
                             Row(
                               children: [
                                 _buildUserAvatar(
-                                  imageUrl: orderDetails.customer.images?.main,
+                                  imageUrl: orderDetails.customer.images.main,
                                   name: orderDetails.customer.name,
                                 ),
                                 const SizedBox(width: 12),  // تقليل المسافة
@@ -339,7 +339,7 @@ class OrderDetailsView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -397,10 +397,10 @@ class OrderDetailsView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.primary.withOpacity(0.2),
+          color: AppColors.primary.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -438,9 +438,9 @@ class OrderDetailsView extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: color.withOpacity(0.3)),
+            border: Border.all(color: color.withValues(alpha:0.3)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -494,7 +494,7 @@ class OrderDetailsView extends StatelessWidget {
                       Row(
                         children: [
                           _buildShopAvatar(
-                            imageUrl: (offer.shop as ShopWithDetails).images?.main,
+                            imageUrl: (offer.shop as ShopWithDetails).images.main,
                             name: offer.shop.name,
                           ),
                           const SizedBox(width: 12),
@@ -687,10 +687,10 @@ class OrderDetailsView extends StatelessWidget {
                       padding:
                           const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: Colors.green.withValues(alpha:0.1),
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
-                          color: Colors.green.withOpacity(0.2),
+                          color: Colors.green.withValues(alpha:0.2),
                         ),
                       ),
                       child: Row(
@@ -734,7 +734,7 @@ class OrderDetailsView extends StatelessWidget {
     return Color(int.parse(hexColor, radix: 16));
   }
 
-  Widget _buildCancelOfferButton(
+  Widget buildCancelOfferButton(
       BuildContext context, OrderDetails orderDetails) {
     final acceptedOffers = orderDetails.offers
         .where((offer) => offer.status == 'accepted')
@@ -763,7 +763,7 @@ class OrderDetailsView extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
+          color: AppColors.primary.withValues(alpha:0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -783,7 +783,7 @@ class OrderDetailsView extends StatelessWidget {
         fit: BoxFit.cover,
         placeholder: (context, url) => Container(
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha:0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -794,7 +794,7 @@ class OrderDetailsView extends StatelessWidget {
         ),
         errorWidget: (context, url, error) => Container(
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha:0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -817,7 +817,7 @@ class OrderDetailsView extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(0.1),
+          color: AppColors.primary.withValues(alpha:0.1),
           shape: BoxShape.circle,
         ),
         child: Icon(
@@ -837,7 +837,7 @@ class OrderDetailsView extends StatelessWidget {
         fit: BoxFit.cover,
         placeholder: (context, url) => Container(
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha:0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -848,7 +848,7 @@ class OrderDetailsView extends StatelessWidget {
         ),
         errorWidget: (context, url, error) => Container(
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha:0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(

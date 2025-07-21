@@ -32,7 +32,7 @@ class LocationRepositoryImpl implements LocationRepository {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
         },
         body: jsonEncode({
           'load_states': true,
@@ -77,7 +77,7 @@ class LocationRepositoryImpl implements LocationRepository {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
         },
         body: jsonEncode({
           'load_cities': true,
@@ -109,7 +109,6 @@ class LocationRepositoryImpl implements LocationRepository {
     }
   }
 
-  @override
   Future<Either<Failure, List<CityModell>>> getAllCities() async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure(
@@ -123,7 +122,7 @@ class LocationRepositoryImpl implements LocationRepository {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
         },
         body: jsonEncode({
           'load_cities': true,

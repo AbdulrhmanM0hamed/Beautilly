@@ -16,7 +16,7 @@ TextStyle getRegularStyle(
     Color? color, // اللون كمعامل اختياري
     required String fontFamily,
     FontStyle? fontStyle}) {
-  return _getTextStyle(fontSize, FontWeightManger.Regular, fontFamily,
+  return _getTextStyle(fontSize, FontWeightManger.regular, fontFamily,
       fontStyle ?? FontStyle.normal, color);
 }
 
@@ -26,7 +26,7 @@ TextStyle getMediumStyle(
     Color? color, // اللون كمعامل اختياري
     required String fontFamily,
     FontStyle? fontStyle}) {
-  return _getTextStyle(fontSize, FontWeightManger.Medium, fontFamily,
+  return _getTextStyle(fontSize, FontWeightManger.medium, fontFamily,
       fontStyle ?? FontStyle.normal, color);
 }
 
@@ -36,7 +36,7 @@ TextStyle getLightStyle(
     Color? color, // اللون كمعامل اختياري
     required String fontFamily,
     FontStyle? fontStyle}) {
-  return _getTextStyle(fontSize, FontWeightManger.Light, fontFamily,
+  return _getTextStyle(fontSize, FontWeightManger.light, fontFamily,
       fontStyle ?? FontStyle.normal, color);
 }
 
@@ -46,7 +46,7 @@ TextStyle getBoldStyle(
     Color? color, // اللون كمعامل اختياري
     required String fontFamily,
     FontStyle? fontStyle}) {
-  return _getTextStyle(fontSize, FontWeightManger.Bold, fontFamily,
+  return _getTextStyle(fontSize, FontWeightManger.bold, fontFamily,
       fontStyle ?? FontStyle.normal, color);
 }
 
@@ -56,6 +56,6 @@ TextStyle getSemiBoldStyle(
     Color? color, // اللون كمعامل اختياري
     required String fontFamily,
     FontStyle? fontStyle}) {
-  return _getTextStyle(fontSize, FontWeightManger.SemiBold, fontFamily,
+  return _getTextStyle(fontSize, FontWeightManger.semiBold, fontFamily,
       fontStyle ?? FontStyle.normal, color);
 }

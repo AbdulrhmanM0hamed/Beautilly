@@ -54,7 +54,7 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
         Uri.parse(ApiEndpoints.bookService(shopId)),
         headers: {
           'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
@@ -106,7 +106,7 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
         Uri.parse(ApiEndpoints.bookDiscount(shopId)),
         headers: {
           'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
@@ -153,7 +153,7 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
         Uri.parse(ApiEndpoints.shopFullDetails(shopId)),
         headers: {
           'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           'Accept': 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
@@ -199,7 +199,7 @@ class BookingRemoteDataSourceImpl implements BookingRemoteDataSource {
         Uri.parse(ApiEndpoints.cancelAppointment(appointmentId)),
         headers: {
           'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           'Accept': 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },

@@ -154,7 +154,7 @@ class ServiceCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(dimensions.borderRadius),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha:0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -249,7 +249,7 @@ class ServiceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
+        color: Colors.black.withValues(alpha:0.7),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(

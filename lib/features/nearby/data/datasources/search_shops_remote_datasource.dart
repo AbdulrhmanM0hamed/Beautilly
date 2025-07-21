@@ -72,7 +72,7 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-      //  print(data);
+        //  print(data);
 
         if (data['success'] == true) {
           final responseData = data['data'] as Map<String, dynamic>;
@@ -92,10 +92,10 @@ class SearchShopsRemoteDataSourceImpl implements SearchShopsRemoteDataSource {
       } else {
         throw ServerException(message: 'حدث خطأ في الخادم');
       }
-    } on SocketException catch (e) {
+    } on SocketException {
       throw ServerException(
           message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت');
-    } on TimeoutException catch (e) {
+    } on TimeoutException {
       throw ServerException(
           message: 'انتهت مهلة الاتصال، يرجى المحاولة مرة أخرى');
     } catch (e) {

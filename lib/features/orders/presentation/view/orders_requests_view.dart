@@ -28,7 +28,7 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
   late TabController _tabController;
   late OrdersCubit _ordersCubit;
   late DeleteOrderCubit _deleteOrderCubit;
-  bool _isFirstLoad = true;
+  bool isFirstLoad = true;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _OrdersRequestsViewState extends State<OrdersRequestsView>
   Future<void> _loadInitialData() async {
     // تحميل البيانات الأولية للتاب الأول فقط
     await _ordersCubit.loadMyOrders();
-    _isFirstLoad = false;
+    isFirstLoad = false;
   }
 
   @override
@@ -262,7 +262,6 @@ class MyOrdersWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final isTablet = size.width >= AppResponsive.mobileBreakpoint;
     final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
 
     return BlocBuilder<OrdersCubit, OrdersState>(
@@ -450,7 +449,6 @@ class AllOrdersWidget extends StatelessWidget {
             );
           }
           final size = MediaQuery.of(context).size;
-          final isTablet = size.width >= AppResponsive.mobileBreakpoint;
           final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
 
           return RefreshIndicator(

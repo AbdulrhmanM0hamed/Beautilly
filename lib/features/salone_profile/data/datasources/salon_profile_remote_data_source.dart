@@ -39,7 +39,7 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
           Uri.parse(ApiEndpoints.shopProfile(salonId)),
           headers: {
             HttpHeaders.authorizationHeader: 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             HttpHeaders.contentTypeHeader: 'application/json',
             HttpHeaders.acceptHeader: 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
@@ -77,7 +77,7 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
           Uri.parse(ApiEndpoints.addShopRating(shopId)),
           headers: {
             HttpHeaders.authorizationHeader: 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             HttpHeaders.acceptHeader: 'application/json',
             HttpHeaders.contentTypeHeader: 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
@@ -115,7 +115,7 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
           Uri.parse(ApiEndpoints.deleteShopRating(shopId)),
           headers: {
             HttpHeaders.authorizationHeader: 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             HttpHeaders.acceptHeader: 'application/json',
             HttpHeaders.contentTypeHeader: 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
@@ -152,7 +152,7 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
           Uri.parse(ApiEndpoints.addToFavorites(shopId)),
           headers: {
             HttpHeaders.authorizationHeader: 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             HttpHeaders.acceptHeader: 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
@@ -176,7 +176,7 @@ class SalonProfileRemoteDataSourceImpl with TokenRefreshMixin implements SalonPr
           Uri.parse(ApiEndpoints.removeFromFavorites(shopId)),
           headers: {
             HttpHeaders.authorizationHeader: 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             HttpHeaders.acceptHeader: 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },

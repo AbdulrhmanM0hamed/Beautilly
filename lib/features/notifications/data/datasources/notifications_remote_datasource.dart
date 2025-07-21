@@ -10,7 +10,7 @@ import 'package:beautilly/features/auth/domain/repositories/auth_repository.dart
 abstract class NotificationsRemoteDataSource {
   Future<NotificationsResponse> getNotifications({int page = 1});
   Future<void> markAsRead(String notificationId);
-  Future<void> DeleteNorifications();
+  Future<void> deleteNorifications();
 }
 
 class NotificationsRemoteDataSourceImpl
@@ -29,20 +29,20 @@ class NotificationsRemoteDataSourceImpl
   @override
   Future<NotificationsResponse> getNotifications({int page = 1}) async {
     try {
-          // print('🔍 جاري جلب الإشعارات...');
-          // print('📄 الصفحة: $page');
+      // print('🔍 جاري جلب الإشعارات...');
+      // print('📄 الصفحة: $page');
 
       final token = await cacheService.getToken();
       final sessionCookie = await cacheService.getSessionCookie();
 
-        //  print('🔑 Token: $token');
-        //   print('🍪 Session Cookie: $sessionCookie');
+      //  print('🔑 Token: $token');
+      //   print('🍪 Session Cookie: $sessionCookie');
 
       final response = await client.get(
         Uri.parse(ApiEndpoints.notifications),
         headers: {
           'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           'Accept': 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
@@ -56,13 +56,13 @@ class NotificationsRemoteDataSourceImpl
         //    print('✅ تم جلب الإشعارات بنجاح');
         return NotificationsResponse.fromJson(jsonResponse);
       } else {
-          //  print('❌ خطأ في استجابة الخادم: ${response.statusCode}');
+        //  print('❌ خطأ في استجابة الخادم: ${response.statusCode}');
         throw ServerException(
           message: json.decode(response.body)['message'] ??
               'حدث خطأ في تحميل الإشعارات',
         );
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       // print('❌ خطأ غير متوقع: $e');
       // print('📚 Stack trace: $stackTrace');
       throw ServerException(
@@ -100,7 +100,7 @@ class NotificationsRemoteDataSourceImpl
   }
 
   @override
-  Future<void> DeleteNorifications() async {
+  Future<void> deleteNorifications() async {
     try {
       final headers = await _getHeaders();
 
@@ -118,7 +118,7 @@ class NotificationsRemoteDataSourceImpl
           message: errorMessage,
         );
       }
-    } catch (e, stackTrace) {
+    } catch (e) {
       throw ServerException(
         message: 'حدث خطأ في حذف الإشعارات',
       );
@@ -135,7 +135,7 @@ class NotificationsRemoteDataSourceImpl
     final sessionCookie = await cacheService.getSessionCookie();
     return {
       'Authorization': 'Bearer $token',
-      'x-api-key': ApiEndpoints.api_key,
+      'x-api-key': ApiEndpoints.apiKey,
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       if (sessionCookie != null) 'Cookie': sessionCookie,

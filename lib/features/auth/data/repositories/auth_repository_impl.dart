@@ -45,7 +45,7 @@ class AuthRepositoryImpl implements AuthRepository {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
         },
         body: jsonEncode({
           emailOrPhone.contains('@') ? 'email' : 'phone': emailOrPhone,
@@ -131,9 +131,8 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final token = await _cacheService.getToken();
       final sessionCookie = await _cacheService.getSessionCookie();
-
       final response = await http.post(
-        Uri.parse('${ApiEndpoints.logout}?api_key=${ApiEndpoints.api_key}'),
+        Uri.parse('${ApiEndpoints.logout}?apiKey=${ApiEndpoints.apiKey}'),
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -143,14 +142,18 @@ class AuthRepositoryImpl implements AuthRepository {
         body: '{}',
       );
 
-      // إلغاء اشتراكات الإشعارات
-      await sl<NotificationService>().dispose();
+      if (response.statusCode != 200) {
+        return Left(ServerFailure(
+            message: 'Logout failed with status: ${response.statusCode}'));
+      }
 
+      await sl<NotificationService>().dispose();
       await _cacheService.clearCache();
       return const Right(null);
     } catch (e) {
       await _cacheService.clearCache();
-      return const Right(null);
+      return const Right(
+          null); // You may want to return a Failure instead here.
     }
   }
 

@@ -11,7 +11,6 @@ import '../../../../../core/utils/validators/form_validators.dart';
 import '../../../../../core/utils/widgets/custom_snackbar.dart';
 import '../../cubit/forgot_password_cubit.dart';
 import '../../cubit/forgot_password_state.dart';
-import 'package:flutter/widgets.dart';
 import '../../../../../features/auth/presentation/view/signin_view.dart';
 
 class ForgetPasswordViewBody extends StatefulWidget {
@@ -38,6 +37,7 @@ class _ForgetPasswordViewBodyState extends State<ForgetPasswordViewBody> {
       listener: (context, state) {
         if (state is ForgotPasswordSuccess) {
           Future.microtask(() async {
+            
             CustomSnackbar.showSuccess(
               context: context,
               message: state.message,
@@ -106,7 +106,7 @@ class _ForgetPasswordViewBodyState extends State<ForgetPasswordViewBody> {
             ),
             if (state is ForgotPasswordLoading)
               Container(
-                color: Colors.black.withOpacity(0.5),
+                color: Colors.black.withValues(alpha:0.5),
                 child: const Center(
                   child: CustomProgressIndcator(
                     size: 50.0,

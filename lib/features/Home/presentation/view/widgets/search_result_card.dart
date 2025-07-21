@@ -60,7 +60,7 @@ class SearchResultCard extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: Colors.grey[400]!.withOpacity(0.6),
+                          color: Colors.grey[400]!.withValues(alpha:0.6),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Icon(
@@ -97,7 +97,7 @@ class SearchResultCard extends StatelessWidget {
                             Row(
                               children: [
                                 SvgPicture.asset(
-                                  AppAssets.Location,
+                                  AppAssets.location,
                                   colorFilter: const ColorFilter.mode(
                                     AppColors.grey,
                                     BlendMode.srcIn,
@@ -130,7 +130,7 @@ class SearchResultCard extends StatelessWidget {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.1),
+                                color: AppColors.primary.withValues(alpha:0.1),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(

@@ -53,7 +53,7 @@ class OrdersRemoteDataSourceImpl
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
         );
@@ -84,7 +84,7 @@ class OrdersRemoteDataSourceImpl
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             'Content-Type': 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
@@ -118,7 +118,7 @@ class OrdersRemoteDataSourceImpl
       request.headers.addAll({
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
-        'x-api-key': ApiEndpoints.api_key,
+        'x-api-key': ApiEndpoints.apiKey,
         if (sessionCookie != null) 'Cookie': sessionCookie,
       });
 
@@ -184,7 +184,7 @@ class OrdersRemoteDataSourceImpl
         headers: {
           'Authorization': 'Bearer $token',
           'Accept': 'application/json',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
       );
@@ -217,7 +217,7 @@ class OrdersRemoteDataSourceImpl
         Uri.parse(ApiEndpoints.orderDetails(orderId)),
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.contentTypeHeader: 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
@@ -261,7 +261,7 @@ class OrdersRemoteDataSourceImpl
         Uri.parse(ApiEndpoints.acceptOffer(orderId, offerId)),
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.contentTypeHeader: 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
@@ -300,7 +300,7 @@ class OrdersRemoteDataSourceImpl
         Uri.parse(ApiEndpoints.cancelOffer(orderId, offerId)),
         headers: {
           HttpHeaders.authorizationHeader: 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           HttpHeaders.acceptHeader: 'application/json',
           HttpHeaders.contentTypeHeader: 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,

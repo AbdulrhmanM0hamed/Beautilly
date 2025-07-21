@@ -1,7 +1,5 @@
-import 'package:beautilly/features/profile/presentation/controllers/edit_profile_controller.dart';
 import 'package:beautilly/features/profile/presentation/cubit/profile_cubit/profile_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../../../core/services/cache/cache_service.dart';
 import '../../domain/usecases/logout.dart';

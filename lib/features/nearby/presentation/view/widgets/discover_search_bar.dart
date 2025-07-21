@@ -22,7 +22,7 @@ class DiscoverSearchBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withValues(alpha:0.2),
                   blurRadius: 10,
                   offset: const Offset(-2, 5),
                 ),
@@ -45,7 +45,7 @@ class DiscoverSearchBar extends StatelessWidget {
                   prefixIcon: Padding(
                     padding: const EdgeInsets.all(12),
                     child: SvgPicture.asset(
-                      AppAssets.Location,
+                      AppAssets.location,
                       colorFilter: const ColorFilter.mode(
                         AppColors.primary,
                         BlendMode.srcIn,
@@ -71,7 +71,7 @@ class DiscoverSearchBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha:0.2),
                 blurRadius: 10,
                 offset: const Offset(-2, 5),
               ),

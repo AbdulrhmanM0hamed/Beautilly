@@ -98,7 +98,7 @@ class ProfileMenuSection extends StatelessWidget {
                         margin: const EdgeInsets.all(16),
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.1),
+                          color: AppColors.primary.withValues(alpha:0.1),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Column(
@@ -197,7 +197,7 @@ class ProfileMenuSection extends StatelessWidget {
                             Navigator.push(
                               context,
                               PageRoutes.fadeScale(
-                                page: NotificationsPage(),
+                                page: const NotificationsPage(),
                               ),
                             );
                           },
@@ -437,7 +437,7 @@ class ProfileMenuSection extends StatelessWidget {
     );
   }
 
-  void _showGuestMessage(BuildContext context) {
+  void showGuestMessage(BuildContext context) {
     CustomSnackbar.showError(
       context: context,
       message: 'هذه الخاصية غير متاحة للزائر، يرجى إنشاء حساب للوصول لجميع المميزات',

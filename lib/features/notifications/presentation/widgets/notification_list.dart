@@ -7,9 +7,9 @@ class NotificationList extends StatelessWidget {
   final List<NotificationEntity> notifications;
 
   const NotificationList({
-    Key? key,
+    super. key,
     required this.notifications,
-  }) : super(key: key);
+  }) ;
 
   @override
   Widget build(BuildContext context) {

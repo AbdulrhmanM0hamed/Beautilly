@@ -221,7 +221,7 @@ class _SigninViewBodyBlocConsumerState
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: AppColors.primary.withOpacity(0.3),
+                              color: AppColors.primary.withValues(alpha:0.3),
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(12),
@@ -270,7 +270,7 @@ class _SigninViewBodyBlocConsumerState
                         Container(
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: AppColors.primary.withOpacity(0.3),
+                              color: AppColors.primary.withValues(alpha:0.3),
                               width: 1,
                             ),
                             borderRadius: BorderRadius.circular(12),
@@ -322,7 +322,7 @@ class _SigninViewBodyBlocConsumerState
               ),
               if (state is AuthLoading)
                 Container(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha:0.5),
                   child: const Center(
                     child: CustomProgressIndcator(
                       size: 50.0,

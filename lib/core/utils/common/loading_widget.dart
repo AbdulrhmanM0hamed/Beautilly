@@ -49,7 +49,7 @@ class LoadingOverlay extends StatelessWidget {
         child,
         if (isLoading)
           Container(
-            color: (backgroundColor ?? Colors.black).withOpacity(0.5),
+            color: (backgroundColor ?? Colors.black).withValues(alpha:0.5),
             child: const LoadingWidget(
               color: Colors.white,
             ),

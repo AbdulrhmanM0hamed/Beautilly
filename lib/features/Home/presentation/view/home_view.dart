@@ -37,14 +37,14 @@ class _HomeViewState extends State<HomeView> {
   final _pageController = PageController();
 
   List<Widget> _getPages(bool isGuest) => [
-    const KeepAlivePage(child: HomeViewBody()),
-    if (!isGuest) ...[
-   //   const KeepAlivePage(child: DiscoverView()),
-      const KeepAlivePage(child: ReservationsView()),
-      const KeepAlivePage(child: OrdersRequestsView()),
-      KeepAlivePage(child: ProfileView()),
-    ],
-  ];
+        const KeepAlivePage(child: HomeViewBody()),
+        if (!isGuest) ...[
+          //   const KeepAlivePage(child: DiscoverView()),
+          const KeepAlivePage(child: ReservationsView()),
+          const KeepAlivePage(child: OrdersRequestsView()),
+          const KeepAlivePage(child: ProfileView()),
+        ],
+      ];
 
   // Método para mostrar el bottom sheet de búsqueda
   void _showSearchBottomSheet(BuildContext context) {
@@ -59,7 +59,7 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Future<void> _handleGuestSignIn(BuildContext context) async {
+  Future<void> handleGuestSignIn(BuildContext context) async {
     try {
       // تسجيل خروج Guest
       await context.read<AuthCubit>().logout();
@@ -152,7 +152,7 @@ class _HomeViewState extends State<HomeView> {
           builder: (context, state) {
             final bool isGuest = context.read<ProfileCubit>().isGuestUser;
             final pages = _getPages(isGuest);
-            
+
             return Scaffold(
               body: PageView(
                 controller: _pageController,
@@ -173,13 +173,14 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
               ),
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
               bottomNavigationBar: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).scaffoldBackgroundColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Colors.grey.withValues(alpha: 0.2),
                       spreadRadius: 0,
                       blurRadius: 10,
                       offset: const Offset(0, -2),
@@ -235,13 +236,14 @@ class _HomeViewState extends State<HomeView> {
                             ),
                           ),
                         ),
-                      
+
                         if (isGuest)
                           // Icono de perfil para invitados
                           Expanded(
                             child: InkWell(
                               onTap: () {
-                                Navigator.pushReplacementNamed(context, SigninView.routeName);
+                                Navigator.pushReplacementNamed(
+                                    context, SigninView.routeName);
                               },
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -301,10 +303,10 @@ class _HomeViewState extends State<HomeView> {
                               ),
                             ),
                           ),
-                          
+
                           // Espacio para el botón flotante
                           const Spacer(),
-                          
+
                           // Icono de detalles
                           Expanded(
                             child: InkWell(
@@ -339,7 +341,7 @@ class _HomeViewState extends State<HomeView> {
                               ),
                             ),
                           ),
-                          
+
                           // Icono de perfil
                           Expanded(
                             child: InkWell(

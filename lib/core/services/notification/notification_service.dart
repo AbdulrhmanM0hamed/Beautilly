@@ -10,8 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class NotificationService {
-  static const String _lastNotificationKey = 'last_notification_timestamp';
-  static const String _lastLoginKey = 'last_login_timestamp';
+  static const String lastNotificationKey = 'last_notification_timestamp';
+  static const String lastLoginKey = 'last_login_timestamp';
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotifications =
       FlutterLocalNotificationsPlugin();
@@ -103,7 +103,7 @@ class NotificationService {
   }
 
   Future<void> _setupFCM() async {
-    final settings = await _messaging.requestPermission(
+    await _messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
@@ -119,7 +119,7 @@ class NotificationService {
     // حفظ وقت تسجيل الدخول
     final loginTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_lastLoginKey, loginTime);
+    await prefs.setInt(lastLoginKey, loginTime);
 
     // تحديث العداد الأولي
     await _updateUnreadCount(userId);
@@ -170,7 +170,7 @@ class NotificationService {
 
   void _listenToUserNotifications(int userId) async {
     final lastLogin = await SharedPreferences.getInstance()
-        .then((prefs) => prefs.getInt(_lastLoginKey) ?? 0);
+        .then((prefs) => prefs.getInt(lastLoginKey) ?? 0);
 
     _userNotificationsSubscription = _database
         .ref('notifications/users')
@@ -202,7 +202,7 @@ class NotificationService {
 
   void _listenToReservationNotifications(int userId) async {
     final lastLogin = await SharedPreferences.getInstance()
-        .then((prefs) => prefs.getInt(_lastLoginKey) ?? 0);
+        .then((prefs) => prefs.getInt(lastLoginKey) ?? 0);
 
     _reservationNotificationsSubscription = _database
         .ref('notifications')
@@ -310,21 +310,21 @@ class NotificationService {
     _unreadCountController = null;
   }
 
-  Future<void> _listenToNotifications() async {
+  Future<void> listenToNotifications() async {
     try {
       final token = await _cacheService.getToken();
       final sessionCookie = await _cacheService.getSessionCookie();
 
       //print('🔍 Notifications Request Headers:');
       //print('Token: $token');
-      //print('x-api-key: ${ApiEndpoints.api_key}');
+      //print('x-api-key: ${ApiEndpoints.apiKey}');
       //print('Cookie: $sessionCookie');
 
       final response = await http.get(
         Uri.parse(ApiEndpoints.notifications),
         headers: {
           'Authorization': 'Bearer $token',
-          'x-api-key': ApiEndpoints.api_key,
+          'x-api-key': ApiEndpoints.apiKey,
           'Accept': 'application/json',
           if (sessionCookie != null) 'Cookie': sessionCookie,
         },
@@ -358,7 +358,7 @@ class NotificationService {
     }
   }
 
-  void _decrementUnreadCount() {
+  void decrementUnreadCount() {
     if (_unreadCountController?.isClosed == false) {
       _currentUnreadCount--;
       _unreadCountController?.add(_currentUnreadCount);

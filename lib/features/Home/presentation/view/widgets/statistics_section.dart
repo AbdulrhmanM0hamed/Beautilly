@@ -44,7 +44,7 @@ class StatisticsSection extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: padding),
-                  StatisticsShimmer(),
+                const  StatisticsShimmer(),
                 ],
               );
             }
@@ -212,10 +212,10 @@ class _StatisticCardState extends State<StatisticCard>
               child: Container(
                 padding: ResponsiveCardSizes.getPadding(sizes),
                 decoration: BoxDecoration(
-                  color: widget.color.withOpacity(0.15),
+                  color: widget.color.withValues(alpha:0.15),
                   borderRadius: ResponsiveCardSizes.defaultBorderRadius,
                   border: Border.all(
-                    color: widget.color.withOpacity(0.3),
+                    color: widget.color.withValues(alpha:0.3),
                     width: 1.5,
                   ),
                 ),
@@ -236,7 +236,7 @@ class _StatisticCardState extends State<StatisticCard>
                           child: CircularProgressIndicator(
                             value: _controller.value,
                             strokeWidth: sizes.progressStrokeWidth,
-                            backgroundColor: widget.color.withOpacity(0.2),
+                            backgroundColor: widget.color.withValues(alpha:0.2),
                             valueColor: AlwaysStoppedAnimation<Color>(widget.color),
                           ),
                         ),

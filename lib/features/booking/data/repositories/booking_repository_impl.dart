@@ -24,7 +24,9 @@ class BookingRepositoryImpl implements BookingRepository {
     required int timeId,
   }) async {
     if (!await networkInfo.isConnected) {
-      return const Left(NetworkFailure(message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -34,15 +36,18 @@ class BookingRepositoryImpl implements BookingRepository {
         dayId: dayId,
         timeId: timeId,
       );
-      return Left(NetworkFailure(message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on UnauthorizedException catch (e) {
       return Left(AuthFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
@@ -54,7 +59,9 @@ class BookingRepositoryImpl implements BookingRepository {
     required int timeId,
   }) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -70,16 +77,20 @@ class BookingRepositoryImpl implements BookingRepository {
     } on UnauthorizedException catch (e) {
       return Left(AuthFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   @override
-  Future<Either<Failure, List<AvailableDate>>> getAvailableDates(int shopId) async {
+  Future<Either<Failure, List<AvailableDate>>> getAvailableDates(
+      int shopId) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -90,16 +101,19 @@ class BookingRepositoryImpl implements BookingRepository {
     } on UnauthorizedException catch (e) {
       return Left(AuthFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   @override
   Future<Either<Failure, void>> cancelAppointment(int appointmentId) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -110,11 +124,12 @@ class BookingRepositoryImpl implements BookingRepository {
     } on UnauthorizedException catch (e) {
       return Left(AuthFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   // باقي التنفيذ مشابه
-} 
+}

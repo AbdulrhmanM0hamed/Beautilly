@@ -61,7 +61,7 @@ class ProfileRemoteDataSourceImpl
             headers: {
               'Authorization': 'Bearer $token',
               'Accept': 'application/json',
-              'x-api-key': ApiEndpoints.api_key,
+              'x-api-key': ApiEndpoints.apiKey,
               if (sessionCookie != null) 'Cookie': sessionCookie,
             },
           );
@@ -109,11 +109,11 @@ class ProfileRemoteDataSourceImpl
       request.headers.addAll({
         'Authorization': 'Bearer $token',
         'Accept': 'application/json',
-        'x-api-key': ApiEndpoints.api_key,
+        'x-api-key': ApiEndpoints.apiKey,
         if (sessionCookie != null) 'Cookie': sessionCookie,
       });
 
-      request.fields['api_key'] = ApiEndpoints.api_key;
+      request.fields['apiKey'] = ApiEndpoints.apiKey;
 
       // إضافة الصورة المضغوطة
       final imageBytes = await image.readAsBytes();

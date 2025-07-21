@@ -68,7 +68,7 @@ class NearbyServiceCard extends StatelessWidget {
                 //       ),
                 //       boxShadow: [
                 //         BoxShadow(
-                //           color: Colors.black.withOpacity(0.1),
+                //           color: Colors.black.withValues(alpha:0.1),
                 //           blurRadius: 4,
                 //           offset: const Offset(0, 2),
                 //         ),
@@ -125,7 +125,7 @@ class NearbyServiceCard extends StatelessWidget {
                     Row(
                       children: [
                         SvgPicture.asset(
-                          AppAssets.Star,
+                          AppAssets.star,
                           colorFilter: const ColorFilter.mode(
                             Color(0xFFFFB800),
                             BlendMode.srcIn,
@@ -166,7 +166,7 @@ class NearbyServiceCard extends StatelessWidget {
                               width: 40,
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.12),
+                                color: AppColors.primary.withValues(alpha:0.12),
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: SvgPicture.asset(
@@ -185,7 +185,7 @@ class NearbyServiceCard extends StatelessWidget {
                     Row(
                       children: [
                         SvgPicture.asset(
-                          AppAssets.Location,
+                          AppAssets.location,
                           colorFilter: const ColorFilter.mode(
                             AppColors.grey,
                             BlendMode.srcIn,
@@ -212,7 +212,7 @@ class NearbyServiceCard extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.1),
+                            color: AppColors.primary.withValues(alpha:0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Row(

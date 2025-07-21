@@ -16,8 +16,6 @@ class StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final badgeHeight = height ?? (size.width > 800 ? 28.0 : 20.0);
-    final fontSize = size.width > 800 ? FontSize.size14: FontSize.size12;
     final iconSize = size.width > 800 ? 16.0 : 16.0;
     final horizontalPadding = size.width > 800 ? 20.9 : 8.0;
     final dimensions =
@@ -60,7 +58,7 @@ class StatusBadge extends StatelessWidget {
         vertical: 1,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.9),
+        color: color.withValues(alpha:0.9),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
@@ -85,4 +83,4 @@ class StatusBadge extends StatelessWidget {
       ),
     );
   }
-} 
+}

@@ -36,7 +36,7 @@ class FavoritesRemoteDataSourceImpl with TokenRefreshMixin implements FavoritesR
           Uri.parse(ApiEndpoints.myFavoriteShops),
           headers: {
             'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             'Accept': 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
@@ -76,7 +76,7 @@ class FavoritesRemoteDataSourceImpl with TokenRefreshMixin implements FavoritesR
           Uri.parse(ApiEndpoints.addToFavorites(shopId)),
           headers: {
             'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             'Accept': 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
@@ -100,7 +100,7 @@ class FavoritesRemoteDataSourceImpl with TokenRefreshMixin implements FavoritesR
           Uri.parse(ApiEndpoints.removeFromFavorites(shopId)),
           headers: {
             'Authorization': 'Bearer $token',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             'Accept': 'application/json',
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },

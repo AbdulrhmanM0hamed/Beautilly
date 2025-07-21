@@ -55,7 +55,7 @@ class _WelcomeTextWidgetState extends State<WelcomeTextWidget> {
               children: [
                 CircleAvatar(
                   radius: 25,
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
+                  backgroundColor: AppColors.primary.withValues(alpha:0.1),
                   child: userImage != null
                       ? ClipOval(
                           child: CachedNetworkImage(
@@ -136,7 +136,7 @@ Widget _buildNotificationButton(BuildContext context) {
           PageRoutes.fadeScale(
             page: BlocProvider(
               create: (context) => sl<NotificationsCubit>()..loadNotifications(),
-              child: NotificationsPage(),
+              child: const NotificationsPage(),
             ),
           ),
         ).then((_) {
@@ -153,7 +153,7 @@ Widget _buildNotificationButton(BuildContext context) {
             height: 33,
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: AppColors.primary.withOpacity(0.15),
+              color: AppColors.primary.withValues(alpha:0.15),
               shape: BoxShape.circle,
             ),
             child: SvgPicture.asset(

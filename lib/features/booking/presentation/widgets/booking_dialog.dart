@@ -99,7 +99,7 @@ class _BookingDialogState extends State<BookingDialog> {
                                         fontFamily: FontConstant.cairo,
                                       ),
                                     ),
-                                    Spacer(),
+                                   const Spacer(),
                                     IconButton(
                                       onPressed: () => Navigator.pop(context),
                                       icon: const Icon(Icons.close),

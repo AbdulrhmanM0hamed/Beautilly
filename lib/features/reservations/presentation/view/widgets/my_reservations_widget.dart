@@ -33,7 +33,6 @@ class _MyReservationsWidgetState extends State<MyReservationsWidget> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final isTablet = size.width >= AppResponsive.mobileBreakpoint;
     final isDesktop = size.width >= AppResponsive.tabletBreakpoint;
 
     return BlocBuilder<ReservationsCubit, ReservationsState>(

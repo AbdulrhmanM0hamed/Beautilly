@@ -4,18 +4,17 @@ import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
 class SocialButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
   final String iconPath;
 
   const SocialButton({
-    Key? key,
+    super.key,
     required this.onPressed,
     required this.buttonText,
     required this.iconPath,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,8 @@ class SocialButton extends StatelessWidget {
         children: [
           SizedBox(
             width: size.width * 0.08,
-            child: SvgPicture.asset(iconPath, height: size.height * 0.03, width: size.height * 0.03),
+            child: SvgPicture.asset(iconPath,
+                height: size.height * 0.03, width: size.height * 0.03),
           ),
           SizedBox(width: size.width * 0.025),
           Expanded(

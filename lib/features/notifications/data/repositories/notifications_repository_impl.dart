@@ -71,7 +71,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> DeleteNorifications() async {
+  Future<Either<Failure, void>> deleteNorifications() async {
     if (!await networkInfo.isConnected) {
       return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت'
@@ -79,7 +79,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
     }
 
     try {
-      await remoteDataSource.DeleteNorifications();
+      await remoteDataSource.deleteNorifications();
       return const Right(null);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));

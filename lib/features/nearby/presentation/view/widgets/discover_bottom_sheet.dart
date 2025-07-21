@@ -59,7 +59,7 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                   const BorderRadius.vertical(top: Radius.circular(20)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withValues(alpha:0.05),
                   blurRadius: 10,
                   offset: const Offset(0, -5),
                 ),
@@ -122,7 +122,7 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                                 side: BorderSide(
                                   color: !_showHighRatedOnly 
                                       ? Colors.transparent 
-                                      : AppColors.grey.withOpacity(0.3),
+                                      : AppColors.grey.withValues(alpha:0.3),
                                 ),
                                 label: Text(
                                   'الأقرب',
@@ -144,7 +144,7 @@ class _DiscoverBottomSheetState extends State<DiscoverBottomSheet> {
                                 side: BorderSide(
                                   color: _showHighRatedOnly 
                                       ? Colors.transparent 
-                                      : AppColors.grey.withOpacity(0.3),
+                                      : AppColors.grey.withValues(alpha:0.3),
                                 ),
                                 label: Row(
                                   mainAxisSize: MainAxisSize.min,

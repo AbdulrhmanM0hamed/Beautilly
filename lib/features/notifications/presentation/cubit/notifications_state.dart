@@ -1,4 +1,3 @@
-import 'package:equatable/equatable.dart';
 import '../../domain/entities/notification.dart';
 
 abstract class NotificationsState {}

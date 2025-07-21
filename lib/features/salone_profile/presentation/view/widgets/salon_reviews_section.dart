@@ -318,7 +318,7 @@ class SalonReviewsSection extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.accent.withOpacity(0.1),
+                      color: AppColors.accent.withValues(alpha:0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
@@ -447,7 +447,7 @@ class SalonReviewsSection extends StatelessWidget {
                     ],
                   ),
                 );
-              }).reversed.toList(),
+              }).reversed,
 
               const SizedBox(height: 16),
 
@@ -471,7 +471,7 @@ class SalonReviewsSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
+            color: Colors.grey.withValues(alpha:0.05),
           ),
         ],
       ),

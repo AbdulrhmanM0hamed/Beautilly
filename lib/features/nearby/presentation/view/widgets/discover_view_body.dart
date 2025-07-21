@@ -35,7 +35,7 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
     super.didChangeDependencies();
   }
 
-  void _showLocationDialog() {
+  void showLocationDialog() {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -196,23 +196,21 @@ class _DiscoverViewBodyState extends State<DiscoverViewBody> {
     );
   }
 
-  void _handleLocationTap() async {
+  void handleLocationTap() async {
     final permission = await Geolocator.checkPermission();
 
+    if (!mounted) return;
+
     if (permission == LocationPermission.denied) {
-      if (context.mounted) {
-        showDialog(
-          context: context,
-          builder: (context) => LocationPermissionDialog(
-            onGranted: () {
-              // تنفيذ ما نريد بعد الموافقة على الإذن
-              _getCurrentLocation();
-            },
-          ),
-        );
-      }
+      showDialog(
+        context: context,
+        builder: (context) => LocationPermissionDialog(
+          onGranted: () {
+            _getCurrentLocation();
+          },
+        ),
+      );
     } else if (permission == LocationPermission.deniedForever) {
-      // فتح إعدادات التطبيق
       await Geolocator.openAppSettings();
     } else {
       _getCurrentLocation();

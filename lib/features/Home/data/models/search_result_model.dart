@@ -1,7 +1,7 @@
 import '../../domain/entities/search_result.dart';
 
 class SearchResultModel extends SearchResult {
-  SearchResultModel({
+  const SearchResultModel({
     required super.id,
     required super.name,
     required super.type,
@@ -29,7 +29,7 @@ class SearchResultModel extends SearchResult {
 }
 
 class UserInteractionsModel extends UserInteractions {
-  UserInteractionsModel({
+ const  UserInteractionsModel({
     required super.hasLiked,
     required super.hasRated,
     required super.hasCommented,

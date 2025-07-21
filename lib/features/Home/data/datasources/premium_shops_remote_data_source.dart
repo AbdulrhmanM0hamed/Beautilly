@@ -37,7 +37,7 @@ class PremiumShopsRemoteDataSourceImpl
           headers: {
             'Authorization': 'Bearer $token',
             'Accept': 'application/json',
-            'x-api-key': ApiEndpoints.api_key,
+            'x-api-key': ApiEndpoints.apiKey,
             if (sessionCookie != null) 'Cookie': sessionCookie,
           },
         );

@@ -54,11 +54,11 @@ class AppAssets {
   static const String spaIcon = '$_iconsPath/spa.svg';
   static const String waxingIcon = '$_iconsPath/waxing.svg';
   static const String dressVector = '$_iconsPath/Dress Vector.svg';
-  static const String detect_location = '$_iconsPath/detect_location.svg';
+  static const String detectLocation = '$_iconsPath/detect_location.svg';
   static const String direction = '$_iconsPath/direction.svg';
   static const String filter = '$_iconsPath/filter.svg';
-  static const String Location = '$_iconsPath/Location.svg';
-  static const String Star = '$_iconsPath/Star.svg';
+  static const String location = '$_iconsPath/Location.svg';
+  static const String star = '$_iconsPath/Star.svg';
   static const String map = '$_iconsPath/map.svg';
   static const String tfsel = '$_iconsPath/tfsel.svg';
   static const String notificationIcon = '$_iconsPath/notification-icon.svg';

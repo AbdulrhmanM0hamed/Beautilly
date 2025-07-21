@@ -110,7 +110,7 @@ class EditProfileController {
   }
 
   // التحقق من صحة البيانات الشخصية فقط
-  bool _validateProfileData() {
+  bool validateProfileData() {
     return nameController.text.isNotEmpty &&
         emailController.text.isNotEmpty &&
         FormValidators.validateEmail(emailController.text) == null &&
@@ -119,8 +119,8 @@ class EditProfileController {
   }
 
   // التحقق من صحة بيانات كلمة المرور فقط
-  bool _validatePasswordData() {
-    if (!_isPasswordChangeRequested()) return true;
+  bool validatePasswordData() {
+    if (!isPasswordChangeRequested()) return true;
 
     return FormValidators.validatePassword(newPasswordController.text) == null &&
         FormValidators.validateConfirmPassword(
@@ -130,20 +130,20 @@ class EditProfileController {
             null;
   }
 
-  bool _isProfileDataChanged() {
+  bool isProfileDataChanged() {
     return nameController.text != profile.name ||
         emailController.text != profile.email ||
         phoneController.text != profile.phone;
   }
 
-  bool _isPasswordChangeRequested() {
+  bool isPasswordChangeRequested() {
     return currentPasswordController.text.isNotEmpty &&
         newPasswordController.text.isNotEmpty &&
         confirmPasswordController.text.isNotEmpty;
   }
 
   bool get isPasswordsMatch =>
-      !_isPasswordChangeRequested() || // إذا لم يتم إدخال كلمات مرور أصلاً
+      !isPasswordChangeRequested() || // إذا لم يتم إدخال كلمات مرور أصلاً
       (newPasswordController.text == confirmPasswordController.text); // أو إذا كانت متطابقة
 
   void clearControllers() {
@@ -155,21 +155,21 @@ class EditProfileController {
     confirmPasswordController.clear();
   }
 
-  void _showSuccessMessage(BuildContext context) {
+  void showSuccessMessage(BuildContext context) {
     CustomSnackbar.showSuccess(
       context: context,
       message: 'تم تحديث البيانات بنجاح',
     );
   }
 
-  void _showNoChangesMessage(BuildContext context) {
+  void showNoChangesMessage(BuildContext context) {
     CustomSnackbar.showError(
       context: context,
       message: 'لم يتم إجراء أي تغييرات',
     );
   }
 
-  void _showErrorMessage(BuildContext context, String error) {
+  void showErrorMessage(BuildContext context, String error) {
     CustomSnackbar.showError(
       context: context,
       message: 'حدث خطأ: $error',

@@ -14,9 +14,9 @@ class NotificationItem extends StatefulWidget {
   final NotificationEntity notification;
 
   const NotificationItem({
-    Key? key,
+    super.key,
     required this.notification,
-  }) : super(key: key);
+  });
 
   @override
   State<NotificationItem> createState() => _NotificationItemState();
@@ -46,14 +46,16 @@ class _NotificationItemState extends State<NotificationItem> {
             return Stack(
               children: [
                 Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
                   elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: widget.notification.read
                         ? BorderSide.none
                         : BorderSide(
-                            color: Theme.of(context).primaryColor.withOpacity(0.3),
+                            color:
+                                Theme.of(context).primaryColor.withValues(alpha:0.3),
                             width: 1),
                   ),
                   child: InkWell(
@@ -106,11 +108,14 @@ class _NotificationItemState extends State<NotificationItem> {
                                       _buildStatusChip(),
                                     const Spacer(),
                                     Text(
-                                      _getTimeAgo(widget.notification.createdAt),
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall?.copyWith(
-                                                color: Colors.grey[600],
-                                              ),
+                                      _getTimeAgo(
+                                          widget.notification.createdAt),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: Colors.grey[600],
+                                          ),
                                     ),
                                   ],
                                 ),
@@ -126,7 +131,7 @@ class _NotificationItemState extends State<NotificationItem> {
                   Positioned.fill(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Colors.black.withValues(alpha:0.3),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Center(
@@ -172,7 +177,7 @@ class _NotificationItemState extends State<NotificationItem> {
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: iconColor.withOpacity(0.1),
+            color: iconColor.withValues(alpha:0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(iconData, color: iconColor, size: 24),
@@ -194,7 +199,7 @@ class _NotificationItemState extends State<NotificationItem> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: _getStatusColor(widget.notification.status).withOpacity(0.1),
+        color: _getStatusColor(widget.notification.status).withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Row(

@@ -7,7 +7,6 @@ import 'package:beautilly/core/utils/constant/app_assets.dart';
 import 'package:beautilly/core/utils/theme/app_colors.dart';
 import 'package:beautilly/core/utils/widgets/custom_snackbar.dart';
 import 'package:beautilly/features/notifications/presentation/cubit/notifications_state.dart';
-import 'package:beautilly/features/orders/presentation/cubit/order_details_cubit/order_details_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -16,7 +15,7 @@ import '../widgets/notification_list.dart';
 import 'package:get_it/get_it.dart';
 
 class NotificationsPage extends StatefulWidget {
-  const NotificationsPage({Key? key}) : super(key: key);
+  const NotificationsPage({super.key});
 
   @override
   State<NotificationsPage> createState() => _NotificationsPageState();

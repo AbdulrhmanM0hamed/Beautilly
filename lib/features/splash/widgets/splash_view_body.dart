@@ -27,14 +27,14 @@ class _SplashViewBodyState extends State<SplashViewBody>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.0, 0.65, curve: Curves.easeInOut),
+        curve: const Interval(0.0, 0.65, curve: Curves.easeInOut),
       ),
     );
 
     _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.3, 1.0, curve: Curves.elasticOut),
+        curve: const Interval(0.3, 1.0, curve: Curves.elasticOut),
       ),
     );
 

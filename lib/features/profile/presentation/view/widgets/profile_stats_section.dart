@@ -115,7 +115,7 @@ class _VerticalDivider extends StatelessWidget {
       height: 40,
       width: 1,
       margin: const EdgeInsets.symmetric(horizontal: 8),
-      color: AppColors.divider.withOpacity(0.5),
+      color: AppColors.divider.withValues(alpha:0.5),
     );
   }
 }
@@ -150,7 +150,7 @@ class _LoadingStats extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: isDark ? Colors.grey[800]!.withOpacity(0.1) : Colors.grey.withOpacity(0.1),
+              color: isDark ? Colors.grey[800]!.withValues(alpha:0.1) : Colors.grey.withValues(alpha:0.1),
               spreadRadius: 1,
               blurRadius: 4,
               offset: const Offset(0, 2),

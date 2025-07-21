@@ -24,7 +24,7 @@ class SalonTeamSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          OutlineWithIcon(
+          const OutlineWithIcon(
             icon: Icons.groups_rounded,
             title: 'فريق العمل',
           ),
@@ -60,12 +60,10 @@ class SalonTeamSection extends StatelessWidget {
         width: 140,
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
-          
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.05),
-             
+              color: Colors.grey.withValues(alpha:0.05),
             ),
           ],
         ),
@@ -120,4 +118,3 @@ class SalonTeamSection extends StatelessWidget {
     );
   }
 }
-

@@ -87,7 +87,7 @@ class SalonGalleryGrid extends StatelessWidget {
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha:0.5),
                           ),
                           child: Center(
                             child: Text(

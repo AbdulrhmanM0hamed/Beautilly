@@ -102,7 +102,7 @@ class _CustomProfileFieldState extends State<CustomProfileField> {
               boxShadow: [
                 if (!isDark)
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withValues(alpha:0.1),
                     spreadRadius: 1,
                     blurRadius: 3,
                     offset: const Offset(0, 2),
@@ -184,7 +184,7 @@ class _CustomProfileFieldState extends State<CustomProfileField> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
-                    color: AppColors.primary.withOpacity(0.8),
+                    color: AppColors.primary.withValues(alpha:0.8),
                     width: 1.5,
                   ),
                 ),

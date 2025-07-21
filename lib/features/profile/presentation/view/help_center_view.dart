@@ -39,7 +39,6 @@ class HelpCenterView extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +87,7 @@ class HelpCenterView extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.location_on_outlined, color: AppColors.primary),
+              const Icon(Icons.location_on_outlined, color: AppColors.primary),
               const SizedBox(width: 8),
               Text(
                 'العنوان',
@@ -133,7 +132,7 @@ class HelpCenterView extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.code, color: AppColors.primary),
+              const Icon(Icons.code, color: AppColors.primary),
               const SizedBox(width: 8),
               Text(
                 'المطورون',
@@ -328,7 +327,7 @@ class HelpCenterView extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.1),
+                  color: AppColors.primary.withValues(alpha:0.1),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Text(

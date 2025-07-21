@@ -21,8 +21,8 @@ class OutlineWithIcon extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                AppColors.primary.withOpacity(.9),
-                AppColors.primary.withOpacity(.6),
+                AppColors.primary.withValues(alpha:.9),
+                AppColors.primary.withValues(alpha:.6),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,

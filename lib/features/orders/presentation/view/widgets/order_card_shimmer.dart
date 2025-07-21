@@ -17,7 +17,7 @@ class OrderCardShimmer extends StatelessWidget {
         borderRadius: BorderRadius.circular(dimensions.borderRadius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha:0.05),
             blurRadius: dimensions.borderRadius,
             offset: const Offset(0, 2),
           ),

@@ -96,7 +96,7 @@ class SalonMapSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.3),
+                    color: Colors.grey.withValues(alpha:0.3),
                     spreadRadius: 1,
                     blurRadius: 3,
                     offset: const Offset(0, 1),
@@ -130,7 +130,7 @@ class SalonMapSection extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.5),
+                        color: Colors.black.withValues(alpha:0.5),
                         borderRadius: const BorderRadius.only(
                           bottomLeft: Radius.circular(12),
                           bottomRight: Radius.circular(12),
@@ -167,7 +167,7 @@ class SalonMapSection extends StatelessWidget {
           //   decoration: BoxDecoration(
           //     color: Theme.of(context).cardColor,
           //     borderRadius: BorderRadius.circular(8),
-          //     border: Border.all(color: Colors.grey.withOpacity(0.2)),
+          //     border: Border.all(color: Colors.grey.withValues(alpha:0.2)),
           //   ),
           //   child: Row(
           //     children: [

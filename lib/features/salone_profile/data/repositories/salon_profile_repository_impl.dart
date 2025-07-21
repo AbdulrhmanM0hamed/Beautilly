@@ -20,9 +20,9 @@ class SalonProfileRepositoryImpl implements SalonProfileRepository {
   @override
   Future<Either<Failure, SalonProfile>> getSalonProfile(int salonId) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
-        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
-      ));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -33,24 +33,24 @@ class SalonProfileRepositoryImpl implements SalonProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ أثناء تحميل بيانات الصالون'));
+      return const Left(
+          ServerFailure(message: 'حدث خطأ أثناء تحميل بيانات الصالون'));
     }
   }
 
   @override
   Future<Either<Failure, void>> addShopRating(
-    int shopId, 
-    int rating, 
+    int shopId,
+    int rating,
     String? comment,
   ) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
-        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
-      ));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -67,20 +67,19 @@ class SalonProfileRepositoryImpl implements SalonProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   @override
   Future<Either<Failure, void>> deleteShopRating(int shopId) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
-        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
-      ));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -91,20 +90,19 @@ class SalonProfileRepositoryImpl implements SalonProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   @override
   Future<Either<Failure, void>> addToFavorites(int shopId) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
-        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
-      ));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -115,20 +113,19 @@ class SalonProfileRepositoryImpl implements SalonProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
   @override
   Future<Either<Failure, void>> removeFromFavorites(int shopId) async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
-        message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
-      ));
+      return const Left(NetworkFailure(
+          message:
+              'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'));
     }
 
     try {
@@ -139,11 +136,10 @@ class SalonProfileRepositoryImpl implements SalonProfileRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
-        message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
-      ));
+      return const Left(NetworkFailure(
+          message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 }

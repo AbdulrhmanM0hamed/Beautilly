@@ -57,7 +57,7 @@ class AddOrderCubit extends Cubit<AddOrderState> {
     } catch (e, stackTrace) {
       debugPrint('Unexpected error in addOrder: $e');
       debugPrint('Stack trace: $stackTrace');
-      emit(AddOrderError('حدث خطأ غير متوقع'));
+      emit( const AddOrderError('حدث خطأ غير متوقع'));
     }
   }
 }

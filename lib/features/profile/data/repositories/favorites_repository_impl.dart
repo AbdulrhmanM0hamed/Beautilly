@@ -19,7 +19,7 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
   @override
   Future<Either<Failure, List<FavoriteShop>>> getFavoriteShops() async {
     if (!await networkInfo.isConnected) {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يوجد اتصال بالإنترنت، يرجى التحقق من اتصالك والمحاولة مرة أخرى'
       ));
     }
@@ -32,11 +32,11 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } on SocketException {
-      return Left(NetworkFailure(
+      return const Left(NetworkFailure(
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 

@@ -48,7 +48,7 @@ class ReservationCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(dimensions.borderRadius),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha:0.05),
               blurRadius: dimensions.borderRadius,
               offset: const Offset(0, 2),
             ),
@@ -88,7 +88,7 @@ class ReservationCard extends StatelessWidget {
                           end: Alignment.bottomCenter,
                           colors: [
                             Colors.transparent,
-                            Colors.black.withOpacity(0.7),
+                            Colors.black.withValues(alpha:0.7),
                           ],
                         ),
                       ),
@@ -111,7 +111,7 @@ class ReservationCard extends StatelessWidget {
                                     vertical: 1,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.green.withOpacity(0.9),
+                                    color: Colors.green.withValues(alpha:0.9),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Row(
@@ -355,7 +355,7 @@ class ReservationCard extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(dimensions.padding / 2),
           decoration: BoxDecoration(
-            color: AppColors.primary.withOpacity(0.1),
+            color: AppColors.primary.withValues(alpha:0.1),
             borderRadius: BorderRadius.circular(dimensions.borderRadius / 2),
           ),
           child: Icon(

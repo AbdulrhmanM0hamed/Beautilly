@@ -105,7 +105,7 @@ class _OrderCardState extends State<OrderCard> {
                   borderRadius: BorderRadius.circular(dimensions.borderRadius),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha:0.05),
                       blurRadius: dimensions.borderRadius,
                       offset: const Offset(0, 2),
                     ),
@@ -190,7 +190,7 @@ class _OrderCardState extends State<OrderCard> {
               end: Alignment.bottomCenter,
               colors: [
                 Colors.transparent,
-                Colors.black.withOpacity(0.7),
+                Colors.black.withValues(alpha:0.7),
               ],
             ),
           ),
@@ -284,7 +284,7 @@ class _OrderCardState extends State<OrderCard> {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha:0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -454,7 +454,7 @@ class _OrderCardState extends State<OrderCard> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: textColor?.withOpacity(0.3) ?? AppColors.primary.withOpacity(0.2),
+          color: textColor?.withValues(alpha:0.3) ?? AppColors.primary.withValues(alpha:0.2),
         ),
       ),
       child: Row(

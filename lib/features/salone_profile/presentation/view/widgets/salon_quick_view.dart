@@ -42,7 +42,6 @@ class _SalonQuickViewState extends State<SalonQuickView> {
           );
         }
       },
-    
       child: Scaffold(
         body: Stack(
           children: [
@@ -83,7 +82,8 @@ class _SalonQuickViewState extends State<SalonQuickView> {
                           backgroundColor:
                               Theme.of(context).scaffoldBackgroundColor,
                           child: SvgPicture.asset(AppAssets.map,
-                              color: AppColors.secondary),
+                              colorFilter: const ColorFilter.mode(
+                                  AppColors.secondary, BlendMode.srcIn)),
                         ),
                       ],
                     ),

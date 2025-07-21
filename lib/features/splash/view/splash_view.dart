@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:beautilly/core/services/cache/cache_service.dart';
 import 'package:beautilly/features/Home/presentation/view/home_view.dart';
 import 'package:beautilly/features/auth/presentation/view/signin_view.dart';
-import 'package:provider/provider.dart';
 import 'package:beautilly/features/onboarding/presentation/view/onboarding_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -44,9 +44,9 @@ class _SplashViewState extends State<SplashView>
 
   Future<void> _checkAppState() async {
     if (!mounted) return;
-    
+
     final cacheService = context.read<CacheService>();
-    
+
     // التحقق من حالة التطبيق
     final isFirstTime = await cacheService.getIsFirstTime();
     final token = await cacheService.getToken();
@@ -81,7 +81,6 @@ class _SplashViewState extends State<SplashView>
                 width: 150,
                 height: 150,
               ),
-            
             ],
           ),
         ),

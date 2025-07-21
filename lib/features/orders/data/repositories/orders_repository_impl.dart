@@ -79,9 +79,9 @@ class OrdersRepositoryImpl implements OrdersRepository {
     } on ServerException catch (e) {
       // تحسين رسائل الخطأ
       if (e.message.contains('صورة')) {
-        return Left(ServerFailure(message: 'حجم الصورة كبير جداً، يرجى تقليل حجم الصورة'));
+        return const Left(ServerFailure(message: 'حجم الصورة كبير جداً، يرجى تقليل حجم الصورة'));
       } else if (e.message.contains('قماش')) {
-        return Left(ServerFailure(message: 'يرجى التأكد من إدخال معلومات الأقمشة بشكل صحيح'));
+        return const Left(ServerFailure(message: 'يرجى التأكد من إدخال معلومات الأقمشة بشكل صحيح'));
       }
       return Left(ServerFailure(message: e.message));
     } on SocketException {

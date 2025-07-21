@@ -92,7 +92,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'فشل في تحديث البيانات الشخصية'));
+      return const Left(ServerFailure(message: 'فشل في تحديث البيانات الشخصية'));
     }
   }
 
@@ -184,7 +184,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
@@ -208,7 +208,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 
@@ -232,7 +232,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         message: 'لا يمكن الاتصال بالخادم، يرجى التحقق من اتصالك بالإنترنت'
       ));
     } catch (e) {
-      return Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
+      return const Left(ServerFailure(message: 'حدث خطأ غير متوقع'));
     }
   }
 

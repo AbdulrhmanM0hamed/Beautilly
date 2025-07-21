@@ -16,7 +16,7 @@ class CartOfBooking extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 24),
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor.withOpacity(.7),
+            color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha:.7),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -96,7 +96,7 @@ class CartOfBooking extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: AppColors.secondary.withOpacity(0.3),
+        color: AppColors.secondary.withValues(alpha:0.3),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(

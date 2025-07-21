@@ -124,7 +124,7 @@ class _AllOrdersWidgetState extends State<AllOrdersWidget> {
                     left: 0,
                     right: 0,
                     child: Container(
-                      color: Colors.black.withOpacity(0.1),
+                      color: Colors.black.withValues(alpha:0.1),
                       padding: const EdgeInsets.all(8.0),
                       child: const Center(
                         child: CircularProgressIndicator(color: AppColors.primary),

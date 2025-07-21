@@ -122,7 +122,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color.fromARGB(255, 90, 90, 90).withOpacity(0.18),
+            color: const Color.fromARGB(255, 90, 90, 90).withValues(alpha:0.18),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -139,7 +139,7 @@ class _ProfileHeaderState extends State<ProfileHeader> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: AppColors.primary.withOpacity(0.3),
+                    color: AppColors.primary.withValues(alpha:0.3),
                     width: 3,
                   ),
                 ),

@@ -41,7 +41,7 @@ class BookingBottomBar extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      'ال++مجموع',
+                      'المجيييموع',
                       style: getMediumStyle(
                         fontSize: FontSize.size14,
                         fontFamily: FontConstant.cairo,

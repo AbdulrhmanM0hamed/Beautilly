@@ -1,4 +1,83 @@
-plugins {aneous
+# Miscellaneous
+.DS_Store
+.env
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Android
+android/app/build/
+android/build/
+android/.gradle/
+android/key.properties
+
+# iOS
+ios/Pods/
+ios/Runner/GeneratedPluginRegistrant.h
+ios/Runner/GeneratedPluginRegistrant.m
+ios/.symlinks/
+ios/Flutter/App.framework
+ios/Flutter/engine.xcframework
+ios/Flutter/flutter_assets/
+
+# Web
+web/build/
+web/.dart_tool/
+
+# Windows
+windows/build/
+windows/flutter/ephemeral/
+windows/.vs/
+
+# macOS
+macos/build/
+macos/Flutter/ephemeral/
+
+# Linux
+linux/build/
+linux/flutter/ephemeral/
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/
+
+# Flutter
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Dart
+.dart_tool/
+
+# Generated files
+lib/generated_plugin_registrant.dart
+
+# Shorebird
+.shorebird/
+shorebird.yaml
     id 'com.android.application'
     id 'kotlin-android'
     id 'com.google.gms.google-services' 
@@ -54,11 +133,3 @@ android {.pub/
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
-    
-    // إضافة Firebase BOM
-    implementation platform('com.google.firebase:firebase-bom:32.7.2')
-    implementation 'com.google.firebase:firebase-database'
-    implementation 'com.google.firebase:firebase-messaging'
-}

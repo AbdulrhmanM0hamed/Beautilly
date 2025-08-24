@@ -3,10 +3,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class ApiEndpoints {
   // المتغيرات الأساسية مع قيم افتراضية
   static String get baseUrl => dotenv.env['BASE_URL'] ?? '';
-  static String get apiKey => dotenv.env['apiKey'] ?? '';
+  static String get apiKey => dotenv.env['API_KEY'] ?? '';
 
   //================ المصادقة وإدارة الحساب ================//
-  static String get login => '$baseUrl/login';
+  static String get login => '$baseUrl/login?apiKey=$apiKey';
   static String get register => '$baseUrl/register?apiKey=$apiKey';
   static String get logout => '$baseUrl/logout';
   static String get forgotPassword =>
